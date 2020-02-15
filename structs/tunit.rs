@@ -1,0 +1,18 @@
+struct Tunit { 
+    settlementdate: chrono::NaiveDateTime, 
+    runno: i32, 
+    duid: String, 
+    initialmw: f64, 
+    totalcleared: f64, 
+    rampdownrate: f64, 
+    rampuprate: f64, 
+    lower5min: f64, 
+    lower60sec: f64, 
+    lower6sec: f64, 
+    raise5min: f64, 
+    raise60sec: f64, 
+    raise6sec: f64, 
+    lowerreg: f64, 
+    raisereg: f64, 
+    availability: f64, 
+} 
