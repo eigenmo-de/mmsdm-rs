@@ -116,27 +116,15 @@ pub struct File {
 
 impl File {
     pub fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
-        let case_solution = CaseSolution::from_map(&mut data)?;
-        info!("Case solution done");
-        let price= Price::from_map(&mut data)?;
-        info!("price done");
-        let regionsum= Regionsum::from_map(&mut data)?;
-        info!("regionsum done");
-        let interconnectorres= Interconnectorres::from_map(&mut data)?;
-        info!("interconnectorres done");
-        let constraint= Constraint::from_map(&mut data)?;
-        info!("constraint done");
-        let interconnection= Interconnection::from_map(&mut data)?;
-        info!("interconnection done");
         Ok(Self {
             header,
-            case_solution,
-            price,
-            regionsum,
-            interconnectorres,
-            constraint,
-            interconnection,
-        }) 
+            case_solution: CaseSolution::from_map(&mut data)?,
+            price: Price::from_map(&mut data)?,
+            regionsum: Regionsum::from_map(&mut data)?,
+            interconnectorres: Interconnectorres::from_map(&mut data)?,
+            constraint: Constraint::from_map(&mut data)?,
+            interconnection: Interconnection::from_map(&mut data)?,
+        })
     }
 
     pub fn to_block(self) -> clickhouse_rs::types::Block {
@@ -160,22 +148,22 @@ struct CaseSolution {
     runno: i32, 
     intervention: i32, 
     casesubtype: Option<String>, 							
-    solutionstatus: i32, 
+    solutionstatus: Option<i32>, 
     spdversion: Option<String>, 							
-    nonphysicallosses: i32, 
-    totalobjective: f64, 
-    totalareagenviolation: f64,
-    totalinterconnectorviolation: f64,
-    totalgenericviolation: f64,
-    totalramprateviolation: f64,
-    totalunitmwcapacityviolation: f64, 
-    total5minviolation: f64, 							
-    totalregviolation: f64, 							
-    total6secviolation: f64, 							
-    total60secviolation: f64, 							
-    totalasprofileviolation: f64, 
-    totalfaststartviolation: f64, 	
-    totalenergyofferviolation: f64, 	
+    nonphysicallosses: Option<i32>, 
+    totalobjective: Option<f64>, 
+    totalareagenviolation: Option<f64>,
+    totalinterconnectorviolation: Option<f64>,
+    totalgenericviolation: Option<f64>,
+    totalramprateviolation: Option<f64>,
+    totalunitmwcapacityviolation: Option<f64>, 
+    total5minviolation: Option<f64>, 							
+    totalregviolation: Option<f64>, 							
+    total6secviolation: Option<f64>, 							
+    total60secviolation: Option<f64>, 							
+    totalasprofileviolation: Option<f64>, 
+    totalfaststartviolation: Option<f64>, 	
+    totalenergyofferviolation: Option<f64>, 	
     #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
 }
@@ -326,24 +314,24 @@ struct Interconnectorres {
     interconnectorid: String, 
     dispatchinterval:i64,
     intervention: i64,
-    meteredmwflow: f64,
-    mwflow: i64,
-    mwlosses: i64, 
-    marginalvalue: i64,
-    violationdegree: i64,
+    meteredmwflow: Option<f64>,
+    mwflow: Option<f64>,
+    mwlosses: Option<f64>, 
+    marginalvalue: Option<f64>,
+    violationdegree: Option<f64>,
     #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
-    exportlimit: f64,
-    importlimit: f64,
-    marginalloss: f64, 
-    exportgenconid: String, 
-    importgenconid: String, 
-    fcasexportlimit: f64,
-    fcasimportlimit: f64,
-    local_price_adjustment_export: i64,
-    locally_constrained_export: i64,
-    local_price_adjustment_import: i64,
-    locally_constrained_import: i64, 
+    exportlimit: Option<f64>,
+    importlimit: Option<f64>,
+    marginalloss: Option<f64>, 
+    exportgenconid: Option<String>, 
+    importgenconid: Option<String>, 
+    fcasexportlimit: Option<f64>,
+    fcasimportlimit: Option<f64>,
+    local_price_adjustment_export: Option<f64>,
+    locally_constrained_export: Option<i32>,
+    local_price_adjustment_import: Option<f64>,
+    locally_constrained_import: Option<i32>, 
 } 				
 
 impl FileKeyable for Interconnectorres {
@@ -375,15 +363,6 @@ struct Constraint {
     genconid_versionno: i64, 
     lhs: f64, 
 }
-    // settlementdate: chrono::NaiveDateTime,
-    // runno: i64, 
-    // constraintid: String, 
-    // dispatchinterval: i64, 
-    // intervention: i64, 
-    // rhs: f64, 
-    // marginalvalue: f64,
-    // violationdegree: f64, 
-    // lastchanged: chrono::NaiveDateTime,
 
 impl FileKeyable for Constraint {
     fn key() -> aemo::FileKey {

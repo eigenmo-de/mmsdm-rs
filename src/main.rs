@@ -36,6 +36,7 @@ fn archive_to_raw(mut archive: zip::ZipArchive<io::Cursor<Vec<u8>>>) -> Result<a
 }
 
 fn main() -> Result<()> {
+    env_logger::init();
     // let url = "http://nemweb.com.au/Reports/Current/Daily_Reports/";
     // let url = "http://nemweb.com.au/Reports/Current/Yesterdays_Bids_Reports/";
     let url = "http://nemweb.com.au/Reports/Current/DispatchIS_Reports/";
@@ -45,7 +46,7 @@ fn main() -> Result<()> {
     // here generate n threads, and then put the links in an arc?
     // then the threads just keep grabbing next linnk as they done
     let all_data = scraping::get_file_links_from_page(parsed)
-        [0..=5]
+        // [0..=5]
         .par_iter()
         .inspect(|link| println!("downloading {}", link))
         .map(|link| download(url, &link).unwrap())

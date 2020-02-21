@@ -4,6 +4,7 @@ use serde::de::Error as SerdeDeError; // need to expose trait but don't want to 
 
 use chrono_tz::Australia::Brisbane;
 use chrono::TimeZone;
+use log::info;
 // one module per file, and re-exported
 pub mod dispatch_is;
 pub mod yestbid;
@@ -178,7 +179,9 @@ trait FileKeyable {
 trait GetFromRawAemo {
     type Output: FileKeyable + serde::de::DeserializeOwned;
     fn from_map(data: &mut collections::HashMap<FileKey, Vec<csv::StringRecord>>) -> Result<Vec<Self::Output>> {
-        data.remove_entry(&Self::Output::key())
+        let key = &Self::Output::key();
+        info!("Extracting file {:?}", key);
+        data.remove_entry(key)
             .ok_or_else(|| Error::MissingFile(Self::Output::key()))?
             .1
             .into_iter()
