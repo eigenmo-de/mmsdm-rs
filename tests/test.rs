@@ -1,105 +1,122 @@
 #![cfg(test)]
 use aemo_rs;
+use log::info;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use scraper::{html, Selector}; //, node, selector};
-use std::path;
 use std::{
     error, fmt,
     io::{self, Read},
+    path,
 };
 
 #[cfg(test)]
 mod test_rooftop_forecast {
     use aemo_rs::rooftop_forecast;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/ROOFTOP_PV/FORECAST/";
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<rooftop_forecast::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_rooftop_actual {
     use aemo_rs::rooftop_actual;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/ROOFTOP_PV/ACTUAL/";
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<rooftop_actual::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_yestbid {
     use aemo_rs::yestbid;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Yesterdays_Bids_Reports/";
 
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<yestbid::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_dispatch_is {
     use aemo_rs::dispatch_is;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/DispatchIS_Reports/";
 
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<dispatch_is::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_dispatch_scada {
     use aemo_rs::dispatch_scada;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Dispatch_SCADA/";
 
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<dispatch_scada::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_daily {
     use aemo_rs::daily;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Daily_Reports/";
 
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<daily::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_predispatch_sensitivities {
     use aemo_rs::predispatch_sensitivities;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Predispatch_Sensitivities/";
 
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<predispatch_sensitivities::File> =
             super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
 #[cfg(test)]
 mod test_predispatch_is {
     use aemo_rs::predispatch_is;
+    use log::info;
     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/PredispatchIS_Reports/";
 
     #[test]
     fn download_and_parse() {
+        env_logger::init();
         let all_data: Vec<predispatch_is::File> = super::url_get_files(LOCATION).unwrap();
-        println!("Downloaded and processed {} files", all_data.len());
+        info!("Downloaded and processed {} files", all_data.len());
     }
 }
 
@@ -143,7 +160,7 @@ fn archive_to_raw(
     mut archive: zip::ZipArchive<io::Cursor<Vec<u8>>>,
 ) -> Result<aemo_rs::RawAemoFile> {
     let inner_file = archive.by_index(0)?;
-    println!("inner file name: {}", inner_file.name());
+    info!("inner file name: {}", inner_file.name());
     let raw = aemo_rs::RawAemoFile::from_bufread(inner_file)?;
     Ok(raw)
 }
@@ -153,7 +170,7 @@ fn url_get_files<T: aemo_rs::AemoFile>(url: &str) -> Result<Vec<T>> {
     let parsed = scraper::Html::parse_document(&doc);
     get_file_links_from_page(parsed)[0..=5]
         .par_iter()
-        .inspect(|link| println!("downloading {}", link))
+        .inspect(|link| info!("downloading {}", link))
         .map(|link| {
             download(url, &link)
                 .and_then(archive_to_raw)

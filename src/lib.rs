@@ -1,3 +1,6 @@
+// policy is to have an overall deny, and place allow attributes where needed 
+#![deny(clippy::all)]
+#![deny(warnings)]
 use serde::de::Error as SerdeDeError;
 use serde::{de, Deserialize, Serialize};
 use std::{collections, convert, error, fmt, io, num}; // need to expose trait but don't want to use name
@@ -15,11 +18,19 @@ pub mod rooftop_actual;
 pub mod rooftop_forecast;
 pub mod yestbid;
 
+// this is useful to get the date part of nem settlementdate / lastchanged fields
+pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
+    Brisbane.from_local_datetime(ndt).unwrap().date()
+}
+
 #[derive(Debug)]
 pub enum Error {
+    /// This occurs when we are missing the footer record which lists the number of rows in the file
     MissingFooterRecord,
     MissingHeaderRecord,
+    /// This occurs when the desired file key can't be found in the RawAemoFile
     MissingFile(FileKey),
+    /// This occurs when an entire row is empty after the first three columns
     EmptyRow,
     UnexpectedRowType(String),
     TooShortRow(usize),
@@ -233,7 +244,7 @@ where
     } else {
         chrono::NaiveDateTime::parse_from_str(a_str, "%Y/%m/%d %H:%M:%S")
             .map_err(D::Error::custom)
-            .map(|inr| Some(inr))
+            .map(Some)
     }
 }
 

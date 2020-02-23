@@ -30,24 +30,25 @@ impl AemoFile for File {
 pub struct CaseSolution {
     predispatchseqno: String,
     runno: i32,
-    solutionstatus: i32,
-    spdversion: String,
-    nonphysicallosses: i32,
-    totalobjective: f64,
-    totalareagenviolation: f64,
-    totalinterconnectorviolation: f64,
-    totalgenericviolation: f64,
-    totalramprateviolation: f64,
-    totalunitmwcapacityviolation: f64,
+    solutionstatus: Option<i32>,
+    spdversion: Option<String>,
+    nonphysicallosses: Option<i32>,
+    totalobjective: Option<f64>,
+    totalareagenviolation: Option<f64>,
+    totalinterconnectorviolation: Option<f64>,
+    totalgenericviolation: Option<f64>,
+    totalramprateviolation: Option<f64>,
+    totalunitmwcapacityviolation: Option<f64>,
     total5minviolation: Option<f64>,
     totalregviolation: Option<f64>,
     total6secviolation: Option<f64>,
     total60secviolation: Option<f64>,
-    totalasprofileviolation: f64,
-    totalenergyconstrviolation: f64,
-    totalenergyofferviolation: f64,
-    lastchanged: f64,
-    intervention: i32,
+    totalasprofileviolation: Option<f64>,
+    totalenergyconstrviolation: Option<f64>,
+    totalenergyofferviolation: Option<f64>,
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    lastchanged: chrono::NaiveDateTime,
+    intervention: Option<i32>,
 }
 
 impl FileKeyable for CaseSolution {
@@ -62,9 +63,11 @@ impl GetFromRawAemo for CaseSolution {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct LocalPrice {
+    predispatchseqno: String,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     datetime: chrono::NaiveDateTime,
-    periodid: String,
+    duid: String,
+    periodid: i32,
     local_price_adjustment: f64,
     locally_constrained: i32,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
