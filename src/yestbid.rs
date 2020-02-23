@@ -1,26 +1,30 @@
 use serde::{Deserialize, Serialize};
-use crate::aemo::{self, Result, Error, GetFromRawAemo, FileKeyable, RawAemoFile};
+use crate::{Result, GetFromRawAemo, FileKeyable, RawAemoFile};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
-    header: aemo::AemoHeader,
+    header: crate::AemoHeader,
     price: Vec<BidDayOffer>,
     volume: Vec<BidPerOffer>,
 }
 
 
-impl File {
-    pub fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
+impl crate::AemoFile for File {
+    fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
         Ok(Self {
             header,
             price: BidDayOffer::from_map(&mut data)?,
             volume: BidPerOffer::from_map(&mut data)?,
         }) 
     }
+}
+
+impl File {
     pub fn get_price(&self) -> &'_ Vec<BidDayOffer> {
         &self.price
     }
 }
+
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -45,17 +49,17 @@ enum EntryType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BidDayOffer {
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlement_date: chrono::NaiveDateTime,
     duid: String,
     bid_type: Option<BidType>,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     bid_settlement_date:  chrono::NaiveDateTime,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     bid_offer_date: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "aemo::opt_au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::opt_au_datetime_deserialize")]
     first_dispatch: Option<chrono::NaiveDateTime>,
-    #[serde(deserialize_with = "aemo::opt_au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::opt_au_datetime_deserialize")]
     first_predispatch: Option<chrono::NaiveDateTime>,
     daily_energy_constraint: Option<i32>,
     rebid_explanation: String,
@@ -75,7 +79,7 @@ pub struct BidDayOffer {
     t3: Option<i32>,
     t4: Option<i32>,
     normal_status: Option<i32>,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     last_changed: chrono::NaiveDateTime,
     bid_version_no: i32,
     mr_factor: Option<i32>,
@@ -83,7 +87,7 @@ pub struct BidDayOffer {
 }
 
 impl FileKeyable for BidDayOffer {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("YESTBID".into(), "BIDDAYOFFER".into(), 5)
     }
 }
@@ -94,15 +98,15 @@ impl GetFromRawAemo for BidDayOffer {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct BidPerOffer {
-#[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+#[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlement_date: chrono::NaiveDateTime,
     duid: String,
     bid_type: BidType,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     bid_settlement_date:  chrono::NaiveDateTime,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     bid_offer_date: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     trading_period: chrono::NaiveDateTime,
     max_availability: i32,
     fixed_load: Option<i32>,
@@ -124,14 +128,14 @@ struct BidPerOffer {
     band_availability_10: i32,
     pasa_availability: Option<i32>,
     period_id: i32,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     last_changed: chrono::NaiveDateTime,
     bid_version_no: i32,
     mr_capacity: Option<i32>,
 }
 
 impl FileKeyable for BidPerOffer {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("YESTBID".into(), "BIDPEROFFER".into(), 3)
     }
 }

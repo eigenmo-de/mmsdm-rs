@@ -1,11 +1,10 @@
 use serde::{Deserialize, Serialize};
-use crate::aemo::{self, Result, GetFromRawAemo, FileKeyable, RawAemoFile};
+use crate::{Result, GetFromRawAemo, FileKeyable, RawAemoFile};
 
-use log::info;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Price {
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlement_date: chrono::NaiveDateTime,
     run_no: i32,
     region_id: Region,
@@ -16,7 +15,7 @@ struct Price {
     rop: f64,
     apc_flag: i32,
     market_suspended_flag: i32,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     last_changed: chrono::NaiveDateTime,
     raise6sec_rrp: f64,
     raise6sec_rop: f64,
@@ -66,7 +65,7 @@ struct Price {
 }
 
 impl FileKeyable for Price {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("DISPATCH".into(), "PRICE".into(), 4)
     }
 }
@@ -84,26 +83,10 @@ enum Region {
     SA1,
 }
 
-// impl std::fmt::Display for Region {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//     match self {
-//         Self::MissingHeaderRecord =>  write!(f, "aemo file is missing the first `c` record"),
-//     }
-
-// }
-
-// struct CaseSolution {}
-// struct LocalPrice {}
-// struct Price {}
-// struct Regionsum {}
-// struct Interconnectorres {}
-// struct Constraint {}
-// struct Interconnection {}
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
-    header: aemo::AemoHeader,
+    header: crate::AemoHeader,
     case_solution: Vec<CaseSolution>,
     // local_price: Vec<LocalPrice>,
     price: Vec<Price>,
@@ -114,36 +97,24 @@ pub struct File {
 }
 
 
-impl File {
-    pub fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
+impl crate::AemoFile for File {
+    fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
         Ok(Self {
             header,
             case_solution: CaseSolution::from_map(&mut data)?,
-            price: Price::from_map(&mut data)?,
+            price: 
+            Price::from_map(&mut data)?,
             regionsum: Regionsum::from_map(&mut data)?,
             interconnectorres: Interconnectorres::from_map(&mut data)?,
             constraint: Constraint::from_map(&mut data)?,
             interconnection: Interconnection::from_map(&mut data)?,
         })
     }
-
-    pub fn to_block(self) -> clickhouse_rs::types::Block {
-        clickhouse_rs::types::Block::new()
-            .column("settlement_date", self.price.iter()
-                .map(|pr| aemo::to_nem_date(&pr.settlement_date))
-                .collect::<Vec<_>>() 
-            )
-            .column("run_no", self.price.iter().map(|pr| pr.run_no).collect::<Vec<_>>()  )
-            .column("region_id", self.price.iter().map(|pr| serde_json::to_string(&pr.region_id).unwrap()).collect::<Vec<_>>() )
-            .column("dispatch_interval", self.price.iter().map(|pr| pr.dispatch_interval).collect::<Vec<_>>() )
-            .column("intervention", self.price.iter().map(|pr| pr.intervention).collect::<Vec<_>>() )
-            .column("rrp", self.price.iter().map(|pr| pr.regional_reference_price).collect::<Vec<_>>() )
-    }
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct CaseSolution {
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32, 
     intervention: i32, 
@@ -164,12 +135,12 @@ struct CaseSolution {
     totalasprofileviolation: Option<f64>, 
     totalfaststartviolation: Option<f64>, 	
     totalenergyofferviolation: Option<f64>, 	
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
 }
 
 impl FileKeyable for CaseSolution {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("DISPATCH".into(), "CASE_SOLUTION".into(), 2)
     }
 }
@@ -187,7 +158,7 @@ impl GetFromRawAemo for CaseSolution {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Regionsum {
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlementdate: chrono::NaiveDateTime, 
     runno: i64,
     regionid: String,
@@ -251,7 +222,7 @@ struct Regionsum {
     raise6secsupplyprice: Option<f64>,			
     aggegatedispatcherror: Option<f64>,			
     aggregatedispatcherror: f64, 
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
     initialsupply: f64,
     clearedsupply: f64,
@@ -297,7 +268,7 @@ struct Regionsum {
 }
 
 impl FileKeyable for Regionsum {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("DISPATCH".into(), "REGIONSUM".into(), 4)
     }
 }
@@ -308,7 +279,7 @@ impl GetFromRawAemo for Regionsum {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Interconnectorres { 
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlementdate: chrono::NaiveDateTime,
     runno: i64,
     interconnectorid: String, 
@@ -319,7 +290,7 @@ struct Interconnectorres {
     mwlosses: Option<f64>, 
     marginalvalue: Option<f64>,
     violationdegree: Option<f64>,
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
     exportlimit: Option<f64>,
     importlimit: Option<f64>,
@@ -335,7 +306,7 @@ struct Interconnectorres {
 } 				
 
 impl FileKeyable for Interconnectorres {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("DISPATCH".into(), "INTERCONNECTORRES".into(), 3)
     }
 }
@@ -346,7 +317,7 @@ impl GetFromRawAemo for Interconnectorres {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Constraint { 
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlementdate: chrono::NaiveDateTime,
     runno: i64,
     constraintid: String, 
@@ -355,17 +326,17 @@ struct Constraint {
     rhs: f64, 
     marginalvalue: f64,
     violationdegree: f64, 
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
     duid: String,						
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     genconid_effectivedate: chrono::NaiveDateTime,
     genconid_versionno: i64, 
     lhs: f64, 
 }
 
 impl FileKeyable for Constraint {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("DISPATCH".into(), "CONSTRAINT".into(), 5)
     }
 }
@@ -377,7 +348,7 @@ impl GetFromRawAemo for Constraint {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Interconnection { 
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlementdate:  chrono::NaiveDateTime,
     runno: i64,
     intervention: i64,
@@ -389,12 +360,12 @@ struct Interconnection {
     meteredmwflow: f64, 
     from_region_mw_losses: f64, 
     to_region_mw_losses: f64, 
-    #[serde(deserialize_with = "aemo::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
 }
 
 impl FileKeyable for Interconnection {
-    fn key() -> aemo::FileKey {
+    fn key() -> crate::FileKey {
         ("DISPATCH".into(), "INTERCONNECTION".into(), 1)
     }
 }

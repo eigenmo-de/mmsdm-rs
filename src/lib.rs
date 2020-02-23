@@ -5,9 +5,13 @@ use serde::de::Error as SerdeDeError; // need to expose trait but don't want to 
 use chrono_tz::Australia::Brisbane;
 use chrono::TimeZone;
 use log::info;
-// one module per file, and re-exported
+
 pub mod dispatch_is;
 pub mod yestbid;
+pub mod dispatch_scada;
+pub mod rooftop_actual;
+pub mod rooftop_forecast;
+pub mod daily;
 
 
 #[derive(Debug)]
@@ -22,7 +26,6 @@ pub enum Error {
     ThreadBroken,
     ParseInt(num::ParseIntError),
     Csv(csv::Error),
-    Json(serde_json::Error),
 }
 
 impl fmt::Display for Error {
@@ -38,7 +41,6 @@ impl fmt::Display for Error {
             Self::ThreadBroken => write!(f, "Broken Thread"),
             Self::ParseInt(e) => write!(f, "parse int error: {}", e),
             Self::Csv(e) => write!(f, "csv error: {}", e),
-            Self::Json(e) => write!(f, "serde json error: {}", e),
         }
     }
 }
@@ -49,11 +51,6 @@ impl From<num::ParseIntError> for Error {
     }
 }
 
-impl From<serde_json::Error> for Error {
-    fn from(error: serde_json::Error) -> Self {
-        Error::Json(error)
-    }
-}
 
 impl From<csv::Error> for Error {
     fn from(error: csv::Error) -> Self {
@@ -96,7 +93,7 @@ pub struct RawAemoFile {
     //footer: AemoFooter, // don't reall
 }
 
-type FileKey = (String, String, i32);
+pub type FileKey = (String, String, i32);
 
 // potentially have RawAemoFile<T> where T: forms the key of the hashmap??
 
@@ -172,11 +169,11 @@ fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
     Brisbane.from_local_datetime(ndt).unwrap().date()
 }
 
-trait FileKeyable {
+pub trait FileKeyable {
     fn key() -> FileKey;
 }
 
-trait GetFromRawAemo {
+pub trait GetFromRawAemo {
     type Output: FileKeyable + serde::de::DeserializeOwned;
     fn from_map(data: &mut collections::HashMap<FileKey, Vec<csv::StringRecord>>) -> Result<Vec<Self::Output>> {
         let key = &Self::Output::key();
@@ -189,6 +186,10 @@ trait GetFromRawAemo {
             .collect::<std::result::Result<Vec<Self::Output>, csv::Error>>()
             .map_err(convert::Into::into)
     }
+}
+
+pub trait AemoFile: Sized + Send {
+    fn from_raw(raw: RawAemoFile) -> Result<Self>;
 }
 
 fn au_datetime_deserialize<'de, D>(d: D) -> std::result::Result<chrono::NaiveDateTime, D::Error>
@@ -231,3 +232,9 @@ where
    chrono::NaiveTime::parse_from_str(s, "%H:%M:%S").map_err(de::Error::custom) 
 
 }
+
+
+
+
+
+
