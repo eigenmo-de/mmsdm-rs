@@ -1,13 +1,11 @@
+use crate::{FileKeyable, GetFromRawAemo, RawAemoFile, Result};
 use serde::{Deserialize, Serialize};
-use crate::{Result, GetFromRawAemo, FileKeyable, RawAemoFile};
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
     header: crate::AemoHeader,
     actual: Vec<RooftopActual>,
 }
-
 
 impl crate::AemoFile for File {
     fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
@@ -22,11 +20,11 @@ impl crate::AemoFile for File {
 struct RooftopActual {
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     interval_datetime: chrono::NaiveDateTime,
-    regionid: String, 
-    power: f64, 
-    qi: f64, 
+    regionid: String,
+    power: f64,
+    qi: f64,
     #[serde(rename = "type")]
-    type_: String, 
+    type_: String,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     lastchanged: chrono::NaiveDateTime,
 }
@@ -40,4 +38,3 @@ impl FileKeyable for RooftopActual {
 impl GetFromRawAemo for RooftopActual {
     type Output = Self;
 }
-

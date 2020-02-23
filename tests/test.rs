@@ -1,10 +1,12 @@
 #![cfg(test)]
-use std::path;
-use scraper::{html, Selector};//, node, selector};
-use rayon::iter::{ParallelIterator, IntoParallelRefIterator};
-use std::{error, fmt, io::{self, Read}};
 use aemo_rs;
-
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+use scraper::{html, Selector}; //, node, selector};
+use std::path;
+use std::{
+    error, fmt,
+    io::{self, Read},
+};
 
 #[cfg(test)]
 mod test_rooftop_forecast {
@@ -15,7 +17,6 @@ mod test_rooftop_forecast {
         let all_data: Vec<rooftop_forecast::File> = super::url_get_files(LOCATION).unwrap();
         println!("Downloaded and processed {} files", all_data.len());
     }
-
 }
 
 #[cfg(test)]
@@ -27,7 +28,6 @@ mod test_rooftop_actual {
         let all_data: Vec<rooftop_actual::File> = super::url_get_files(LOCATION).unwrap();
         println!("Downloaded and processed {} files", all_data.len());
     }
-
 }
 
 #[cfg(test)]
@@ -40,7 +40,6 @@ mod test_yestbid {
         let all_data: Vec<yestbid::File> = super::url_get_files(LOCATION).unwrap();
         println!("Downloaded and processed {} files", all_data.len());
     }
-
 }
 
 #[cfg(test)]
@@ -53,7 +52,6 @@ mod test_dispatch_is {
         let all_data: Vec<dispatch_is::File> = super::url_get_files(LOCATION).unwrap();
         println!("Downloaded and processed {} files", all_data.len());
     }
-
 }
 
 #[cfg(test)]
@@ -66,9 +64,7 @@ mod test_dispatch_scada {
         let all_data: Vec<dispatch_scada::File> = super::url_get_files(LOCATION).unwrap();
         println!("Downloaded and processed {} files", all_data.len());
     }
-
 }
-
 
 #[cfg(test)]
 mod test_daily {
@@ -80,11 +76,32 @@ mod test_daily {
         let all_data: Vec<daily::File> = super::url_get_files(LOCATION).unwrap();
         println!("Downloaded and processed {} files", all_data.len());
     }
-
 }
 
+#[cfg(test)]
+mod test_predispatch_sensitivities {
+    use aemo_rs::predispatch_sensitivities;
+    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Predispatch_Sensitivities/";
 
+    #[test]
+    fn download_and_parse() {
+        let all_data: Vec<predispatch_sensitivities::File> =
+            super::url_get_files(LOCATION).unwrap();
+        println!("Downloaded and processed {} files", all_data.len());
+    }
+}
 
+#[cfg(test)]
+mod test_predispatch_is {
+    use aemo_rs::predispatch_is;
+    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/PredispatchIS_Reports/";
+
+    #[test]
+    fn download_and_parse() {
+        let all_data: Vec<predispatch_is::File> = super::url_get_files(LOCATION).unwrap();
+        println!("Downloaded and processed {} files", all_data.len());
+    }
+}
 
 // helper functions for testing purposes
 // these should also be useful as examples for consumers of the library
@@ -100,8 +117,7 @@ fn get_filename_from_path(path: &path::Path) -> Result<String> {
 
 fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
     let selector = Selector::parse("a").unwrap();
-    doc
-        .select(&selector)
+    doc.select(&selector)
         .into_iter()
         .map(|el| el.value().attr("href"))
         .filter_map(|opt| opt) // only interested in a elements that have a link!
@@ -115,25 +131,27 @@ fn download(base_url: &str, link: &str) -> Result<zip::ZipArchive<io::Cursor<Vec
     let path = path::Path::new(&link);
     let file_name = get_filename_from_path(path)?;
     let file_url = format!("{}/{}", base_url, file_name);
-    let bytes = reqwest::get(&file_url)?.bytes().collect::<std::result::Result<Vec<_>, io::Error>>()?;
+    let bytes = reqwest::get(&file_url)?
+        .bytes()
+        .collect::<std::result::Result<Vec<_>, io::Error>>()?;
     let cursor = io::Cursor::new(bytes);
     let zip = zip::ZipArchive::new(cursor)?;
     Ok(zip)
 }
 
-fn archive_to_raw(mut archive: zip::ZipArchive<io::Cursor<Vec<u8>>>) -> Result<aemo_rs::RawAemoFile> {
+fn archive_to_raw(
+    mut archive: zip::ZipArchive<io::Cursor<Vec<u8>>>,
+) -> Result<aemo_rs::RawAemoFile> {
     let inner_file = archive.by_index(0)?;
     println!("inner file name: {}", inner_file.name());
     let raw = aemo_rs::RawAemoFile::from_bufread(inner_file)?;
     Ok(raw)
-
 }
 
 fn url_get_files<T: aemo_rs::AemoFile>(url: &str) -> Result<Vec<T>> {
     let doc = reqwest::get(url)?.text()?;
     let parsed = scraper::Html::parse_document(&doc);
-    get_file_links_from_page(parsed)
-        [0..=5]
+    get_file_links_from_page(parsed)[0..=5]
         .par_iter()
         .inspect(|link| println!("downloading {}", link))
         .map(|link| {
@@ -165,13 +183,11 @@ impl From<io::Error> for Error {
     }
 }
 
-
 impl From<zip::result::ZipError> for Error {
     fn from(error: zip::result::ZipError) -> Self {
         Error::Zip(error)
     }
 }
-
 
 impl From<reqwest::Error> for Error {
     fn from(error: reqwest::Error) -> Self {
@@ -189,10 +205,8 @@ impl fmt::Display for Error {
             Self::Aemo(s) => write!(f, "AEMO error: {}", s),
         }
     }
-
 }
 
 impl error::Error for Error {}
 
 type Result<T> = std::result::Result<T, Error>;
-

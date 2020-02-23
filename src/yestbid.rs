@@ -1,5 +1,5 @@
+use crate::{FileKeyable, GetFromRawAemo, RawAemoFile, Result};
 use serde::{Deserialize, Serialize};
-use crate::{Result, GetFromRawAemo, FileKeyable, RawAemoFile};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
@@ -8,14 +8,13 @@ pub struct File {
     volume: Vec<BidPerOffer>,
 }
 
-
 impl crate::AemoFile for File {
     fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
         Ok(Self {
             header,
             price: BidDayOffer::from_map(&mut data)?,
             volume: BidPerOffer::from_map(&mut data)?,
-        }) 
+        })
     }
 }
 
@@ -24,8 +23,6 @@ impl File {
         &self.price
     }
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 enum BidType {
@@ -46,7 +43,6 @@ enum EntryType {
     REBID,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BidDayOffer {
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
@@ -54,7 +50,7 @@ pub struct BidDayOffer {
     duid: String,
     bid_type: Option<BidType>,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
-    bid_settlement_date:  chrono::NaiveDateTime,
+    bid_settlement_date: chrono::NaiveDateTime,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     bid_offer_date: chrono::NaiveDateTime,
     #[serde(deserialize_with = "crate::opt_au_datetime_deserialize")]
@@ -98,12 +94,12 @@ impl GetFromRawAemo for BidDayOffer {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct BidPerOffer {
-#[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlement_date: chrono::NaiveDateTime,
     duid: String,
     bid_type: BidType,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
-    bid_settlement_date:  chrono::NaiveDateTime,
+    bid_settlement_date: chrono::NaiveDateTime,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     bid_offer_date: chrono::NaiveDateTime,
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]

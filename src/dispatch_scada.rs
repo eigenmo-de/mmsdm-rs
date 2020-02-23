@@ -1,12 +1,11 @@
+use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result};
 use serde::{Deserialize, Serialize};
-use crate::{Result, GetFromRawAemo, FileKeyable, RawAemoFile, AemoFile};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
     header: crate::AemoHeader,
     scada: Vec<UnitScada>,
 }
-
 
 impl AemoFile for File {
     fn from_raw(RawAemoFile { header, mut data }: RawAemoFile) -> Result<Self> {
@@ -22,8 +21,8 @@ pub struct UnitScada {
     #[serde(deserialize_with = "crate::au_datetime_deserialize")]
     settlementdate: chrono::NaiveDateTime,
     duid: String,
-    scadavalue: f64, 
-} 
+    scadavalue: f64,
+}
 
 impl FileKeyable for UnitScada {
     fn key() -> crate::FileKey {
@@ -34,4 +33,3 @@ impl FileKeyable for UnitScada {
 impl GetFromRawAemo for UnitScada {
     type Output = Self;
 }
-
