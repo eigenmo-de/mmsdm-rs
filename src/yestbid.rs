@@ -1,4 +1,4 @@
-use crate::{FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime, mms_datetime_opt};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -45,17 +45,17 @@ enum EntryType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BidDayOffer {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlement_date: chrono::NaiveDateTime,
     duid: String,
     bid_type: Option<BidType>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     bid_settlement_date: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     bid_offer_date: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::opt_au_datetime_deserialize")]
+    #[serde(with = "mms_datetime_opt")]
     first_dispatch: Option<chrono::NaiveDateTime>,
-    #[serde(deserialize_with = "crate::opt_au_datetime_deserialize")]
+    #[serde(with = "mms_datetime_opt")]
     first_predispatch: Option<chrono::NaiveDateTime>,
     daily_energy_constraint: Option<i32>,
     rebid_explanation: String,
@@ -75,7 +75,7 @@ pub struct BidDayOffer {
     t3: Option<i32>,
     t4: Option<i32>,
     normal_status: Option<i32>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     last_changed: chrono::NaiveDateTime,
     bid_version_no: i32,
     mr_factor: Option<i32>,
@@ -94,15 +94,15 @@ impl GetFromRawAemo for BidDayOffer {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct BidPerOffer {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlement_date: chrono::NaiveDateTime,
     duid: String,
     bid_type: BidType,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     bid_settlement_date: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     bid_offer_date: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     trading_period: chrono::NaiveDateTime,
     max_availability: i32,
     fixed_load: Option<i32>,
@@ -124,7 +124,7 @@ struct BidPerOffer {
     band_availability_10: i32,
     pasa_availability: Option<i32>,
     period_id: i32,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     last_changed: chrono::NaiveDateTime,
     bid_version_no: i32,
     mr_capacity: Option<i32>,

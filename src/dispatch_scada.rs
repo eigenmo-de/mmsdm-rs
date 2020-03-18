@@ -1,4 +1,4 @@
-use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -18,7 +18,7 @@ impl AemoFile for File {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct UnitScada {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     duid: String,
     scadavalue: f64,

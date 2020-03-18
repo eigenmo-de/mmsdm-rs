@@ -1,9 +1,7 @@
-// policy is to have an overall deny, and place allow attributes where needed 
 #![deny(clippy::all)]
 #![deny(warnings)]
-use serde::de::Error as SerdeDeError;
-use serde::{de, Deserialize, Serialize};
-use std::{collections, convert, error, fmt, io, num}; // need to expose trait but don't want to use name
+use serde::{Deserialize, Serialize};
+use std::{collections, convert, error, fmt, io, num}; 
 
 use chrono::TimeZone;
 use chrono_tz::Australia::Brisbane;
@@ -17,6 +15,7 @@ pub mod predispatch_sensitivities;
 pub mod rooftop_actual;
 pub mod rooftop_forecast;
 pub mod yestbid;
+pub mod confidential_settlements;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
@@ -27,15 +26,20 @@ pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
 pub enum Error {
     /// This occurs when we are missing the footer record which lists the number of rows in the file
     MissingFooterRecord,
+    /// This occurs when we are missing the header record which lists metadata about the file
     MissingHeaderRecord,
     /// This occurs when the desired file key can't be found in the RawAemoFile
     MissingFile(FileKey),
     /// This occurs when an entire row is empty after the first three columns
     EmptyRow,
+    /// This occurs when a given row in the file doesn't match the expected structure for that section
+    /// of the file
     UnexpectedRowType(String),
+    /// This occurs when a given row in the file is shorter than expected
     TooShortRow(usize),
+    /// This occurs when the number of rows in the file is different to the number listed in the
+    /// footer
     IncorrectLineCount { got: usize, expected: usize },
-    ThreadBroken,
     ParseInt(num::ParseIntError),
     Csv(csv::Error),
 }
@@ -60,7 +64,6 @@ impl fmt::Display for Error {
                 "aemo file was supposed to be {} lines long but was instead {} lines long",
                 expected, got
             ),
-            Self::ThreadBroken => write!(f, "Broken Thread"),
             Self::ParseInt(e) => write!(f, "parse int error: {}", e),
             Self::Csv(e) => write!(f, "csv error: {}", e),
         }
@@ -90,9 +93,9 @@ pub struct AemoHeader {
     file_name: String,
     participant_name: String,
     privacy_level: String,
-    #[serde(deserialize_with = "au_date_deserialize")]
+    #[serde(with = "mms_date")]
     effective_date: chrono::NaiveDate,
-    #[serde(deserialize_with = "au_time_deserialize")]
+    #[serde(with = "mms_time")]
     effective_time: chrono::NaiveTime,
     serial_number: u64,
     file_name_2: String,
@@ -224,42 +227,113 @@ pub trait AemoFile: Sized + Send {
     fn from_raw(raw: RawAemoFile) -> Result<Self>;
 }
 
-fn au_datetime_deserialize<'de, D>(d: D) -> std::result::Result<chrono::NaiveDateTime, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    let s = serde::Deserialize::deserialize(d)?;
-    chrono::NaiveDateTime::parse_from_str(s, "%Y/%m/%d %H:%M:%S").map_err(de::Error::custom)
-}
+// Following the pattern from: https://serde.rs/custom-date-format.html
+// To allow use with serde(with = "")
+mod mms_datetime {
+    use serde::{Serializer, Deserializer, Deserialize, de::Error};
 
-fn opt_au_datetime_deserialize<'de, D>(
-    d: D,
-) -> std::result::Result<Option<chrono::NaiveDateTime>, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    let a_str: &'de str = serde::Deserialize::deserialize(d)?;
-    if a_str.len() == 0 {
-        Ok(None)
-    } else {
-        chrono::NaiveDateTime::parse_from_str(a_str, "%Y/%m/%d %H:%M:%S")
-            .map_err(D::Error::custom)
-            .map(Some)
+    const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
+
+    pub fn serialize<S>(
+        d: &chrono::NaiveDateTime,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+        where S: Serializer,
+    {
+        let s = d.format(FORMAT).to_string();
+        serializer.serialize_str(&s)
+    }
+
+    pub fn deserialize<'de, D>(d: D) -> Result<chrono::NaiveDateTime, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = Deserialize::deserialize(d)?;
+        chrono::NaiveDateTime::parse_from_str(s, FORMAT).map_err(Error::custom)
     }
 }
 
-fn au_date_deserialize<'de, D>(d: D) -> std::result::Result<chrono::NaiveDate, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    let s = serde::Deserialize::deserialize(d)?;
-    chrono::NaiveDate::parse_from_str(s, "%Y/%m/%d").map_err(de::Error::custom)
+
+mod mms_datetime_opt {
+    use serde::{Serializer, Deserializer, Deserialize, de::Error};
+
+    const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
+
+    pub fn serialize<S>(
+        d: &Option<chrono::NaiveDateTime>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+        where S: Serializer,
+    {
+        let s = match d {
+            Some(date) => date.format(FORMAT).to_string(),
+            None => "".to_string(),
+        };
+        serializer.serialize_str(&s)
+    }
+
+    pub fn deserialize<'de, D>(
+        d: D,
+    ) -> Result<Option<chrono::NaiveDateTime>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s: &'de str = Deserialize::deserialize(d)?;
+        if s.len() == 0 {
+            Ok(None)
+        } else {
+            chrono::NaiveDateTime::parse_from_str(s, FORMAT)
+                .map_err(Error::custom)
+                .map(Some)
+        }
+    }
 }
 
-fn au_time_deserialize<'de, D>(d: D) -> std::result::Result<chrono::NaiveTime, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    let s = serde::Deserialize::deserialize(d)?;
-    chrono::NaiveTime::parse_from_str(s, "%H:%M:%S").map_err(de::Error::custom)
+mod mms_date {
+    use serde::{Serializer, Deserializer, Deserialize, de::Error};
+
+    const FORMAT: &str = "%Y/%m/%d";
+
+    pub fn serialize<S>(
+        d: &chrono::NaiveDate,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+        where S: Serializer,
+    {
+        let s = d.format(FORMAT).to_string();
+        serializer.serialize_str(&s)
+    }
+    pub fn deserialize<'de, D>(d: D) -> std::result::Result<chrono::NaiveDate, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = Deserialize::deserialize(d)?;
+        chrono::NaiveDate::parse_from_str(s, FORMAT).map_err(Error::custom)
+    }
 }
+
+mod mms_time {
+    use serde::{Serializer, Deserializer, Deserialize, de::Error};
+
+    const FORMAT: &str = "H:%M:%S";
+
+    pub fn serialize<S>(
+        d: &chrono::NaiveTime,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+        where S: Serializer,
+    {
+        let s = d.format(FORMAT).to_string();
+        serializer.serialize_str(&s)
+    }
+    pub fn deserialize<'de, D>(d: D) -> Result<chrono::NaiveTime, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = Deserialize::deserialize(d)?;
+        chrono::NaiveTime::parse_from_str(s, FORMAT).map_err(Error::custom)
+    }
+}
+
+
+

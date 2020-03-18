@@ -1,4 +1,4 @@
-use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -46,7 +46,7 @@ pub struct CaseSolution {
     totalasprofileviolation: Option<f64>,
     totalenergyconstrviolation: Option<f64>,
     totalenergyofferviolation: Option<f64>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
     intervention: Option<i32>,
 }
@@ -64,13 +64,13 @@ impl GetFromRawAemo for CaseSolution {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct LocalPrice {
     predispatchseqno: String,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
     duid: String,
     periodid: i32,
     local_price_adjustment: f64,
     locally_constrained: i32,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 
@@ -109,9 +109,9 @@ pub struct RegionPrices {
     eep7: Option<f64>,
     rrp8: Option<f64>,
     eep8: Option<f64>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
     raise6secrrp: f64,
     raise60secrrp: f64,
@@ -196,9 +196,9 @@ pub struct RegionSolution {
     raise6secprice: Option<f64>,
     raise6secreq: Option<f64>,
     raise6secsupplyprice: Option<f64>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
     initialsupply: f64,
     clearedsupply: f64,
@@ -266,9 +266,9 @@ pub struct InterconnectorSolution {
     mwlosses: f64,
     marginalvalue: f64,
     violationdegree: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
     exportlimit: f64,
     importlimit: f64,
@@ -303,12 +303,12 @@ pub struct ConstraintSolution {
     rhs: f64,
     marginalvalue: f64,
     violationdegree: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
     duid: Option<String>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     genconid_effectivedate: chrono::NaiveDateTime,
     genconid_versionno: i64,
     lhs: f64,

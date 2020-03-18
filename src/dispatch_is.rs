@@ -1,9 +1,9 @@
-use crate::{FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Price {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlement_date: chrono::NaiveDateTime,
     run_no: i32,
     region_id: Region,
@@ -14,7 +14,7 @@ struct Price {
     rop: f64,
     apc_flag: i32,
     market_suspended_flag: i32,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     last_changed: chrono::NaiveDateTime,
     raise6sec_rrp: f64,
     raise6sec_rop: f64,
@@ -110,7 +110,7 @@ impl crate::AemoFile for File {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct CaseSolution {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     intervention: i32,
@@ -131,7 +131,7 @@ struct CaseSolution {
     totalasprofileviolation: Option<f64>,
     totalfaststartviolation: Option<f64>,
     totalenergyofferviolation: Option<f64>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 
@@ -154,7 +154,7 @@ impl GetFromRawAemo for CaseSolution {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Regionsum {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i64,
     regionid: String,
@@ -218,7 +218,7 @@ struct Regionsum {
     raise6secsupplyprice: Option<f64>,
     aggegatedispatcherror: Option<f64>,
     aggregatedispatcherror: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
     initialsupply: f64,
     clearedsupply: f64,
@@ -275,7 +275,7 @@ impl GetFromRawAemo for Regionsum {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Interconnectorres {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i64,
     interconnectorid: String,
@@ -286,7 +286,7 @@ struct Interconnectorres {
     mwlosses: Option<f64>,
     marginalvalue: Option<f64>,
     violationdegree: Option<f64>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
     exportlimit: Option<f64>,
     importlimit: Option<f64>,
@@ -313,7 +313,7 @@ impl GetFromRawAemo for Interconnectorres {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Constraint {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i64,
     constraintid: String,
@@ -322,10 +322,10 @@ struct Constraint {
     rhs: f64,
     marginalvalue: f64,
     violationdegree: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
     duid: String,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     genconid_effectivedate: chrono::NaiveDateTime,
     genconid_versionno: i64,
     lhs: f64,
@@ -343,7 +343,7 @@ impl GetFromRawAemo for Constraint {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct Interconnection {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i64,
     intervention: i64,
@@ -355,7 +355,7 @@ struct Interconnection {
     meteredmwflow: f64,
     from_region_mw_losses: f64,
     to_region_mw_losses: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 

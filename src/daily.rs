@@ -1,4 +1,4 @@
-use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -18,7 +18,7 @@ impl AemoFile for File {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct CaseSolution {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     intervention: i32,
@@ -39,7 +39,7 @@ struct CaseSolution {
     totalasprofileviolation: Option<f64>,
     totalfaststartviolation: Option<f64>,
     totalenergyofferviolation: Option<f64>,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 
@@ -55,7 +55,7 @@ impl GetFromRawAemo for CaseSolution {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct DRegion {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     regionid: String,
@@ -196,7 +196,7 @@ impl GetFromRawAemo for DRegion {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct DUnit {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     duid: String,
@@ -261,18 +261,18 @@ impl GetFromRawAemo for DUnit {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct RegionFcasRequirement {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     intervention: i32,
     genconid: String,
     regionid: String,
     bidtype: String,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     genconeffectivedate: chrono::NaiveDateTime,
     genconversionno: i32,
     marginalvalue: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 
@@ -288,7 +288,7 @@ impl GetFromRawAemo for RegionFcasRequirement {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct TRegion {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     regionid: String,
@@ -399,7 +399,7 @@ impl GetFromRawAemo for TRegion {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct TUnit {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     settlementdate: chrono::NaiveDateTime,
     runno: i32,
     duid: String,

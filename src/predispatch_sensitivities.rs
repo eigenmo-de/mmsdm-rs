@@ -1,4 +1,4 @@
-use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -25,7 +25,7 @@ pub struct InterconnectorSensitivities {
     interconnectorid: String,
     periodid: String,
     intervention: i32,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
     intervention_active: i32,
     mwflow1: f64,
@@ -71,7 +71,7 @@ pub struct InterconnectorSensitivities {
     mwflow41: f64,
     mwflow42: f64,
     mwflow43: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 
@@ -120,9 +120,9 @@ pub struct PriceSensitivities {
     rrpeep26: f64,
     rrpeep27: f64,
     rrpeep28: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     datetime: chrono::NaiveDateTime,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
     rrpeep29: f64,
     rrpeep30: f64,

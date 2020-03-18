@@ -1,4 +1,4 @@
-use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result};
+use crate::{AemoFile, FileKeyable, GetFromRawAemo, RawAemoFile, Result, mms_datetime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -18,16 +18,16 @@ impl AemoFile for File {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct RooftopForecast {
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     version_datetime: chrono::NaiveDateTime,
     regionid: String,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     interval_datetime: chrono::NaiveDateTime,
     powermean: f64,
     powerpoe50: f64,
     powerpoelow: f64,
     powerpoehigh: f64,
-    #[serde(deserialize_with = "crate::au_datetime_deserialize")]
+    #[serde(with = "mms_datetime")]
     lastchanged: chrono::NaiveDateTime,
 }
 
