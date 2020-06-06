@@ -1,88 +1,57 @@
-#![deny(clippy::all)]
-#![deny(warnings)]
+// #![deny(clippy::all)] #![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, convert, error, fmt, io, num}; 
+use std::{collections, convert, io, num}; 
 
 use chrono::TimeZone;
 use chrono_tz::Australia::Brisbane;
 use log::info;
 
-pub mod daily;
-pub mod dispatch_is;
-pub mod dispatch_scada;
-pub mod predispatch_is;
-pub mod predispatch_sensitivities;
-pub mod rooftop_actual;
-pub mod rooftop_forecast;
-pub mod yestbid;
-pub mod confidential_settlements;
+pub mod mmsdm;
+//pub mod daily;
+//pub mod dispatch_is;
+//pub mod dispatch_scada;
+//pub mod predispatch_is;
+//pub mod predispatch_sensitivities;
+//pub mod rooftop_actual;
+//pub mod rooftop_forecast;
+//pub mod yestbid;
+//pub mod confidential_settlements;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
     Brisbane.from_local_datetime(ndt).unwrap().date()
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// This occurs when we are missing the footer record which lists the number of rows in the file
+    #[error("aemo file is missing the final `c` record")]
     MissingFooterRecord,
     /// This occurs when we are missing the header record which lists metadata about the file
+    #[error("aemo file is missing the first `c` record")]
     MissingHeaderRecord,
     /// This occurs when the desired file key can't be found in the RawAemoFile
+    #[error("aemo file was missing {}.{}.v{} section in the file ", 0.0, 0.1, 0.2)]
     MissingFile(FileKey),
     /// This occurs when an entire row is empty after the first three columns
+    #[error("aemo file row is empty")]
     EmptyRow,
     /// This occurs when a given row in the file doesn't match the expected structure for that section
     /// of the file
+    #[error("unexpeted row type of {0}")]
     UnexpectedRowType(String),
     /// This occurs when a given row in the file is shorter than expected
+    #[error("aemo file data row of length {0} is too short")]
     TooShortRow(usize),
     /// This occurs when the number of rows in the file is different to the number listed in the
     /// footer
+    #[error("aemo file was supposed to be {expected} lines long but was instead {got} lines long")]
     IncorrectLineCount { got: usize, expected: usize },
-    ParseInt(num::ParseIntError),
-    Csv(csv::Error),
+    #[error("ParseInt error: {0}")]
+    ParseInt(#[from] num::ParseIntError),
+    #[error("Csv error: {0}")]
+    Csv(#[from] csv::Error),
 }
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::MissingHeaderRecord => write!(f, "aemo file is missing the first `c` record"),
-            Self::MissingFooterRecord => write!(f, "aemo file is missing the final `c` record"),
-            Self::MissingFile((name, sub_name, version)) => write!(
-                f,
-                "aemo file was missing {}.{}.v{} section in the file ",
-                name, sub_name, version
-            ),
-            Self::EmptyRow => write!(f, "aemo file row is empty"),
-            Self::UnexpectedRowType(t) => write!(f, "unexpeted row type of {}", t),
-            Self::TooShortRow(len) => {
-                write!(f, "aemo file data row of length {} is too short", len)
-            }
-            Self::IncorrectLineCount { got, expected } => write!(
-                f,
-                "aemo file was supposed to be {} lines long but was instead {} lines long",
-                expected, got
-            ),
-            Self::ParseInt(e) => write!(f, "parse int error: {}", e),
-            Self::Csv(e) => write!(f, "csv error: {}", e),
-        }
-    }
-}
-
-impl From<num::ParseIntError> for Error {
-    fn from(error: num::ParseIntError) -> Self {
-        Error::ParseInt(error)
-    }
-}
-
-impl From<csv::Error> for Error {
-    fn from(error: csv::Error) -> Self {
-        Error::Csv(error)
-    }
-}
-
-impl error::Error for Error {}
 
 type Result<T> = std::result::Result<T, Error>;
 
@@ -110,17 +79,75 @@ struct AemoFooter {
 }
 
 #[derive(Debug, Clone)]
-pub struct RawAemoFile {
+pub struct AemoFile {
     pub header: AemoHeader,
     pub data: collections::HashMap<FileKey, Vec<csv::StringRecord>>,
-    //footer: AemoFooter, // don't reall
 }
 
-pub type FileKey = (String, String, i32);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct FileKey {
+    data_set_name: String,
+    table_name: String,
+    version: i32,
+}
 
-// potentially have RawAemoFile<T> where T: forms the key of the hashmap??
+pub struct FileKeys {
+}
 
-impl RawAemoFile {
+impl std::iter::Iterator for FileKeys {
+    type Item = FileKey;
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
+
+//type CsvResult<T> = std::result::Result<T, csv::Error>;
+
+trait RawAemoFile {
+    fn get_records(&self, key: &FileKey) -> Result<std::slice::Iter<csv::StringRecord>>;
+}
+
+impl RawAemoFile for AemoFile {
+    fn get_records(&self, key: &FileKey) -> Result<std::slice::Iter<csv::StringRecord>> {
+        self.data.get(&key).ok_or_else(||Error::MissingFile(key.clone())).map(|d| d.iter())
+    }
+}
+
+trait GetTable<T>: RawAemoFile 
+where 
+    T: serde::de::DeserializeOwned 
+{
+    fn get_file_key() -> FileKey;
+    fn get_table(&self) -> Result<Vec<T>> {
+        self.get_records(&Self::get_file_key())?
+            .map(|rec| rec.deserialize(None).map_err(|e| e.into()))
+            .collect()
+    }
+}
+
+
+
+use mmsdm::{DispatchUnitScada1, DispatchLocalPrice1};
+
+// option A
+fn get_unit_scada(aemo: &AemoFile) -> Result<Vec<DispatchUnitScada1>> {
+    GetTable::<DispatchUnitScada1>::get_table(aemo)
+}
+
+// option B
+fn get_local_price(aemo: &AemoFile) -> Result<Vec<DispatchLocalPrice1>> {
+    aemo.get_table()
+}
+
+impl AemoFile {
+    pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Vec<csv::StringRecord>> {
+        self.data.keys()
+    }
+
+    pub fn contains_file(&self, key: FileKey) -> bool {
+        self.data.contains_key(&key)
+    }
+
     pub fn from_bufread(br: impl io::Read) -> Result<Self> {
         let mut reader = csv::ReaderBuilder::new()
             .has_headers(false)
@@ -148,9 +175,11 @@ impl RawAemoFile {
                     if row_len < 5 {
                         return Err(Error::TooShortRow(row_len));
                     }
-                    let file: String = record[1].into();
-                    let sub_file: String = record[2].into();
-                    let sub_file_version: i32 = record[3].parse()?;
+                    let key = FileKey {
+                        data_set_name: record[1].into(),
+                        table_name: record[2].into(),
+                        version: record[3].parse()?,
+                    };
 
                     // remove the unwanted fields from the stringrecord
                     let rest_record =
@@ -163,13 +192,13 @@ impl RawAemoFile {
                             });
 
                     if let Some((k, mut v)) =
-                        data.remove_entry(&(file.clone(), sub_file.clone(), sub_file_version))
+                        data.remove_entry(&key)
                     {
                         v.push(rest_record);
                         data.insert(k, v);
                     } else {
                         data.insert(
-                            (file.clone(), sub_file.clone(), sub_file_version),
+                            key,
                             vec![rest_record],
                         );
                     }
@@ -221,10 +250,6 @@ pub trait GetFromRawAemo {
             .collect::<std::result::Result<Vec<Self::Output>, csv::Error>>()
             .map_err(convert::Into::into)
     }
-}
-
-pub trait AemoFile: Sized + Send {
-    fn from_raw(raw: RawAemoFile) -> Result<Self>;
 }
 
 // Following the pattern from: https://serde.rs/custom-date-format.html

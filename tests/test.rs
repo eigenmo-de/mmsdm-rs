@@ -1,6 +1,5 @@
 #![cfg(test)]
-use aemo_rs;
-use log::info;
+use aemo_rs; use log::info;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use scraper::{html, Selector}; //, node, selector};
 use std::{
