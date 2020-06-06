@@ -1,0 +1,30 @@
+[package]
+name = "aemo-codegen"
+version = "0.1.0"
+authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
+edition = "2018"
+license = "MIT"
+repository = "https://github.com/esheppa/aemo-rs"
+maintenance = { status = "experimental" }
+description = "This library contains functions to read AEMO nemweb data files (zipped CSV files with one or more sub files inside) to Rust Structs"
+
+[dependencies]
+log = "0.4"
+zip = "0.5"
+serde = { version = "1", features = ["derive"] }
+csv = "1.1"
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.5"
+serde_json = "1"
+env_logger = "0.7"
+reqwest = "0.10"
+scraper = "0.12"
+rayon = "1.3"
+tokio = { version = "0.2", features = ["full"] }
+futures = "0.3"
+codegen = "0.1"
+anyhow = "1"
+lazy_static = "1.4"
+regex = "1.3"
+heck = "0.3"
+
