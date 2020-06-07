@@ -6,6 +6,8 @@ use chrono::TimeZone;
 use chrono_tz::Australia::Brisbane;
 use log::info;
 
+use rayon::iter::{ParallelIterator, IntoParallelRefIterator};
+
 pub mod mmsdm;
 //pub mod daily;
 //pub mod dispatch_is;
@@ -55,19 +57,28 @@ pub enum Error {
 
 type Result<T> = std::result::Result<T, Error>;
 
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub enum RecordType {
+    C,
+    I,
+    D
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct AemoHeader {
-    record_type: char,
+    record_type: RecordType,
     data_source: String,
     file_name: String,
     participant_name: String,
     privacy_level: String,
     #[serde(with = "mms_date")]
     effective_date: chrono::NaiveDate,
+    //effective_date: String,
     #[serde(with = "mms_time")]
     effective_time: chrono::NaiveTime,
+    //effective_time: String,
     serial_number: u64,
-    file_name_2: String,
+    file_name_2: Option<String>,
     serial_number_2: u64,
 }
 
@@ -103,19 +114,40 @@ impl std::iter::Iterator for FileKeys {
 
 //type CsvResult<T> = std::result::Result<T, csv::Error>;
 
-trait RawAemoFile {
-    fn get_records(&self, key: &FileKey) -> Result<std::slice::Iter<csv::StringRecord>>;
+pub trait RawAemoFile {
+    fn get_records(&self, key: &FileKey) -> Result<rayon::slice::Iter<csv::StringRecord>>;
 }
 
 impl RawAemoFile for AemoFile {
-    fn get_records(&self, key: &FileKey) -> Result<std::slice::Iter<csv::StringRecord>> {
-        self.data.get(&key).ok_or_else(||Error::MissingFile(key.clone())).map(|d| d.iter())
+    fn get_records(&self, key: &FileKey) -> Result<rayon::slice::Iter<csv::StringRecord>> {
+        self.data.get(&key).ok_or_else(||Error::MissingFile(key.clone())).map(|d| d.par_iter())
     }
 }
 
-trait GetTable<T>: RawAemoFile 
+/// This trait is designed as a convenient way to extract a Vec of the desired Strct representing
+/// a row of the table from the `AemoFile` which represents the whole file.
+/// Most `AemoFiles` would contain multiple tables
+///
+/// ```rust,no_run
+/// use mmsdm::{DispatchUnitScada1, DispatchLocalPrice1};
+///
+/// // option A - using UFCS - this is useful where it is not convenient to 
+/// // typehint a let binding
+/// # fn get_unit_scada(aemo: &AemoFile) -> Result<Vec<DispatchUnitScada1>> {
+///     let rows = GetTable::<DispatchUnitScada1>::get_table(aemo)?;
+/// #   Ok(rows)
+/// # }
+/// 
+/// // option B - this is useful when you have a let binding that you
+/// // can typehint
+/// # fn get_local_price(aemo: &AemoFile) -> Result<Vec<DispatchLocalPrice1>> {
+///     let rows: Vec<DispatchLocalPrice1> = aemo.get_table()?;
+/// #   Ok(rows)
+/// # }
+/// ```
+pub trait GetTable<T>: RawAemoFile 
 where 
-    T: serde::de::DeserializeOwned 
+    T: serde::de::DeserializeOwned + Send
 {
     fn get_file_key() -> FileKey;
     fn get_table(&self) -> Result<Vec<T>> {
@@ -127,17 +159,6 @@ where
 
 
 
-use mmsdm::{DispatchUnitScada1, DispatchLocalPrice1};
-
-// option A
-fn get_unit_scada(aemo: &AemoFile) -> Result<Vec<DispatchUnitScada1>> {
-    GetTable::<DispatchUnitScada1>::get_table(aemo)
-}
-
-// option B
-fn get_local_price(aemo: &AemoFile) -> Result<Vec<DispatchLocalPrice1>> {
-    aemo.get_table()
-}
 
 impl AemoFile {
     pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Vec<csv::StringRecord>> {
@@ -340,7 +361,7 @@ mod mms_date {
 mod mms_time {
     use serde::{Serializer, Deserializer, Deserialize, de::Error};
 
-    const FORMAT: &str = "H:%M:%S";
+    const FORMAT: &str = "%H:%M:%S";
 
     pub fn serialize<S>(
         d: &chrono::NaiveTime,

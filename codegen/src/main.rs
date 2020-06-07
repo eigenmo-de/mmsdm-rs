@@ -147,6 +147,9 @@ struct MMSTableColumn {
     comment: String,
 }
 impl MMSTableColumn {
+    fn get_comment(&self) -> &str {
+        &self.comment
+    }
     fn field_name(&self) -> String {
         use heck::SnakeCase;
         format!("{}", self.name.to_snake_case())
@@ -274,9 +277,25 @@ struct PDRReport {
 }
 
 impl PDRReport {
+    fn get_struct_doc(&self) -> String {
+        use heck::TitleCase;
+        format!(
+r#"Data Set Name: {mms_data_set_name}
+File Name: {mms_file_name}
+Data Version: {version}"#,
+    mms_data_set_name = self.name.to_title_case(),
+    mms_file_name = self.sub_type.to_title_case(),
+    version = self.version,
+        )
+    }
     fn struct_name(&self) -> String {
         use heck::CamelCase;
         format!("{}{}{}", self.name.to_camel_case(), self.sub_type.to_camel_case(), self.version)
+        //format!("{}", self.sub_type.to_camel_case())
+    }
+    fn data_set_name(&self) -> String {
+        use heck::SnakeCase;
+        format!("{}", self.name.to_snake_case())
     }
     fn file_key_literal(&self) -> String {
         use heck::ShoutySnakeCase;
@@ -326,15 +345,18 @@ async fn main() -> Result<(), anyhow::Error> {
         // abv
         let local_info: MMSPackages = serde_json::from_reader(rdr).unwrap();
         //let settlements = local_info.get("SETTLEMENT_DATA").unwrap();
-        let mut fmt_str = String::new();
-        let mut fmtr = codegen::Formatter::new(&mut fmt_str);
         for (data_set, tables) in local_info.into_iter() {
+            let mut fmt_str = String::new();
+            let mut fmtr = codegen::Formatter::new(&mut fmt_str);
+            let mut pdr_data_set = None;
             for (table_key, table) in tables.into_iter() {
                 let mms_report = MMSReport { name: data_set.clone(), sub_type: table_key };
                 if let Some(pdr_report) = map.get(&mms_report) {
+                    pdr_data_set = Some(pdr_report.data_set_name());
                     let mut current_struct = codegen::Struct::new(&pdr_report.struct_name());
                     current_struct
                         .vis("pub")
+                        .doc(&pdr_report.get_struct_doc())
                         .derive("Debug")
                         .derive("Clone")
                         .derive("PartialEq")
@@ -356,7 +378,10 @@ async fn main() -> Result<(), anyhow::Error> {
                             current_struct.push_field(field);
 
                         } else {
-                            current_struct.field(&col.field_name(), &col.to_rust_type());
+                            let mut field = codegen::Field::new(&col.field_name(), &col.to_rust_type());
+                            field.doc(vec![&col.get_comment()]);
+                            current_struct.push_field(field);
+                            //current_struct.field(&col.field_name(), &col.to_rust_type());
                         };
                     }
                     current_struct.fmt(&mut fmtr)?;
@@ -377,8 +402,12 @@ async fn main() -> Result<(), anyhow::Error> {
                     dbg!(mms_report);
                 }
             }
+                use heck::SnakeCase;
+                fs::write(format!("src/mmsdm/{}.rs", data_set.to_snake_case()), fmt_str)?;
+//            if let Some(data_set_name) = pdr_data_set {
+//                fs::write(format!("src/mmsdm/{}.rs", data_set_name), fmt_str)?;
+//            }
         }
-        fs::write("mmsdm.rs", fmt_str)?;
 
         Ok(())
     } else {
