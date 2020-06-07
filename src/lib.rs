@@ -1,27 +1,23 @@
-// #![deny(clippy::all)] #![deny(warnings)]
+#![deny(clippy::all)] 
+#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, convert, io, num}; 
+use std::{collections, convert, fmt, io, num, str};
 
 use chrono::TimeZone;
 use chrono_tz::Australia::Brisbane;
-use log::info;
 
-use rayon::iter::{ParallelIterator, IntoParallelRefIterator};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 pub mod mmsdm;
-//pub mod daily;
-//pub mod dispatch_is;
-//pub mod dispatch_scada;
-//pub mod predispatch_is;
-//pub mod predispatch_sensitivities;
-//pub mod rooftop_actual;
-//pub mod rooftop_forecast;
-//pub mod yestbid;
-//pub mod confidential_settlements;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
-    Brisbane.from_local_datetime(ndt).unwrap().date()
+    to_nem_datetime(ndt).date()
+}
+
+// this is useful to get the datetime part of nem settlementdate / lastchanged fields
+pub fn to_nem_datetime(ndt: &chrono::NaiveDateTime) -> chrono::DateTime<chrono_tz::Tz> {
+    Brisbane.from_local_datetime(ndt).unwrap()
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -29,30 +25,49 @@ pub enum Error {
     /// This occurs when we are missing the footer record which lists the number of rows in the file
     #[error("aemo file is missing the final `c` record")]
     MissingFooterRecord,
+
     /// This occurs when we are missing the header record which lists metadata about the file
     #[error("aemo file is missing the first `c` record")]
     MissingHeaderRecord,
+
     /// This occurs when the desired file key can't be found in the RawAemoFile
     #[error("aemo file was missing {}.{}.v{} section in the file ", 0.0, 0.1, 0.2)]
     MissingFile(FileKey),
+
     /// This occurs when an entire row is empty after the first three columns
     #[error("aemo file row is empty")]
     EmptyRow,
+
     /// This occurs when a given row in the file doesn't match the expected structure for that section
     /// of the file
     #[error("unexpeted row type of {0}")]
     UnexpectedRowType(String),
+
     /// This occurs when a given row in the file is shorter than expected
     #[error("aemo file data row of length {0} is too short")]
     TooShortRow(usize),
+
     /// This occurs when the number of rows in the file is different to the number listed in the
     /// footer
     #[error("aemo file was supposed to be {expected} lines long but was instead {got} lines long")]
     IncorrectLineCount { got: usize, expected: usize },
+
     #[error("ParseInt error: {0}")]
     ParseInt(#[from] num::ParseIntError),
+
+    #[error("ParseDate error: {0}")]
+    ParseDate(#[from] chrono::ParseError),
+
     #[error("Csv error: {0}")]
     Csv(#[from] csv::Error),
+
+    /// This occurs when failing to parse a dispatch period
+    #[error("Invalid dispatch period: {0}")]
+    InvalidDispatchPeriod(String),
+
+    /// This occurs when failing to parse a trading period
+    #[error("Invalid trading period: {0}")]
+    InvalidTradingPeriod(String),
 }
 
 type Result<T> = std::result::Result<T, Error>;
@@ -61,7 +76,7 @@ type Result<T> = std::result::Result<T, Error>;
 pub enum RecordType {
     C,
     I,
-    D
+    D,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -73,10 +88,8 @@ pub struct AemoHeader {
     privacy_level: String,
     #[serde(with = "mms_date")]
     effective_date: chrono::NaiveDate,
-    //effective_date: String,
     #[serde(with = "mms_time")]
     effective_time: chrono::NaiveTime,
-    //effective_time: String,
     serial_number: u64,
     file_name_2: Option<String>,
     serial_number_2: u64,
@@ -92,7 +105,7 @@ struct AemoFooter {
 #[derive(Debug, Clone)]
 pub struct AemoFile {
     pub header: AemoHeader,
-    pub data: collections::HashMap<FileKey, Vec<csv::StringRecord>>,
+    data: collections::HashMap<FileKey, Vec<csv::StringRecord>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -102,8 +115,7 @@ pub struct FileKey {
     version: i32,
 }
 
-pub struct FileKeys {
-}
+pub struct FileKeys {}
 
 impl std::iter::Iterator for FileKeys {
     type Item = FileKey;
@@ -112,15 +124,18 @@ impl std::iter::Iterator for FileKeys {
     }
 }
 
-//type CsvResult<T> = std::result::Result<T, csv::Error>;
-
+#[doc(hidden)]
 pub trait RawAemoFile {
     fn get_records(&self, key: &FileKey) -> Result<rayon::slice::Iter<csv::StringRecord>>;
 }
 
+#[doc(hidden)]
 impl RawAemoFile for AemoFile {
     fn get_records(&self, key: &FileKey) -> Result<rayon::slice::Iter<csv::StringRecord>> {
-        self.data.get(&key).ok_or_else(||Error::MissingFile(key.clone())).map(|d| d.par_iter())
+        self.data
+            .get(&key)
+            .ok_or_else(|| Error::MissingFile(key.clone()))
+            .map(|d| d.par_iter())
     }
 }
 
@@ -131,13 +146,13 @@ impl RawAemoFile for AemoFile {
 /// ```rust,no_run
 /// use mmsdm::{DispatchUnitScada1, DispatchLocalPrice1};
 ///
-/// // option A - using UFCS - this is useful where it is not convenient to 
+/// // option A - using UFCS - this is useful where it is not convenient to
 /// // typehint a let binding
 /// # fn get_unit_scada(aemo: &AemoFile) -> Result<Vec<DispatchUnitScada1>> {
 ///     let rows = GetTable::<DispatchUnitScada1>::get_table(aemo)?;
 /// #   Ok(rows)
 /// # }
-/// 
+///
 /// // option B - this is useful when you have a let binding that you
 /// // can typehint
 /// # fn get_local_price(aemo: &AemoFile) -> Result<Vec<DispatchLocalPrice1>> {
@@ -145,10 +160,11 @@ impl RawAemoFile for AemoFile {
 /// #   Ok(rows)
 /// # }
 /// ```
-pub trait GetTable<T>: RawAemoFile 
-where 
-    T: serde::de::DeserializeOwned + Send
+pub trait GetTable<T>: RawAemoFile
+where
+    T: serde::de::DeserializeOwned + Send,
 {
+    #[doc(hidden)]
     fn get_file_key() -> FileKey;
     fn get_table(&self) -> Result<Vec<T>> {
         self.get_records(&Self::get_file_key())?
@@ -157,8 +173,109 @@ where
     }
 }
 
+// Represents a given dispatch period (5 min period)
+// Parsed from YYYYMMDDPPP
+pub struct DispatchPeriod {
+    date: chrono::NaiveDate,
+    period: u16,
+}
 
+impl DispatchPeriod {
+    fn format() -> &'static str {
+        "%Y%m%d"
+    }
+}
 
+impl std::fmt::Display for DispatchPeriod {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{:03}", self.date.format(Self::format()), self.period)
+    }
+}
+
+impl std::str::FromStr for DispatchPeriod {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
+        if !s.is_ascii() || s.len() != 11 {
+            return Err(Error::InvalidDispatchPeriod(s.into()));
+        };
+
+        Ok(crate::DispatchPeriod {
+            date: chrono::NaiveDate::parse_from_str(&s[0..7], DispatchPeriod::format())?,
+            period: s[8..10].parse()?,
+        })
+    }
+}
+
+mod dispatch_period {
+    use serde::{de::Error, Deserialize, Deserializer, Serializer};
+
+    pub fn serialize<S>(d: &crate::DispatchPeriod, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&d.to_string())
+    }
+
+    pub fn deserialize<'de, D>(d: D) -> Result<crate::DispatchPeriod, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(d)?;
+        s.parse().map_err(Error::custom)
+    }
+}
+
+// Represents a given trading period (30 min period)
+// Parsed from YYYYMMDDPP
+pub struct TradingPeriod {
+    date: chrono::NaiveDate,
+    period: u8,
+}
+
+impl TradingPeriod {
+    fn format() -> &'static str {
+        "%Y%m%d"
+    }
+}
+
+impl std::fmt::Display for TradingPeriod {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{:02}", self.date.format(Self::format()), self.period)
+    }
+}
+
+impl std::str::FromStr for TradingPeriod {
+    type Err = Error;
+    fn from_str(s: &str) -> Result<Self> {
+        if !s.is_ascii() || s.len() != 10 {
+            return Err(Error::InvalidTradingPeriod(s.into()));
+        };
+
+        Ok(crate::TradingPeriod {
+            date: chrono::NaiveDate::parse_from_str(&s[0..7], TradingPeriod::format())?,
+            period: s[8..9].parse()?,
+        })
+    }
+}
+
+mod trading_period {
+    use serde::{de::Error, Deserialize, Deserializer, Serializer};
+
+    pub fn serialize<S>(d: &crate::TradingPeriod, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&d.to_string())
+    }
+
+    pub fn deserialize<'de, D>(d: D) -> Result<crate::TradingPeriod, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(d)?;
+        s.parse().map_err(Error::custom)
+    }
+}
 
 impl AemoFile {
     pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Vec<csv::StringRecord>> {
@@ -169,7 +286,7 @@ impl AemoFile {
         self.data.contains_key(&key)
     }
 
-    pub fn from_bufread(br: impl io::Read) -> Result<Self> {
+    pub fn from_bufread(br: impl io::BufRead) -> Result<Self> {
         let mut reader = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)
@@ -212,16 +329,11 @@ impl AemoFile {
                                 acc
                             });
 
-                    if let Some((k, mut v)) =
-                        data.remove_entry(&key)
-                    {
+                    if let Some((k, mut v)) = data.remove_entry(&key) {
                         v.push(rest_record);
                         data.insert(k, v);
                     } else {
-                        data.insert(
-                            key,
-                            vec![rest_record],
-                        );
+                        data.insert(key, vec![rest_record]);
                     }
 
                     // would be more ideal but can't use because rest_record is moved into the first closure
@@ -252,39 +364,15 @@ impl AemoFile {
     }
 }
 
-pub trait FileKeyable {
-    fn key() -> FileKey;
-}
-
-pub trait GetFromRawAemo {
-    type Output: FileKeyable + serde::de::DeserializeOwned;
-    fn from_map(
-        data: &mut collections::HashMap<FileKey, Vec<csv::StringRecord>>,
-    ) -> Result<Vec<Self::Output>> {
-        let key = &Self::Output::key();
-        info!("Extracting file {:?}", key);
-        data.remove_entry(key)
-            .ok_or_else(|| Error::MissingFile(Self::Output::key()))?
-            .1
-            .into_iter()
-            .map(|rec| rec.deserialize(None))
-            .collect::<std::result::Result<Vec<Self::Output>, csv::Error>>()
-            .map_err(convert::Into::into)
-    }
-}
-
 // Following the pattern from: https://serde.rs/custom-date-format.html
 // To allow use with serde(with = "")
 mod mms_datetime {
-    use serde::{Serializer, Deserializer, Deserialize, de::Error};
-
+    use serde::{de::Error, Deserialize, Deserializer, Serializer};
     const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
 
-    pub fn serialize<S>(
-        d: &chrono::NaiveDateTime,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
-        where S: Serializer,
+    pub fn serialize<S>(d: &chrono::NaiveDateTime, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
     {
         let s = d.format(FORMAT).to_string();
         serializer.serialize_str(&s)
@@ -299,17 +387,14 @@ mod mms_datetime {
     }
 }
 
-
 mod mms_datetime_opt {
-    use serde::{Serializer, Deserializer, Deserialize, de::Error};
+    use serde::{de::Error, Deserialize, Deserializer, Serializer};
 
     const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
 
-    pub fn serialize<S>(
-        d: &Option<chrono::NaiveDateTime>,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
-        where S: Serializer,
+    pub fn serialize<S>(d: &Option<chrono::NaiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
     {
         let s = match d {
             Some(date) => date.format(FORMAT).to_string(),
@@ -318,14 +403,12 @@ mod mms_datetime_opt {
         serializer.serialize_str(&s)
     }
 
-    pub fn deserialize<'de, D>(
-        d: D,
-    ) -> Result<Option<chrono::NaiveDateTime>, D::Error>
+    pub fn deserialize<'de, D>(d: D) -> Result<Option<chrono::NaiveDateTime>, D::Error>
     where
         D: Deserializer<'de>,
     {
         let s: &'de str = Deserialize::deserialize(d)?;
-        if s.len() == 0 {
+        if s.is_empty() {
             Ok(None)
         } else {
             chrono::NaiveDateTime::parse_from_str(s, FORMAT)
@@ -336,15 +419,15 @@ mod mms_datetime_opt {
 }
 
 mod mms_date {
-    use serde::{Serializer, Deserializer, Deserialize, de::Error};
+    use serde::{de::Error, Deserialize, Deserializer, Serializer};
 
     const FORMAT: &str = "%Y/%m/%d";
 
-    pub fn serialize<S>(
-        d: &chrono::NaiveDate,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
-        where S: Serializer,
+    // because the serialize fn always expects a reference
+    #[allow(clippy::trivially_copy_pass_by_ref)]
+    pub fn serialize<S>(d: &chrono::NaiveDate, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
     {
         let s = d.format(FORMAT).to_string();
         serializer.serialize_str(&s)
@@ -359,15 +442,15 @@ mod mms_date {
 }
 
 mod mms_time {
-    use serde::{Serializer, Deserializer, Deserialize, de::Error};
+    use serde::{de::Error, Deserialize, Deserializer, Serializer};
 
     const FORMAT: &str = "%H:%M:%S";
 
-    pub fn serialize<S>(
-        d: &chrono::NaiveTime,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
-        where S: Serializer,
+    // because the serialize fn always expects a reference
+    #[allow(clippy::trivially_copy_pass_by_ref)]
+    pub fn serialize<S>(d: &chrono::NaiveTime, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
     {
         let s = d.format(FORMAT).to_string();
         serializer.serialize_str(&s)
@@ -380,6 +463,3 @@ mod mms_time {
         chrono::NaiveTime::parse_from_str(s, FORMAT).map_err(Error::custom)
     }
 }
-
-
-
