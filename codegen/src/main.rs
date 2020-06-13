@@ -102,7 +102,9 @@ struct MMSPkColumns {
 impl MMSPkColumns {
     fn get_sql(&self) -> String {
         use heck::SnakeCase;
-        let cols = self.cols.iter()
+        let cols = self
+            .cols
+            .iter()
             .map(|c| c.to_snake_case())
             .collect::<Vec<_>>();
         format!("primary key ({})", cols.join(","))
@@ -198,25 +200,29 @@ struct MMSTableColumns {
 }
 impl MMSTableColumns {
     fn get_sql(&self) -> String {
-        self.columns.iter()
+        self.columns
+            .iter()
             .map(|c| format!("{},", c.get_sql()))
             .collect::<Vec<_>>()
             .join("\n")
     }
     fn get_columns_sql(&self, prefix: Option<&'static str>) -> String {
-        self.columns.iter()
-            .map(|c| if let Some(pfx) = prefix {
-                    format!("{}.{}", pfx, c.field_name())
+        self.columns
+            .iter()
+            .map(|c| {
+                if let Some(pfx) = prefix {
+                    format!("{}.[{}]", pfx, c.field_name())
                 } else {
-                    format!("{}", c.field_name())
+                    format!("[{}]", c.field_name())
                 }
-            )
+            })
             .collect::<Vec<_>>()
             .join(",\n")
     }
     fn get_column_schema(&self) -> String {
-        self.columns.iter()
-            .map(|c| format!("{} {}", c.field_name(), c.data_type.as_sql_type()))
+        self.columns
+            .iter()
+            .map(|c| format!("[{}] {}", c.field_name(), c.data_type.as_sql_type()))
             .collect::<Vec<_>>()
             .join(",\n")
     }
@@ -239,10 +245,7 @@ struct MMSTableColumn {
 }
 impl MMSTableColumn {
     fn get_sql(&self) -> String {
-        format!("{} {}", 
-            self.field_name(),
-            self.sql_type(),
-        )
+        format!("[{}] {}", self.field_name(), self.sql_type(),)
     }
     fn sql_type(&self) -> String {
         //if self.comment.contains("YYYYMMDDPP") {
@@ -318,10 +321,12 @@ impl MMSDataType {
     }
     fn as_sql_type(&self) -> String {
         match self {
-            MMSDataType::Varchar { length } => format!("varchar({})", length), 
+            MMSDataType::Varchar { length } => format!("varchar({})", length),
             MMSDataType::Char => "char(1)".into(),
             MMSDataType::Date => "datetime2".into(),
-            MMSDataType::Decimal { precision, scale } => format!("decimal({},{})", precision, scale),
+            MMSDataType::Decimal { precision, scale } => {
+                format!("decimal({},{})", precision, scale)
+            }
             MMSDataType::Integer { precision } => format!("decimal({},0)", precision),
         }
     }
@@ -451,6 +456,103 @@ enum AemoCodegen {
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
     match AemoCodegen::from_args() {
+        AemoCodegen::SqlServerRustPart => {
+            let rdr = fs::File::open("mmsdm.json")?;
+            let mapping = fs::read_to_string("table_mapping.csv").unwrap();
+            let mut map = collections::HashMap::new();
+            use std::iter::Iterator;
+            for row in mapping.split("\n").skip(1) {
+                if row.contains(',') {
+                    let pieces = row.split(",").collect::<Vec<&str>>();
+                    let mms = MMSReport {
+                        name: pieces[0].to_string(),
+                        sub_type: pieces[1].to_string(),
+                    };
+                    let pdr = PDRReport {
+                        name: pieces[2].to_string(),
+                        sub_type: pieces[3].to_string(),
+                        version: pieces[4].parse().unwrap(),
+                        transaction_type: pieces[5].to_string(),
+                        row_filter: pieces[6].to_string(),
+                    };
+                    map.insert(mms, pdr);
+                }
+            }
+            let local_info: MMSPackages = serde_json::from_reader(rdr).unwrap();
+            let mut fmt_str = String::new();
+            fmt_str.push_str(r#"
+use crate::{mmsdm::dispatch, GetTable};
+use futures::{AsyncRead, AsyncWrite};
+
+impl crate::AemoFile {
+    /// This function is meant to be used in conjunction with the iterator over
+    /// the data contained within the AemoFile struct
+    pub async fn load_data<S>(&self, client: &mut tiberius::Client<S>) -> crate::Result<()>
+    where
+        S: AsyncRead + AsyncWrite + Unpin + Send,
+    {
+        for file_key in self.data.keys() {
+            match (
+                file_key.data_set_name.as_str(),
+                file_key.table_name.as_str(),
+                file_key.version,
+            ) {
+            "#);
+            for (data_set, tables) in local_info.into_iter() {
+                let mut fmtr = codegen::Formatter::new(&mut fmt_str);
+                for (table_key, table) in tables.into_iter() {
+                    let mms_report = MMSReport {
+                        name: data_set.clone(),
+                        sub_type: table_key,
+                    };
+                    if let Some(pdr_report) = map.get(&mms_report) {
+                        use heck::SnakeCase;
+                        let block = format!(r#"
+                    ("{data_set_name}","{table_name}",{version}_i32) =>  {{
+                        #[cfg(feature = "{module}")]
+                        {{
+                            let d: Vec<{module}::{local_name}> = self.get_table()?;
+                            let json = serde_json::to_string(&d)?;
+                            client.execute(
+                                "exec Insert{local_name} @P1, @P2",
+                                &[&self.header.get_filename(), &json],
+                                ).await?;
+                        }}
+                        #[cfg(not(feature = "{module}"))]
+                        {{
+                            log::error!("Unhandled file key {{:?}}", file_key);
+                            continue;
+                        }}
+                        
+                    }}"#,
+                        data_set_name = pdr_report.name,
+                        table_name = pdr_report.sub_type,
+                        version = pdr_report.version,
+                        local_name = pdr_report.struct_name(),
+                        module = data_set.to_snake_case(),
+                        );
+                        fmt_str.push_str(&block);
+                    };
+                }
+            }
+            fmt_str.push_str(r#"
+                _ => {
+                    log::error!("Unhandled file key {:?}", file_key);
+                    continue;
+                }
+            }
+        }
+        Ok(())
+    }
+}"#);
+            use heck::SnakeCase;
+            fs::write(
+                format!("src/sql_server.rs"),
+                fmt_str,
+            )?;
+
+            Ok(())
+        }
         AemoCodegen::SqlServerTables => {
             let rdr = fs::File::open("mmsdm.json")?;
             let mapping = fs::read_to_string("table_mapping.csv").unwrap();
@@ -483,7 +585,8 @@ create table FileLog (
     version tinyint not null
 )
 go
-            "#.to_string();
+            "#
+            .to_string();
             let mut proc_str = String::new();
             let local_info: MMSPackages = serde_json::from_reader(rdr).unwrap();
             for (data_set, tables) in local_info.into_iter() {
@@ -493,8 +596,8 @@ go
                         sub_type: table_key,
                     };
                     if let Some(pdr_report) = map.get(&mms_report) {
-
-                        let create_table = format!(r#"
+                        let create_table = format!(
+                            r#"
 create table {table_name} (
 file_log_id bigint not null references FileLog(id),
 {columns}
@@ -502,30 +605,31 @@ file_log_id bigint not null references FileLog(id),
 )
 go
                         "#,
-                        table_name = pdr_report.struct_name(),
-                        columns = table.columns.get_sql(),
-                        primary_key = table.primary_key_columns.get_sql(),
+                            table_name = pdr_report.struct_name(),
+                            columns = table.columns.get_sql(),
+                            primary_key = table.primary_key_columns.get_sql(),
                         );
 
                         table_str.push_str(&create_table);
 
                         use heck::CamelCase;
-                        let insert_proc = format!(r#"
+                        let insert_proc = format!(
+                            r#"
 create or alter procedure Insert{target_table}
     @file_name varchar(255),
     @data nvarchar(max)
-begin
+as begin
 declare @header table (id bigint not null);
 insert into FileLog(file_name, data_set, sub_type, version)
-values (@file_name, '{data_set}', '{sub_type}', {version})
-output inserted.id into @header;
+output inserted.id into @header
+values (@file_name, '{data_set}', '{sub_type}', {version});
 
 insert into {target_table}(
 file_log_id,
 {insert_columns}
 )
 select 
-(select h.id from header h),
+(select h.id from @header h),
 {select_columns}
 from openjson(@data) with (
 {column_schema}

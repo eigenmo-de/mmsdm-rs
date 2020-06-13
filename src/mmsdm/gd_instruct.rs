@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## GDINSTRUCT
 ///  _GDINSTRUCT shows all manually issued dispatch instructions for a dispatchable unit. Ancillary Service instructions are to enable and to disable (i.e. 2 separate instructions) a service. Non-conforming units are also instructed via this facility. However, this facility is not the same as the market notice._
-/// 
+///
 /// * Data Set Name: Gd Instruct
 /// * File Name: Gdinstruct
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source GDINSTRUCT updates on issue of an instruction by AEMO, with visibility restricted on the day of issue to the relevant participant. All participants have previous days' data available.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct GdInstructGdinstruct1 {
@@ -51,32 +51,30 @@ pub struct GdInstructGdinstruct1 {
 }
 impl crate::GetTable<GdInstructGdinstruct1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GD_INSTRUCT".into(),
-                        table_name: "GDINSTRUCT".into(),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "GD_INSTRUCT".into(),
+            table_name: "GDINSTRUCT".into(),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INSTRUCTIONSUBTYPE
 ///  _Each Dispatch instruction (GD instruct) has a type and subtype. INSTRUCTIONSUBTYPE, together with INSTRUCTIONTYPE, sets out valid instruction types._
-/// 
+///
 /// * Data Set Name: Gd Instruct
 /// * File Name: Instructionsubtype
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  INSTRUCTIONSUBTYPE is public data, and is available to all participants. Source INSTRUCTIONSUBTYPE shows ad hoc updates to market configuration. 
-/// 
+///  INSTRUCTIONSUBTYPE is public data, and is available to all participants. Source INSTRUCTIONSUBTYPE shows ad hoc updates to market configuration.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INSTRUCTIONSUBTYPEID
 /// * INSTRUCTIONTYPEID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -92,32 +90,30 @@ pub struct GdInstructInstructionsubtype1 {
 }
 impl crate::GetTable<GdInstructInstructionsubtype1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GD_INSTRUCT".into(),
-                        table_name: "INSTRUCTIONSUBTYPE".into(),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "GD_INSTRUCT".into(),
+            table_name: "INSTRUCTIONSUBTYPE".into(),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INSTRUCTIONTYPE
 ///  _Dispatch instruction (GD instruct) has types and subtypes. INSTRUCTIONTYPE, together with INSTRUCTIONSUBTYPE, sets out valid instruction types._
-/// 
+///
 /// * Data Set Name: Gd Instruct
 /// * File Name: Instructiontype
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  INSTRUCTIONTYPE data is public to all participants. Source INSTRUCTIONTYPE shows ad hoc updates to market configuration. 
-/// 
+///  INSTRUCTIONTYPE data is public to all participants. Source INSTRUCTIONTYPE shows ad hoc updates to market configuration.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INSTRUCTIONTYPEID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct GdInstructInstructiontype1 {
@@ -132,12 +128,10 @@ pub struct GdInstructInstructiontype1 {
 }
 impl crate::GetTable<GdInstructInstructiontype1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GD_INSTRUCT".into(),
-                        table_name: "INSTRUCTIONTYPE".into(),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "GD_INSTRUCT".into(),
+            table_name: "INSTRUCTIONTYPE".into(),
+            version: 1,
+        }
     }
 }

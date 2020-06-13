@@ -1,4 +1,4 @@
-#![deny(clippy::all)] 
+#![deny(clippy::all)]
 #![deny(warnings)]
 use serde::{Deserialize, Serialize};
 use std::{collections, convert, fmt, io, num, str};
@@ -9,6 +9,7 @@ use chrono_tz::Australia::Brisbane;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 pub mod mmsdm;
+pub mod sql_server;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
@@ -52,6 +53,10 @@ pub enum Error {
     #[error("aemo file was supposed to be {expected} lines long but was instead {got} lines long")]
     IncorrectLineCount { got: usize, expected: usize },
 
+    /// This occurs when we receive a file_key that we are not familiar with
+    #[error("Recieved unexpected file of type {0}")]
+    UnhandledFileKey(FileKey),
+
     #[error("ParseInt error: {0}")]
     ParseInt(#[from] num::ParseIntError),
 
@@ -60,6 +65,12 @@ pub enum Error {
 
     #[error("Csv error: {0}")]
     Csv(#[from] csv::Error),
+
+    #[error("Tiberius error: {0}")]
+    Tiberius(#[from] tiberius::error::Error),
+
+    #[error("SerdeJson error: {0}")]
+    SerdeJson(#[from] serde_json::Error),
 
     /// This occurs when failing to parse a dispatch period
     #[error("Invalid dispatch period: {0}")]
@@ -95,6 +106,18 @@ pub struct AemoHeader {
     serial_number_2: u64,
 }
 
+impl AemoHeader {
+    fn get_filename(&self) -> String {
+        format!(
+            "{}_{}_{}_{}.CSV",
+            self.privacy_level,
+            self.file_name,
+            self.effective_date.format("%Y%m%d"),
+            self.serial_number,
+        )
+    }
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct AemoFooter {
     record_type: char,
@@ -113,6 +136,16 @@ pub struct FileKey {
     data_set_name: String,
     table_name: String,
     version: i32,
+}
+
+impl fmt::Display for FileKey {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}_{}_{}",
+            self.data_set_name, self.table_name, self.version
+        )
+    }
 }
 
 pub struct FileKeys {}
@@ -175,6 +208,7 @@ where
 
 // Represents a given dispatch period (5 min period)
 // Parsed from YYYYMMDDPPP
+#[derive(Debug, Clone, Ord, PartialEq, Eq, PartialOrd)]
 pub struct DispatchPeriod {
     date: chrono::NaiveDate,
     period: u16,
@@ -200,12 +234,13 @@ impl std::str::FromStr for DispatchPeriod {
         };
 
         Ok(crate::DispatchPeriod {
-            date: chrono::NaiveDate::parse_from_str(&s[0..7], DispatchPeriod::format())?,
-            period: s[8..10].parse()?,
+            date: chrono::NaiveDate::parse_from_str(&s[0..8], DispatchPeriod::format())?,
+            period: s[8..11].parse()?,
         })
     }
 }
 
+#[allow(dead_code)] // Depending on features this may not be used
 mod dispatch_period {
     use serde::{de::Error, Deserialize, Deserializer, Serializer};
 
@@ -221,12 +256,22 @@ mod dispatch_period {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(d)?;
-        s.parse().map_err(Error::custom)
+        //dbg!(&s);
+        match s.parse() {
+            Err(e) => {
+                dbg!(&s[0..7]);
+                dbg!(&e);
+                Err(Error::custom(e))
+            }
+            Ok(o) => Ok(o)
+        }
+        //s.parse().map_err(Error::custom)
     }
 }
 
 // Represents a given trading period (30 min period)
 // Parsed from YYYYMMDDPP
+#[derive(Debug, Clone, Ord, PartialEq, Eq, PartialOrd)]
 pub struct TradingPeriod {
     date: chrono::NaiveDate,
     period: u8,
@@ -252,12 +297,13 @@ impl std::str::FromStr for TradingPeriod {
         };
 
         Ok(crate::TradingPeriod {
-            date: chrono::NaiveDate::parse_from_str(&s[0..7], TradingPeriod::format())?,
-            period: s[8..9].parse()?,
+            date: chrono::NaiveDate::parse_from_str(&s[0..8], TradingPeriod::format())?,
+            period: s[8..10].parse()?,
         })
     }
 }
 
+#[allow(dead_code)] // Depending on features this may not be used
 mod trading_period {
     use serde::{de::Error, Deserialize, Deserializer, Serializer};
 

@@ -1,19 +1,19 @@
 /// # Summary
-/// 
+///
 /// ## PRUDENTIALCOMPANYPOSITION
 ///  _The prudential position of each company as at the datetime of a specific prudential run_
-/// 
+///
 /// * Data Set Name: Prudential
 /// * File Name: Company Position
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * COMPANY_ID
 /// * PRUDENTIAL_DATE
 /// * RUNNO
@@ -60,31 +60,29 @@ pub struct PrudentialCompanyPosition1 {
 }
 impl crate::GetTable<PrudentialCompanyPosition1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PRUDENTIAL".into(),
-                        table_name: "COMPANY_POSITION".into(),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PRUDENTIAL".into(),
+            table_name: "COMPANY_POSITION".into(),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PRUDENTIALRUNTRK
 ///  _Records the prudential run accepted by Settlements staff for each prudential date_
-/// 
+///
 /// * Data Set Name: Prudential
 /// * File Name: Runtrk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PRUDENTIAL_DATE
 /// * RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -102,12 +100,10 @@ pub struct PrudentialRuntrk1 {
 }
 impl crate::GetTable<PrudentialRuntrk1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PRUDENTIAL".into(),
-                        table_name: "RUNTRK".into(),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PRUDENTIAL".into(),
+            table_name: "RUNTRK".into(),
+            version: 1,
+        }
     }
 }
