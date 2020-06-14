@@ -1,8 +1,144 @@
-use anyhow::anyhow;
-use serde::{Deserialize, Serialize};
-use std::{collections, fs, iter, str, string};
+use std::{collections, fs, str};
+use heck::{TitleCase, CamelCase, ShoutySnakeCase};
 
 use crate::{mms, pdr};
+
+impl mms::DataType {
+    fn as_rust_type(&self) -> String {
+        match self {
+            mms::DataType::Varchar { .. } => "String",
+            mms::DataType::Char => "char",
+            mms::DataType::Date => "chrono::NaiveDateTime",
+            mms::DataType::Decimal { .. } => "rust_decimal::Decimal",
+            mms::DataType::Integer { .. } => "i64",
+        }
+        .into()
+    }
+}
+
+impl mms::TableColumn {
+    fn to_rust_type(&self) -> String {
+        if self.mandatory {
+            format!("{}", self.data_type.as_rust_type())
+        } else {
+            format!("Option<{}>", self.data_type.as_rust_type())
+        }
+    }
+    fn get_comment(&self) -> &str {
+        &self.comment
+    }
+}
+
+impl mms::TableNote {
+    fn get_doc(&self) -> String {
+        format!("* ({}) {} {}", self.name, self.comment, self.value)
+    }
+}
+
+impl mms::TableNotes {
+    fn get_doc(&self) -> String {
+        format!(
+            "# Notes\n {}",
+            self.notes
+                .iter()
+                .map(|n| n.get_doc())
+                .collect::<Vec<_>>()
+                .join("\n")
+        )
+    }
+}
+
+impl mms::Description {
+    fn get_doc(&self) -> String {
+        format!("# Description\n {}", self.inner)
+    }
+}
+
+impl mms::PkColumns {
+    fn get_doc(&self) -> String {
+        self.cols
+            .iter()
+            .map(|c| format!("* {}", c))
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
+}
+
+impl mms::TableSummary {
+    fn get_doc(&self) -> String {
+        format!("## {}\n _{}_", self.name, self.comment)
+    }
+}
+
+impl mms::TablePage {
+    pub fn get_doc(&self, report: &pdr::Report) -> String {
+        //use heck::TitleCase;
+        format!(
+            r#"# Summary
+
+{summary}
+
+{pdr_report}
+
+{description_opt}
+
+{notes_opt}
+
+# Primary Key Columns
+
+{primary_key}
+"#,
+            summary = self.summary.get_doc(),
+            pdr_report = report.get_doc(),
+            description_opt = self
+                .description
+                .as_ref()
+                .map(|d| d.get_doc())
+                .unwrap_or_else(|| "".into()),
+            notes_opt = self
+                .notes
+                .as_ref()
+                .map(|n| n.get_doc())
+                .unwrap_or_else(|| "".into()),
+            primary_key = self.primary_key_columns.get_doc(),
+        )
+    }
+}
+
+impl pdr::Report {
+    fn get_doc(&self) -> String {
+        format!(
+            r#"* Data Set Name: {mms_data_set_name}
+* File Name: {mms_file_name}
+* Data Version: {version}"#,
+            mms_data_set_name = self.name.to_title_case(),
+            mms_file_name = self.sub_type.to_title_case(),
+            version = self.version,
+        )
+    }
+    pub fn struct_name(&self) -> String {
+        format!(
+            "{}{}{}",
+            self.name.to_camel_case(),
+            self.sub_type.to_camel_case(),
+            self.version
+        )
+    }
+    pub fn file_key_literal(&self) -> String {
+        format!(
+            r#"
+            crate::FileKey {{
+                data_set_name: "{data_set}".into(),
+                table_name: "{table}".into(),
+                version: {version},
+            }}
+            "#,
+            data_set = self.name.to_shouty_snake_case(),
+            table = self.sub_type.to_shouty_snake_case(),
+            version = self.version,
+        )
+    }
+}
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;

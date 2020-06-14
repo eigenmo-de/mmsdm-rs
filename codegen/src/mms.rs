@@ -1,7 +1,6 @@
 use anyhow::anyhow;
 use serde::{Deserialize, Serialize};
 use std::{collections, str};
-use crate::pdr;
 use scraper::{element_ref, html};
 
 lazy_static::lazy_static! {
@@ -17,56 +16,24 @@ lazy_static::lazy_static! {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct Report {
-    name: String,
-    sub_type: String,
+    pub name: String,
+    pub sub_type: String,
 }
 
 pub type Packages = collections::HashMap<String, collections::HashMap<String, TablePage>>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TablePage {
-    summary: TableSummary,
-    description: Option<Description>,
-    notes: Option<TableNotes>,
-    primary_key_columns: PkColumns,
-    columns: TableColumns,
+    pub summary: TableSummary,
+    pub description: Option<Description>,
+    pub notes: Option<TableNotes>,
+    pub primary_key_columns: PkColumns,
+    pub columns: TableColumns,
 }
 
 impl TablePage {
     pub fn get_summary_name(&self) -> String {
         self.summary.get_name()
-    }
-    fn get_doc(&self, report: &pdr::Report) -> String {
-        //use heck::TitleCase;
-        format!(
-            r#"# Summary
-
-{summary}
-
-{pdr_report}
-
-{description_opt}
-
-{notes_opt}
-
-# Primary Key Columns
-
-{primary_key}
-"#,
-            summary = self.summary.get_doc(),
-            pdr_report = report.get_doc(),
-            description_opt = self
-                .description
-                .as_ref()
-                .map(|d| d.get_doc())
-                .unwrap_or_else(|| "".into()),
-            notes_opt = self
-                .notes
-                .as_ref()
-                .map(|n| n.get_doc())
-                .unwrap_or_else(|| "".into()),
-            primary_key = self.primary_key_columns.get_doc(),
-        )
     }
     pub fn from_html(mut docs: Vec<html::Html>) -> anyhow::Result<TablePage> {
         let first = docs.remove(0);
@@ -93,24 +60,13 @@ impl TablePage {
 
         let mut extra_columns = Vec::new();
         for doc in docs.iter() {
-            //dbg!(doc.root_element().html());
-            //dbg!(doc.root_element().inner_html());
             let h3 = doc.select(&H3).next().unwrap();
-            //assert_eq!(h3.inner_html().trim(), "Content");
             let heading = h3.inner_html();
             if heading.trim() != "Content" {
                 dbg!(heading);
                 break;
             }
             let tab = doc.select(&TABLE).next().unwrap();
-            //dbg!(h3.next_sibling().unwrap().value().as_element());
-            //let tab_outer = element_ref::ElementRef::wrap(h3.next_sibling().unwrap()).unwrap();
-            //dbg!(tab_outer.inner_html());
-            //dbg!(h3.next_sibling().unwrap().value().as_element().unwrap().name());
-//            let detail_table = element_ref::ElementRef::wrap(
-//                h3.next_sibling().unwrap().next_sibling().unwrap(),
-//            )
-//            .unwrap();
 
             let col = TableColumns::from_html(&tab)?;
             extra_columns.push(col);
@@ -143,16 +99,13 @@ impl TablePage {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TableSummary {
-    name: String,
-    comment: String,
+    pub name: String,
+    pub comment: String,
 }
 
 impl TableSummary {
     pub fn get_name(&self) -> String {
         self.name.clone()
-    }
-    fn get_doc(&self) -> String {
-        format!("## {}\n _{}_", self.name, self.comment)
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableSummary> {
         let mut cells = tab.select(&TD);
@@ -181,27 +134,10 @@ impl TableSummary {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PkColumns {
-    cols: Vec<String>,
+    pub cols: Vec<String>,
 }
 
 impl PkColumns {
-    fn get_sql(&self) -> String {
-        use heck::SnakeCase;
-        let cols = self
-            .cols
-            .iter()
-            .map(|c| c.to_snake_case())
-            .collect::<Vec<_>>();
-        //format!("primary key ({})", cols.join(","))
-        format!("unique ([{}])", cols.join("],["))
-    }
-    fn get_doc(&self) -> String {
-        self.cols
-            .iter()
-            .map(|c| format!("* {}", c))
-            .collect::<Vec<_>>()
-            .join("\n")
-    }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<PkColumns> {
         let cols = tab
             .select(&P)
@@ -214,13 +150,10 @@ impl PkColumns {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Description {
-    inner: String,
+    pub inner: String,
 }
 
 impl Description {
-    fn get_doc(&self) -> String {
-        format!("# Description\n {}", self.inner)
-    }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<Description> {
         let inner = tab
             .select(&SPAN)
@@ -233,19 +166,10 @@ impl Description {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TableNotes {
-    notes: Vec<TableNote>,
+    pub notes: Vec<TableNote>,
 }
+
 impl TableNotes {
-    fn get_doc(&self) -> String {
-        format!(
-            "# Notes\n {}",
-            self.notes
-                .iter()
-                .map(|n| n.get_doc())
-                .collect::<Vec<_>>()
-                .join("\n")
-        )
-    }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNotes> {
         let notes = tab
             .select(&TR)
@@ -258,15 +182,12 @@ impl TableNotes {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TableNote {
-    name: String,
-    comment: String,
-    value: String,
+    pub name: String,
+    pub comment: String,
+    pub value: String,
 }
 
 impl TableNote {
-    fn get_doc(&self) -> String {
-        format!("* ({}) {} {}", self.name, self.comment, self.value)
-    }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNote> {
         let mut cells = tab.select(&P);
         let name = cells.next().unwrap().inner_html().replace("\n", "");
@@ -282,38 +203,12 @@ impl TableNote {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TableColumns {
-    columns: Vec<TableColumn>,
+    pub columns: Vec<TableColumn>,
 }
+
 impl TableColumns {
     fn add_columns(&mut self, mut other: TableColumns) { 
         self.columns.append(&mut other.columns);
-    }
-    fn get_sql(&self) -> String {
-        self.columns
-            .iter()
-            .map(|c| format!("{},", c.get_sql()))
-            .collect::<Vec<_>>()
-            .join("\n")
-    }
-    fn get_columns_sql(&self, prefix: Option<&'static str>) -> String {
-        self.columns
-            .iter()
-            .map(|c| {
-                if let Some(pfx) = prefix {
-                    format!("{}.[{}]", pfx, c.field_name())
-                } else {
-                    format!("[{}]", c.field_name())
-                }
-            })
-            .collect::<Vec<_>>()
-            .join(",\n")
-    }
-    fn get_column_schema(&self) -> String {
-        self.columns
-            .iter()
-            .map(|c| format!("[{}] {}", c.field_name(), c.data_type.as_sql_type()))
-            .collect::<Vec<_>>()
-            .join(",\n")
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumns> {
         let columns = tab
@@ -327,39 +222,16 @@ impl TableColumns {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TableColumn {
-    name: String,
-    data_type: DataType,
-    mandatory: bool,
-    comment: String,
+    pub name: String,
+    pub data_type: DataType,
+    pub mandatory: bool,
+    pub comment: String,
 }
+
 impl TableColumn {
-    fn get_sql(&self) -> String {
-        format!("[{}] {}", self.field_name(), self.sql_type(),)
-    }
-    fn sql_type(&self) -> String {
-        //if self.comment.contains("YYYYMMDDPP") {
-        //} else if self.comment.contains("YYYYMMDDPPP") {
-        //} else {
-        //}
-        if self.mandatory {
-            format!("{} not null", self.data_type.as_sql_type())
-        } else {
-            format!("{} null", self.data_type.as_sql_type())
-        }
-    }
-    fn get_comment(&self) -> &str {
-        &self.comment
-    }
-    fn field_name(&self) -> String {
+    pub fn field_name(&self) -> String {
         use heck::SnakeCase;
         format!("{}", self.name.to_snake_case())
-    }
-    fn to_rust_type(&self) -> String {
-        if self.mandatory {
-            format!("{}", self.data_type.as_rust_type())
-        } else {
-            format!("Option<{}>", self.data_type.as_rust_type())
-        }
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumn> {
         let mut cells = tab.select(&P);
@@ -383,7 +255,7 @@ impl TableColumn {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-enum DataType {
+pub enum DataType {
     Varchar { length: i32 },
     Char,
     Date,
@@ -398,27 +270,6 @@ lazy_static::lazy_static! {
 }
 
 impl DataType {
-    fn as_rust_type(&self) -> String {
-        match self {
-            DataType::Varchar { .. } => "String",
-            DataType::Char => "char",
-            DataType::Date => "chrono::NaiveDateTime",
-            DataType::Decimal { .. } => "rust_decimal::Decimal",
-            DataType::Integer { .. } => "i64",
-        }
-        .into()
-    }
-    fn as_sql_type(&self) -> String {
-        match self {
-            DataType::Varchar { length } => format!("varchar({})", length),
-            DataType::Char => "char(1)".into(),
-            DataType::Date => "datetime2".into(),
-            DataType::Decimal { precision, scale } => {
-                format!("decimal({},{})", precision, scale)
-            }
-            DataType::Integer { precision } => format!("decimal({},0)", precision),
-        }
-    }
     fn parse_varchar(s: &str) -> anyhow::Result<DataType> {
         let length = VARCHAR
             .captures(s)

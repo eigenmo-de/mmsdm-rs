@@ -1,20 +1,90 @@
-use anyhow::anyhow;
-use serde::{Deserialize, Serialize};
-use std::{collections, fs, iter, str, string};
+use std::{collections, fs, str};
 
-pub fn run() {
+use crate::{mms, pdr};
+
+impl mms::PkColumns {
+    fn get_sql(&self) -> String {
+        use heck::SnakeCase;
+        let cols = self
+            .cols
+            .iter()
+            .map(|c| c.to_snake_case())
+            .collect::<Vec<_>>();
+        //format!("primary key ({})", cols.join(","))
+        format!("unique ([{}])", cols.join("],["))
+    }
+}
+
+impl mms::TableColumns {
+    fn get_sql(&self) -> String {
+        self.columns
+            .iter()
+            .map(|c| format!("{},", c.get_sql()))
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
+    fn get_columns_sql(&self, prefix: Option<&'static str>) -> String {
+        self.columns
+            .iter()
+            .map(|c| {
+                if let Some(pfx) = prefix {
+                    format!("{}.[{}]", pfx, c.field_name())
+                } else {
+                    format!("[{}]", c.field_name())
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(",\n")
+    }
+    fn get_column_schema(&self) -> String {
+        self.columns
+            .iter()
+            .map(|c| format!("[{}] {}", c.field_name(), c.data_type.as_sql_type()))
+            .collect::<Vec<_>>()
+            .join(",\n")
+    }
+}
+
+impl mms::TableColumn {
+    fn get_sql(&self) -> String {
+        format!("[{}] {}", self.field_name(), self.sql_type(),)
+    }
+    fn sql_type(&self) -> String {
+        if self.mandatory {
+            format!("{} not null", self.data_type.as_sql_type())
+        } else {
+            format!("{} null", self.data_type.as_sql_type())
+        }
+    }
+}
+
+impl mms::DataType {
+    fn as_sql_type(&self) -> String {
+        match self {
+            mms::DataType::Varchar { length } => format!("varchar({})", length),
+            mms::DataType::Char => "char(1)".into(),
+            mms::DataType::Date => "datetime2".into(),
+            mms::DataType::Decimal { precision, scale } => {
+                format!("decimal({},{})", precision, scale)
+            }
+            mms::DataType::Integer { precision } => format!("decimal({},0)", precision),
+        }
+    }
+}
+
+pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;
     let mapping = fs::read_to_string("table_mapping.csv").unwrap();
     let mut map = collections::HashMap::new();
-    use std::iter::Iterator;
+
     for row in mapping.split("\n").skip(1) {
         if row.contains(',') {
             let pieces = row.split(",").collect::<Vec<&str>>();
-            let mms = MMSReport {
+            let mms = mms::Report {
                 name: pieces[0].to_string(),
                 sub_type: pieces[1].to_string(),
             };
-            let pdr = PDRReport {
+            let pdr = pdr::Report {
                 name: pieces[2].to_string(),
                 sub_type: pieces[3].to_string(),
                 version: pieces[4].parse().unwrap(),
@@ -37,10 +107,10 @@ go
             "#
     .to_string();
     let mut proc_str = String::new();
-    let local_info: MMSPackages = serde_json::from_reader(rdr).unwrap();
+    let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
     for (data_set, tables) in local_info.into_iter() {
         for (table_key, table) in tables.into_iter() {
-            let mms_report = MMSReport {
+            let mms_report = mms::Report {
                 name: data_set.clone(),
                 sub_type: table_key,
             };

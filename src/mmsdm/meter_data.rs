@@ -1,19 +1,19 @@
 /// # Summary
-///
+/// 
 /// ## METERDATA_INDIVIDUAL_READS
 ///  _Publishes metering data associated with individual metering points for a given CASE_ID_
-///
+/// 
 /// * Data Set Name: Meterdata
 /// * File Name: Individual Reads
 /// * Data Version: 1
-///
-///
-///
+/// 
+/// 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * CASE_ID
 /// * METER_ID
 /// * METER_ID_SUFFIX
@@ -48,29 +48,31 @@ pub struct MeterdataIndividualReads1 {
 }
 impl crate::GetTable<MeterdataIndividualReads1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: "INDIVIDUAL_READS".into(),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "METERDATA".into(),
+                        table_name: "INDIVIDUAL_READS".into(),
+                        version: 1,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
 /// ## METERDATA_TRK
 ///  _Tracking table for the publication of wholesale settlement data associated with BILLING run_
-///
+/// 
 /// * Data Set Name: Meterdata
 /// * File Name: Trk
 /// * Data Version: 1
-///
-///
-///
+/// 
+/// 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * CASE_ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MeterdataTrk1 {
@@ -89,29 +91,31 @@ pub struct MeterdataTrk1 {
 }
 impl crate::GetTable<MeterdataTrk1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: "TRK".into(),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "METERDATA".into(),
+                        table_name: "TRK".into(),
+                        version: 1,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
 /// ## METERDATA_INTERCONNECTOR
 ///  _Publishes metering data associated with wholesale interconnectors for a given CASE_ID_
-///
+/// 
 /// * Data Set Name: Meterdata
 /// * File Name: Interconnector
 /// * Data Version: 1
-///
-///
-///
+/// 
+/// 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * CASE_ID
 /// * INTERCONNECTORID
 /// * PERIODID
@@ -135,29 +139,31 @@ pub struct MeterdataInterconnector1 {
 }
 impl crate::GetTable<MeterdataInterconnector1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: "INTERCONNECTOR".into(),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "METERDATA".into(),
+                        table_name: "INTERCONNECTOR".into(),
+                        version: 1,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
 /// ## METERDATA_AGGREGATE_READS
 ///  _Publishes aggregated metering data associated with a wholesale connection point for a given CASE_ID_
-///
+/// 
 /// * Data Set Name: Meterdata
 /// * File Name: Aggregate Reads
 /// * Data Version: 1
-///
-///
-///
+/// 
+/// 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * CASE_ID
 /// * CONNECTIONPOINTID
 /// * FRMP
@@ -190,10 +196,12 @@ pub struct MeterdataAggregateReads1 {
 }
 impl crate::GetTable<MeterdataAggregateReads1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: "AGGREGATE_READS".into(),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "METERDATA".into(),
+                        table_name: "AGGREGATE_READS".into(),
+                        version: 1,
+                    }
+                    
     }
 }

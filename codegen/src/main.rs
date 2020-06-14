@@ -4,12 +4,12 @@ mod rust;
 mod json;
 //mod python;
 //mod parquet;
-//mod sql_server_tables;
+mod sql_server_tables;
 //mod sql_server_rust;
 mod mms;
 mod pdr;
-//mod clickhouse_rust;
-//mod clickhouse_tables;
+mod clickhouse_rust;
+mod clickhouse_tables;
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]
@@ -31,8 +31,7 @@ async fn main() -> Result<(), anyhow::Error> {
             //sql_server_rust::run();
         }
         AemoCodegen::SqlServerTables => {
-            todo!();
-            //sql_server_tables::run();
+            sql_server_tables::run()?;
         }
         AemoCodegen::Rust => {
             rust::run()?;
@@ -45,8 +44,7 @@ async fn main() -> Result<(), anyhow::Error> {
             //python::run();
         }
         AemoCodegen::ClickhouseTables => {
-            todo!();
-            //clickhouse_tables::run();
+            clickhouse_tables::run()?;
         }
         AemoCodegen::ClickhouseRustPart => {
             todo!();

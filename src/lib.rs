@@ -9,7 +9,8 @@ use chrono_tz::Australia::Brisbane;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 pub mod mmsdm;
-pub mod sql_server;
+//pub mod sql_server;
+pub mod clickhouse;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {

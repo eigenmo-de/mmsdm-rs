@@ -1,13 +1,11 @@
-
-
 use crate::{mmsdm::*, GetTable};
 use futures::{AsyncRead, AsyncWrite};
-use std::convert::TryInto;
+use clickhouse_rs::{Block, Pool};
 
 impl crate::AemoFile {
     /// This function is meant to be used in conjunction with the iterator over
     /// the data contained within the AemoFile struct
-    pub async fn load_data<S>(&self, client: &mut tiberius::Client<S>) -> crate::Result<()>
+    pub async fn load_data_clickhouse<S>(&self, client: &mut clickhouse_rs::ClientHandle) -> crate::Result<()>
     where
         S: AsyncRead + AsyncWrite + Unpin + Send,
     {
@@ -17,60 +15,23 @@ impl crate::AemoFile {
                 file_key.table_name.as_str(),
                 file_key.version,
             ) {
-                    ("DISPATCH","OFFERTRK",1_i32) =>  {
-                        #[cfg(feature = "dispatch")]
-                        {
-                            let file_id: i64 = client.query(
-                                "insert into FileLog(file_name, data_set, sub_type, version)
-                                output inserted.id 
-                                values (@P1, 'Dispatch', 'Offertrk', 1);",
-                                        &[&self.header.get_filename()],
-                                ).await?.into_row().await?.unwrap().get(0).unwrap();
+                ("DISPATCH", "OFFERTRK", 1_i32) => {
 
-                            let d: Vec<dispatch::DispatchOffertrk1> = self.get_table()?;
-                            let total = d.len();
-                            for (i, data) in d.iter().enumerate() {
-                                client.execute(
-                                    "insert into DispatchOffertrk1(
-                                        file_log_id,
-                                        [settlementdate],
-                                        [duid],
-                                        [bidtype],
-                                        [bidsettlementdate],
-                                        [bidofferdate],
-                                        [lastchanged]
-                                    ) values (
-                                        @P1,
-                                        @P2,
-                                        @P3,
-                                        @P4,
-                                        @P5,
-                                        @P6,
-                                        @P7
-                                    )",
-                                    &[&file_id,
-                                      &data.settlementdate,
-                                      &data.duid,
-                                      &data.bidtype,
-                                      &data.bidsettlementdate.unwrap(),
-                                      &data.bidofferdate.unwrap(),
-                                      &data.lastchanged.unwrap(),
-                                    ],
-                                    ).await?;
-
-                                if i % 10000 == 0 {
-                                    let num = rust_decimal::Decimal::new(i.try_into().unwrap(), 0_u32);
-                                    let denom = rust_decimal::Decimal::new(total.try_into().unwrap(), 0_u32);
-                                    dbg!(num / denom);
-                                }
-                            }
-                        }
-                        #[cfg(not(feature = "dispatch"))]
-                        {
-                            log::error!("Unhandled file key {:?}", file_key);
-                            continue;
-                        }
-                    }
+                    let d: Vec<dispatch::DispatchOffertrk1> = self.get_table()?;
+                    let file_uuids: Vec<i32> = std::iter::repeat(5).take(d.len()).collect();
+                    let block = clickhouse_rs::Block::new()
+                        .column("file_log_id", file_uuids)
+                        .column("settlementdate", d.iter().map(|r| chrono::DateTime::<chrono::Utc>::from_utc(r.settlementdate, chrono::offset::FixedOffset) ).collect::<Vec<_>>())
+                        .column("duid", d.iter().map(|r| r.duid).collect::<Vec<_>>())
+                        .column("bidtype", d.iter().map(|r| r.bidtype).collect::<Vec<_>>())
+                        .column(
+                            "bidsettlementdate",
+                            d.iter().map(|r| r.bidsettlementdate.map(|d| chrono::DateTime::<chrono::Utc>::from_utc(d, chrono::Utc)).unwrap() ).collect::<Vec<_>>(),
+                        )
+                        .column("bidofferdate", d.iter().map(|r| r.bidofferdate.map(|d| chrono::DateTime::<chrono::Utc>::from_utc(d, chrono::Utc)).unwrap() ).collect::<Vec<_>>())
+                        .column("lastchanged", d.iter().map(|r| r.lastchanged.map(|d| chrono::DateTime::<chrono::Utc>::from_utc(d, chrono::Utc)).unwrap() ).collect::<Vec<_>>());
+                    client.insert("DispatchOffertrk1", block).await?;
+                }
                 _ => {
                     log::error!("Unhandled file key {:?}", file_key);
                     continue;
