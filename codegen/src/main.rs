@@ -107,7 +107,8 @@ impl MMSPkColumns {
             .iter()
             .map(|c| c.to_snake_case())
             .collect::<Vec<_>>();
-        format!("primary key ({})", cols.join(","))
+        //format!("primary key ({})", cols.join(","))
+        format!("unique ([{}])", cols.join("],["))
     }
     fn get_doc(&self) -> String {
         self.cols
@@ -481,8 +482,9 @@ async fn main() -> Result<(), anyhow::Error> {
             let local_info: MMSPackages = serde_json::from_reader(rdr).unwrap();
             let mut fmt_str = String::new();
             fmt_str.push_str(r#"
-use crate::{mmsdm::dispatch, GetTable};
+use crate::{mmsdm::*, GetTable};
 use futures::{AsyncRead, AsyncWrite};
+use std::convert::TryInto;
 
 impl crate::AemoFile {
     /// This function is meant to be used in conjunction with the iterator over
@@ -512,11 +514,19 @@ impl crate::AemoFile {
                         #[cfg(feature = "{module}")]
                         {{
                             let d: Vec<{module}::{local_name}> = self.get_table()?;
-                            let json = serde_json::to_string(&d)?;
-                            client.execute(
-                                "exec Insert{local_name} @P1, @P2",
-                                &[&self.header.get_filename(), &json],
-                                ).await?;
+                            let total = d.len();
+                            let mut current = 0_usize;
+                            for chunk in d.chunks(100_000_usize) {{
+                                current += chunk.len();
+                                let json = serde_json::to_string(chunk)?;
+                                client.execute(
+                                    "exec Insert{local_name} @P1, @P2",
+                                    &[&self.header.get_filename(), &json],
+                                    ).await?;
+                                let num = rust_decimal::Decimal::new(current.try_into().unwrap(), 0_u32);
+                                let denom = rust_decimal::Decimal::new(total.try_into().unwrap(), 0_u32);
+                                dbg!(num / denom);
+                            }}
                         }}
                         #[cfg(not(feature = "{module}"))]
                         {{
@@ -604,10 +614,13 @@ file_log_id bigint not null references FileLog(id),
 {primary_key}
 )
 go
+create clustered columnstore index cci_{table_name} on {table_name};
+go
                         "#,
                             table_name = pdr_report.struct_name(),
                             columns = table.columns.get_sql(),
-                            primary_key = table.primary_key_columns.get_sql(),
+                            //primary_key = table.primary_key_columns.get_sql(),
+                            primary_key = ""
                         );
 
                         table_str.push_str(&create_table);
@@ -620,9 +633,23 @@ create or alter procedure Insert{target_table}
     @data nvarchar(max)
 as begin
 declare @header table (id bigint not null);
-insert into FileLog(file_name, data_set, sub_type, version)
-output inserted.id into @header
-values (@file_name, '{data_set}', '{sub_type}', {version});
+if exists (
+    select id from FileLog 
+    where file_name = @file_name
+    and data_set = '{data_set}'
+    and sub_type = '{sub_type}'
+    and version = '{version}'
+    )
+    insert into @header (id)
+    select id from FileLog 
+    where file_name = @file_name
+    and data_set = '{data_set}'
+    and sub_type = '{sub_type}'
+    and version = '{version}'
+else
+    insert into FileLog(file_name, data_set, sub_type, version)
+    output inserted.id into @header
+    values (@file_name, '{data_set}', '{sub_type}', {version});
 
 insert into {target_table}(
 file_log_id,

@@ -37,6 +37,7 @@ serde_json = "1"
 env_logger = "0.6"
 tokio = { version = "0.2", features = ["full"] }
 tokio-util = { version = "0.3", features = ["compat"] }
+flate2 = "1"
 # reqwest = "0.10"
 # scraper = "0.10"
 
