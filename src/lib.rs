@@ -9,7 +9,11 @@ use chrono_tz::Australia::Brisbane;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 pub mod mmsdm;
-//pub mod sql_server;
+
+#[cfg(feature = "sql_server")]
+pub mod sql_server;
+
+#[cfg(feature = "clickhouse")]
 pub mod clickhouse;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
@@ -68,6 +72,7 @@ pub enum Error {
     Csv(#[from] csv::Error),
 
     #[error("Tiberius error: {0}")]
+    #[cfg(feature = "sql_server")]
     Tiberius(#[from] tiberius::error::Error),
 
     #[error("SerdeJson error: {0}")]
@@ -108,7 +113,7 @@ pub struct AemoHeader {
 }
 
 impl AemoHeader {
-    fn get_filename(&self) -> String {
+    pub fn get_filename(&self) -> String {
         format!(
             "{}_{}_{}_{}.CSV",
             self.privacy_level,
