@@ -139,9 +139,9 @@ pub struct AemoFile {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FileKey {
-    data_set_name: String,
-    table_name: String,
-    version: i32,
+    pub data_set_name: String,
+    pub table_name: String,
+    pub version: i32,
 }
 
 impl fmt::Display for FileKey {
