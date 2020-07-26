@@ -299,7 +299,7 @@ impl TradingPeriod {
     pub fn date(&self) -> chrono::NaiveDate {
         self.date
     }
-    pub fn period(&self) -> u16 {
+    pub fn period(&self) -> u8 {
         self.period
     }
     fn format() -> &'static str {
