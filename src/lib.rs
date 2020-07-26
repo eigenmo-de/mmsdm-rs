@@ -221,9 +221,21 @@ pub struct DispatchPeriod {
 }
 
 impl DispatchPeriod {
+    pub fn date(&self) -> chrono::NaiveDate {
+        self.date
+    }
+    pub fn period(&self) -> u16 {
+        self.period
+    }
     fn format() -> &'static str {
         "%Y%m%d"
     }
+//    pub fn datetime_starting(&self) -> chrono::NaiveDateTime {
+//        self.date.and_hms( self.period as u32 / 12, (self.period as u32 % 12) * 5, 0) + chrono::Duration::hours(4)
+//    }
+//    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
+//        self.datetime_starting() + chrono::Duration::minutes(5)
+//    }
 }
 
 impl std::fmt::Display for DispatchPeriod {
@@ -284,6 +296,12 @@ pub struct TradingPeriod {
 }
 
 impl TradingPeriod {
+    pub fn date(&self) -> chrono::NaiveDate {
+        self.date
+    }
+    pub fn period(&self) -> u16 {
+        self.period
+    }
     fn format() -> &'static str {
         "%Y%m%d"
     }
