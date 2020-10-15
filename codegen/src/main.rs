@@ -1,15 +1,15 @@
 use structopt::StructOpt;
 
-mod rust;
 mod json;
+mod rust;
 //mod python;
 //mod parquet;
 mod sql_server_tables;
 //mod sql_server_rust;
-mod mms;
-mod pdr;
 mod clickhouse_rust;
 mod clickhouse_tables;
+mod mms;
+mod pdr;
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]

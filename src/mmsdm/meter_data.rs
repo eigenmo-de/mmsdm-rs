@@ -1,64 +1,5 @@
 /// # Summary
 /// 
-/// ## METERDATA_INDIVIDUAL_READS
-///  _Publishes metering data associated with individual metering points for a given CASE_ID_
-/// 
-/// * Data Set Name: Meterdata
-/// * File Name: Individual Reads
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * CASE_ID
-/// * METER_ID
-/// * METER_ID_SUFFIX
-/// * PERIODID
-/// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MeterdataIndividualReads1 {
-    /// Case Identifier
-    pub case_id: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// The National Metering Identifier (NMI)
-    pub meter_id: String,
-    /// The National Metering Identifier (NMI) data stream
-    pub meter_id_suffix: String,
-    /// The financially responsible market participantid
-    pub frmp: String,
-    /// The local retailer at the connection point id
-    pub lr: String,
-    /// The settlement interval identifier
-    pub periodid: rust_decimal::Decimal,
-    /// Connection Point ID
-    pub connectionpointid: String,
-    /// The meter type for the read, one of: CUSTOMER; GENERATOR; EMBEDDED_GENERATOR
-    pub meter_type: String,
-    /// The import(pool-centric) value for the meter read (MWh)
-    pub importvalue: rust_decimal::Decimal,
-    /// The export(pool-centric) value for the meter read (MWh)
-    pub exportvalue: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<MeterdataIndividualReads1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "METERDATA".into(),
-                        table_name: "INDIVIDUAL_READS".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## METERDATA_TRK
 ///  _Tracking table for the publication of wholesale settlement data associated with BILLING run_
 /// 
@@ -200,6 +141,65 @@ impl crate::GetTable<MeterdataAggregateReads1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "METERDATA".into(),
                         table_name: "AGGREGATE_READS".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## METERDATA_INDIVIDUAL_READS
+///  _Publishes metering data associated with individual metering points for a given CASE_ID_
+/// 
+/// * Data Set Name: Meterdata
+/// * File Name: Individual Reads
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * CASE_ID
+/// * METER_ID
+/// * METER_ID_SUFFIX
+/// * PERIODID
+/// * SETTLEMENTDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MeterdataIndividualReads1 {
+    /// Case Identifier
+    pub case_id: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// The National Metering Identifier (NMI)
+    pub meter_id: String,
+    /// The National Metering Identifier (NMI) data stream
+    pub meter_id_suffix: String,
+    /// The financially responsible market participantid
+    pub frmp: String,
+    /// The local retailer at the connection point id
+    pub lr: String,
+    /// The settlement interval identifier
+    pub periodid: rust_decimal::Decimal,
+    /// Connection Point ID
+    pub connectionpointid: String,
+    /// The meter type for the read, one of: CUSTOMER; GENERATOR; EMBEDDED_GENERATOR
+    pub meter_type: String,
+    /// The import(pool-centric) value for the meter read (MWh)
+    pub importvalue: rust_decimal::Decimal,
+    /// The export(pool-centric) value for the meter read (MWh)
+    pub exportvalue: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<MeterdataIndividualReads1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "METERDATA".into(),
+                        table_name: "INDIVIDUAL_READS".into(),
                         version: 1,
                     }
                     

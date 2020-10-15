@@ -1,5 +1,103 @@
 /// # Summary
 /// 
+/// ## NETWORK_SUBSTATIONDETAIL
+///  _NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time_
+/// 
+/// * Data Set Name: Network
+/// * File Name: Substationdetail
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * SUBSTATIONID
+/// * VALIDFROM
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkSubstationdetail1 {
+    /// ID uniquely identifying this substation
+    pub substationid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub validfrom: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub validto: Option<chrono::NaiveDateTime>,
+    /// Description of the substation
+    pub description: Option<String>,
+    /// The NEM region the substation is in
+    pub regionid: Option<String>,
+    /// The TNSP who is responsible for this substation
+    pub ownerid: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<NetworkSubstationdetail1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: "SUBSTATIONDETAIL".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_RATING
+///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values.<br>_
+/// 
+/// * Data Set Name: Network
+/// * File Name: Rating
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * SPD_ID
+/// * VALIDFROM
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkRating1 {
+    /// ID defining this data source for use in constraints 
+    pub spd_id: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub validfrom: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub validto: Option<chrono::NaiveDateTime>,
+    /// The region that this rating is for
+    pub regionid: Option<String>,
+    /// The substation the equipment is located at
+    pub substationid: Option<String>,
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    pub equipmenttype: Option<String>,
+    /// A unique identifier for this equipment at this substation, and based on its type
+    pub equipmentid: Option<String>,
+    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding<br>
+    pub ratinglevel: Option<String>,
+    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used<br>
+    pub isdynamic: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<NetworkRating1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: "RATING".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## NETWORK_STATICRATING
 ///  _NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.<br>This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.<br>For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.<br>Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails.<br>_
 /// 
@@ -47,52 +145,6 @@ impl crate::GetTable<NetworkStaticrating1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
                         table_name: "STATICRATING".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_SUBSTATIONDETAIL
-///  _NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time_
-/// 
-/// * Data Set Name: Network
-/// * File Name: Substationdetail
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * SUBSTATIONID
-/// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkSubstationdetail1 {
-    /// ID uniquely identifying this substation
-    pub substationid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub validfrom: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub validto: Option<chrono::NaiveDateTime>,
-    /// Description of the substation
-    pub description: Option<String>,
-    /// The NEM region the substation is in
-    pub regionid: Option<String>,
-    /// The TNSP who is responsible for this substation
-    pub ownerid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<NetworkSubstationdetail1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: "SUBSTATIONDETAIL".into(),
                         version: 1,
                     }
                     
@@ -171,11 +223,11 @@ impl crate::GetTable<NetworkOutagedetail3> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## NETWORK_RATING
-///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values.<br>_
+/// ## NETWORK_OUTAGECONSTRAINTSET
+///  _NETWORK_OUTAGECONSTRAINTSET lists the Constraint Set or Sets that are expected to be invoked for the outage once it is confirmed to proceed._
 /// 
 /// * Data Set Name: Network
-/// * File Name: Rating
+/// * File Name: Outageconstraintset
 /// * Data Version: 1
 /// 
 /// 
@@ -185,37 +237,100 @@ impl crate::GetTable<NetworkOutagedetail3> for crate::AemoFile {
 /// 
 /// # Primary Key Columns
 /// 
-/// * SPD_ID
-/// * VALIDFROM
+/// * GENCONSETID
+/// * OUTAGEID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkRating1 {
-    /// ID defining this data source for use in constraints 
-    pub spd_id: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub validfrom: chrono::NaiveDateTime,
+pub struct NetworkOutageconstraintset1 {
+    /// ID uniquely identifying the outage
+    pub outageid: rust_decimal::Decimal,
+    /// ID for the constraint set
+    pub genconsetid: String,
     #[serde(with = "crate::mms_datetime_opt")]
-    pub validto: Option<chrono::NaiveDateTime>,
-    /// The region that this rating is for
-    pub regionid: Option<String>,
-    /// The substation the equipment is located at
-    pub substationid: Option<String>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
-    pub equipmenttype: Option<String>,
-    /// A unique identifier for this equipment at this substation, and based on its type
-    pub equipmentid: Option<String>,
-    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding<br>
-    pub ratinglevel: Option<String>,
-    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used<br>
-    pub isdynamic: Option<rust_decimal::Decimal>,
+    pub startinterval: Option<chrono::NaiveDateTime>,
     #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
+    pub endinterval: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable<NetworkRating1> for crate::AemoFile {
+impl crate::GetTable<NetworkOutageconstraintset1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
-                        table_name: "RATING".into(),
+                        table_name: "OUTAGECONSTRAINTSET".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_REALTIMERATING
+///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
+/// 
+/// * Data Set Name: Network
+/// * File Name: Realtimerating
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * SETTLEMENTDATE
+/// * SPD_ID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkRealtimerating1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// ID defining this data source for use in constraints
+    pub spd_id: String,
+    /// The defined equipment rating value in MVA
+    pub ratingvalue: rust_decimal::Decimal,
+}
+impl crate::GetTable<NetworkRealtimerating1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: "REALTIMERATING".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_OUTAGESTATUSCODE
+///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
+/// 
+/// * Data Set Name: Network
+/// * File Name: Outagestatuscode
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * OUTAGESTATUSCODE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkOutagestatuscode1 {
+    /// A code representing the status of an outage
+    pub outagestatuscode: String,
+    /// A description of the status code
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<NetworkOutagestatuscode1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: "OUTAGESTATUSCODE".into(),
                         version: 1,
                     }
                     
@@ -266,121 +381,6 @@ impl crate::GetTable<NetworkEquipmentdetail1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
                         table_name: "EQUIPMENTDETAIL".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_REALTIMERATING
-///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
-/// 
-/// * Data Set Name: Network
-/// * File Name: Realtimerating
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * SETTLEMENTDATE
-/// * SPD_ID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkRealtimerating1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// ID defining this data source for use in constraints
-    pub spd_id: String,
-    /// The defined equipment rating value in MVA
-    pub ratingvalue: rust_decimal::Decimal,
-}
-impl crate::GetTable<NetworkRealtimerating1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: "REALTIMERATING".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_OUTAGECONSTRAINTSET
-///  _NETWORK_OUTAGECONSTRAINTSET lists the Constraint Set or Sets that are expected to be invoked for the outage once it is confirmed to proceed._
-/// 
-/// * Data Set Name: Network
-/// * File Name: Outageconstraintset
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * GENCONSETID
-/// * OUTAGEID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutageconstraintset1 {
-    /// ID uniquely identifying the outage
-    pub outageid: rust_decimal::Decimal,
-    /// ID for the constraint set
-    pub genconsetid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startinterval: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub endinterval: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<NetworkOutageconstraintset1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: "OUTAGECONSTRAINTSET".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_OUTAGESTATUSCODE
-///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
-/// 
-/// * Data Set Name: Network
-/// * File Name: Outagestatuscode
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * OUTAGESTATUSCODE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutagestatuscode1 {
-    /// A code representing the status of an outage
-    pub outagestatuscode: String,
-    /// A description of the status code
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<NetworkOutagestatuscode1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: "OUTAGESTATUSCODE".into(),
                         version: 1,
                     }
                     

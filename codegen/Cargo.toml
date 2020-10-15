@@ -5,7 +5,7 @@ authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.d
 edition = "2018"
 license = "MIT"
 repository = "https://github.com/esheppa/aemo-rs"
-maintenance = { status = "experimental" }
+#maintenance = { status = "experimental" }
 description = "This library contains functions to read AEMO nemweb data files (zipped CSV files with one or more sub files inside) to Rust Structs"
 
 [dependencies]

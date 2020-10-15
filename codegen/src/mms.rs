@@ -1,7 +1,7 @@
 use anyhow::anyhow;
+use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, str};
-use scraper::{element_ref, html};
 
 lazy_static::lazy_static! {
     static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();
@@ -49,10 +49,9 @@ impl TablePage {
         let mut details = collections::HashMap::new();
         for h3 in headings {
             let detail_type = h3.select(&A).next().unwrap().inner_html();
-            let detail_table = element_ref::ElementRef::wrap(
-                h3.next_sibling().unwrap().next_sibling().unwrap(),
-            )
-            .unwrap();
+            let detail_table =
+                element_ref::ElementRef::wrap(h3.next_sibling().unwrap().next_sibling().unwrap())
+                    .unwrap();
             if detail_type != "Index" {
                 details.insert(detail_type.replace(" ", ""), detail_table);
             }
@@ -73,9 +72,9 @@ impl TablePage {
         }
 
         let mut first_column_set = details
-                .get("Content")
-                .ok_or_else(|| anyhow!("Missing required field Content"))
-                .and_then(|t| TableColumns::from_html(t))?;
+            .get("Content")
+            .ok_or_else(|| anyhow!("Missing required field Content"))
+            .and_then(|t| TableColumns::from_html(t))?;
 
         for extra in extra_columns {
             first_column_set.add_columns(extra);
@@ -207,7 +206,7 @@ pub struct TableColumns {
 }
 
 impl TableColumns {
-    fn add_columns(&mut self, mut other: TableColumns) { 
+    fn add_columns(&mut self, mut other: TableColumns) {
         self.columns.append(&mut other.columns);
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumns> {

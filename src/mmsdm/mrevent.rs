@@ -108,6 +108,58 @@ impl crate::GetTable<MrEvent1> for crate::AemoFile {
 }
 /// # Summary
 /// 
+/// ## MR_EVENT_SCHEDULE
+///  _MR_EVENT_SCHEDULE defines the Stack version of the Acceptance Schedule and is the parent table to MR_DayOffer_Stack and MR_PerOffer_Stack.<br>_
+/// 
+/// * Data Set Name: Mr
+/// * File Name: Event Schedule
+/// * Data Version: 1
+/// 
+/// # Description
+///  Once the offer cut off time has passed and as the schedule changes AEMO is obliged to accept MR capacity to meet the schedule in merit order according to the offers submitted. The relationship to a specific schedule, the merit order of submitted offers and accepted quantities for each trading interval are stored in the MR_Event_Schedule, MR_DayOffer_Stack and MR_PerOffer_Stack table. The MR_EVENT_SCHEDULE table determines the existence of an MR offer acceptance stack for a specific MR schedule of an MR event. The MR_EVENT_SCHEDULE table also tracks the time each stack is exercised. MR_EVENT_SCHEDULE is public and notifies the market that a new offer stack has been created. Source MR_EVENT_SCHEDULE updates are ad hoc. Volume 2 Rows per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * MR_DATE
+/// * REGIONID
+/// * VERSION_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MrEventSchedule1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub mr_date: chrono::NaiveDateTime,
+    /// Unique RegionID
+    pub regionid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub demand_effectivedate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub demand_offerdate: Option<chrono::NaiveDateTime>,
+    /// Foreign key reference to ResDemandTrk.VersionNo
+    pub demand_versionno: Option<rust_decimal::Decimal>,
+    /// Authorised person confirming Offer Stack (AKA Acceptance)
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<MrEventSchedule1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MR".into(),
+                        table_name: "EVENT_SCHEDULE".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## MR_PEROFFER_STACK
 ///  _MR_PEROFFER_STACK defines the accepted capacity on a period basis for the Acceptance Schedule, is a child table to MR_DayOffer_Stack and only includes records or units with accepted_capacity &gt; 0 for the specific period.<br>_
 /// 
@@ -155,58 +207,6 @@ impl crate::GetTable<MrPerofferStack1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "MR".into(),
                         table_name: "PEROFFER_STACK".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MR_EVENT_SCHEDULE
-///  _MR_EVENT_SCHEDULE defines the Stack version of the Acceptance Schedule and is the parent table to MR_DayOffer_Stack and MR_PerOffer_Stack.<br>_
-/// 
-/// * Data Set Name: Mr
-/// * File Name: Event Schedule
-/// * Data Version: 1
-/// 
-/// # Description
-///  Once the offer cut off time has passed and as the schedule changes AEMO is obliged to accept MR capacity to meet the schedule in merit order according to the offers submitted. The relationship to a specific schedule, the merit order of submitted offers and accepted quantities for each trading interval are stored in the MR_Event_Schedule, MR_DayOffer_Stack and MR_PerOffer_Stack table. The MR_EVENT_SCHEDULE table determines the existence of an MR offer acceptance stack for a specific MR schedule of an MR event. The MR_EVENT_SCHEDULE table also tracks the time each stack is exercised. MR_EVENT_SCHEDULE is public and notifies the market that a new offer stack has been created. Source MR_EVENT_SCHEDULE updates are ad hoc. Volume 2 Rows per year
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * MR_DATE
-/// * REGIONID
-/// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MrEventSchedule1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub mr_date: chrono::NaiveDateTime,
-    /// Unique RegionID
-    pub regionid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub version_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub demand_effectivedate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub demand_offerdate: Option<chrono::NaiveDateTime>,
-    /// Foreign key reference to ResDemandTrk.VersionNo
-    pub demand_versionno: Option<rust_decimal::Decimal>,
-    /// Authorised person confirming Offer Stack (AKA Acceptance)
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<MrEventSchedule1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MR".into(),
-                        table_name: "EVENT_SCHEDULE".into(),
                         version: 1,
                     }
                     

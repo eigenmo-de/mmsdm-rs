@@ -1,102 +1,50 @@
 /// # Summary
 /// 
-/// ## RESIDUEFILETRK
-///  _RESIDUEFILETRK records all Settlement Residue Auction offers submitted by participants._
+/// ## RESIDUE_PRICE_FUNDS_BID
+///  _RESIDUE_PRICE_FUNDS_BIDshows the bids producing the auction outcome, without exposing participant-specific details. RESIDUE_PRICE_FUNDS_BID is new in March 2003 to support SRA Inter-Temporal Linking._
 /// 
-/// * Data Set Name: Irauction Bids
-/// * File Name: File Trk
+/// * Data Set Name: Irauction
+/// * File Name: Residue Price Funds Bid
 /// * Data Version: 1
 /// 
 /// # Description
-///  RESIDUEFILETRK data is confidential to each participant Source RESIDUEFILETRK updates are ad hoc from participants Volume Assuming quarterly contracts RESIDUEFILETRK contains a maximum of 5,000 records per annum. Each bid file can contain many bids for each auction. Participants can input multiple bids (with the last acknowledged file being used in the auction).
+///  RESIDUE_PRICE_FUNDS_BID data is public. The data is available to all auction participants post the associated auction date. Volume The volume is very dependent on the number of active bids. An indication is about 250,000 per year.
 /// 
 /// # Notes
-///  * (Visibility) Data in this table is: Private
+///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
 /// * AUCTIONID
-/// * LOADDATE
-/// * PARTICIPANTID
+/// * CONTRACTID
+/// * FROMREGIONID
+/// * INTERCONNECTORID
+/// * LINKEDBIDFLAG
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionBidsFileTrk1 {
-    /// SRA ContractID
-    pub contractid: Option<String>,
-    /// Participant Identifier
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub loaddate: chrono::NaiveDateTime,
-    /// SRA offer file name
-    pub filename: Option<String>,
-    /// SRA acknowledgment file name
-    pub ackfilename: Option<String>,
-    /// Load status [SUCCESSFUL/CORRUPT]
-    pub status: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
+pub struct IrauctionResiduePriceFundsBid1 {
+    /// Unique id for each contract specified by AEMO
+    pub contractid: String,
+    /// Unique interconnector identifier
+    pub interconnectorid: String,
+    /// Unique region identifier
+    pub fromregionid: String,
+    /// Quantity of units bid
+    pub units: Option<rust_decimal::Decimal>,
+    /// Price bid for each unit
+    pub bidprice: Option<rust_decimal::Decimal>,
+    /// A unique option id, with respect to the auction, created to show which bid elements are linked.
+    pub linkedbidflag: rust_decimal::Decimal,
+    /// Unique id for each auction date
     pub auctionid: String,
-}
-impl crate::GetTable<IrauctionBidsFileTrk1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_BIDS".into(),
-                        table_name: "FILE_TRK".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SRA_OFFER_PRODUCT
-///  _Holds the Product details for each Offer File submitted by each SRA Auction Participant._
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Offer Product
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * AUCTIONID
-/// * LOADDATE
-/// * OPTIONID
-/// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraOfferProduct1 {
-    /// Unique ID for each Auction date
-    pub auctionid: String,
-    /// Unique participant identifier
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub loaddate: chrono::NaiveDateTime,
-    /// Unique Product identifier (1 - 2000)
-    pub optionid: i64,
-    /// Unique Directional Interconnector identifier
-    pub interconnectorid: Option<String>,
-    /// The source Region identifier for the Directional Interconnector
-    pub fromregionid: Option<String>,
-    /// The Offer quantity for this Product
-    pub offer_quantity: Option<i64>,
-    /// The Offer price for this Product
-    pub offer_price: Option<rust_decimal::Decimal>,
-    /// Tranche identifier
-    pub trancheid: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable<IrauctionSraOfferProduct1> for crate::AemoFile {
+impl crate::GetTable<IrauctionResiduePriceFundsBid1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_OFFER_PRODUCT".into(),
+                        table_name: "RESIDUE_PRICE_FUNDS_BID".into(),
                         version: 1,
                     }
                     
@@ -208,6 +156,246 @@ impl crate::GetTable<IrauctionSraCashSecurity1> for crate::AemoFile {
 }
 /// # Summary
 /// 
+/// ## SRA_PRUDENTIAL_RUN
+///  _Records the prudential run details for each prudential date_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Prudential Run
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * PRUDENTIAL_DATE
+/// * PRUDENTIAL_RUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraPrudentialRun1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub prudential_date: chrono::NaiveDateTime,
+    /// The prudential run number for the run
+    pub prudential_runno: i64,
+}
+impl crate::GetTable<IrauctionSraPrudentialRun1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_PRUDENTIAL_RUN".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_PRUDENTIAL_COMP_POSITION
+///  _The prudential position of each company at the date and time of a specific prudential run_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Prudential Comp Position
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * PARTICIPANTID
+/// * PRUDENTIAL_DATE
+/// * PRUDENTIAL_RUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraPrudentialCompPosition1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub prudential_date: chrono::NaiveDateTime,
+    /// The run number for the prudential date
+    pub prudential_runno: i64,
+    /// Unique participant identifier
+    pub participantid: String,
+    /// The Trading Limit of the company at the time of the prudential run 
+    pub trading_limit: Option<rust_decimal::Decimal>,
+    /// Current Prudential Exposure of the Auction Participant including Offers
+    pub prudential_exposure_amount: Option<rust_decimal::Decimal>,
+    /// The amount of Trading Margin available to the Auction Participant to trade (including Offered Units and Cancelled Units). Equal to TRADING_LIMIT â€“ PRUDENTIAL_EXPOSURE_AMOUNT.
+    pub trading_margin: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<IrauctionSraPrudentialCompPosition1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_PRUDENTIAL_COMP_POSITION".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_OFFER_PRODUCT
+///  _Holds the Product details for each Offer File submitted by each SRA Auction Participant._
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Offer Product
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * AUCTIONID
+/// * LOADDATE
+/// * OPTIONID
+/// * PARTICIPANTID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraOfferProduct1 {
+    /// Unique ID for each Auction date
+    pub auctionid: String,
+    /// Unique participant identifier
+    pub participantid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub loaddate: chrono::NaiveDateTime,
+    /// Unique Product identifier (1 - 2000)
+    pub optionid: i64,
+    /// Unique Directional Interconnector identifier
+    pub interconnectorid: Option<String>,
+    /// The source Region identifier for the Directional Interconnector
+    pub fromregionid: Option<String>,
+    /// The Offer quantity for this Product
+    pub offer_quantity: Option<i64>,
+    /// The Offer price for this Product
+    pub offer_price: Option<rust_decimal::Decimal>,
+    /// Tranche identifier
+    pub trancheid: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionSraOfferProduct1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_OFFER_PRODUCT".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_FINANCIAL_RUNTRK
+///  _Records details of the settlement process for the cancellation and purchase of SRA Auction Units_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Financial Runtrk
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * SRA_QUARTER
+/// * SRA_RUNNO
+/// * SRA_YEAR
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraFinancialRuntrk1 {
+    /// Year of the Tranche
+    pub sra_year: i64,
+    /// Relevant Quarter of the Tranche
+    pub sra_quarter: i64,
+    /// SRA Run Number
+    pub sra_runno: i64,
+    /// The type of SRA run
+    pub runtype: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub rundate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub posteddate: Option<chrono::NaiveDateTime>,
+    /// Version number of the interest component used in the payments run
+    pub interest_versionno: Option<i64>,
+    /// Version number of the makeup component used in the makeup run
+    pub makeup_versionno: Option<i64>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionSraFinancialRuntrk1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_FINANCIAL_RUNTRK".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## RESIDUE_CON_DATA
+///  _RESIDUE_CON_DATA supports the Settlement Residue Auction, by holding for each participant the confidential data from the auction. RESIDUE_CON_DATA joins to RESIDUE_PUBLIC_DATA and RESIDUE_TRK._
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Residue Con Data
+/// * Data Version: 2
+/// 
+/// # Description
+///  Source RESIDUE_CON_DATA refreshes whenever a Settlement Residue Auction is run (i.e. quarterly). RESIDUE_CON_DATA data is confidential to the relevant participant. RESIDUE_CON_DATA excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume RESIDUE_CON_DATA shows a maximum of 6000 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTID
+/// * FROMREGIONID
+/// * INTERCONNECTORID
+/// * PARTICIPANTID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionResidueConData2 {
+    /// SRA Contract unique identifier
+    pub contractid: String,
+    /// Contract run version
+    pub versionno: rust_decimal::Decimal,
+    /// Identifier of Contracted Participant
+    pub participantid: String,
+    /// Identifier of Contracted Interconnector
+    pub interconnectorid: String,
+    /// Nominated source region for Interconnector
+    pub fromregionid: String,
+    /// Units purchased on the directional interconnector (i.e. Contracted quantity)
+    pub unitspurchased: Option<rust_decimal::Decimal>,
+    /// Payment due (i.e. total purchase price)
+    pub linkpayment: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The number of cancelled Units for all Auction Participants.
+    pub secondary_units_sold: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<IrauctionResidueConData2> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "RESIDUE_CON_DATA".into(),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## SRA_OFFER_PROFILE
 ///  _Holds the data of an SRA Auction Participant Offer Submission._
 /// 
@@ -248,182 +436,6 @@ impl crate::GetTable<IrauctionSraOfferProfile1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "IRAUCTION".into(),
                         table_name: "SRA_OFFER_PROFILE".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## AUCTION_REVENUE_ESTIMATE
-///  _AUCTION_REVENUE_ESTIMATE supports the Settlement Residue Auction, by holding the evaluator’s estimates of revenue for each month of a given quarter.<br>Since reserve prices are no longer applicable from the end of 2001, zero is used as a default to avoid rewriting the system._
-/// 
-/// * Data Set Name: Irauction Config
-/// * File Name: Auction Revenue Estimate
-/// * Data Version: 1
-/// 
-/// # Description
-///  AUCTION_REVENUE_ESTIMATE is public data, and is available to all participants. Source Updates are quarterly from SRA team via SRIS interface Volume AUCTION_REVENUE_ESTIMATE contains a maximum of 300 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTYEAR
-/// * FROMREGIONID
-/// * INTERCONNECTORID
-/// * MONTHNO
-/// * QUARTER
-/// * VALUATIONID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionRevenueEstimate1 {
-    /// SRA Contracted Year
-    pub contractyear: rust_decimal::Decimal,
-    /// SRA Contracted Quarter
-    pub quarter: rust_decimal::Decimal,
-    /// Identifier of the estimator
-    pub valuationid: String,
-    /// Version of data for other key data - a higher version for same key data will take precedence
-    pub versionno: rust_decimal::Decimal,
-    /// Contracted Interconnector
-    pub interconnectorid: String,
-    /// Nominated source region for Interconnector
-    pub fromregionid: String,
-    /// Month number within quarter (1..3) 
-    pub monthno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub enddate: Option<chrono::NaiveDateTime>,
-    /// Estimated Revenue
-    pub revenue: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionConfigAuctionRevenueEstimate1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: "AUCTION_REVENUE_ESTIMATE".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## RESIDUE_CONTRACTS
-///  _RESIDUE_CONTRACTS supports the Settlement Residue Auction, by holding the contract details for each period for which a residue contract will be offered._
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Residue Contracts
-/// * Data Version: 1
-/// 
-/// # Description
-///  RESIDUE_CONTRACTS data is public, so is available to all participants. Source RESIDUE_CONTRACTS updates are quarterly by AEMO. Volume Assuming quarterly contracts, RESIDUE_CONTRACTS contains a maximum of 50 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTYEAR
-/// * QUARTER
-/// * TRANCHE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueContracts1 {
-    /// SRA Contracted Year
-    pub contractyear: rust_decimal::Decimal,
-    /// SRA Contracted Quarter
-    pub quarter: rust_decimal::Decimal,
-    /// Label identifying the arbitrary segmented share of the Interconnector flow
-    pub tranche: rust_decimal::Decimal,
-    /// Unique identifier for each SRA Contract as specified by AEMO
-    pub contractid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub enddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub notifydate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub auctiondate: Option<chrono::NaiveDateTime>,
-    /// Identifies methodology used
-    pub calcmethod: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// Name of authorising officer or process
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub notifypostdate: Option<chrono::NaiveDateTime>,
-    /// Name of notifying person
-    pub notifyby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub postdate: Option<chrono::NaiveDateTime>,
-    /// Name of publishing officer or process
-    pub postedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Description of Contract
-    pub description: Option<String>,
-    /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking) 
-    pub auctionid: Option<String>,
-}
-impl crate::GetTable<IrauctionResidueContracts1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "RESIDUE_CONTRACTS".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## RESIDUE_BID_TRK
-///  _RESIDUE_BID_TRK supports the Settlement Residue Auction, by detailing which bid was used for which SRA Contract run._
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Residue Bid Trk
-/// * Data Version: 1
-/// 
-/// # Description
-///  Source RESIDUE_BID_TRK updates are usually quarterly from participants before an Auction. RESIDUE_BID_TRK data is confidential to the relevant participant. RESIDUE_BID_TRK excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume Assuming monthly contracts, RESIDUE_BID_TRK shows a maximum of 500 records per year. 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * AUCTIONID
-/// * PARTICIPANTID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueBidTrk1 {
-    /// SRA Contract unique identifier
-    pub contractid: Option<String>,
-    /// Version of Bid used
-    pub versionno: rust_decimal::Decimal,
-    /// Identifier of participant
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub bidloaddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking) 
-    pub auctionid: String,
-}
-impl crate::GetTable<IrauctionResidueBidTrk1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "RESIDUE_BID_TRK".into(),
                         version: 1,
                     }
                     
@@ -502,54 +514,49 @@ impl crate::GetTable<IrauctionSraFinancialAucpayDetail1> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## RESIDUE_CON_DATA
-///  _RESIDUE_CON_DATA supports the Settlement Residue Auction, by holding for each participant the confidential data from the auction. RESIDUE_CON_DATA joins to RESIDUE_PUBLIC_DATA and RESIDUE_TRK._
+/// ## SRA_FINANCIAL_AUC_MARDETAIL
+///  _This table stores details of the margins returned to the participants._
 /// 
 /// * Data Set Name: Irauction
-/// * File Name: Residue Con Data
-/// * Data Version: 2
+/// * File Name: Sra Financial Auc Mardetail
+/// * Data Version: 1
 /// 
-/// # Description
-///  Source RESIDUE_CON_DATA refreshes whenever a Settlement Residue Auction is run (i.e. quarterly). RESIDUE_CON_DATA data is confidential to the relevant participant. RESIDUE_CON_DATA excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume RESIDUE_CON_DATA shows a maximum of 6000 records per year.
+/// 
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
 /// 
 /// # Primary Key Columns
 /// 
-/// * CONTRACTID
-/// * FROMREGIONID
-/// * INTERCONNECTORID
+/// * CASH_SECURITY_ID
 /// * PARTICIPANTID
-/// * VERSIONNO
+/// * SRA_QUARTER
+/// * SRA_RUNNO
+/// * SRA_YEAR
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueConData2 {
-    /// SRA Contract unique identifier
-    pub contractid: String,
-    /// Contract run version
-    pub versionno: rust_decimal::Decimal,
-    /// Identifier of Contracted Participant
+pub struct IrauctionSraFinancialAucMardetail1 {
+    /// Year of the Tranche
+    pub sra_year: i64,
+    /// Relevant Quarter of the Tranche
+    pub sra_quarter: i64,
+    /// SRA Run Number
+    pub sra_runno: i64,
+    /// The participant identifier.
     pub participantid: String,
-    /// Identifier of Contracted Interconnector
-    pub interconnectorid: String,
-    /// Nominated source region for Interconnector
-    pub fromregionid: String,
-    /// Units purchased on the directional interconnector (i.e. Contracted quantity)
-    pub unitspurchased: Option<rust_decimal::Decimal>,
-    /// Payment due (i.e. total purchase price)
-    pub linkpayment: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// The number of cancelled Units for all Auction Participants.
-    pub secondary_units_sold: Option<rust_decimal::Decimal>,
+    /// Unique identifier for the cash security.
+    pub cash_security_id: String,
+    /// The amount returned to the Auction participant from this cash security.
+    pub returned_amount: Option<rust_decimal::Decimal>,
+    /// The amount of interest applicable to the returned amount.
+    pub returned_interest: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable<IrauctionResidueConData2> for crate::AemoFile {
+impl crate::GetTable<IrauctionSraFinancialAucMardetail1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "IRAUCTION".into(),
-                        table_name: "RESIDUE_CON_DATA".into(),
-                        version: 2,
+                        table_name: "SRA_FINANCIAL_AUC_MARDETAIL".into(),
+                        version: 1,
                     }
                     
     }
@@ -609,258 +616,6 @@ impl crate::GetTable<IrauctionResidueTrk1> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## RESIDUE_PRICE_FUNDS_BID
-///  _RESIDUE_PRICE_FUNDS_BIDshows the bids producing the auction outcome, without exposing participant-specific details. RESIDUE_PRICE_FUNDS_BID is new in March 2003 to support SRA Inter-Temporal Linking._
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Residue Price Funds Bid
-/// * Data Version: 1
-/// 
-/// # Description
-///  RESIDUE_PRICE_FUNDS_BID data is public. The data is available to all auction participants post the associated auction date. Volume The volume is very dependent on the number of active bids. An indication is about 250,000 per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * AUCTIONID
-/// * CONTRACTID
-/// * FROMREGIONID
-/// * INTERCONNECTORID
-/// * LINKEDBIDFLAG
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResiduePriceFundsBid1 {
-    /// Unique id for each contract specified by AEMO
-    pub contractid: String,
-    /// Unique interconnector identifier
-    pub interconnectorid: String,
-    /// Unique region identifier
-    pub fromregionid: String,
-    /// Quantity of units bid
-    pub units: Option<rust_decimal::Decimal>,
-    /// Price bid for each unit
-    pub bidprice: Option<rust_decimal::Decimal>,
-    /// A unique option id, with respect to the auction, created to show which bid elements are linked.
-    pub linkedbidflag: rust_decimal::Decimal,
-    /// Unique id for each auction date
-    pub auctionid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionResiduePriceFundsBid1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "RESIDUE_PRICE_FUNDS_BID".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## RESIDUE_PRICE_BID
-///  _RESIDUE_PRICE_BID supports the Settlement Residue Auction, holding the unit and bid price details for each participant._
-/// 
-/// * Data Set Name: Irauction Bids
-/// * File Name: Price Bid
-/// * Data Version: 1
-/// 
-/// # Description
-///  Source The participant's own bid file RESIDUE_PRICE_BID data is confidential to the relevant participant. The public version of the data is available to all auction participants post the associated auction date in RESIDUE_PRICE_FUNDS_BID. Volume RESIDUE_PRICE_BID shows a maximum of 10,000 records per year. 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * AUCTIONID
-/// * LOADDATE
-/// * OPTIONID
-/// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionBidsPriceBid1 {
-    /// Not to be used. Unique id for each SRA contract (specified by AEMO)
-    pub contractid: Option<String>,
-    /// Participant identifier
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub loaddate: chrono::NaiveDateTime,
-    /// Unique option (bid) identifier (1..800)
-    pub optionid: rust_decimal::Decimal,
-    /// Price offered for each unit
-    pub bidprice: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
-    pub auctionid: String,
-}
-impl crate::GetTable<IrauctionBidsPriceBid1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_BIDS".into(),
-                        table_name: "PRICE_BID".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## RESIDUE_PUBLIC_DATA
-///  _RESIDUE_PUBLIC_DATA shows the public auction results.<br>RESIDUE_PUBLIC_DATA supports the Settlement Residue Auction, by holding the public details of the auction for a given contract. RESIDUE_PUBLIC_DATA joins to RESIDUE_CON_DATA and RESIDUE.<br>_
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Residue Public Data
-/// * Data Version: 1
-/// 
-/// # Description
-///  RESIDUE_PUBLIC_DATA excludes contracts and versions without a valid publication date (i.e. invalid bids are ignored).  The data is available to all auction participants post the associated auction date. Source RESIDUE_PUBLIC_DATA updates are quarterly from NEMMCO. Volume RESIDUE_PUBLIC_DATA shows a maximum of 120 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTID
-/// * FROMREGIONID
-/// * INTERCONNECTORID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResiduePublicData1 {
-    /// Unique id for each contract to be specified by AEMO
-    pub contractid: String,
-    /// Version Number
-    pub versionno: rust_decimal::Decimal,
-    /// Unique interconnector identifier
-    pub interconnectorid: String,
-    /// Nominated source region for Interconnector
-    pub fromregionid: String,
-    /// Total units offered for auction
-    pub unitsoffered: Option<rust_decimal::Decimal>,
-    /// Units Sold (modified format and usage in March 2003 to support SRA Inter-Temporal Linking)
-    pub unitssold: Option<rust_decimal::Decimal>,
-    /// Clearing price
-    pub clearingprice: Option<rust_decimal::Decimal>,
-    /// Reserve price
-    pub reserveprice: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionResiduePublicData1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "RESIDUE_PUBLIC_DATA".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## VALUATIONID
-///  _VALUATIONID shows the identifiers and descriptions of the valuers submitting estimates of upcoming settlement residues. VALUATIONID supports the Settlement Residue Auction._
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Valuationid
-/// * Data Version: 1
-/// 
-/// # Description
-///  VALUATIONID is public data, and is available to all participants. Source VALUATIONID updates are quarterly from the Settlement Residues Information System [SRIS]. Volume VALUATIONID shows up to five (5) records. Updates are rare.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * VALUATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionValuationid1 {
-    /// Identifier of the estimator
-    pub valuationid: String,
-    /// Full name of estimator
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionValuationid1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "VALUATIONID".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## AUCTION_IC_ALLOCATIONS
-///  _AUCTION_IC_ALLOCATIONS supports the Settlement Residue Auction by providing the basis for setting up contracts for individual tranches. AUCTION_IC_ALLOCATIONS shows the default definitions for the total number of units and proportion applicable to each directional interconnector for a specified auction quarter._
-/// 
-/// * Data Set Name: Irauction Config
-/// * File Name: Auction Ic Allocations
-/// * Data Version: 2
-/// 
-/// # Description
-///  AUCTION_IC_ALLOCATIONS is public data, and is available to all participants. Source Updates are usually quarterly as auctions are held from Settlement Residue Auction team's SRIS interface. Volume AUCTION_IC_ALLOCATIONS contains a maximum of 100 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTYEAR
-/// * FROMREGIONID
-/// * INTERCONNECTORID
-/// * QUARTER
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionIcAllocations2 {
-    /// SRA Contracted Year
-    pub contractyear: rust_decimal::Decimal,
-    /// SRA Contracted Quarter
-    pub quarter: rust_decimal::Decimal,
-    /// Version of data for other key data - a higher version for same key data takes precedence
-    pub versionno: rust_decimal::Decimal,
-    /// Contracted Interconnector Identifier
-    pub interconnectorid: String,
-    /// Nominated source region for Interconnector
-    pub fromregionid: String,
-    /// Number of units on the interconnector
-    pub maximumunits: Option<rust_decimal::Decimal>,
-    /// Percentage of the total residue for each Unit
-    pub proportion: Option<rust_decimal::Decimal>,
-    /// Daily auction fee
-    pub auctionfee: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub changedate: Option<chrono::NaiveDateTime>,
-    /// Name of person authorising this data set
-    pub changedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Fees for Cancelled Units.
-    pub auctionfee_sales: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable<IrauctionConfigAuctionIcAllocations2> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: "AUCTION_IC_ALLOCATIONS".into(),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## RESIDUE_CON_FUNDS
 ///  _RESIDUE_CON_FUNDS supports the Settlement Residue Auction, by holding the fund details for each contract._
 /// 
@@ -910,6 +665,426 @@ impl crate::GetTable<IrauctionResidueConFunds1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "IRAUCTION".into(),
                         table_name: "RESIDUE_CON_FUNDS".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## VALUATIONID
+///  _VALUATIONID shows the identifiers and descriptions of the valuers submitting estimates of upcoming settlement residues. VALUATIONID supports the Settlement Residue Auction._
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Valuationid
+/// * Data Version: 1
+/// 
+/// # Description
+///  VALUATIONID is public data, and is available to all participants. Source VALUATIONID updates are quarterly from the Settlement Residues Information System [SRIS]. Volume VALUATIONID shows up to five (5) records. Updates are rare.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * VALUATIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionValuationid1 {
+    /// Identifier of the estimator
+    pub valuationid: String,
+    /// Full name of estimator
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionValuationid1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "VALUATIONID".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_FINANCIAL_AUC_RECEIPTS
+///  _Records details of the Cancelled Units and their value for the Auction Participant_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Financial Auc Receipts
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTID
+/// * FROMREGIONID
+/// * INTERCONNECTORID
+/// * PARTICIPANTID
+/// * SRA_QUARTER
+/// * SRA_RUNNO
+/// * SRA_YEAR
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraFinancialAucReceipts1 {
+    /// Year of the Tranche
+    pub sra_year: i64,
+    /// Relevant Quarter of the Tranche
+    pub sra_quarter: i64,
+    /// SRA Run Number
+    pub sra_runno: i64,
+    /// Unique participant identifier
+    pub participantid: String,
+    /// The identifier for the Directional Interconnector
+    pub interconnectorid: String,
+    /// The source region identifier for the Directional Interconnector
+    pub fromregionid: String,
+    /// The SRA contract identifier
+    pub contractid: String,
+    /// The number of units purchased
+    pub units_purchased: Option<rust_decimal::Decimal>,
+    /// The clearing price of the auction
+    pub clearing_price: Option<rust_decimal::Decimal>,
+    /// The payment amount owed to AEMO
+    pub receipt_amount: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Dollar value of Cancelled Units in the Auction for the Auction Participant
+    pub proceeds_amount: Option<rust_decimal::Decimal>,
+    /// Units cancelled in the auction by the Auction  participant.
+    pub units_sold: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<IrauctionSraFinancialAucReceipts1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_FINANCIAL_AUC_RECEIPTS".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_FINANCIAL_AUC_MARGIN
+///  _Records the amount of Cash Security required to be held by an Auction Participant after settlement_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Financial Auc Margin
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * PARTICIPANTID
+/// * SRA_QUARTER
+/// * SRA_RUNNO
+/// * SRA_YEAR
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraFinancialAucMargin1 {
+    /// Year of the Tranche
+    pub sra_year: i64,
+    /// Relevant Quarter of the Tranche
+    pub sra_quarter: i64,
+    /// SRA Run Number
+    pub sra_runno: i64,
+    /// Unique  participant identifier.
+    pub participantid: String,
+    /// Total cash security held by the participant.
+    pub total_cash_security: Option<rust_decimal::Decimal>,
+    /// The amount of trading  cash security required to be held by the participant after settlement.
+    pub required_margin: Option<rust_decimal::Decimal>,
+    /// The amount of cash security returned to the participant.
+    pub returned_margin: Option<rust_decimal::Decimal>,
+    /// The amount of interest applicable to returned cash security amounts.
+    pub returned_margin_interest: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<IrauctionSraFinancialAucMargin1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_FINANCIAL_AUC_MARGIN".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_FINANCIAL_AUCPAY_SUM
+///  _Records a summary of the Auction payment amount_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Financial Aucpay Sum
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * PARTICIPANTID
+/// * SRA_QUARTER
+/// * SRA_RUNNO
+/// * SRA_YEAR
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraFinancialAucpaySum1 {
+    /// Year of the Tranche
+    pub sra_year: i64,
+    /// Relevant Quarter of the Tranche
+    pub sra_quarter: i64,
+    /// SRA Run Number
+    pub sra_runno: i64,
+    /// Unique participant identifier
+    pub participantid: String,
+    /// The total auction proceeds allocated to the TNSP
+    pub gross_proceeds_amount: Option<rust_decimal::Decimal>,
+    /// The total auction proceeds allocated to all TNSPs in the SRA quarter
+    pub total_gross_proceeds_amount: Option<rust_decimal::Decimal>,
+    /// The shortfall amount for in the SRA Quarter for the TNSP
+    pub shortfall_amount: Option<rust_decimal::Decimal>,
+    /// The total shortfall amount for in the SRA Quarter for all TNSPs
+    pub total_shortfall_amount: Option<rust_decimal::Decimal>,
+    /// The net payment amount owed by AEMO to the TNSP
+    pub net_payment_amount: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionSraFinancialAucpaySum1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_FINANCIAL_AUCPAY_SUM".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## RESIDUEFILETRK
+///  _RESIDUEFILETRK records all Settlement Residue Auction offers submitted by participants._
+/// 
+/// * Data Set Name: Irauction Bids
+/// * File Name: File Trk
+/// * Data Version: 1
+/// 
+/// # Description
+///  RESIDUEFILETRK data is confidential to each participant Source RESIDUEFILETRK updates are ad hoc from participants Volume Assuming quarterly contracts RESIDUEFILETRK contains a maximum of 5,000 records per annum. Each bid file can contain many bids for each auction. Participants can input multiple bids (with the last acknowledged file being used in the auction).
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * AUCTIONID
+/// * LOADDATE
+/// * PARTICIPANTID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionBidsFileTrk1 {
+    /// SRA ContractID
+    pub contractid: Option<String>,
+    /// Participant Identifier
+    pub participantid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub loaddate: chrono::NaiveDateTime,
+    /// SRA offer file name
+    pub filename: Option<String>,
+    /// SRA acknowledgment file name
+    pub ackfilename: Option<String>,
+    /// Load status [SUCCESSFUL/CORRUPT]
+    pub status: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
+    pub auctionid: String,
+}
+impl crate::GetTable<IrauctionBidsFileTrk1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION_BIDS".into(),
+                        table_name: "FILE_TRK".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## AUCTION_REVENUE_ESTIMATE
+///  _AUCTION_REVENUE_ESTIMATE supports the Settlement Residue Auction, by holding the evaluator’s estimates of revenue for each month of a given quarter.<br>Since reserve prices are no longer applicable from the end of 2001, zero is used as a default to avoid rewriting the system._
+/// 
+/// * Data Set Name: Irauction Config
+/// * File Name: Auction Revenue Estimate
+/// * Data Version: 1
+/// 
+/// # Description
+///  AUCTION_REVENUE_ESTIMATE is public data, and is available to all participants. Source Updates are quarterly from SRA team via SRIS interface Volume AUCTION_REVENUE_ESTIMATE contains a maximum of 300 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTYEAR
+/// * FROMREGIONID
+/// * INTERCONNECTORID
+/// * MONTHNO
+/// * QUARTER
+/// * VALUATIONID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionConfigAuctionRevenueEstimate1 {
+    /// SRA Contracted Year
+    pub contractyear: rust_decimal::Decimal,
+    /// SRA Contracted Quarter
+    pub quarter: rust_decimal::Decimal,
+    /// Identifier of the estimator
+    pub valuationid: String,
+    /// Version of data for other key data - a higher version for same key data will take precedence
+    pub versionno: rust_decimal::Decimal,
+    /// Contracted Interconnector
+    pub interconnectorid: String,
+    /// Nominated source region for Interconnector
+    pub fromregionid: String,
+    /// Month number within quarter (1..3) 
+    pub monthno: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    /// Estimated Revenue
+    pub revenue: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionConfigAuctionRevenueEstimate1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION_CONFIG".into(),
+                        table_name: "AUCTION_REVENUE_ESTIMATE".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## AUCTION
+///  _AUCTION holds auction details. AUCTION is new in March 2003 to support SRA Inter-Temporal Linking._
+/// 
+/// * Data Set Name: Irauction Config
+/// * File Name: Auction
+/// * Data Version: 1
+/// 
+/// # Description
+///  AUCTION is public data, and is available to all participants. Source Static. Volume 4 records per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * AUCTIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionConfigAuction1 {
+    /// Unique id for each auction date
+    pub auctionid: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub auctiondate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub notifydate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    /// Description of an auction
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// &nbsp; 
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionConfigAuction1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION_CONFIG".into(),
+                        table_name: "AUCTION".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## AUCTION_REVENUE_TRACK
+///  _AUCTION_REVENUE_TRACK supports the Settlement Residue Auction, by holding the tracking information for each evaluator’s estimates for a given quarter. The status field is dynamic and is used for selection of estimates to be published._
+/// 
+/// * Data Set Name: Irauction Config
+/// * File Name: Auction Revenue Track
+/// * Data Version: 1
+/// 
+/// # Description
+///  AUCTION_REVENUE_TRACK is public data, and is available to all participants. Source Updates are quarterly after SRA team updates SRIS interface. Volume AUCTION_REVENUE_TRACK contains a maximum of 100 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTYEAR
+/// * QUARTER
+/// * VALUATIONID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionConfigAuctionRevenueTrack1 {
+    /// SRA Contracted Year
+    pub contractyear: rust_decimal::Decimal,
+    /// SRA Contracted Quarter
+    pub quarter: rust_decimal::Decimal,
+    /// Identifier of the estimator
+    pub valuationid: String,
+    /// Version of data for other key data - a higher version for same key data takes precedence
+    pub versionno: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub effectivedate: Option<chrono::NaiveDateTime>,
+    /// Internal use
+    pub status: Option<String>,
+    /// Reference to methodology document
+    pub documentref: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Name of person authorising this record
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionConfigAuctionRevenueTrack1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION_CONFIG".into(),
+                        table_name: "AUCTION_REVENUE_TRACK".into(),
                         version: 1,
                     }
                     
@@ -982,99 +1157,57 @@ impl crate::GetTable<IrauctionSraPrudentialExposure1> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## SRA_FINANCIAL_AUCPAY_SUM
-///  _Records a summary of the Auction payment amount_
+/// ## AUCTION_CALENDAR
+///  _AUCTION_CALENDAR holds the definitions of each auction quarter in a contract year. AUCTION_CALENDAR supports the Settlement Residue Auction._
 /// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Financial Aucpay Sum
-/// * Data Version: 1
+/// * Data Set Name: Irauction Config
+/// * File Name: Auction Calendar
+/// * Data Version: 2
 /// 
-/// 
+/// # Description
+///  AUCTION_CALENDAR is public data, and is available to all participants. Source Updates are usually quarterly by the SRA team. Volume AUCTION_CALENDAR shows a maximum of 16 records per year.
 /// 
 /// # Notes
-///  * (Visibility) Data in this table is: Private
+///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
-/// * PARTICIPANTID
-/// * SRA_QUARTER
-/// * SRA_RUNNO
-/// * SRA_YEAR
+/// * CONTRACTYEAR
+/// * QUARTER
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucpaySum1 {
-    /// Year of the Tranche
-    pub sra_year: i64,
-    /// Relevant Quarter of the Tranche
-    pub sra_quarter: i64,
-    /// SRA Run Number
-    pub sra_runno: i64,
-    /// Unique participant identifier
-    pub participantid: String,
-    /// The total auction proceeds allocated to the TNSP
-    pub gross_proceeds_amount: Option<rust_decimal::Decimal>,
-    /// The total auction proceeds allocated to all TNSPs in the SRA quarter
-    pub total_gross_proceeds_amount: Option<rust_decimal::Decimal>,
-    /// The shortfall amount for in the SRA Quarter for the TNSP
-    pub shortfall_amount: Option<rust_decimal::Decimal>,
-    /// The total shortfall amount for in the SRA Quarter for all TNSPs
-    pub total_shortfall_amount: Option<rust_decimal::Decimal>,
-    /// The net payment amount owed by AEMO to the TNSP
-    pub net_payment_amount: Option<rust_decimal::Decimal>,
+pub struct IrauctionConfigAuctionCalendar2 {
+    /// SRA Contracted Year
+    pub contractyear: rust_decimal::Decimal,
+    /// SRA Contracted Quarter
+    pub quarter: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub notifydate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub paymentdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub reconciliationdate: Option<chrono::NaiveDateTime>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub prelimpurchasestmtdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub prelimproceedsstmtdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub finalpurchasestmtdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub finalproceedsstmtdate: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable<IrauctionSraFinancialAucpaySum1> for crate::AemoFile {
+impl crate::GetTable<IrauctionConfigAuctionCalendar2> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_FINANCIAL_AUCPAY_SUM".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SRA_PRUDENTIAL_COMP_POSITION
-///  _The prudential position of each company at the date and time of a specific prudential run_
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Prudential Comp Position
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * PARTICIPANTID
-/// * PRUDENTIAL_DATE
-/// * PRUDENTIAL_RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialCompPosition1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub prudential_date: chrono::NaiveDateTime,
-    /// The run number for the prudential date
-    pub prudential_runno: i64,
-    /// Unique participant identifier
-    pub participantid: String,
-    /// The Trading Limit of the company at the time of the prudential run 
-    pub trading_limit: Option<rust_decimal::Decimal>,
-    /// Current Prudential Exposure of the Auction Participant including Offers
-    pub prudential_exposure_amount: Option<rust_decimal::Decimal>,
-    /// The amount of Trading Margin available to the Auction Participant to trade (including Offered Units and Cancelled Units). Equal to TRADING_LIMIT â€“ PRUDENTIAL_EXPOSURE_AMOUNT.
-    pub trading_margin: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable<IrauctionSraPrudentialCompPosition1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_PRUDENTIAL_COMP_POSITION".into(),
-                        version: 1,
+                        data_set_name: "IRAUCTION_CONFIG".into(),
+                        table_name: "AUCTION_CALENDAR".into(),
+                        version: 2,
                     }
                     
     }
@@ -1127,6 +1260,233 @@ impl crate::GetTable<IrauctionBidsFundsBid1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "IRAUCTION_BIDS".into(),
                         table_name: "FUNDS_BID".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## AUCTION_IC_ALLOCATIONS
+///  _AUCTION_IC_ALLOCATIONS supports the Settlement Residue Auction by providing the basis for setting up contracts for individual tranches. AUCTION_IC_ALLOCATIONS shows the default definitions for the total number of units and proportion applicable to each directional interconnector for a specified auction quarter._
+/// 
+/// * Data Set Name: Irauction Config
+/// * File Name: Auction Ic Allocations
+/// * Data Version: 2
+/// 
+/// # Description
+///  AUCTION_IC_ALLOCATIONS is public data, and is available to all participants. Source Updates are usually quarterly as auctions are held from Settlement Residue Auction team's SRIS interface. Volume AUCTION_IC_ALLOCATIONS contains a maximum of 100 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTYEAR
+/// * FROMREGIONID
+/// * INTERCONNECTORID
+/// * QUARTER
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionConfigAuctionIcAllocations2 {
+    /// SRA Contracted Year
+    pub contractyear: rust_decimal::Decimal,
+    /// SRA Contracted Quarter
+    pub quarter: rust_decimal::Decimal,
+    /// Version of data for other key data - a higher version for same key data takes precedence
+    pub versionno: rust_decimal::Decimal,
+    /// Contracted Interconnector Identifier
+    pub interconnectorid: String,
+    /// Nominated source region for Interconnector
+    pub fromregionid: String,
+    /// Number of units on the interconnector
+    pub maximumunits: Option<rust_decimal::Decimal>,
+    /// Percentage of the total residue for each Unit
+    pub proportion: Option<rust_decimal::Decimal>,
+    /// Daily auction fee
+    pub auctionfee: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub changedate: Option<chrono::NaiveDateTime>,
+    /// Name of person authorising this data set
+    pub changedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Fees for Cancelled Units.
+    pub auctionfee_sales: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<IrauctionConfigAuctionIcAllocations2> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION_CONFIG".into(),
+                        table_name: "AUCTION_IC_ALLOCATIONS".into(),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SRA_PRUDENTIAL_CASH_SECURITY
+///  _Records the Cash Security details provided by an SRA Auction Participant as collateral to cover their Trading Position in the SRA market_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Sra Prudential Cash Security
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * CASH_SECURITY_ID
+/// * PARTICIPANTID
+/// * PRUDENTIAL_DATE
+/// * PRUDENTIAL_RUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionSraPrudentialCashSecurity1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub prudential_date: chrono::NaiveDateTime,
+    /// The run number for the prudential date
+    pub prudential_runno: i64,
+    /// Unique participant identifier for the Auction Participant lodging the Cash Security
+    pub participantid: String,
+    /// Unique identifier for the cash security.
+    pub cash_security_id: String,
+    /// Remaining Cash Security deposit available
+    pub cash_security_amount: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<IrauctionSraPrudentialCashSecurity1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "SRA_PRUDENTIAL_CASH_SECURITY".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## RESIDUE_CONTRACTS
+///  _RESIDUE_CONTRACTS supports the Settlement Residue Auction, by holding the contract details for each period for which a residue contract will be offered._
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Residue Contracts
+/// * Data Version: 1
+/// 
+/// # Description
+///  RESIDUE_CONTRACTS data is public, so is available to all participants. Source RESIDUE_CONTRACTS updates are quarterly by AEMO. Volume Assuming quarterly contracts, RESIDUE_CONTRACTS contains a maximum of 50 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTYEAR
+/// * QUARTER
+/// * TRANCHE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionResidueContracts1 {
+    /// SRA Contracted Year
+    pub contractyear: rust_decimal::Decimal,
+    /// SRA Contracted Quarter
+    pub quarter: rust_decimal::Decimal,
+    /// Label identifying the arbitrary segmented share of the Interconnector flow
+    pub tranche: rust_decimal::Decimal,
+    /// Unique identifier for each SRA Contract as specified by AEMO
+    pub contractid: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub notifydate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub auctiondate: Option<chrono::NaiveDateTime>,
+    /// Identifies methodology used
+    pub calcmethod: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Name of authorising officer or process
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub notifypostdate: Option<chrono::NaiveDateTime>,
+    /// Name of notifying person
+    pub notifyby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub postdate: Option<chrono::NaiveDateTime>,
+    /// Name of publishing officer or process
+    pub postedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Description of Contract
+    pub description: Option<String>,
+    /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking) 
+    pub auctionid: Option<String>,
+}
+impl crate::GetTable<IrauctionResidueContracts1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "RESIDUE_CONTRACTS".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## RESIDUE_PUBLIC_DATA
+///  _RESIDUE_PUBLIC_DATA shows the public auction results.<br>RESIDUE_PUBLIC_DATA supports the Settlement Residue Auction, by holding the public details of the auction for a given contract. RESIDUE_PUBLIC_DATA joins to RESIDUE_CON_DATA and RESIDUE.<br>_
+/// 
+/// * Data Set Name: Irauction
+/// * File Name: Residue Public Data
+/// * Data Version: 1
+/// 
+/// # Description
+///  RESIDUE_PUBLIC_DATA excludes contracts and versions without a valid publication date (i.e. invalid bids are ignored).  The data is available to all auction participants post the associated auction date. Source RESIDUE_PUBLIC_DATA updates are quarterly from NEMMCO. Volume RESIDUE_PUBLIC_DATA shows a maximum of 120 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTID
+/// * FROMREGIONID
+/// * INTERCONNECTORID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct IrauctionResiduePublicData1 {
+    /// Unique id for each contract to be specified by AEMO
+    pub contractid: String,
+    /// Version Number
+    pub versionno: rust_decimal::Decimal,
+    /// Unique interconnector identifier
+    pub interconnectorid: String,
+    /// Nominated source region for Interconnector
+    pub fromregionid: String,
+    /// Total units offered for auction
+    pub unitsoffered: Option<rust_decimal::Decimal>,
+    /// Units Sold (modified format and usage in March 2003 to support SRA Inter-Temporal Linking)
+    pub unitssold: Option<rust_decimal::Decimal>,
+    /// Clearing price
+    pub clearingprice: Option<rust_decimal::Decimal>,
+    /// Reserve price
+    pub reserveprice: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<IrauctionResiduePublicData1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "RESIDUE_PUBLIC_DATA".into(),
                         version: 1,
                     }
                     
@@ -1189,174 +1549,6 @@ impl crate::GetTable<IrauctionConfigAuctionTranche1> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## SRA_FINANCIAL_AUC_MARGIN
-///  _Records the amount of Cash Security required to be held by an Auction Participant after settlement_
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Financial Auc Margin
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * PARTICIPANTID
-/// * SRA_QUARTER
-/// * SRA_RUNNO
-/// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucMargin1 {
-    /// Year of the Tranche
-    pub sra_year: i64,
-    /// Relevant Quarter of the Tranche
-    pub sra_quarter: i64,
-    /// SRA Run Number
-    pub sra_runno: i64,
-    /// Unique  participant identifier.
-    pub participantid: String,
-    /// Total cash security held by the participant.
-    pub total_cash_security: Option<rust_decimal::Decimal>,
-    /// The amount of trading  cash security required to be held by the participant after settlement.
-    pub required_margin: Option<rust_decimal::Decimal>,
-    /// The amount of cash security returned to the participant.
-    pub returned_margin: Option<rust_decimal::Decimal>,
-    /// The amount of interest applicable to returned cash security amounts.
-    pub returned_margin_interest: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable<IrauctionSraFinancialAucMargin1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_FINANCIAL_AUC_MARGIN".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SRA_FINANCIAL_AUC_RECEIPTS
-///  _Records details of the Cancelled Units and their value for the Auction Participant_
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Financial Auc Receipts
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTID
-/// * FROMREGIONID
-/// * INTERCONNECTORID
-/// * PARTICIPANTID
-/// * SRA_QUARTER
-/// * SRA_RUNNO
-/// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucReceipts1 {
-    /// Year of the Tranche
-    pub sra_year: i64,
-    /// Relevant Quarter of the Tranche
-    pub sra_quarter: i64,
-    /// SRA Run Number
-    pub sra_runno: i64,
-    /// Unique participant identifier
-    pub participantid: String,
-    /// The identifier for the Directional Interconnector
-    pub interconnectorid: String,
-    /// The source region identifier for the Directional Interconnector
-    pub fromregionid: String,
-    /// The SRA contract identifier
-    pub contractid: String,
-    /// The number of units purchased
-    pub units_purchased: Option<rust_decimal::Decimal>,
-    /// The clearing price of the auction
-    pub clearing_price: Option<rust_decimal::Decimal>,
-    /// The payment amount owed to AEMO
-    pub receipt_amount: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Dollar value of Cancelled Units in the Auction for the Auction Participant
-    pub proceeds_amount: Option<rust_decimal::Decimal>,
-    /// Units cancelled in the auction by the Auction  participant.
-    pub units_sold: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable<IrauctionSraFinancialAucReceipts1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_FINANCIAL_AUC_RECEIPTS".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## AUCTION_REVENUE_TRACK
-///  _AUCTION_REVENUE_TRACK supports the Settlement Residue Auction, by holding the tracking information for each evaluator’s estimates for a given quarter. The status field is dynamic and is used for selection of estimates to be published._
-/// 
-/// * Data Set Name: Irauction Config
-/// * File Name: Auction Revenue Track
-/// * Data Version: 1
-/// 
-/// # Description
-///  AUCTION_REVENUE_TRACK is public data, and is available to all participants. Source Updates are quarterly after SRA team updates SRIS interface. Volume AUCTION_REVENUE_TRACK contains a maximum of 100 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTYEAR
-/// * QUARTER
-/// * VALUATIONID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionRevenueTrack1 {
-    /// SRA Contracted Year
-    pub contractyear: rust_decimal::Decimal,
-    /// SRA Contracted Quarter
-    pub quarter: rust_decimal::Decimal,
-    /// Identifier of the estimator
-    pub valuationid: String,
-    /// Version of data for other key data - a higher version for same key data takes precedence
-    pub versionno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub effectivedate: Option<chrono::NaiveDateTime>,
-    /// Internal use
-    pub status: Option<String>,
-    /// Reference to methodology document
-    pub documentref: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// Name of person authorising this record
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionConfigAuctionRevenueTrack1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: "AUCTION_REVENUE_TRACK".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## RESIDUECONTRACTPAYMENTS
 ///  _RESIDUECONTRACTPAYMENTS shows Settlement Residue Auction payment Participant notifications._
 /// 
@@ -1389,57 +1581,6 @@ impl crate::GetTable<SettlementConfigResiduecontractpayments1> for crate::AemoFi
                     crate::FileKey {
                         data_set_name: "SETTLEMENT_CONFIG".into(),
                         table_name: "RESIDUECONTRACTPAYMENTS".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SRA_FINANCIAL_RUNTRK
-///  _Records details of the settlement process for the cancellation and purchase of SRA Auction Units_
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Financial Runtrk
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * SRA_QUARTER
-/// * SRA_RUNNO
-/// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialRuntrk1 {
-    /// Year of the Tranche
-    pub sra_year: i64,
-    /// Relevant Quarter of the Tranche
-    pub sra_quarter: i64,
-    /// SRA Run Number
-    pub sra_runno: i64,
-    /// The type of SRA run
-    pub runtype: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub rundate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub posteddate: Option<chrono::NaiveDateTime>,
-    /// Version number of the interest component used in the payments run
-    pub interest_versionno: Option<i64>,
-    /// Version number of the makeup component used in the makeup run
-    pub makeup_versionno: Option<i64>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionSraFinancialRuntrk1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_FINANCIAL_RUNTRK".into(),
                         version: 1,
                     }
                     
@@ -1494,186 +1635,45 @@ impl crate::GetTable<IrauctionResidueConEstimatesTrk1> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## SRA_PRUDENTIAL_RUN
-///  _Records the prudential run details for each prudential date_
+/// ## RESIDUE_BID_TRK
+///  _RESIDUE_BID_TRK supports the Settlement Residue Auction, by detailing which bid was used for which SRA Contract run._
 /// 
 /// * Data Set Name: Irauction
-/// * File Name: Sra Prudential Run
+/// * File Name: Residue Bid Trk
 /// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * PRUDENTIAL_DATE
-/// * PRUDENTIAL_RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialRun1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub prudential_date: chrono::NaiveDateTime,
-    /// The prudential run number for the run
-    pub prudential_runno: i64,
-}
-impl crate::GetTable<IrauctionSraPrudentialRun1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_PRUDENTIAL_RUN".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## AUCTION_CALENDAR
-///  _AUCTION_CALENDAR holds the definitions of each auction quarter in a contract year. AUCTION_CALENDAR supports the Settlement Residue Auction._
-/// 
-/// * Data Set Name: Irauction Config
-/// * File Name: Auction Calendar
-/// * Data Version: 2
 /// 
 /// # Description
-///  AUCTION_CALENDAR is public data, and is available to all participants. Source Updates are usually quarterly by the SRA team. Volume AUCTION_CALENDAR shows a maximum of 16 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTYEAR
-/// * QUARTER
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionCalendar2 {
-    /// SRA Contracted Year
-    pub contractyear: rust_decimal::Decimal,
-    /// SRA Contracted Quarter
-    pub quarter: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub enddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub notifydate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub paymentdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub reconciliationdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub prelimpurchasestmtdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub prelimproceedsstmtdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub finalpurchasestmtdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub finalproceedsstmtdate: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<IrauctionConfigAuctionCalendar2> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: "AUCTION_CALENDAR".into(),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SRA_PRUDENTIAL_CASH_SECURITY
-///  _Records the Cash Security details provided by an SRA Auction Participant as collateral to cover their Trading Position in the SRA market_
-/// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Prudential Cash Security
-/// * Data Version: 1
-/// 
-/// 
+///  Source RESIDUE_BID_TRK updates are usually quarterly from participants before an Auction. RESIDUE_BID_TRK data is confidential to the relevant participant. RESIDUE_BID_TRK excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume Assuming monthly contracts, RESIDUE_BID_TRK shows a maximum of 500 records per year. 
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * CASH_SECURITY_ID
-/// * PARTICIPANTID
-/// * PRUDENTIAL_DATE
-/// * PRUDENTIAL_RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialCashSecurity1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub prudential_date: chrono::NaiveDateTime,
-    /// The run number for the prudential date
-    pub prudential_runno: i64,
-    /// Unique participant identifier for the Auction Participant lodging the Cash Security
-    pub participantid: String,
-    /// Unique identifier for the cash security.
-    pub cash_security_id: String,
-    /// Remaining Cash Security deposit available
-    pub cash_security_amount: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable<IrauctionSraPrudentialCashSecurity1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_PRUDENTIAL_CASH_SECURITY".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## AUCTION
-///  _AUCTION holds auction details. AUCTION is new in March 2003 to support SRA Inter-Temporal Linking._
-/// 
-/// * Data Set Name: Irauction Config
-/// * File Name: Auction
-/// * Data Version: 1
-/// 
-/// # Description
-///  AUCTION is public data, and is available to all participants. Source Static. Volume 4 records per year
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
 /// * AUCTIONID
+/// * PARTICIPANTID
+/// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuction1 {
-    /// Unique id for each auction date
-    pub auctionid: String,
+pub struct IrauctionResidueBidTrk1 {
+    /// SRA Contract unique identifier
+    pub contractid: Option<String>,
+    /// Version of Bid used
+    pub versionno: rust_decimal::Decimal,
+    /// Identifier of participant
+    pub participantid: String,
     #[serde(with = "crate::mms_datetime_opt")]
-    pub auctiondate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub notifydate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub enddate: Option<chrono::NaiveDateTime>,
-    /// Description of an auction
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
-    pub authorisedby: Option<String>,
+    pub bidloaddate: Option<chrono::NaiveDateTime>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking) 
+    pub auctionid: String,
 }
-impl crate::GetTable<IrauctionConfigAuction1> for crate::AemoFile {
+impl crate::GetTable<IrauctionResidueBidTrk1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: "AUCTION".into(),
+                        data_set_name: "IRAUCTION".into(),
+                        table_name: "RESIDUE_BID_TRK".into(),
                         version: 1,
                     }
                     
@@ -1681,48 +1681,48 @@ impl crate::GetTable<IrauctionConfigAuction1> for crate::AemoFile {
 }
 /// # Summary
 /// 
-/// ## SRA_FINANCIAL_AUC_MARDETAIL
-///  _This table stores details of the margins returned to the participants._
+/// ## RESIDUE_PRICE_BID
+///  _RESIDUE_PRICE_BID supports the Settlement Residue Auction, holding the unit and bid price details for each participant._
 /// 
-/// * Data Set Name: Irauction
-/// * File Name: Sra Financial Auc Mardetail
+/// * Data Set Name: Irauction Bids
+/// * File Name: Price Bid
 /// * Data Version: 1
 /// 
-/// 
+/// # Description
+///  Source The participant's own bid file RESIDUE_PRICE_BID data is confidential to the relevant participant. The public version of the data is available to all auction participants post the associated auction date in RESIDUE_PRICE_FUNDS_BID. Volume RESIDUE_PRICE_BID shows a maximum of 10,000 records per year. 
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
 /// 
 /// # Primary Key Columns
 /// 
-/// * CASH_SECURITY_ID
+/// * AUCTIONID
+/// * LOADDATE
+/// * OPTIONID
 /// * PARTICIPANTID
-/// * SRA_QUARTER
-/// * SRA_RUNNO
-/// * SRA_YEAR
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucMardetail1 {
-    /// Year of the Tranche
-    pub sra_year: i64,
-    /// Relevant Quarter of the Tranche
-    pub sra_quarter: i64,
-    /// SRA Run Number
-    pub sra_runno: i64,
-    /// The participant identifier.
+pub struct IrauctionBidsPriceBid1 {
+    /// Not to be used. Unique id for each SRA contract (specified by AEMO)
+    pub contractid: Option<String>,
+    /// Participant identifier
     pub participantid: String,
-    /// Unique identifier for the cash security.
-    pub cash_security_id: String,
-    /// The amount returned to the Auction participant from this cash security.
-    pub returned_amount: Option<rust_decimal::Decimal>,
-    /// The amount of interest applicable to the returned amount.
-    pub returned_interest: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime")]
+    pub loaddate: chrono::NaiveDateTime,
+    /// Unique option (bid) identifier (1..800)
+    pub optionid: rust_decimal::Decimal,
+    /// Price offered for each unit
+    pub bidprice: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
+    pub auctionid: String,
 }
-impl crate::GetTable<IrauctionSraFinancialAucMardetail1> for crate::AemoFile {
+impl crate::GetTable<IrauctionBidsPriceBid1> for crate::AemoFile {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: "SRA_FINANCIAL_AUC_MARDETAIL".into(),
+                        data_set_name: "IRAUCTION_BIDS".into(),
+                        table_name: "PRICE_BID".into(),
                         version: 1,
                     }
                     

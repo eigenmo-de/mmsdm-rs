@@ -1,5 +1,5 @@
-use std::{collections, fs, iter, string};
 use crate::mms;
+use std::{collections, fs, iter, string};
 
 lazy_static::lazy_static! {
     static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();
@@ -23,7 +23,7 @@ pub async fn run() -> anyhow::Result<()> {
     // All the links down the left side of the page
     // which are organized in a nested tree, first layer
     // is the "Package" and inside the package there are
-    // multiple "Tables". 
+    // multiple "Tables".
     for el in doc.select(&A) {
         dbg!(&current_package);
         let text = el.inner_html();
@@ -34,16 +34,21 @@ pub async fn run() -> anyhow::Result<()> {
             // currently getting tables for
             current_package = package.clone();
         } else if text.starts_with("Table:") {
-
             // We can only deal with a "Table" link
             // if we are dealing with a "Package".
             if let Some(current) = current_package.clone() {
                 // get the link and remove everything after the #
-                let link_val = el.value().attr("href").unwrap().split(".htm#").nth(0).unwrap();
+                let link_val = el
+                    .value()
+                    .attr("href")
+                    .unwrap()
+                    .split(".htm#")
+                    .nth(0)
+                    .unwrap();
                 dbg!(&link_val);
-                // some tables have tons of columns and have a paginated 
+                // some tables have tons of columns and have a paginated
                 // column listing, such that for each page we have to ask
-                // for the base url, as well as _1, _2, etc, until we 
+                // for the base url, as well as _1, _2, etc, until we
                 // stop recieving a successfull HTTP response.
                 let mut docs = Vec::new();
                 for i in 0..=100_usize {

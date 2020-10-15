@@ -1,56 +1,5 @@
 /// # Summary
 /// 
-/// ## STPASA_CONSTRAINTSOLUTION
-///  _STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
-/// 
-/// * Data Set Name: Stpasa
-/// * File Name: Constraintsolution
-/// * Data Version: 2
-/// 
-/// # Description
-///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONSTRAINTID
-/// * INTERVAL_DATETIME
-/// * RUN_DATETIME
-/// * RUNTYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaConstraintsolution2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Constraint identifier (synonymous with GenConID)
-    pub constraintid: String,
-    /// The RHS value in the capacity evaluation.
-    pub capacityrhs: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment marginal value, 0 if not binding
-    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment violation degree for generic constraint; 0 if not violating
-    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
-    pub runtype: String,
-}
-impl crate::GetTable<StpasaConstraintsolution2> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "STPASA".into(),
-                        table_name: "CONSTRAINTSOLUTION".into(),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## STPASA_CASESOLUTION
 ///  _STPASA_CASESOLUTION holds one record containing results pertaining to each entire solution_
 /// 
@@ -293,6 +242,57 @@ impl crate::GetTable<StpasaRegionsolution5> for crate::AemoFile {
                         data_set_name: "STPASA".into(),
                         table_name: "REGIONSOLUTION".into(),
                         version: 5,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## STPASA_CONSTRAINTSOLUTION
+///  _STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
+/// 
+/// * Data Set Name: Stpasa
+/// * File Name: Constraintsolution
+/// * Data Version: 2
+/// 
+/// # Description
+///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * RUNTYPE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct StpasaConstraintsolution2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Constraint identifier (synonymous with GenConID)
+    pub constraintid: String,
+    /// The RHS value in the capacity evaluation.
+    pub capacityrhs: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment marginal value, 0 if not binding
+    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment violation degree for generic constraint; 0 if not violating
+    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
+    pub runtype: String,
+}
+impl crate::GetTable<StpasaConstraintsolution2> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "STPASA".into(),
+                        table_name: "CONSTRAINTSOLUTION".into(),
+                        version: 2,
                     }
                     
     }

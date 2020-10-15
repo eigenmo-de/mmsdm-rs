@@ -1,5 +1,75 @@
 /// # Summary
 /// 
+/// ## PDPASA_CASESOLUTION
+///  _The top-level table identifying a PDPASA case, reporting options applied in the case and summary results_
+/// 
+/// * Data Set Name: Pdpasa
+/// * File Name: Casesolution
+/// * Data Version: 3
+/// 
+/// # Description
+///  PDPASA_CASESOLUTION is public data. Source PDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 48 Mb per month: &lt;1
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * RUN_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PdpasaCasesolution3 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Version of the PASA solver used to solve this case
+    pub pasaversion: Option<String>,
+    /// Low Reserve Condition (LRC) flag for the case (1 - LRC in the case, 0 - No LRCs in the case) for capacity run
+    pub reservecondition: Option<rust_decimal::Decimal>,
+    /// Lack of Reserve Condition (LOR) flag for the case indicates the most severe condition in the case  (3 = LOR3, 2 = LOR2, 1 = LOR1, 0 = No LOR)
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// Objective Function from the Capacity Adequacy run
+    pub capacityobjfunction: Option<rust_decimal::Decimal>,
+    /// Not populated as of 2005 End of Year Release; was the Probability of Exceedance (POE) demand forecast used for capacity adequacy (LRC) assessment. 0 if no assessment, 1 for 10% POE, 2 for 50% POE, 3 for 90% POE.
+    pub capacityoption: Option<rust_decimal::Decimal>,
+    /// Not populated as of 2005 End of Year Release; was the Probability of Exceedance (POE) demand forecast used for assessment of Maximum surplus Reserve. 0 if no assessment, 1 for 10% POE, 2 for 50% POE, 3 for 90% POE
+    pub maxsurplusreserveoption: Option<rust_decimal::Decimal>,
+    /// Not populated as of 2005 End of Year Release; was the Probability of Exceedance (POE) demand forecast used for assessment of Maximum Spare Capacity. 0 if no assessment, 1 for 10% POE, 2 for 50% POE, 3 for 90% POE
+    pub maxsparecapacityoption: Option<rust_decimal::Decimal>,
+    /// The penalty for non-zero interconnector flow
+    pub interconnectorflowpenalty: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Specifies the Probability of Exceedence (POE) demand forecast for Reliability LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
+    pub reliabilitylrcdemandoption: Option<rust_decimal::Decimal>,
+    /// Specifies the Probability of Exceedence (POE) demand forecast for outage LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
+    pub outagelrcdemandoption: Option<rust_decimal::Decimal>,
+    /// Specifies the Probability of Exceedence (POE) demand forecast for LOR assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
+    pub lordemandoption: Option<rust_decimal::Decimal>,
+    /// Generation Availability to be used in Reliability LRC run (either PASA or MARKET)
+    pub reliabilitylrccapacityoption: Option<String>,
+    /// Generation Availability to be used in Outage LRC run (either PASA or MARKET)
+    pub outagelrccapacityoption: Option<String>,
+    /// Generation Availability to be used in LOR run (either PASA or MARKET)
+    pub lorcapacityoption: Option<String>,
+    /// UIGF POE forecast availability used for this option
+    pub loruigf_option: Option<rust_decimal::Decimal>,
+    /// UIGF POE forecast availability used for this option
+    pub reliability_lrcuigf_option: Option<rust_decimal::Decimal>,
+    /// UIGF POE forecast availability used for this option
+    pub outage_lrcuigf_option: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable<PdpasaCasesolution3> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PDPASA".into(),
+                        table_name: "CASESOLUTION".into(),
+                        version: 3,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## PDPASA_REGIONSOLUTION
 ///  _The PDPASA region solution data_
 /// 
@@ -113,76 +183,6 @@ impl crate::GetTable<PdpasaRegionsolution5> for crate::AemoFile {
                         data_set_name: "PDPASA".into(),
                         table_name: "REGIONSOLUTION".into(),
                         version: 5,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## PDPASA_CASESOLUTION
-///  _The top-level table identifying a PDPASA case, reporting options applied in the case and summary results_
-/// 
-/// * Data Set Name: Pdpasa
-/// * File Name: Casesolution
-/// * Data Version: 3
-/// 
-/// # Description
-///  PDPASA_CASESOLUTION is public data. Source PDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 48 Mb per month: &lt;1
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PdpasaCasesolution3 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Version of the PASA solver used to solve this case
-    pub pasaversion: Option<String>,
-    /// Low Reserve Condition (LRC) flag for the case (1 - LRC in the case, 0 - No LRCs in the case) for capacity run
-    pub reservecondition: Option<rust_decimal::Decimal>,
-    /// Lack of Reserve Condition (LOR) flag for the case indicates the most severe condition in the case  (3 = LOR3, 2 = LOR2, 1 = LOR1, 0 = No LOR)
-    pub lorcondition: Option<rust_decimal::Decimal>,
-    /// Objective Function from the Capacity Adequacy run
-    pub capacityobjfunction: Option<rust_decimal::Decimal>,
-    /// Not populated as of 2005 End of Year Release; was the Probability of Exceedance (POE) demand forecast used for capacity adequacy (LRC) assessment. 0 if no assessment, 1 for 10% POE, 2 for 50% POE, 3 for 90% POE.
-    pub capacityoption: Option<rust_decimal::Decimal>,
-    /// Not populated as of 2005 End of Year Release; was the Probability of Exceedance (POE) demand forecast used for assessment of Maximum surplus Reserve. 0 if no assessment, 1 for 10% POE, 2 for 50% POE, 3 for 90% POE
-    pub maxsurplusreserveoption: Option<rust_decimal::Decimal>,
-    /// Not populated as of 2005 End of Year Release; was the Probability of Exceedance (POE) demand forecast used for assessment of Maximum Spare Capacity. 0 if no assessment, 1 for 10% POE, 2 for 50% POE, 3 for 90% POE
-    pub maxsparecapacityoption: Option<rust_decimal::Decimal>,
-    /// The penalty for non-zero interconnector flow
-    pub interconnectorflowpenalty: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Specifies the Probability of Exceedence (POE) demand forecast for Reliability LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
-    pub reliabilitylrcdemandoption: Option<rust_decimal::Decimal>,
-    /// Specifies the Probability of Exceedence (POE) demand forecast for outage LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
-    pub outagelrcdemandoption: Option<rust_decimal::Decimal>,
-    /// Specifies the Probability of Exceedence (POE) demand forecast for LOR assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
-    pub lordemandoption: Option<rust_decimal::Decimal>,
-    /// Generation Availability to be used in Reliability LRC run (either PASA or MARKET)
-    pub reliabilitylrccapacityoption: Option<String>,
-    /// Generation Availability to be used in Outage LRC run (either PASA or MARKET)
-    pub outagelrccapacityoption: Option<String>,
-    /// Generation Availability to be used in LOR run (either PASA or MARKET)
-    pub lorcapacityoption: Option<String>,
-    /// UIGF POE forecast availability used for this option
-    pub loruigf_option: Option<rust_decimal::Decimal>,
-    /// UIGF POE forecast availability used for this option
-    pub reliability_lrcuigf_option: Option<rust_decimal::Decimal>,
-    /// UIGF POE forecast availability used for this option
-    pub outage_lrcuigf_option: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable<PdpasaCasesolution3> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: "CASESOLUTION".into(),
-                        version: 3,
                     }
                     
     }

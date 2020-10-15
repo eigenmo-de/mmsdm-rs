@@ -51,8 +51,6 @@ impl mms::DataType {
     }
 }
 
-
-
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;
     let mapping = fs::read_to_string("table_mapping.csv").unwrap();
@@ -86,7 +84,8 @@ create table FileLog (
     inserted DateTime64,
 )
 ENGINE = MergeTree()
-ORDER BY (file_name, data_set, sub_type, version, id);"#.to_string();
+ORDER BY (file_name, data_set, sub_type, version, id);"#
+        .to_string();
     let mut proc_str = String::new();
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
     for (data_set, tables) in local_info.into_iter() {

@@ -8,4 +8,3 @@ pub struct Report {
     pub transaction_type: String,
     pub row_filter: String,
 }
-

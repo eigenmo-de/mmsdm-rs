@@ -1,0 +1,13 @@
+[package]
+name = "xtask"
+version = "0.0.0"
+authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
+edition = "2018"
+license = "MIT"
+repository = "https://github.com/esheppa/aemo-rs"
+description = "Build tasks"
+
+## Consider these crates
+#   - subprocess
+#   - run_script
+#   - fsio

@@ -1,44 +1,5 @@
 /// # Summary
 /// 
-/// ## PARTICIPANTNOTICETRK
-///  _PARTICIPANTNOTICETRK provides the cross-reference between participant market notices and participants._
-/// 
-/// * Data Set Name: Market Notice
-/// * File Name: Participantnoticetrk
-/// * Data Version: 1
-/// 
-/// # Description
-///  PARTICIPANTNOTICETRK data is Confidential to the relevant participant. Source PARTICIPANTNOTICETRK updates immediately, whenever a participant notice is issued.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * NOTICEID
-/// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketNoticeParticipantnoticetrk1 {
-    /// Unique participant identifier
-    pub participantid: String,
-    /// Market notice identifier
-    pub noticeid: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable<MarketNoticeParticipantnoticetrk1> for crate::AemoFile {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_NOTICE".into(),
-                        table_name: "PARTICIPANTNOTICETRK".into(),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## MARKETNOTICETYPE
 ///  _MARKETNOTICETYPE sets out the different types of market notices (e.g. market systems)._
 /// 
@@ -118,6 +79,45 @@ impl crate::GetTable<MarketNoticeMarketnoticedata1> for crate::AemoFile {
                     crate::FileKey {
                         data_set_name: "MARKET_NOTICE".into(),
                         table_name: "MARKETNOTICEDATA".into(),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PARTICIPANTNOTICETRK
+///  _PARTICIPANTNOTICETRK provides the cross-reference between participant market notices and participants._
+/// 
+/// * Data Set Name: Market Notice
+/// * File Name: Participantnoticetrk
+/// * Data Version: 1
+/// 
+/// # Description
+///  PARTICIPANTNOTICETRK data is Confidential to the relevant participant. Source PARTICIPANTNOTICETRK updates immediately, whenever a participant notice is issued.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * NOTICEID
+/// * PARTICIPANTID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MarketNoticeParticipantnoticetrk1 {
+    /// Unique participant identifier
+    pub participantid: String,
+    /// Market notice identifier
+    pub noticeid: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable<MarketNoticeParticipantnoticetrk1> for crate::AemoFile {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MARKET_NOTICE".into(),
+                        table_name: "PARTICIPANTNOTICETRK".into(),
                         version: 1,
                     }
                     
