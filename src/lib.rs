@@ -1,7 +1,7 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, convert, fmt, io, num, str};
+use std::{collections, fmt, io, num, str};
 
 use chrono::TimeZone;
 use chrono_tz::Australia::Brisbane;
@@ -13,8 +13,8 @@ pub mod mmsdm;
 #[cfg(feature = "sql_server")]
 pub mod sql_server;
 
-#[cfg(feature = "clickhouse")]
-pub mod clickhouse;
+// #[cfg(feature = "clickhouse")]
+// pub mod clickhouse;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
@@ -39,6 +39,15 @@ pub enum Error {
     /// This occurs when the desired file key can't be found in the RawAemoFile
     #[error("aemo file was missing {}.{}.v{} section in the file ", 0.0, 0.1, 0.2)]
     MissingFile(FileKey),
+
+    /// This occurs when the desired file key can't be found in the RawAemoFile
+    #[error(
+        "aemo file was missing headings for {}.{}.v{} section in the file ",
+        0.0,
+        0.1,
+        0.2
+    )]
+    MissingSubtableHeadings(FileKey),
 
     /// This occurs when an entire row is empty after the first three columns
     #[error("aemo file row is empty")]
@@ -68,7 +77,14 @@ pub enum Error {
     #[error("ParseDate error: {0}")]
     ParseDate(#[from] chrono::ParseError),
 
-    #[error("Csv error: {0}")]
+    #[error("Csv error: {cause} (headings: {headings:?}, data: {data:?})")]
+    CsvRowDe {
+        cause: csv::Error,
+        headings: Option<csv::StringRecord>,
+        data: csv::StringRecord,
+    },
+
+    #[error("Csv error: {0})")]
     Csv(#[from] csv::Error),
 
     #[error("Tiberius error: {0}")]
@@ -134,7 +150,28 @@ struct AemoFooter {
 #[derive(Debug, Clone)]
 pub struct AemoFile {
     pub header: AemoHeader,
-    data: collections::HashMap<FileKey, Vec<csv::StringRecord>>,
+    pub data: collections::HashMap<FileKey, Subtable>,
+}
+
+#[derive(Debug, Clone)]
+pub struct Subtable {
+    headings: csv::StringRecord,
+    data: Vec<csv::StringRecord>,
+}
+
+impl Subtable {
+    fn append(&mut self, record: csv::StringRecord) {
+        self.data.push(record);
+    }
+    fn new(headings: csv::StringRecord) -> Subtable {
+        Subtable {
+            headings,
+            data: Vec::new(),
+        }
+    }
+    pub fn len(&self) -> usize {
+        self.data.len()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -162,22 +199,6 @@ impl std::iter::Iterator for FileKeys {
         todo!()
     }
 }
-
-#[doc(hidden)]
-pub trait RawAemoFile {
-    fn get_records(&self, key: &FileKey) -> Result<rayon::slice::Iter<csv::StringRecord>>;
-}
-
-#[doc(hidden)]
-impl RawAemoFile for AemoFile {
-    fn get_records(&self, key: &FileKey) -> Result<rayon::slice::Iter<csv::StringRecord>> {
-        self.data
-            .get(&key)
-            .ok_or_else(|| Error::MissingFile(key.clone()))
-            .map(|d| d.par_iter())
-    }
-}
-
 /// This trait is designed as a convenient way to extract a Vec of the desired Strct representing
 /// a row of the table from the `AemoFile` which represents the whole file.
 /// Most `AemoFiles` would contain multiple tables
@@ -199,16 +220,34 @@ impl RawAemoFile for AemoFile {
 /// #   Ok(rows)
 /// # }
 /// ```
-pub trait GetTable<T>: RawAemoFile
-where
-    T: serde::de::DeserializeOwned + Send,
-{
-    #[doc(hidden)]
+pub trait GetTable: serde::de::DeserializeOwned + Send {
     fn get_file_key() -> FileKey;
-    fn get_table(&self) -> Result<Vec<T>> {
-        self.get_records(&Self::get_file_key())?
-            .map(|rec| rec.deserialize(None).map_err(|e| e.into()))
+}
+
+impl AemoFile {
+    #[allow(dead_code)]
+    fn get_table<T>(&self) -> Result<Vec<T>>
+    where
+        T: serde::de::DeserializeOwned + Send + GetTable,
+    {
+        let subtable = self
+            .data
+            .get(&T::get_file_key())
+            .ok_or_else(|| Error::MissingFile(T::get_file_key()))?;
+
+        subtable
+            .data
+            .par_iter()
+            .map(|rec| {
+                rec.deserialize(Some(&subtable.headings))
+                    .map_err(|cause| Error::CsvRowDe {
+                        cause,
+                        headings: Some(subtable.headings.clone()),
+                        data: rec.clone(),
+                    })
+            })
             .collect()
+        // .map_err(|e| e.into())
     }
 }
 
@@ -230,12 +269,12 @@ impl DispatchPeriod {
     fn format() -> &'static str {
         "%Y%m%d"
     }
-//    pub fn datetime_starting(&self) -> chrono::NaiveDateTime {
-//        self.date.and_hms( self.period as u32 / 12, (self.period as u32 % 12) * 5, 0) + chrono::Duration::hours(4)
-//    }
-//    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
-//        self.datetime_starting() + chrono::Duration::minutes(5)
-//    }
+    //    pub fn datetime_starting(&self) -> chrono::NaiveDateTime {
+    //        self.date.and_hms( self.period as u32 / 12, (self.period as u32 % 12) * 5, 0) + chrono::Duration::hours(4)
+    //    }
+    //    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
+    //        self.datetime_starting() + chrono::Duration::minutes(5)
+    //    }
 }
 
 impl std::fmt::Display for DispatchPeriod {
@@ -281,7 +320,7 @@ mod dispatch_period {
                 dbg!(&e);
                 Err(Error::custom(e))
             }
-            Ok(o) => Ok(o)
+            Ok(o) => Ok(o),
         }
         //s.parse().map_err(Error::custom)
     }
@@ -348,7 +387,7 @@ mod trading_period {
 }
 
 impl AemoFile {
-    pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Vec<csv::StringRecord>> {
+    pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Subtable> {
         self.data.keys()
     }
 
@@ -362,22 +401,21 @@ impl AemoFile {
             .flexible(true)
             .from_reader(br);
         let mut records = reader.records();
-        let header: AemoHeader = records
-            .next()
-            .ok_or(Error::MissingHeaderRecord)??
-            .deserialize(None)?;
+        let first = records.next().ok_or(Error::MissingHeaderRecord)??;
+
+        let header: AemoHeader = first.deserialize(None).map_err(|cause| Error::CsvRowDe {
+            cause,
+            headings: None,
+            data: first,
+        })?;
 
         // placeholder
         let mut footer: Result<AemoFooter> = Err(Error::MissingFooterRecord);
-        let mut data: collections::HashMap<FileKey, Vec<csv::StringRecord>> =
-            collections::HashMap::new();
+        let mut data: collections::HashMap<FileKey, Subtable> = collections::HashMap::new();
 
         for record in records {
             let record = record?;
             match record.get(0) {
-                Some("C") => {
-                    footer = record.deserialize(None).map_err(convert::Into::into);
-                }
                 Some("D") => {
                     let row_len = record.len();
                     if row_len < 5 {
@@ -389,29 +427,34 @@ impl AemoFile {
                         version: record[3].parse()?,
                     };
 
-                    // remove the unwanted fields from the stringrecord
-                    let rest_record =
-                        record
-                            .into_iter()
-                            .skip(4)
-                            .fold(csv::StringRecord::new(), |mut acc, x| {
-                                acc.push_field(x);
-                                acc
-                            });
-
-                    if let Some((k, mut v)) = data.remove_entry(&key) {
-                        v.push(rest_record);
-                        data.insert(k, v);
+                    if let Some(v) = data.get_mut(&key) {
+                        v.append(record);
                     } else {
-                        data.insert(key, vec![rest_record]);
+                        return Err(Error::MissingSubtableHeadings(key));
                     }
-
-                    // would be more ideal but can't use because rest_record is moved into the first closure
-                    // data.entry((sub_file, sub_file_version))
-                    //     .and_modify(|v| v.push(rest_record))
-                    //     .or_insert(vec![rest_record.clone()]);
                 }
-                Some("I") => continue, //"i" row, or unexpected row
+                Some("I") => {
+                    let row_len = record.len();
+                    if row_len < 5 {
+                        return Err(Error::TooShortRow(row_len));
+                    }
+                    let key = FileKey {
+                        data_set_name: record[1].into(),
+                        table_name: record[2].into(),
+                        version: record[3].parse()?,
+                    };
+
+                    let lowercased = record.iter().map(|v| v.to_lowercase()).collect();
+
+                    data.insert(key, Subtable::new(lowercased));
+                }
+                Some("C") => {
+                    footer = record.deserialize(None).map_err(|cause| Error::CsvRowDe {
+                        cause,
+                        headings: None,
+                        data: record,
+                    });
+                }
                 Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
                 None => return Err(Error::EmptyRow),
             }
@@ -421,7 +464,10 @@ impl AemoFile {
 
         let file = Self { header, data };
 
-        let data_rows = file.data.iter().fold(0, |acc, (_, v)| acc + 1 + v.len());
+        let data_rows = file
+            .data
+            .iter()
+            .fold(0, |acc, (_, v)| acc + 1 + v.data.len());
 
         if data_rows + 2 == expected_line_count {
             Ok(file)

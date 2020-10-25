@@ -11,9 +11,17 @@ lazy_static::lazy_static! {
 
 }
 
-const BASE_URL: &str = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files";
+const BASE_URL: &str = "https://visualisations.aemo.com.au/aemo/nemweb/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files";
+
+lazy_static::lazy_static! {
+    static ref LINK_MATCH: regex::Regex = regex::Regex::new(r"MMS_[0-9]{3}_[0-9]").unwrap();
+}
+
+// starting at 4
+// const BASE_URL: &str = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files";
 pub async fn run() -> anyhow::Result<()> {
-    let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
+    // let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
+    let url = "https://visualisations.aemo.com.au/aemo/nemweb/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
     let body = reqwest::get(url).await?.text().await?;
     let doc = scraper::Html::parse_document(&body);
 
@@ -46,31 +54,54 @@ pub async fn run() -> anyhow::Result<()> {
                     .nth(0)
                     .unwrap();
                 dbg!(&link_val);
+
+                // let test = "https://visualisations.aemo.com.au/aemo/nemweb/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS_128.htm";
+                // continue;
+
+                // if link_val != "MMS_128" {
+                //     continue;
+                // }
+
                 // some tables have tons of columns and have a paginated
                 // column listing, such that for each page we have to ask
                 // for the base url, as well as _1, _2, etc, until we
                 // stop recieving a successfull HTTP response.
                 let mut docs = Vec::new();
-                for i in 0..=100_usize {
-                    let url = if i == 0 {
-                        format!("{}/{}.htm", BASE_URL, link_val)
-                    } else {
-                        format!("{}/{}_{}.htm", BASE_URL, link_val, i)
-                    };
-                    dbg!(&url);
-                    let res = reqwest::get(&url).await?;
-                    dbg!(res.status());
-                    if res.status().as_u16() == 200 {
-                        let body = res.text().await?;
-                        let doc = scraper::Html::parse_document(&body);
-                        docs.push(doc);
-                        if i > 0 {
-                            dbg!(body);
+                let inner_url = format!("{}/{}.htm", BASE_URL, link_val);
+
+                let res = reqwest::get(&inner_url).await?;
+
+                if res.status().as_u16() == 200 {
+                    let body = res.text().await?;
+                    let inner_doc = scraper::Html::parse_document(&body);
+                    let mut doc_pages_to_get = Vec::new();
+
+                    for pl in inner_doc.select(&A) {
+                        if let Some(href) = pl.value().attr("href") {
+                            let page_links = href.split(".htm#").nth(0).unwrap();
+                            if LINK_MATCH.captures(&page_links).is_some() {
+                                doc_pages_to_get.push(page_links.to_string());
+                            }
                         }
-                    } else {
-                        break;
-                    };
-                }
+                    }
+
+                    docs.push(inner_doc);
+
+                    for l in doc_pages_to_get {
+                        let get_url = format!("{}/{}", BASE_URL, l);
+                        let res = reqwest::get(&get_url).await?;
+                        if res.status().as_u16() == 200 {
+                            let body = res.text().await?;
+                            let inner_doc = scraper::Html::parse_document(&body);
+                            docs.push(inner_doc);
+                        } else {
+                            panic!("Link: {}, {}", get_url, res.status());
+                        }
+                    }
+                } else {
+                    panic!("Link: {}, {}", inner_url, res.status());
+                };
+                // }
 
                 //let body = reqwest::get(&url).await?.text().await?;
                 //let doc = scraper::Html::parse_document(&body);
@@ -81,10 +112,11 @@ pub async fn run() -> anyhow::Result<()> {
                         e.insert(key.clone(), table_info.clone());
                     })
                     .or_insert(iter::once((key, table_info)).collect());
+                // break;
             }
 
             // tmp
-            //break;
+            // break;
         };
     }
     let asstr = serde_json::to_string(&info).unwrap();

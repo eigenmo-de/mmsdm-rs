@@ -11,3 +11,6 @@ description = "Build tasks"
 #   - subprocess
 #   - run_script
 #   - fsio
+[dependencies]
+anyhow = "1"
+

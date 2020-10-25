@@ -4,12 +4,12 @@ mod json;
 mod rust;
 //mod python;
 //mod parquet;
-mod sql_server_tables;
-//mod sql_server_rust;
 mod clickhouse_rust;
 mod clickhouse_tables;
 mod mms;
 mod pdr;
+mod sql_server_rust;
+mod sql_server_tables;
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]
@@ -27,8 +27,8 @@ enum AemoCodegen {
 async fn main() -> Result<(), anyhow::Error> {
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerRustPart => {
-            todo!();
-            //sql_server_rust::run();
+            // todo!();
+            sql_server_rust::run().unwrap();
         }
         AemoCodegen::SqlServerTables => {
             sql_server_tables::run()?;

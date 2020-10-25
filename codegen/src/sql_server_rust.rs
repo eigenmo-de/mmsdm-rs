@@ -1,20 +1,21 @@
-use anyhow::anyhow;
-use serde::{Deserialize, Serialize};
-use std::{collections, fs, iter, str, string};
+// use anyhow::anyhow;
+// use serde::{Deserialize, Serialize};
+use crate::{mms, pdr};
+use std::{collections, fs, str};
 
-pub fn run() {
+pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;
     let mapping = fs::read_to_string("table_mapping.csv").unwrap();
     let mut map = collections::HashMap::new();
-    use std::iter::Iterator;
+    // use std::iter::Iterator;
     for row in mapping.split("\n").skip(1) {
         if row.contains(',') {
             let pieces = row.split(",").collect::<Vec<&str>>();
-            let mms = MMSReport {
+            let mms = mms::Report {
                 name: pieces[0].to_string(),
                 sub_type: pieces[1].to_string(),
             };
-            let pdr = PDRReport {
+            let pdr = pdr::Report {
                 name: pieces[2].to_string(),
                 sub_type: pieces[3].to_string(),
                 version: pieces[4].parse().unwrap(),
@@ -24,10 +25,11 @@ pub fn run() {
             map.insert(mms, pdr);
         }
     }
-    let local_info: MMSPackages = serde_json::from_reader(rdr).unwrap();
+    let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
     let mut fmt_str = String::new();
-    fmt_str.push_str(r#"
-use crate::{mmsdm::*, GetTable};
+    fmt_str.push_str(
+        r#"
+use crate::mmsdm::*;
 use futures::{AsyncRead, AsyncWrite};
 use std::convert::TryInto;
 
@@ -44,17 +46,19 @@ for file_key in self.data.keys() {
         file_key.table_name.as_str(),
         file_key.version,
     ) {
-    "#);
+    "#,
+    );
     for (data_set, tables) in local_info.into_iter() {
-        let mut fmtr = codegen::Formatter::new(&mut fmt_str);
-        for (table_key, table) in tables.into_iter() {
-            let mms_report = MMSReport {
+        // let fmtr = codegen::Formatter::new(&mut fmt_str);
+        for (table_key, _) in tables.into_iter() {
+            let mms_report = mms::Report {
                 name: data_set.clone(),
                 sub_type: table_key,
             };
             if let Some(pdr_report) = map.get(&mms_report) {
                 use heck::SnakeCase;
-                let block = format!(r#"
+                let block = format!(
+                    r#"
             ("{data_set_name}","{table_name}",{version}_i32) =>  {{
                 #[cfg(feature = "{module}")]
                 {{
@@ -80,17 +84,18 @@ for file_key in self.data.keys() {
                 }}
                 
             }}"#,
-                data_set_name = pdr_report.name,
-                table_name = pdr_report.sub_type,
-                version = pdr_report.version,
-                local_name = pdr_report.struct_name(),
-                module = data_set.to_snake_case(),
+                    data_set_name = pdr_report.name,
+                    table_name = pdr_report.sub_type,
+                    version = pdr_report.version,
+                    local_name = pdr_report.struct_name(),
+                    module = data_set.to_snake_case(),
                 );
                 fmt_str.push_str(&block);
             };
         }
     }
-    fmt_str.push_str(r#"
+    fmt_str.push_str(
+        r#"
         _ => {
             log::error!("Unhandled file key {:?}", file_key);
             continue;
@@ -99,12 +104,10 @@ for file_key in self.data.keys() {
 }
 Ok(())
 }
-}"#);
-    use heck::SnakeCase;
-    fs::write(
-        format!("src/sql_server.rs"),
-        fmt_str,
-    )?;
+}"#,
+    );
+    // use heck::SnakeCase;
+    fs::write(format!("src/sql_server.rs"), fmt_str)?;
 
     Ok(())
 }

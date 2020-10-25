@@ -43,6 +43,7 @@ impl mms::DataType {
             mms::DataType::Varchar { .. } => "String".into(), // investigate use of LowCardinality here
             mms::DataType::Char => "FixedString(1)".into(),
             mms::DataType::Date => "DateTime('Australia/Brisbane')".into(),
+            mms::DataType::DateTime => "DateTime('Australia/Brisbane')".into(),
             mms::DataType::Decimal { precision, scale } => {
                 format!("Decimal({},{})", precision, scale)
             }
@@ -86,7 +87,6 @@ create table FileLog (
 ENGINE = MergeTree()
 ORDER BY (file_name, data_set, sub_type, version, id);"#
         .to_string();
-    let mut proc_str = String::new();
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
     for (data_set, tables) in local_info.into_iter() {
         for (table_key, table) in tables.into_iter() {

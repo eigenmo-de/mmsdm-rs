@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## PDPASA_CASESOLUTION
 ///  _The top-level table identifying a PDPASA case, reporting options applied in the case and summary results_
-/// 
+///
 /// * Data Set Name: Pdpasa
 /// * File Name: Casesolution
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  PDPASA_CASESOLUTION is public data. Source PDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 48 Mb per month: &lt;1
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PdpasaCasesolution3 {
@@ -57,34 +57,32 @@ pub struct PdpasaCasesolution3 {
     /// UIGF POE forecast availability used for this option
     pub outage_lrcuigf_option: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable<PdpasaCasesolution3> for crate::AemoFile {
+impl crate::GetTable for PdpasaCasesolution3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: "CASESOLUTION".into(),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PDPASA".into(),
+            table_name: "CASESOLUTION".into(),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PDPASA_REGIONSOLUTION
 ///  _The PDPASA region solution data_
-/// 
+///
 /// * Data Set Name: Pdpasa
 /// * File Name: Regionsolution
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  PDPASA_REGIONSOLUTION is public so is available to all participants. Source PDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 32000 Notes LRC Determination SURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement. &nbsp; The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions. &nbsp; LOR Determination MAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions. &nbsp; Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
@@ -157,7 +155,7 @@ pub struct PdpasaRegionsolution5 {
     pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Aggregate Regional UIGF availability for LOR
     pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
-    /// Largest Credible Risk. MW value for highest credible contingency 
+    /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
     /// Two Largest Creditable Risks. MW value for highest two credible contingencies.
     pub lcr2: Option<rust_decimal::Decimal>,
@@ -176,14 +174,12 @@ pub struct PdpasaRegionsolution5 {
     /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is wind and StudyRegion = Region
     pub ss_wind_cleared: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable<PdpasaRegionsolution5> for crate::AemoFile {
+impl crate::GetTable for PdpasaRegionsolution5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: "REGIONSOLUTION".into(),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PDPASA".into(),
+            table_name: "REGIONSOLUTION".into(),
+            version: 5,
+        }
     }
 }

@@ -3,7 +3,7 @@ use std::{collections, fs, str};
 use crate::{mms, pdr};
 
 impl mms::PkColumns {
-    fn get_sql(&self) -> String {
+    fn _get_sql(&self) -> String {
         use heck::SnakeCase;
         let cols = self
             .cols
@@ -64,6 +64,7 @@ impl mms::DataType {
             mms::DataType::Varchar { length } => format!("varchar({})", length),
             mms::DataType::Char => "char(1)".into(),
             mms::DataType::Date => "datetime2".into(),
+            mms::DataType::DateTime => "datetime2".into(),
             mms::DataType::Decimal { precision, scale } => {
                 format!("decimal({},{})", precision, scale)
             }
@@ -101,7 +102,8 @@ create table FileLog (
     file_name varchar(255) not null,
     data_set varchar(255) not null,
     sub_type varchar(255) not null,
-    version tinyint not null
+    version tinyint not null,
+    unique (file_name, data_set, sub_type)
 )
 go
             "#
@@ -149,12 +151,10 @@ if exists (
     and sub_type = '{sub_type}'
     and version = '{version}'
     )
-    insert into @header (id)
-    select id from FileLog 
-    where file_name = @file_name
-    and data_set = '{data_set}'
-    and sub_type = '{sub_type}'
-    and version = '{version}'
+    begin
+        declare @msg nvarchar(max) = 'table ' + '{data_set}' + '.' + '{sub_type}' + '.v' + '{version}' + ' from file ' + @file_name + ' already exists in the database';
+        throw 60000, @msg, 0
+    end
 else
     insert into FileLog(file_name, data_set, sub_type, version)
     output inserted.id into @header

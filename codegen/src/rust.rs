@@ -9,6 +9,7 @@ impl mms::DataType {
             mms::DataType::Varchar { .. } => "String",
             mms::DataType::Char => "char",
             mms::DataType::Date => "chrono::NaiveDateTime",
+            mms::DataType::DateTime => "chrono::NaiveDateTime",
             mms::DataType::Decimal { .. } => "rust_decimal::Decimal",
             mms::DataType::Integer { .. } => "i64",
         }
@@ -225,8 +226,8 @@ pub fn run() -> anyhow::Result<()> {
                 }
                 current_struct.fmt(&mut fmtr)?;
 
-                let mut current_impl = codegen::Impl::new("crate::AemoFile");
-                current_impl.impl_trait(format!("crate::GetTable<{}>", pdr_report.struct_name()));
+                let mut current_impl = codegen::Impl::new(pdr_report.struct_name());
+                current_impl.impl_trait("crate::GetTable");
 
                 let mut get_file_key = codegen::Function::new("get_file_key");
                 get_file_key.ret("crate::FileKey");

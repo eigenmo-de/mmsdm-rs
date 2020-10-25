@@ -258,6 +258,7 @@ pub enum DataType {
     Varchar { length: i32 },
     Char,
     Date,
+    DateTime,
     Decimal { precision: u8, scale: u8 },
     Integer { precision: u8 },
 }
@@ -266,6 +267,8 @@ lazy_static::lazy_static! {
     static ref VARCHAR: regex::Regex = regex::Regex::new(r"varchar(2)?\((\d+)\)").unwrap();
     static ref DECIMAL: regex::Regex = regex::Regex::new(r"number\((\d+),(\d+)\)").unwrap();
     static ref INTEGER: regex::Regex = regex::Regex::new(r"number\((\d+)\)").unwrap();
+    static ref TIMESTAMP: regex::Regex = regex::Regex::new(r"timestamp\((\d+)\)").unwrap();
+
 }
 
 impl DataType {
@@ -286,7 +289,7 @@ impl DataType {
     fn parse_decimal(s: &str) -> anyhow::Result<DataType> {
         let caps = DECIMAL
             .captures(s)
-            .ok_or_else(|| anyhow!("Couldnt parse {} as Varchar", s))?;
+            .ok_or_else(|| anyhow!("Couldnt parse {} as Decimal", s))?;
         let (precision, scale) = (caps[1].parse()?, caps[2].parse()?);
         Ok(DataType::Decimal { precision, scale })
     }
@@ -300,6 +303,7 @@ impl str::FromStr for DataType {
             r"date",
             r"char\(1\)",
             r"varchar\S+",
+            r"timestamp\((\d+)\)",
             r"number\((\d+)\)",
             r"number\((\d+),(\d+)\)",
         ])
@@ -313,8 +317,9 @@ impl str::FromStr for DataType {
             [0] => Ok(DataType::Date),
             [1] => Ok(DataType::Char),
             [2] => DataType::parse_varchar(&input),
-            [3] => DataType::parse_int(&input),
-            [4] => DataType::parse_decimal(&input),
+            [3] => Ok(DataType::DateTime),
+            [4] => DataType::parse_int(&input),
+            [5] => DataType::parse_decimal(&input),
             _ => {
                 if input == "varchar(1)" {
                     DataType::parse_varchar(&input)

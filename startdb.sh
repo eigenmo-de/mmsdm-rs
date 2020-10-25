@@ -6,5 +6,5 @@ podman cp sql/mmsdm_tables.sql mms-sqlserver:/tmp/mmsdm_tables.sql
 podman cp sql/mmsdm_procs.sql mms-sqlserver:/tmp/mmsdm_procs.sql
 sleep 15
 podman exec -it mms-sqlserver /opt/mssql-tools/bin/sqlcmd -U sa -P 12345Abcde -Q "create database mmsdm"
-podman exec -it mms-sqlserver /opt/mssql-tools/bin/sqlcmd -U sa -P 12345Abcde -i /tmp/mmsdm_tables.sql
-podman exec -it mms-sqlserver /opt/mssql-tools/bin/sqlcmd -U sa -P 12345Abcde -i /tmp/mmsdm_procs.sql
+podman exec -it mms-sqlserver /opt/mssql-tools/bin/sqlcmd -U sa -P 12345Abcde -d mmsdm -i /tmp/mmsdm_tables.sql
+podman exec -it mms-sqlserver /opt/mssql-tools/bin/sqlcmd -U sa -P 12345Abcde -d mmsdm -i /tmp/mmsdm_procs.sql
