@@ -87,7 +87,10 @@ pub fn run() -> anyhow::Result<()> {
             };
             let pdr = pdr::Report {
                 name: pieces[2].to_string(),
-                sub_type: pieces[3].to_string(),
+                sub_type: match pieces[3] {
+                    "" => None,
+                    otherwise => Some(otherwise.to_string()),
+                },
                 version: pieces[4].parse().unwrap(),
                 transaction_type: pieces[5].to_string(),
                 row_filter: pieces[6].to_string(),
@@ -97,13 +100,24 @@ pub fn run() -> anyhow::Result<()> {
     }
     // abv
     let mut table_str = r#"
-create table FileLog (
-    id bigint identity(1,1) not null primary key,
-    file_name varchar(255) not null,
+create schema mmsdm
+go
+create schema mmsdm_proc
+go
+create table mmsdm.FileLog (
+    file_log_id bigint identity(1,1) not null primary key,
+    data_source varchar(255) not null,
+    participant_name varchar(255) not null,
+    privacy_level varchar(255) not null,
+    effective_date datetime,
+    serial_number bigint not null,
     data_set varchar(255) not null,
     sub_type varchar(255) not null,
     version tinyint not null,
-    unique (file_name, data_set, sub_type)
+    [status] char(1) not null default 'P' check ([status] in ('P','E','C')),
+    message varchar(max) null,
+    check ((status != 'E' and message is null) or (status = 'E' and message is null)),
+    unique (serial_number, data_set, sub_type, version)
 )
 go
             "#
@@ -119,13 +133,13 @@ go
             if let Some(pdr_report) = map.get(&mms_report) {
                 let create_table = format!(
                     r#"
-create table {table_name} (
-file_log_id bigint not null references FileLog(id),
+create table mmsdm.{table_name} (
+file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
 {columns}
 {primary_key}
 )
 go
-create clustered columnstore index cci_{table_name} on {table_name};
+create clustered columnstore index cci_{table_name} on mmsdm.{table_name};
 go
                         "#,
                     table_name = pdr_report.struct_name(),
@@ -136,36 +150,18 @@ go
 
                 table_str.push_str(&create_table);
 
-                use heck::CamelCase;
                 let insert_proc = format!(
                     r#"
-create or alter procedure Insert{target_table}
-    @file_name varchar(255),
+create or alter procedure mmsdm_proc.Insert{target_table}
+    @file_log_id bigint,
     @data nvarchar(max)
 as begin
-declare @header table (id bigint not null);
-if exists (
-    select id from FileLog 
-    where file_name = @file_name
-    and data_set = '{data_set}'
-    and sub_type = '{sub_type}'
-    and version = '{version}'
-    )
-    begin
-        declare @msg nvarchar(max) = 'table ' + '{data_set}' + '.' + '{sub_type}' + '.v' + '{version}' + ' from file ' + @file_name + ' already exists in the database';
-        throw 60000, @msg, 0
-    end
-else
-    insert into FileLog(file_name, data_set, sub_type, version)
-    output inserted.id into @header
-    values (@file_name, '{data_set}', '{sub_type}', {version});
-
-insert into {target_table}(
+insert into mmsdm.{target_table}(
 file_log_id,
 {insert_columns}
 )
 select 
-(select h.id from @header h),
+@file_log_id,
 {select_columns}
 from openjson(@data) with (
 {column_schema}
@@ -173,9 +169,6 @@ from openjson(@data) with (
 end
 go"#,
                     target_table = pdr_report.struct_name(),
-                    data_set = pdr_report.name.to_camel_case(),
-                    sub_type = pdr_report.sub_type.to_camel_case(),
-                    version = pdr_report.version,
                     insert_columns = table.columns.get_columns_sql(None),
                     select_columns = table.columns.get_columns_sql(Some("d")),
                     column_schema = table.columns.get_column_schema(),

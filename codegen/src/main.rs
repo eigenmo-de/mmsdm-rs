@@ -4,8 +4,8 @@ mod json;
 mod rust;
 //mod python;
 //mod parquet;
-mod clickhouse_rust;
-mod clickhouse_tables;
+// mod clickhouse_rust;
+// mod clickhouse_tables;
 mod mms;
 mod pdr;
 mod sql_server_rust;
@@ -44,7 +44,8 @@ async fn main() -> Result<(), anyhow::Error> {
             //python::run();
         }
         AemoCodegen::ClickhouseTables => {
-            clickhouse_tables::run()?;
+            // clickhouse_tables::run()?;
+            todo!();
         }
         AemoCodegen::ClickhouseRustPart => {
             todo!();

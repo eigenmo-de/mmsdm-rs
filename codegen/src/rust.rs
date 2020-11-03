@@ -113,7 +113,7 @@ impl pdr::Report {
 * File Name: {mms_file_name}
 * Data Version: {version}"#,
             mms_data_set_name = self.name.to_title_case(),
-            mms_file_name = self.sub_type.to_title_case(),
+            mms_file_name = if let Some(sub_type) = &self.sub_type { sub_type } else { "" }.to_title_case(),
             version = self.version,
         )
     }
@@ -121,7 +121,7 @@ impl pdr::Report {
         format!(
             "{}{}{}",
             self.name.to_camel_case(),
-            self.sub_type.to_camel_case(),
+            if let Some(sub_type) = &self.sub_type { sub_type } else { "" }.to_camel_case(),
             self.version
         )
     }
@@ -130,12 +130,12 @@ impl pdr::Report {
             r#"
             crate::FileKey {{
                 data_set_name: "{data_set}".into(),
-                table_name: "{table}".into(),
+                table_name: Some("{table}".into()),
                 version: {version},
             }}
             "#,
             data_set = self.name.to_shouty_snake_case(),
-            table = self.sub_type.to_shouty_snake_case(),
+            table = if let Some(sub_type) = &self.sub_type { sub_type } else { "" }.to_shouty_snake_case(),
             version = self.version,
         )
     }
@@ -154,7 +154,10 @@ pub fn run() -> anyhow::Result<()> {
             };
             let pdr = pdr::Report {
                 name: pieces[2].to_string(),
-                sub_type: pieces[3].to_string(),
+                sub_type: match pieces[3] {
+                    "" => None,
+                    otherwise => Some(otherwise.to_string()),
+                },
                 version: pieces[4].parse().unwrap(),
                 transaction_type: pieces[5].to_string(),
                 row_filter: pieces[6].to_string(),

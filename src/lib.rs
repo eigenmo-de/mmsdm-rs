@@ -84,6 +84,9 @@ pub enum Error {
         data: csv::StringRecord,
     },
 
+    #[error("Error creating file log")]
+    CreateFileLogError,
+
     #[error("Csv error: {0})")]
     Csv(#[from] csv::Error),
 
@@ -123,16 +126,20 @@ pub struct AemoHeader {
     effective_date: chrono::NaiveDate,
     #[serde(with = "mms_time")]
     effective_time: chrono::NaiveTime,
-    serial_number: u64,
+    serial_number: i64,
     file_name_2: Option<String>,
-    serial_number_2: u64,
+    serial_number_2: i64,
 }
 
 impl AemoHeader {
+    pub fn get_effective(&self) -> chrono::NaiveDateTime {
+        self.effective_date.and_time(self.effective_time)
+    }
+
     pub fn get_filename(&self) -> String {
         format!(
             "{}_{}_{}_{}.CSV",
-            self.privacy_level,
+            self.participant_name,
             self.file_name,
             self.effective_date.format("%Y%m%d"),
             self.serial_number,
@@ -177,17 +184,34 @@ impl Subtable {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FileKey {
     pub data_set_name: String,
-    pub table_name: String,
+    pub table_name: Option<String>,
     pub version: i32,
+}
+impl FileKey {
+    pub fn table_name(&self) -> &str {
+        if let Some(t) = &self.table_name {
+            &t
+        } else {
+            ""
+        }
+    }
 }
 
 impl fmt::Display for FileKey {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}_{}_{}",
-            self.data_set_name, self.table_name, self.version
-        )
+        if let Some(table_name) = &self.table_name {
+            write!(
+                f,
+                "{}_{}_{}",
+                self.data_set_name, table_name, self.version
+            )
+        } else {
+            write!(
+                f,
+                "{}_{}",
+                self.data_set_name, self.version
+            )
+        }
     }
 }
 
@@ -423,7 +447,10 @@ impl AemoFile {
                     }
                     let key = FileKey {
                         data_set_name: record[1].into(),
-                        table_name: record[2].into(),
+                        table_name: match &record[2] {
+                            "" => None,
+                            otherwise => Some(otherwise.to_string()),
+                        },
                         version: record[3].parse()?,
                     };
 
@@ -440,7 +467,10 @@ impl AemoFile {
                     }
                     let key = FileKey {
                         data_set_name: record[1].into(),
-                        table_name: record[2].into(),
+                        table_name: match &record[2] {
+                            "" => None,
+                            otherwise => Some(otherwise.to_string()),
+                        },
                         version: record[3].parse()?,
                     };
 

@@ -1,105 +1,20 @@
 /// # Summary
-///
-/// ## TRADINGPRICE
-///  _TRADINGPRICE sets out half-hourly spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field._
-///
-/// * Data Set Name: Trading
-/// * File Name: Price
-/// * Data Version: 2
-///
-/// # Description
-///  TRADINGPRICE data is public, so is available to all participants. Source TRADINGPRICE updates every 30 minutes. Notes INVALIDFLAG The INVALIDFLAG field is used to indicate whether the Trading interval price has been adjusted after the trading interval was completed. On a very restricted set of events, the market rules allow a dispatch price (5 min) to be adjusted on the next business day, and, when this occurs, the corresponding trading interval price for that region is also adjusted and marked as adjusted with INVALIDFLAG of 'A'. The INVALIDFLAG = 'Y' only applies to historical periods when not all six of the 5-minute dispatch intervals were run in the trading interval. System changes implemented on 30 September 2001 mean this situation no longer occurs since missing dispatch intervals are automatically populated from a previous interval. If the INVALIDFLAG field = '0', the price was not adjusted and all six dispatch intervals are present. Prices There is no field in the TRADINGPRICE table (or the MMS data model anywhere) telling you that the price is provisional or final. The only reliable method is to ensure that the trading date is at least 2 business days old.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * PERIODID
-/// * REGIONID
-/// * RUNNO
-/// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingPrice2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Run No
-    pub runno: rust_decimal::Decimal,
-    /// Region Identifier
-    pub regionid: String,
-    /// Trading Interval Period
-    pub periodid: rust_decimal::Decimal,
-    /// Regional reference price for this dispatch period
-    pub rrp: Option<rust_decimal::Decimal>,
-    /// Excess energy price where negative average
-    pub eep: Option<rust_decimal::Decimal>,
-    /// Indicates when the Trading interval price has been adjusted after the trading interval was completed
-    pub invalidflag: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Regional Original Price. The price before any adjustments were made
-    pub rop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raise6secrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub raise6secrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raise60secrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub raise60secrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raise5minrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub raise5minrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raiseregrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub raiseregrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lower6secrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub lower6secrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lower60secrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub lower60secrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lower5minrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub lower5minrop: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lowerregrrp: Option<rust_decimal::Decimal>,
-    /// Original regional price - prior to APC or VoLL overrides applied
-    pub lowerregrop: Option<rust_decimal::Decimal>,
-    /// Status of regional prices for this dispatch interval "NOT FIRM" or "FIRM"
-    pub price_status: Option<String>,
-}
-impl crate::GetTable for TradingPrice2 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "TRADING".into(),
-            table_name: "PRICE".into(),
-            version: 2,
-        }
-    }
-}
-/// # Summary
-///
+/// 
 /// ## TRADINGINTERCONNECT
 ///  _TRADINGINTERCONNECT shows the half-hourly summary of Interconnector flows based on 5-minute averages._
-///
+/// 
 /// * Data Set Name: Trading
 /// * File Name: Interconnectorres
 /// * Data Version: 2
-///
+/// 
 /// # Description
 ///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
-///
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * INTERCONNECTORID
 /// * PERIODID
 /// * RUNNO
@@ -125,30 +40,32 @@ pub struct TradingInterconnectorres2 {
 }
 impl crate::GetTable for TradingInterconnectorres2 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "TRADING".into(),
-            table_name: "INTERCONNECTORRES".into(),
-            version: 2,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("INTERCONNECTORRES".into()),
+                        version: 2,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
 /// ## TRADINGLOAD
 ///  _TRADINGLOAD shows half-hourly average dispatch levels, including fields to handle the Ancillary Services functionality._
-///
+/// 
 /// * Data Set Name: Trading
 /// * File Name: Unit Solution
 /// * Data Version: 2
-///
+/// 
 /// # Description
-///  Source Own (confidential) TRADINGLOAD data updates half hourly, with public availability of all data on next day.
-///
+///  Source Own (confidential) TRADINGLOAD data updates half hourly, with public availability of all data on next day. 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * DUID
 /// * PERIODID
 /// * RUNNO
@@ -199,30 +116,32 @@ pub struct TradingUnitSolution2 {
 }
 impl crate::GetTable for TradingUnitSolution2 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "TRADING".into(),
-            table_name: "UNIT_SOLUTION".into(),
-            version: 2,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("UNIT_SOLUTION".into()),
+                        version: 2,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
 /// ## TRADINGREGIONSUM
 ///  _TRADINGREGIONSUM sets out the half-hourly average regional demand and frequency control services. TRADINGREGIONSUM includes fields for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations._
-///
+/// 
 /// * Data Set Name: Trading
 /// * File Name: Regionsum
 /// * Data Version: 4
-///
+/// 
 /// # Description
 ///  TRADINGREGIONSUM is public data, and is available to all participants. Source TRADINGREGIONSUM is updated every 30 minutes.
-///
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * PERIODID
 /// * REGIONID
 /// * RUNNO
@@ -412,10 +331,99 @@ pub struct TradingRegionsum4 {
 }
 impl crate::GetTable for TradingRegionsum4 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "TRADING".into(),
-            table_name: "REGIONSUM".into(),
-            version: 4,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("REGIONSUM".into()),
+                        version: 4,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## TRADINGPRICE
+///  _TRADINGPRICE sets out half-hourly spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Price
+/// * Data Version: 2
+/// 
+/// # Description
+///  TRADINGPRICE data is public, so is available to all participants. Source TRADINGPRICE updates every 30 minutes. Notes INVALIDFLAG The INVALIDFLAG field is used to indicate whether the Trading interval price has been adjusted after the trading interval was completed. On a very restricted set of events, the market rules allow a dispatch price (5 min) to be adjusted on the next business day, and, when this occurs, the corresponding trading interval price for that region is also adjusted and marked as adjusted with INVALIDFLAG of 'A'. The INVALIDFLAG = 'Y' only applies to historical periods when not all six of the 5-minute dispatch intervals were run in the trading interval. System changes implemented on 30 September 2001 mean this situation no longer occurs since missing dispatch intervals are automatically populated from a previous interval. If the INVALIDFLAG field = '0', the price was not adjusted and all six dispatch intervals are present. Prices There is no field in the TRADINGPRICE table (or the MMS data model anywhere) telling you that the price is provisional or final. The only reliable method is to ensure that the trading date is at least 2 business days old.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * PERIODID
+/// * REGIONID
+/// * RUNNO
+/// * SETTLEMENTDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingPrice2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Run No
+    pub runno: rust_decimal::Decimal,
+    /// Region Identifier
+    pub regionid: String,
+    /// Trading Interval Period
+    pub periodid: rust_decimal::Decimal,
+    /// Regional reference price for this dispatch period
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// Excess energy price where negative average
+    pub eep: Option<rust_decimal::Decimal>,
+    /// Indicates when the Trading interval price has been adjusted after the trading interval was completed
+    pub invalidflag: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Regional Original Price. The price before any adjustments were made
+    pub rop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raise6secrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub raise6secrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raise60secrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub raise60secrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raise5minrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub raise5minrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raiseregrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub raiseregrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lower6secrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub lower6secrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lower60secrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub lower60secrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lower5minrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub lower5minrop: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lowerregrrp: Option<rust_decimal::Decimal>,
+    /// Original regional price - prior to APC or VoLL overrides applied
+    pub lowerregrop: Option<rust_decimal::Decimal>,
+    /// Status of regional prices for this dispatch interval "NOT FIRM" or "FIRM"
+    pub price_status: Option<String>,
+}
+impl crate::GetTable for TradingPrice2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("PRICE".into()),
+                        version: 2,
+                    }
+                    
     }
 }
