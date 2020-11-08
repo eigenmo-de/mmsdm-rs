@@ -1,23 +1,23 @@
 /// # Summary
-/// 
+///
 /// ## VOLTAGE_INSTRUCTION_TRK
 ///  _Parent record for Voltage Instructions (MVAr Dispatch). 'SIGNAL' records will have no children; 'INSTRUCTION' records will have children_
-/// 
+///
 /// * Data Set Name: Voltage Instruction
 /// * File Name: Track
 /// * Data Version: 2
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * RUN_DATETIME
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct VoltageInstructionTrack2 {
+pub struct Track2 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Either 'SIGNAL' (childless) or 'INSTRUCTION'
@@ -39,38 +39,36 @@ pub struct VoltageInstructionTrack2 {
     #[serde(with = "crate::mms_datetime_opt")]
     pub est_next_instruction: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for VoltageInstructionTrack2 {
+impl crate::GetTable for Track2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "VOLTAGE_INSTRUCTION".into(),
-                        table_name: Some("TRACK".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "VOLTAGE_INSTRUCTION".into(),
+            table_name: Some("TRACK".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## VOLTAGE_INSTRUCTION
 ///  _Child record for Voltage Instructions (MVAr Dispatch)_
-/// 
+///
 /// * Data Set Name: Voltage Instruction
 /// * File Name: Instruction
 /// * Data Version: 2
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EMS_ID
 /// * RUN_DATETIME
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct VoltageInstructionInstruction2 {
+pub struct Instruction2 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// The unique identifier for reference within AEMO –matches equipment names between NOS and EMS
@@ -98,14 +96,12 @@ pub struct VoltageInstructionInstruction2 {
     /// Additional information pertaining to a particular instruction, e.g. Previously issued instruction revoked
     pub additional_notes: Option<String>,
 }
-impl crate::GetTable for VoltageInstructionInstruction2 {
+impl crate::GetTable for Instruction2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "VOLTAGE_INSTRUCTION".into(),
-                        table_name: Some("INSTRUCTION".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "VOLTAGE_INSTRUCTION".into(),
+            table_name: Some("INSTRUCTION".into()),
+            version: 2,
+        }
     }
 }

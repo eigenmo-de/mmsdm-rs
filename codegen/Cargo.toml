@@ -1,12 +1,12 @@
 [package]
-name = "aemo-codegen"
+name = "mmsdm-codegen"
 version = "0.1.0"
 authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
 edition = "2018"
 license = "MIT"
 repository = "https://github.com/esheppa/aemo-rs"
 #maintenance = { status = "experimental" }
-description = "This library contains functions to read AEMO nemweb data files (zipped CSV files with one or more sub files inside) to Rust Structs"
+description = "Code generation for MMSDM data types"
 
 [dependencies]
 log = "0.4"

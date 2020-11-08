@@ -7,54 +7,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aae1277d39aeec15cb388266ecc24b11c80469deae6067e17a1a7aa9e5c1f234"
 
 [[package]]
-name = "aemo-codegen"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "chrono",
- "chrono-tz",
- "codegen",
- "csv",
- "env_logger",
- "futures",
- "heck",
- "lazy_static",
- "log",
- "rayon",
- "regex",
- "reqwest",
- "scraper",
- "serde",
- "serde_json",
- "structopt",
- "tokio",
- "zip",
-]
-
-[[package]]
-name = "aemo-rs"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "chrono",
- "chrono-tz",
- "csv",
- "env_logger",
- "flate2",
- "futures",
- "log",
- "rayon",
- "rust_decimal",
- "serde",
- "serde_json",
- "thiserror",
- "tiberius",
- "tokio",
- "tokio-util",
- "zip",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "0.7.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1121,6 +1073,54 @@ checksum = "07b88fb9795d4d36d62a012dfbf49a8f5cf12751f36d31a9dbe66d528e58979e"
 dependencies = [
  "socket2",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "mmsdm-codegen"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "chrono-tz",
+ "codegen",
+ "csv",
+ "env_logger",
+ "futures",
+ "heck",
+ "lazy_static",
+ "log",
+ "rayon",
+ "regex",
+ "reqwest",
+ "scraper",
+ "serde",
+ "serde_json",
+ "structopt",
+ "tokio",
+ "zip",
+]
+
+[[package]]
+name = "mmsdm-rs"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "chrono-tz",
+ "csv",
+ "env_logger",
+ "flate2",
+ "futures",
+ "log",
+ "rayon",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tiberius",
+ "tokio",
+ "tokio-util",
+ "zip",
 ]
 
 [[package]]

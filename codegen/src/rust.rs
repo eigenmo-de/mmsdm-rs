@@ -113,15 +113,37 @@ impl pdr::Report {
 * File Name: {mms_file_name}
 * Data Version: {version}"#,
             mms_data_set_name = self.name.to_title_case(),
-            mms_file_name = if let Some(sub_type) = &self.sub_type { sub_type } else { "" }.to_title_case(),
+            mms_file_name = if let Some(sub_type) = &self.sub_type {
+                sub_type
+            } else {
+                ""
+            }
+            .to_title_case(),
             version = self.version,
+        )
+    }
+    pub fn sql_table_name(&self) -> String {
+        format!(
+            "{}{}{}",
+            self.name.to_camel_case(),
+            if let Some(sub_type) = &self.sub_type {
+                sub_type
+            } else {
+                ""
+            }
+            .to_camel_case(),
+            self.version
         )
     }
     pub fn struct_name(&self) -> String {
         format!(
-            "{}{}{}",
-            self.name.to_camel_case(),
-            if let Some(sub_type) = &self.sub_type { sub_type } else { "" }.to_camel_case(),
+            "{}{}",
+            if let Some(sub_type) = &self.sub_type {
+                sub_type.to_string()
+            } else {
+                self.name.to_camel_case()
+            }
+            .to_camel_case(),
             self.version
         )
     }
@@ -135,7 +157,12 @@ impl pdr::Report {
             }}
             "#,
             data_set = self.name.to_shouty_snake_case(),
-            table = if let Some(sub_type) = &self.sub_type { sub_type } else { "" }.to_shouty_snake_case(),
+            table = if let Some(sub_type) = &self.sub_type {
+                sub_type
+            } else {
+                ""
+            }
+            .to_shouty_snake_case(),
             version = self.version,
         )
     }

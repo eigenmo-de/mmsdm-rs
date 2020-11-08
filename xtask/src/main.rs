@@ -7,7 +7,7 @@ use std::{
 fn main() -> anyhow::Result<()> {
     if let Some(arg) = env::args().nth(1) {
         match arg.as_str() {
-            "codegen" => codegen(env::args().nth(2)),
+            // "codegen" => codegen(env::args().nth(2)),
             // "full" => codegen(Some("")),
             "rust" => {
                 codegen_cmd("rust")?;
@@ -27,11 +27,11 @@ fn main() -> anyhow::Result<()> {
                 // codegen_cmd("clickhouse-rust-part")?;
                 // codegen_cmd("parquet")?;
             }
-            "python" => {
-                codegen_cmd("python")?;
-                codegen_cmd("sql-server-tables")?;
-                codegen_cmd("clickhouse-tables")?;
-            }
+            // "python" => {
+            //     codegen_cmd("python")?;
+            //     codegen_cmd("sql-server-tables")?;
+            //     codegen_cmd("clickhouse-tables")?;
+            // }
             _ => help(),
         }
     } else {
@@ -44,7 +44,7 @@ fn help() {
     println!(
         "available options are:
     
-    `cargo xtask codegen`
+    `cargo xtask rust`
 "
     );
 }
@@ -52,7 +52,7 @@ fn help() {
 fn codegen_cmd(subcommand: &str) -> anyhow::Result<String> {
     cmd(
         "/usr/bin/cargo",
-        &["run", "--package", "aemo-codegen", subcommand],
+        &["run", "--package", "mmsdm-codegen", subcommand],
     )
 }
 
@@ -81,7 +81,7 @@ fn codegen(arg: Option<String>) {
             "run",
             "--release",
             "--package",
-            "aemo-codegen",
+            "mmsdm-codegen",
             &arg.unwrap_or("help".into()),
         ],
     );

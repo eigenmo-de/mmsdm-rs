@@ -142,7 +142,7 @@ go
 create clustered columnstore index cci_{table_name} on mmsdm.{table_name};
 go
                         "#,
-                    table_name = pdr_report.struct_name(),
+                    table_name = pdr_report.sql_table_name(),
                     columns = table.columns.get_sql(),
                     //primary_key = table.primary_key_columns.get_sql(),
                     primary_key = ""
@@ -168,7 +168,7 @@ from openjson(@data) with (
 ) d
 end
 go"#,
-                    target_table = pdr_report.struct_name(),
+                    target_table = pdr_report.sql_table_name(),
                     insert_columns = table.columns.get_columns_sql(None),
                     select_columns = table.columns.get_columns_sql(Some("d")),
                     column_schema = table.columns.get_column_schema(),

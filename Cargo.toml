@@ -1,17 +1,17 @@
 [package]
-name = "aemo-rs"
+name = "mmsdm-rs"
 version = "0.2.0"
 authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
 edition = "2018"
 license = "MIT"
 repository = "https://github.com/esheppa/aemo-rs"
 #maintenance = { status = "experimental" }
-description = "This library contains functions to read AEMO nemweb data files (zipped CSV files with one or more sub files inside) to Rust Structs"
+description = "Parse and Transform MMSDM data"
 
 [workspace]
 members = [
     "codegen",
-	"xtask",
+    "xtask",
 ]
 
 [dependencies]

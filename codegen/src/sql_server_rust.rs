@@ -135,7 +135,7 @@ for file_key in self.data.keys() {
                 #[cfg(feature = "{module}")]
                 {{
                     let d: Vec<{module}::{local_name}> = self.get_table()?;
-                    self.batched_insert(client, file_key, &d, "exec mmsdm_proc.Insert{local_name} @P1, @P2").await?;
+                    self.batched_insert(client, file_key, &d, "exec mmsdm_proc.Insert{db_name} @P1, @P2").await?;
                 }}
                 #[cfg(not(feature = "{module}"))]
                 {{
@@ -145,13 +145,14 @@ for file_key in self.data.keys() {
                 
             }}"#,
                     data_set_name = pdr_report.name,
-                    table_name = if let Some(sub_type) = &pdr_report.sub_type { 
+                    table_name = if let Some(sub_type) = &pdr_report.sub_type {
                         format!("Some(\"{}\")", sub_type)
-                    } else { 
+                    } else {
                         "None".to_string()
                     },
                     version = pdr_report.version,
                     local_name = pdr_report.struct_name(),
+                    db_name = pdr_report.sql_table_name(),
                     module = data_set.to_snake_case(),
                 );
                 fmt_str.push_str(&block);

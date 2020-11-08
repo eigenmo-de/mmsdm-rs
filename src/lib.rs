@@ -200,17 +200,9 @@ impl FileKey {
 impl fmt::Display for FileKey {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(table_name) = &self.table_name {
-            write!(
-                f,
-                "{}_{}_{}",
-                self.data_set_name, table_name, self.version
-            )
+            write!(f, "{}_{}_{}", self.data_set_name, table_name, self.version)
         } else {
-            write!(
-                f,
-                "{}_{}",
-                self.data_set_name, self.version
-            )
+            write!(f, "{}_{}", self.data_set_name, self.version)
         }
     }
 }
