@@ -32,7 +32,7 @@ pub fn run() -> anyhow::Result<()> {
     let mut fmt_str = String::new();
     fmt_str.push_str(
         r#"
-use crate::mmsdm::*;
+use crate::data_model;
 use futures::{AsyncRead, AsyncWrite};
 
 impl crate::AemoFile {
@@ -134,7 +134,7 @@ for file_key in self.data.keys() {
             ("{data_set_name}",{table_name},{version}_i32) =>  {{
                 #[cfg(feature = "{module}")]
                 {{
-                    let d: Vec<{module}::{local_name}> = self.get_table()?;
+                    let d: Vec<data_model::{local_name}> = self.get_table()?;
                     self.batched_insert(client, file_key, &d, "exec mmsdm_proc.Insert{db_name} @P1, @P2").await?;
                 }}
                 #[cfg(not(feature = "{module}"))]

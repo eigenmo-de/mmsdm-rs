@@ -4,11 +4,8 @@ use serde::{Deserialize, Serialize};
 use std::{collections, fmt, io, num, str};
 
 use chrono::TimeZone;
-use chrono_tz::Australia::Brisbane;
 
-use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
-
-pub mod mmsdm;
+pub mod data_model;
 
 #[cfg(feature = "sql_server")]
 pub mod sql_server;
@@ -23,7 +20,7 @@ pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
 
 // this is useful to get the datetime part of nem settlementdate / lastchanged fields
 pub fn to_nem_datetime(ndt: &chrono::NaiveDateTime) -> chrono::DateTime<chrono_tz::Tz> {
-    Brisbane.from_local_datetime(ndt).unwrap()
+    chrono_tz::Australia::Brisbane.from_local_datetime(ndt).unwrap()
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -241,8 +238,7 @@ pub trait GetTable: serde::de::DeserializeOwned + Send {
 }
 
 impl AemoFile {
-    #[allow(dead_code)]
-    fn get_table<T>(&self) -> Result<Vec<T>>
+    pub fn get_table<T>(&self) -> Result<Vec<T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable,
     {
@@ -253,7 +249,7 @@ impl AemoFile {
 
         subtable
             .data
-            .par_iter()
+            .iter()
             .map(|rec| {
                 rec.deserialize(Some(&subtable.headings))
                     .map_err(|cause| Error::CsvRowDe {

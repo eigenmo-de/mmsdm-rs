@@ -136,16 +136,11 @@ impl pdr::Report {
         )
     }
     pub fn struct_name(&self) -> String {
-        format!(
-            "{}{}",
-            if let Some(sub_type) = &self.sub_type {
-                sub_type.to_string()
-            } else {
-                self.name.to_camel_case()
-            }
-            .to_camel_case(),
-            self.version
-        )
+        if let Some(sub_type) = &self.sub_type {
+            format!("{}{}{}", self.name.to_camel_case(), sub_type.to_camel_case(), self.version)
+        } else {
+            format!("{}{}", self.name.to_camel_case(), self.version)
+        }
     }
     pub fn file_key_literal(&self) -> String {
         format!(
@@ -273,7 +268,7 @@ pub fn run() -> anyhow::Result<()> {
         }
         use heck::SnakeCase;
         fs::write(
-            format!("src/mmsdm/{}.rs", data_set.to_snake_case()),
+            format!("src/data_model/{}.rs", data_set.to_snake_case()),
             fmt_str,
         )?;
     }

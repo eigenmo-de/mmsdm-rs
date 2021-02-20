@@ -1,124 +1,226 @@
 #![cfg(test)]
-use aemo_rs;
+use mmsdm;
 use log::info;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use scraper::{html, Selector}; //, node, selector};
 use std::{
     error, fmt,
-    io::{self, Read},
+    io,
     path,
 };
 
-#[cfg(test)]
-mod test_rooftop_forecast {
-    use aemo_rs::rooftop_forecast;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/ROOFTOP_PV/FORECAST/";
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<rooftop_forecast::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
+// #[cfg(test)]
+// mod test_rooftop_forecast {
+//     use mmsdm::data_model;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/ROOFTOP_PV/FORECAST/";
+//     #[tokio::test]
 
-#[cfg(test)]
-mod test_rooftop_actual {
-    use aemo_rs::rooftop_actual;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/ROOFTOP_PV/ACTUAL/";
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<rooftop_actual::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
+//     fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<data_model::RooftopForecast1> = super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
+
+// #[cfg(test)]
+// mod test_rooftop_actual {
+//     use mmsdm::data_model;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/ROOFTOP_PV/ACTUAL/";
+//     #[tokio::test]
+
+//     fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<data_model::RooftopActual2> = super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
+
+// #[cfg(test)]
+// mod test_yestbid {
+//     use mmsdm::data_model;
+//     use log::info;
+//     use rayon::iter::{ParallelIterator, IntoParallelRefIterator};
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Yesterdays_Bids_Reports/";
+
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<mmsdm::AemoFile> = super::url_get_files(LOCATION).await.unwrap();
+
+//         info!("Downloaded and processed {} files", all_data.len());
+
+//         let bid_day_offers = all_data.par_iter()
+//             .map(mmsdm::AemoFile::get_table::<data_model::OfferBiddayoffer2>)
+//             .collect::<Vec<_>>();
+//         for bdo in bid_day_offers {
+//             info!("BDO rows: {}", bdo.unwrap().len())
+//         }
+//     }
+// }
+
+
+// #[cfg(test)]
+// mod test_yestbid {
+//     use mmsdm::data_model;
+//     use log::info;
+//     use rayon::iter::{ParallelIterator, IntoParallelRefIterator};
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Dispatch_SCADA/";
+
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<mmsdm::AemoFile> = super::url_get_files(LOCATION).await.unwrap();
+
+//         info!("Downloaded and processed {} files", all_data.len());
+
+//         let bid_day_offers = all_data.par_iter()
+//             .map(mmsdm::AemoFile::get_table::<data_model::DispatchUnitScada1>)
+//             .collect::<Vec<_>>();
+//         for bdo in bid_day_offers {
+//             info!("BDO rows: {}", bdo.unwrap().len())
+//         }
+//     }
+// }
+
+
+// #[cfg(test)]
+// mod test_yestbid {
+//     use mmsdm::data_model;
+//     use log::info;
+//     use rayon::iter::{ParallelIterator, IntoParallelIterator};
+//     const LOCATION: &str = "https://nemweb.com.au/Reports/Current/DispatchIS_Reports";
+
+//     #[test]
+//     fn download_and_parse() {
+//         env_logger::init();
+//         let links = super::get_links(LOCATION).unwrap();
+
+//         let rows = links.into_par_iter()
+//             // .take(100)
+//             .map(|l| {
+//                 let aemo_file = super::download(LOCATION, &l).unwrap();
+//                 aemo_file.get_table::<data_model::DispatchConstraint5>().unwrap()
+//             })
+//             .flatten()
+//             .collect::<Vec<data_model::DispatchConstraint5>>();
+
+//         // let all_data: Vec<mmsdm::AemoFile> = super::url_get_files(LOCATION).await.unwrap();
+
+//         info!("Downloaded and processed {} files", rows.len());
+
+//         // let bid_day_offers = all_data.par_iter()
+//         //     // .map(mmsdm::AemoFile::get_table::<data_model::DispatchPrice4>)
+//         //     .collect::<Vec<_>>();
+//         for row in rows {
+//             info!("rows: {:?}", row)
+//         }
+//     }
+// }
+
 
 #[cfg(test)]
 mod test_yestbid {
-    use aemo_rs::yestbid;
+    use mmsdm::data_model;
     use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Yesterdays_Bids_Reports/";
+    const LOCATION: &str = "https://nemweb.com.au/Reports/Current/Dispatch_SCADA";
 
     #[test]
     fn download_and_parse() {
         env_logger::init();
-        let all_data: Vec<yestbid::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
+        let links = super::get_links(LOCATION).unwrap();
+
+        let rows = links.iter()
+            // .take(100)
+            .map(|l| {
+                let aemo_file = super::download(LOCATION, &l).unwrap();
+                aemo_file.get_table::<data_model::DispatchUnitScada1>().unwrap()
+            })
+            .flatten()
+            .collect::<Vec<_>>();
+
+        info!("Downloaded and processed {} files", rows.len());
+
+
+        for row in rows {
+            info!("rows: {:?}", row)
+        }
     }
 }
 
-#[cfg(test)]
-mod test_dispatch_is {
-    use aemo_rs::dispatch_is;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/DispatchIS_Reports/";
 
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<dispatch_is::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
 
-#[cfg(test)]
-mod test_dispatch_scada {
-    use aemo_rs::dispatch_scada;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Dispatch_SCADA/";
+// #[cfg(test)]
+// mod test_dispatch_is {
+//     use mmsdm::data_model;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/DispatchIS_Reports/";
 
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<dispatch_scada::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<dispatch_is::File> = super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
 
-#[cfg(test)]
-mod test_daily {
-    use aemo_rs::daily;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Daily_Reports/";
+// #[cfg(test)]
+// mod test_dispatch_scada {
+//     use mmsdm::data_model;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Dispatch_SCADA/";
 
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<daily::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<dispatch_scada::File> = super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
 
-#[cfg(test)]
-mod test_predispatch_sensitivities {
-    use aemo_rs::predispatch_sensitivities;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Predispatch_Sensitivities/";
+// #[cfg(test)]
+// mod test_daily {
+//     use aemo_rs::daily;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Daily_Reports/";
 
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<predispatch_sensitivities::File> =
-            super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<daily::File> = super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
 
-#[cfg(test)]
-mod test_predispatch_is {
-    use aemo_rs::predispatch_is;
-    use log::info;
-    const LOCATION: &str = "http://nemweb.com.au/Reports/Current/PredispatchIS_Reports/";
+// #[cfg(test)]
+// mod test_predispatch_sensitivities {
+//     use aemo_rs::predispatch_sensitivities;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/Predispatch_Sensitivities/";
 
-    #[test]
-    fn download_and_parse() {
-        env_logger::init();
-        let all_data: Vec<predispatch_is::File> = super::url_get_files(LOCATION).unwrap();
-        info!("Downloaded and processed {} files", all_data.len());
-    }
-}
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<predispatch_sensitivities::File> =
+//             super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
+
+// #[cfg(test)]
+// mod test_predispatch_is {
+//     use aemo_rs::predispatch_is;
+//     use log::info;
+//     const LOCATION: &str = "http://nemweb.com.au/Reports/Current/PredispatchIS_Reports/";
+
+//     #[tokio::test]
+//     async fn download_and_parse() {
+//         env_logger::init();
+//         let all_data: Vec<predispatch_is::File> = super::url_get_files(LOCATION).unwrap();
+//         info!("Downloaded and processed {} files", all_data.len());
+//     }
+// }
 
 // helper functions for testing purposes
 // these should also be useful as examples for consumers of the library
@@ -144,39 +246,32 @@ fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
         .collect::<Vec<String>>()
 }
 
-fn download(base_url: &str, link: &str) -> Result<zip::ZipArchive<io::Cursor<Vec<u8>>>> {
+fn download(base_url: &str, link: &str) -> Result<mmsdm::AemoFile> {
     let path = path::Path::new(&link);
     let file_name = get_filename_from_path(path)?;
     let file_url = format!("{}/{}", base_url, file_name);
-    let bytes = reqwest::get(&file_url)?
-        .bytes()
-        .collect::<std::result::Result<Vec<_>, io::Error>>()?;
-    let cursor = io::Cursor::new(bytes);
-    let zip = zip::ZipArchive::new(cursor)?;
-    Ok(zip)
+    info!("Getting: {}", file_url);
+    let bytes = reqwest::blocking::get(&file_url)?
+        .error_for_status()?
+        .bytes()?;
+    let cursor = io::Cursor::new(bytes.to_vec());
+    let mut zip = zip::ZipArchive::new(cursor)?;
+    let inner_file = zip.by_index(0)?;
+    let buf_read = std::io::BufReader::new(inner_file);
+    let f = mmsdm::AemoFile::from_bufread(buf_read)?;
+    Ok(f)
 }
 
-fn archive_to_raw(
-    mut archive: zip::ZipArchive<io::Cursor<Vec<u8>>>,
-) -> Result<aemo_rs::RawAemoFile> {
-    let inner_file = archive.by_index(0)?;
-    info!("inner file name: {}", inner_file.name());
-    let raw = aemo_rs::RawAemoFile::from_bufread(inner_file)?;
-    Ok(raw)
-}
-
-fn url_get_files<T: aemo_rs::AemoFile>(url: &str) -> Result<Vec<T>> {
-    let doc = reqwest::get(url)?.text()?;
+fn get_links(url: &str) -> Result<Vec<String>> {
+    
+    let doc = reqwest::blocking::get(url)?.text()?;
+    info!("Doc: {}", doc);
     let parsed = scraper::Html::parse_document(&doc);
-    get_file_links_from_page(parsed)[0..=5]
-        .par_iter()
-        .inspect(|link| info!("downloading {}", link))
-        .map(|link| {
-            download(url, &link)
-                .and_then(archive_to_raw)
-                .and_then(|raw| T::from_raw(raw).map_err(Error::Aemo))
-        })
-        .collect::<Result<Vec<_>>>()
+
+    let links = get_file_links_from_page(parsed);
+    info!("Got {} links", links.len());
+
+    Ok(links)
 }
 
 #[derive(Debug)]
@@ -185,11 +280,11 @@ enum Error {
     Io(io::Error),
     Zip(zip::result::ZipError),
     Reqwest(reqwest::Error),
-    Aemo(aemo_rs::Error),
+    Aemo(mmsdm::Error),
 }
 
-impl From<aemo_rs::Error> for Error {
-    fn from(error: aemo_rs::Error) -> Self {
+impl From<mmsdm::Error> for Error {
+    fn from(error: mmsdm::Error) -> Self {
         Error::Aemo(error)
     }
 }
