@@ -1,5 +1,5 @@
-#![deny(clippy::all)]
-#![deny(warnings)]
+//#![deny(clippy::all)]
+//#![deny(warnings)]
 use serde::{Deserialize, Serialize};
 use std::{collections, fmt, io, num, str};
 
@@ -135,10 +135,11 @@ impl AemoHeader {
 
     pub fn get_filename(&self) -> String {
         format!(
-            "{}_{}_{}_{}.CSV",
+            "{}_{}_{}{}_{}.CSV",
             self.participant_name,
             self.file_name,
             self.effective_date.format("%Y%m%d"),
+            self.effective_time.format("%H%M%S"),
             self.serial_number,
         )
     }
