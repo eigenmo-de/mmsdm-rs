@@ -1,5 +1,52 @@
 /// # Summary
 /// 
+/// ## SPDINTERCONNECTORCONSTRAINT
+///  _SPDINTERCONNECTORCONSTRAINT contains details on the interconnector constraint factors used in dispatch, predispatch and STPASA. The details set a LHS value._
+/// 
+/// * Data Set Name: Spdicc
+/// * File Name: Null
+/// * Data Version: 1
+/// 
+/// # Description
+///  SPDINTERCONNECTORCONSTRAINT is public data, and is available to all participants. Source SPDINTERCONNECTORCONSTRAINT updates whenever new connection point constraints are created.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * GENCONID
+/// * INTERCONNECTORID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SpdiccNull1 {
+    /// Interconnector Identifier
+    pub interconnectorid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version no of this record for the effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Generic Constraint Identifier
+    pub genconid: String,
+    /// Constraint factor
+    pub factor: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for SpdiccNull1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "SPDICC".into(),
+                        table_name: Some("NULL".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## GENERICCONSTRAINTRHS
 ///  _GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.<br>GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet.<br>_
 /// 
@@ -66,6 +113,56 @@ impl crate::GetTable for GcrhsNull1 {
 }
 /// # Summary
 /// 
+/// ## GENERICEQUATIONDESC
+///  _GENERICEQUATIONDESC defines a generic equation identifier with a description. The formulation of the generic equation is detailed in GENERICEQUATIONRHS._
+/// 
+/// * Data Set Name: Geqdesc
+/// * File Name: Null
+/// * Data Version: 2
+/// 
+/// # Description
+///  GENERICEQUATIONDESC data is public to all participants. Source GENERICEQUATIONDESC updates when new a generic equation is created for the first time. Volume Approximately 100 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EQUATIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct GeqdescNull2 {
+    /// Generic Equation Identifier
+    pub equationid: String,
+    /// Generic Equation Description
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The device(s) affected by the constraint (e.g. Interconnector, Generator(s) or Cutset) 
+    pub impact: Option<String>,
+    /// The source of the constraint formulation
+    pub source: Option<String>,
+    /// The limit type of the constraint e.g. Transient Stability, Voltage Stability
+    pub limittype: Option<String>,
+    /// The contingency or reason for the constraint
+    pub reason: Option<String>,
+    /// Details of the changes made to this version of the generic equation RHS
+    pub modifications: Option<String>,
+    /// Extra notes on the constraint
+    pub additionalnotes: Option<String>,
+}
+impl crate::GetTable for GeqdescNull2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "GEQDESC".into(),
+                        table_name: Some("NULL".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## EMSMASTER
 ///  _EMSMASTER provides a description of the SCADA measurements that are associated with the SPD_ID points utilised in generic equation RHS terms_
 /// 
@@ -102,6 +199,248 @@ impl crate::GetTable for GenericConstraintEmsmaster1 {
                         data_set_name: "GENERIC_CONSTRAINT".into(),
                         table_name: Some("EMSMASTER".into()),
                         version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SPDCONNECTIONPOINTCONSTRAINT
+///  _SPDCONNECTIONPOINTCONSTRAINT sets out details of connections point constraints issued in dispatch, predispatch and STPASA._
+/// 
+/// * Data Set Name: Spdcpc
+/// * File Name: Null
+/// * Data Version: 2
+/// 
+/// # Description
+///  The addition of the BIDTYPE field to SPDCONNECTIONPOINTCONSTRAINT allows constraints to be applied to a dispatchable unit energy and/or Frequency Controlled Ancillary Services dispatch. SPDCONNECTIONPOINTCONSTRAINTdata is public, so is available to all participants. Source SPDCONNECTIONPOINTCONSTRAINT updates whenever new connection point constraints are created.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * BIDTYPE
+/// * CONNECTIONPOINTID
+/// * EFFECTIVEDATE
+/// * GENCONID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SpdcpcNull2 {
+    /// Connection Point Identifier
+    pub connectionpointid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version no of this record for the effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Generic Constraint Identifier
+    pub genconid: String,
+    /// Constraint factor
+    pub factor: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Bid Type Identifier; one of (RAISE6SEC, RAISE60SEC, RAISE5MIN, LOWER6SEC, LOWER60SEC, LOWER5MIN, RAISEREG, LOWERREG)
+    pub bidtype: String,
+}
+impl crate::GetTable for SpdcpcNull2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "SPDCPC".into(),
+                        table_name: Some("NULL".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## GENCONSETTRK
+///  _GENCONSETTRK assists in determining the correct version of a generic constraint set that has been invoked in GENCONSETINVOKE._
+/// 
+/// * Data Set Name: Genconsettrk
+/// * File Name: Null
+/// * Data Version: 2
+/// 
+/// # Description
+///  GENCONSETTRK data is public to all participants. Source Ad hoc updates occur to GENCONSETTRK.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * GENCONSETID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct GenconsettrkNull2 {
+    /// Unique ID for the Constraint Set
+    pub genconsetid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version no of the record for the given effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Description of the constraint
+    pub description: Option<String>,
+    /// The person who authorised the constraint set
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The region the constraint set is located in or a special grouping (e.g. CHIMERA)
+    pub coverage: Option<String>,
+    /// Details of the changes made to this version of the constraint set
+    pub modifications: Option<String>,
+    /// Not used as of 2005 End of Year Release [was Flag to indicate if the constraint set is a system normal (1) or and an outage set (0)]
+    pub systemnormal: Option<String>,
+    /// Detail of the plant that is not in service
+    pub outage: Option<String>,
+}
+impl crate::GetTable for GenconsettrkNull2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "GENCONSETTRK".into(),
+                        table_name: Some("NULL".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SPDREGIONCONSTRAINT
+///  _SPDREGIONCONSTRAINT contains details on region demand constraint factors used in dispatch. SPDREGIONCONSTRAINTsets a LHS value._
+/// 
+/// * Data Set Name: Spdrc
+/// * File Name: Null
+/// * Data Version: 2
+/// 
+/// # Description
+///  SPDREGIONCONSTRAINT is public data, and is available to all participants. Source SPDREGIONCONSTRAINT is updated whenever AEMO creates new regional constraints.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * BIDTYPE
+/// * EFFECTIVEDATE
+/// * GENCONID
+/// * REGIONID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SpdrcNull2 {
+    /// Region Identifier
+    pub regionid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version no of this record for the effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Generic Constraint Identifier
+    pub genconid: String,
+    /// Constraint factor; one of (-1, 1)
+    pub factor: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// AS Service type - relates to the BidType table; one of (RAISE6SEC, RAISE60SEC, RAISE5MIN, LOWER6SEC, LOWER60SEC, LOWER5MIN, RAISEREG, LOWERREG)
+    pub bidtype: String,
+}
+impl crate::GetTable for SpdrcNull2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "SPDRC".into(),
+                        table_name: Some("NULL".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## GENCONDATA
+///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes.<br>_
+/// 
+/// * Data Set Name: Gencondata
+/// * File Name: Null
+/// * Data Version: 6
+/// 
+/// # Description
+///  GENCONDATA is a public data, and is available to all participants. Source GENCONDATA updates as constraint details are updated by AEMO. Note The following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes: ·	 DISPATCH ·	 PREDISPATCH ·	 STPASA ·	 MTPASA The flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA . The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * GENCONID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct GencondataNull6 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version with respect to the effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Unique ID for the constraint
+    pub genconid: String,
+    /// The logical operator (=, &gt;=, &lt;=)
+    pub constrainttype: Option<String>,
+    /// the RHS value used if there is no dynamic RHS defined in GenericConstraintRHS
+    pub constraintvalue: Option<rust_decimal::Decimal>,
+    /// Detail of the plant that is not in service
+    pub description: Option<String>,
+    /// Not used
+    pub status: Option<String>,
+    /// The constraint violation penalty factor
+    pub genericconstraintweight: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// User authorising record
+    pub authorisedby: Option<String>,
+    /// Not used
+    pub dynamicrhs: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Flag: constraint RHS used for Dispatch? 1-used, 0-not used
+    pub dispatch: Option<String>,
+    /// Flag to indicate if the constraint RHS is to be used for PreDispatch, 1-used, 0-not used
+    pub predispatch: Option<String>,
+    /// Flag to indicate if the constraint RHS is to be used for ST PASA, 1-used, 0-not used
+    pub stpasa: Option<String>,
+    /// Flag to indicate if the constraint RHS is to be used for MT PASA, 1-used, 0-not used
+    pub mtpasa: Option<String>,
+    /// The device(s) that is affected by the constraint e.g. Interconnector, Generator(s) or Cutset
+    pub impact: Option<String>,
+    /// The source of the constraint formulation
+    pub source: Option<String>,
+    /// The limit type of the constraint e.g. Transient Stability, Voltage Stability
+    pub limittype: Option<String>,
+    /// The contingency or reason for the constraint
+    pub reason: Option<String>,
+    /// Details of the changes made to this version of the constraint
+    pub modifications: Option<String>,
+    /// Extra notes on the constraint
+    pub additionalnotes: Option<String>,
+    /// Extra notes on the constraint: NULL = Dispatch RHS applied in 5MPD, PD = PreDispatch RHS applied in 5MPD
+    pub p5min_scope_override: Option<String>,
+    /// Flag to indicate if PASA LRC run uses the constraint; 1-used, 0-not used
+    pub lrc: Option<String>,
+    /// Flag to indicate if PASA LOR run uses the constraint; 1-used, 0-not used
+    pub lor: Option<String>,
+    /// Flags Constraints for which NEMDE must use "InitialMW" values instead of "WhatOfInitialMW" for Intervention Pricing runs
+    pub force_scada: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for GencondataNull6 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "GENCONDATA".into(),
+                        table_name: Some("NULL".into()),
+                        version: 6,
                     }
                     
     }
@@ -220,159 +559,6 @@ impl crate::GetTable for GeqrhsNull1 {
 }
 /// # Summary
 /// 
-/// ## SPDINTERCONNECTORCONSTRAINT
-///  _SPDINTERCONNECTORCONSTRAINT contains details on the interconnector constraint factors used in dispatch, predispatch and STPASA. The details set a LHS value._
-/// 
-/// * Data Set Name: Spdicc
-/// * File Name: Null
-/// * Data Version: 1
-/// 
-/// # Description
-///  SPDINTERCONNECTORCONSTRAINT is public data, and is available to all participants. Source SPDINTERCONNECTORCONSTRAINT updates whenever new connection point constraints are created.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
-/// * GENCONID
-/// * INTERCONNECTORID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SpdiccNull1 {
-    /// Interconnector Identifier
-    pub interconnectorid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version no of this record for the effective date
-    pub versionno: rust_decimal::Decimal,
-    /// Generic Constraint Identifier
-    pub genconid: String,
-    /// Constraint factor
-    pub factor: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for SpdiccNull1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SPDICC".into(),
-                        table_name: Some("NULL".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SPDREGIONCONSTRAINT
-///  _SPDREGIONCONSTRAINT contains details on region demand constraint factors used in dispatch. SPDREGIONCONSTRAINTsets a LHS value._
-/// 
-/// * Data Set Name: Spdrc
-/// * File Name: Null
-/// * Data Version: 2
-/// 
-/// # Description
-///  SPDREGIONCONSTRAINT is public data, and is available to all participants. Source SPDREGIONCONSTRAINT is updated whenever AEMO creates new regional constraints.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * BIDTYPE
-/// * EFFECTIVEDATE
-/// * GENCONID
-/// * REGIONID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SpdrcNull2 {
-    /// Region Identifier
-    pub regionid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version no of this record for the effective date
-    pub versionno: rust_decimal::Decimal,
-    /// Generic Constraint Identifier
-    pub genconid: String,
-    /// Constraint factor; one of (-1, 1)
-    pub factor: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// AS Service type - relates to the BidType table; one of (RAISE6SEC, RAISE60SEC, RAISE5MIN, LOWER6SEC, LOWER60SEC, LOWER5MIN, RAISEREG, LOWERREG)
-    pub bidtype: String,
-}
-impl crate::GetTable for SpdrcNull2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SPDRC".into(),
-                        table_name: Some("NULL".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## GENCONSETTRK
-///  _GENCONSETTRK assists in determining the correct version of a generic constraint set that has been invoked in GENCONSETINVOKE._
-/// 
-/// * Data Set Name: Genconsettrk
-/// * File Name: Null
-/// * Data Version: 2
-/// 
-/// # Description
-///  GENCONSETTRK data is public to all participants. Source Ad hoc updates occur to GENCONSETTRK.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
-/// * GENCONSETID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct GenconsettrkNull2 {
-    /// Unique ID for the Constraint Set
-    pub genconsetid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version no of the record for the given effective date
-    pub versionno: rust_decimal::Decimal,
-    /// Description of the constraint
-    pub description: Option<String>,
-    /// The person who authorised the constraint set
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// The region the constraint set is located in or a special grouping (e.g. CHIMERA)
-    pub coverage: Option<String>,
-    /// Details of the changes made to this version of the constraint set
-    pub modifications: Option<String>,
-    /// Not used as of 2005 End of Year Release [was Flag to indicate if the constraint set is a system normal (1) or and an outage set (0)]
-    pub systemnormal: Option<String>,
-    /// Detail of the plant that is not in service
-    pub outage: Option<String>,
-}
-impl crate::GetTable for GenconsettrkNull2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GENCONSETTRK".into(),
-                        table_name: Some("NULL".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## GENCONSETINVOKE
 ///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc.<br>_
 /// 
@@ -427,192 +613,6 @@ impl crate::GetTable for GenericConstraintGenconsetinvoke2 {
                         data_set_name: "GENERIC_CONSTRAINT".into(),
                         table_name: Some("GENCONSETINVOKE".into()),
                         version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## SPDCONNECTIONPOINTCONSTRAINT
-///  _SPDCONNECTIONPOINTCONSTRAINT sets out details of connections point constraints issued in dispatch, predispatch and STPASA._
-/// 
-/// * Data Set Name: Spdcpc
-/// * File Name: Null
-/// * Data Version: 2
-/// 
-/// # Description
-///  The addition of the BIDTYPE field to SPDCONNECTIONPOINTCONSTRAINT allows constraints to be applied to a dispatchable unit energy and/or Frequency Controlled Ancillary Services dispatch. SPDCONNECTIONPOINTCONSTRAINTdata is public, so is available to all participants. Source SPDCONNECTIONPOINTCONSTRAINT updates whenever new connection point constraints are created.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * BIDTYPE
-/// * CONNECTIONPOINTID
-/// * EFFECTIVEDATE
-/// * GENCONID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SpdcpcNull2 {
-    /// Connection Point Identifier
-    pub connectionpointid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version no of this record for the effective date
-    pub versionno: rust_decimal::Decimal,
-    /// Generic Constraint Identifier
-    pub genconid: String,
-    /// Constraint factor
-    pub factor: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Bid Type Identifier; one of (RAISE6SEC, RAISE60SEC, RAISE5MIN, LOWER6SEC, LOWER60SEC, LOWER5MIN, RAISEREG, LOWERREG)
-    pub bidtype: String,
-}
-impl crate::GetTable for SpdcpcNull2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SPDCPC".into(),
-                        table_name: Some("NULL".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## GENERICEQUATIONDESC
-///  _GENERICEQUATIONDESC defines a generic equation identifier with a description. The formulation of the generic equation is detailed in GENERICEQUATIONRHS._
-/// 
-/// * Data Set Name: Geqdesc
-/// * File Name: Null
-/// * Data Version: 2
-/// 
-/// # Description
-///  GENERICEQUATIONDESC data is public to all participants. Source GENERICEQUATIONDESC updates when new a generic equation is created for the first time. Volume Approximately 100 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EQUATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct GeqdescNull2 {
-    /// Generic Equation Identifier
-    pub equationid: String,
-    /// Generic Equation Description
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// The device(s) affected by the constraint (e.g. Interconnector, Generator(s) or Cutset) 
-    pub impact: Option<String>,
-    /// The source of the constraint formulation
-    pub source: Option<String>,
-    /// The limit type of the constraint e.g. Transient Stability, Voltage Stability
-    pub limittype: Option<String>,
-    /// The contingency or reason for the constraint
-    pub reason: Option<String>,
-    /// Details of the changes made to this version of the generic equation RHS
-    pub modifications: Option<String>,
-    /// Extra notes on the constraint
-    pub additionalnotes: Option<String>,
-}
-impl crate::GetTable for GeqdescNull2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GEQDESC".into(),
-                        table_name: Some("NULL".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## GENCONDATA
-///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes.<br>_
-/// 
-/// * Data Set Name: Gencondata
-/// * File Name: Null
-/// * Data Version: 6
-/// 
-/// # Description
-///  GENCONDATA is a public data, and is available to all participants. Source GENCONDATA updates as constraint details are updated by AEMO. Note The following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes: ·	 DISPATCH ·	 PREDISPATCH ·	 STPASA ·	 MTPASA The flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA . The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
-/// * GENCONID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct GencondataNull6 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version with respect to the effective date
-    pub versionno: rust_decimal::Decimal,
-    /// Unique ID for the constraint
-    pub genconid: String,
-    /// The logical operator (=, &gt;=, &lt;=)
-    pub constrainttype: Option<String>,
-    /// the RHS value used if there is no dynamic RHS defined in GenericConstraintRHS
-    pub constraintvalue: Option<rust_decimal::Decimal>,
-    /// Detail of the plant that is not in service
-    pub description: Option<String>,
-    /// Not used
-    pub status: Option<String>,
-    /// The constraint violation penalty factor
-    pub genericconstraintweight: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// User authorising record
-    pub authorisedby: Option<String>,
-    /// Not used
-    pub dynamicrhs: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Flag: constraint RHS used for Dispatch? 1-used, 0-not used
-    pub dispatch: Option<String>,
-    /// Flag to indicate if the constraint RHS is to be used for PreDispatch, 1-used, 0-not used
-    pub predispatch: Option<String>,
-    /// Flag to indicate if the constraint RHS is to be used for ST PASA, 1-used, 0-not used
-    pub stpasa: Option<String>,
-    /// Flag to indicate if the constraint RHS is to be used for MT PASA, 1-used, 0-not used
-    pub mtpasa: Option<String>,
-    /// The device(s) that is affected by the constraint e.g. Interconnector, Generator(s) or Cutset
-    pub impact: Option<String>,
-    /// The source of the constraint formulation
-    pub source: Option<String>,
-    /// The limit type of the constraint e.g. Transient Stability, Voltage Stability
-    pub limittype: Option<String>,
-    /// The contingency or reason for the constraint
-    pub reason: Option<String>,
-    /// Details of the changes made to this version of the constraint
-    pub modifications: Option<String>,
-    /// Extra notes on the constraint
-    pub additionalnotes: Option<String>,
-    /// Extra notes on the constraint: NULL = Dispatch RHS applied in 5MPD, PD = PreDispatch RHS applied in 5MPD
-    pub p5min_scope_override: Option<String>,
-    /// Flag to indicate if PASA LRC run uses the constraint; 1-used, 0-not used
-    pub lrc: Option<String>,
-    /// Flag to indicate if PASA LOR run uses the constraint; 1-used, 0-not used
-    pub lor: Option<String>,
-    /// Flags Constraints for which NEMDE must use "InitialMW" values instead of "WhatOfInitialMW" for Intervention Pricing runs
-    pub force_scada: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for GencondataNull6 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GENCONDATA".into(),
-                        table_name: Some("NULL".into()),
-                        version: 6,
                     }
                     
     }

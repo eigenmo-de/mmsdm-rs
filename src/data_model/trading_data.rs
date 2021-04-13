@@ -1,132 +1,5 @@
 /// # Summary
 /// 
-/// ## TRADINGINTERCONNECT
-///  _TRADINGINTERCONNECT shows the half-hourly summary of Interconnector flows based on 5-minute averages._
-/// 
-/// * Data Set Name: Trading
-/// * File Name: Interconnectorres
-/// * Data Version: 2
-/// 
-/// # Description
-///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INTERCONNECTORID
-/// * PERIODID
-/// * RUNNO
-/// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingInterconnectorres2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Dispatch run no.
-    pub runno: rust_decimal::Decimal,
-    /// Interconnector identifier
-    pub interconnectorid: String,
-    /// Period Identifier
-    pub periodid: rust_decimal::Decimal,
-    /// Average of the metered MW flow from the start of each dispatch interval.
-    pub meteredmwflow: Option<rust_decimal::Decimal>,
-    /// Calculated MW Flow from SPD
-    pub mwflow: Option<rust_decimal::Decimal>,
-    /// MW losses at calculated MW flow
-    pub mwlosses: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for TradingInterconnectorres2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "TRADING".into(),
-                        table_name: Some("INTERCONNECTORRES".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## TRADINGLOAD
-///  _TRADINGLOAD shows half-hourly average dispatch levels, including fields to handle the Ancillary Services functionality._
-/// 
-/// * Data Set Name: Trading
-/// * File Name: Unit Solution
-/// * Data Version: 2
-/// 
-/// # Description
-///  Source Own (confidential) TRADINGLOAD data updates half hourly, with public availability of all data on next day. 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
-/// # Primary Key Columns
-/// 
-/// * DUID
-/// * PERIODID
-/// * RUNNO
-/// * SETTLEMENTDATE
-/// * TRADETYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingUnitSolution2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Dispatch run no.
-    pub runno: rust_decimal::Decimal,
-    /// Dispatchable Unit Identifier
-    pub duid: String,
-    /// Not used
-    pub tradetype: rust_decimal::Decimal,
-    /// Period Identifier
-    pub periodid: rust_decimal::Decimal,
-    /// Average Initial MW at start of each period
-    pub initialmw: Option<rust_decimal::Decimal>,
-    /// Average total MW dispatched over period
-    pub totalcleared: Option<rust_decimal::Decimal>,
-    /// Average ramp down rate
-    pub rampdownrate: Option<rust_decimal::Decimal>,
-    /// Average ramp up rate
-    pub rampuprate: Option<rust_decimal::Decimal>,
-    /// Average 5 min lower dispatch
-    pub lower5min: Option<rust_decimal::Decimal>,
-    /// Average 60 sec lower dispatch
-    pub lower60sec: Option<rust_decimal::Decimal>,
-    /// Average60 sec lower dispatch
-    pub lower6sec: Option<rust_decimal::Decimal>,
-    /// Average 5 min raise dispatch
-    pub raise5min: Option<rust_decimal::Decimal>,
-    /// Average 60 sec raise dispatch
-    pub raise60sec: Option<rust_decimal::Decimal>,
-    /// Average 6 sec raise dispatch
-    pub raise6sec: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Lower Regulation reserve target
-    pub lowerreg: Option<rust_decimal::Decimal>,
-    /// Raise Regulation reserve target
-    pub raisereg: Option<rust_decimal::Decimal>,
-    /// Bid energy availability
-    pub availability: Option<rust_decimal::Decimal>,
-    /// Boolean representation flagging if the Target is Capped
-    pub semidispatchcap: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for TradingUnitSolution2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "TRADING".into(),
-                        table_name: Some("UNIT_SOLUTION".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## TRADINGPRICE
 ///  _TRADINGPRICE sets out half-hourly spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field._
 /// 
@@ -208,6 +81,49 @@ impl crate::GetTable for TradingPrice2 {
                         data_set_name: "TRADING".into(),
                         table_name: Some("PRICE".into()),
                         version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## AVERAGEPRICE30
+///  _New table reflecting the 30-minute average price (i.e. the pre-1 July 2021 Trading Price)._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Averageprice30
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// 
+/// 
+/// # Primary Key Columns
+/// 
+/// * PERIODDATE
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingAverageprice301 {
+    #[serde(with = "crate::mms_datetime")]
+    pub perioddate: chrono::NaiveDateTime,
+    /// Region Identifier
+    pub regionid: String,
+    /// The 30-minute interval period, 1 to 48
+    pub periodid: rust_decimal::Decimal,
+    /// Regional reference price for this period
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM" or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
+    pub price_confidence: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for TradingAverageprice301 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("AVERAGEPRICE30".into()),
+                        version: 1,
                     }
                     
     }
@@ -423,6 +339,133 @@ impl crate::GetTable for TradingRegionsum4 {
                         data_set_name: "TRADING".into(),
                         table_name: Some("REGIONSUM".into()),
                         version: 4,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## TRADINGINTERCONNECT
+///  _TRADINGINTERCONNECT shows the half-hourly summary of Interconnector flows based on 5-minute averages._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Interconnectorres
+/// * Data Version: 2
+/// 
+/// # Description
+///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * INTERCONNECTORID
+/// * PERIODID
+/// * RUNNO
+/// * SETTLEMENTDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingInterconnectorres2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Dispatch run no.
+    pub runno: rust_decimal::Decimal,
+    /// Interconnector identifier
+    pub interconnectorid: String,
+    /// Period Identifier
+    pub periodid: rust_decimal::Decimal,
+    /// Average of the metered MW flow from the start of each dispatch interval.
+    pub meteredmwflow: Option<rust_decimal::Decimal>,
+    /// Calculated MW Flow from SPD
+    pub mwflow: Option<rust_decimal::Decimal>,
+    /// MW losses at calculated MW flow
+    pub mwlosses: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for TradingInterconnectorres2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("INTERCONNECTORRES".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## TRADINGLOAD
+///  _TRADINGLOAD shows half-hourly average dispatch levels, including fields to handle the Ancillary Services functionality._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Unit Solution
+/// * Data Version: 2
+/// 
+/// # Description
+///  Source Own (confidential) TRADINGLOAD data updates half hourly, with public availability of all data on next day. 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * DUID
+/// * PERIODID
+/// * RUNNO
+/// * SETTLEMENTDATE
+/// * TRADETYPE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingUnitSolution2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Dispatch run no.
+    pub runno: rust_decimal::Decimal,
+    /// Dispatchable Unit Identifier
+    pub duid: String,
+    /// Not used
+    pub tradetype: rust_decimal::Decimal,
+    /// Period Identifier
+    pub periodid: rust_decimal::Decimal,
+    /// Average Initial MW at start of each period
+    pub initialmw: Option<rust_decimal::Decimal>,
+    /// Average total MW dispatched over period
+    pub totalcleared: Option<rust_decimal::Decimal>,
+    /// Average ramp down rate
+    pub rampdownrate: Option<rust_decimal::Decimal>,
+    /// Average ramp up rate
+    pub rampuprate: Option<rust_decimal::Decimal>,
+    /// Average 5 min lower dispatch
+    pub lower5min: Option<rust_decimal::Decimal>,
+    /// Average 60 sec lower dispatch
+    pub lower60sec: Option<rust_decimal::Decimal>,
+    /// Average60 sec lower dispatch
+    pub lower6sec: Option<rust_decimal::Decimal>,
+    /// Average 5 min raise dispatch
+    pub raise5min: Option<rust_decimal::Decimal>,
+    /// Average 60 sec raise dispatch
+    pub raise60sec: Option<rust_decimal::Decimal>,
+    /// Average 6 sec raise dispatch
+    pub raise6sec: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Lower Regulation reserve target
+    pub lowerreg: Option<rust_decimal::Decimal>,
+    /// Raise Regulation reserve target
+    pub raisereg: Option<rust_decimal::Decimal>,
+    /// Bid energy availability
+    pub availability: Option<rust_decimal::Decimal>,
+    /// Boolean representation flagging if the Target is Capped
+    pub semidispatchcap: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for TradingUnitSolution2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("UNIT_SOLUTION".into()),
+                        version: 2,
                     }
                     
     }

@@ -1,57 +1,5 @@
 /// # Summary
 /// 
-/// ## VOLTAGE_INSTRUCTION_TRK
-///  _Parent record for Voltage Instructions (MVAr Dispatch). 'SIGNAL' records will have no children; 'INSTRUCTION' records will have children_
-/// 
-/// * Data Set Name: Voltage Instruction
-/// * File Name: Track
-/// * Data Version: 2
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * RUN_DATETIME
-/// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct VoltageInstructionTrack2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Either 'SIGNAL' (childless) or 'INSTRUCTION'
-    pub file_type: Option<String>,
-    #[serde(with = "crate::mms_datetime")]
-    pub version_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub se_datetime: Option<chrono::NaiveDateTime>,
-    /// VDS solver solution category. Valid values: SUCCESS, WARNING, FAILURE
-    pub solution_category: Option<String>,
-    /// VDS solver solution status. Valid values: NOACTCNV [Solved with no instructions], NOVIOACT, CONVERGE, UNMANAGE, UNMANCTG, CTGDIV, SENHDIV [Failed with too many violations], BCDIV
-    pub solution_status: Option<String>,
-    /// The current VDS operating mode. Valid values: AUTO, AUTO-VERFIED, MANUAL
-    pub operating_mode: Option<String>,
-    /// Unstructured code and message from AEMO
-    pub operating_status: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub est_expiry: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub est_next_instruction: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for VoltageInstructionTrack2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "VOLTAGE_INSTRUCTION".into(),
-                        table_name: Some("TRACK".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## VOLTAGE_INSTRUCTION
 ///  _Child record for Voltage Instructions (MVAr Dispatch)_
 /// 
@@ -104,6 +52,58 @@ impl crate::GetTable for VoltageInstructionInstruction2 {
                     crate::FileKey {
                         data_set_name: "VOLTAGE_INSTRUCTION".into(),
                         table_name: Some("INSTRUCTION".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## VOLTAGE_INSTRUCTION_TRK
+///  _Parent record for Voltage Instructions (MVAr Dispatch). 'SIGNAL' records will have no children; 'INSTRUCTION' records will have children_
+/// 
+/// * Data Set Name: Voltage Instruction
+/// * File Name: Track
+/// * Data Version: 2
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * RUN_DATETIME
+/// * VERSION_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct VoltageInstructionTrack2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Either 'SIGNAL' (childless) or 'INSTRUCTION'
+    pub file_type: Option<String>,
+    #[serde(with = "crate::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub se_datetime: Option<chrono::NaiveDateTime>,
+    /// VDS solver solution category. Valid values: SUCCESS, WARNING, FAILURE
+    pub solution_category: Option<String>,
+    /// VDS solver solution status. Valid values: NOACTCNV [Solved with no instructions], NOVIOACT, CONVERGE, UNMANAGE, UNMANCTG, CTGDIV, SENHDIV [Failed with too many violations], BCDIV
+    pub solution_status: Option<String>,
+    /// The current VDS operating mode. Valid values: AUTO, AUTO-VERFIED, MANUAL
+    pub operating_mode: Option<String>,
+    /// Unstructured code and message from AEMO
+    pub operating_status: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub est_expiry: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub est_next_instruction: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for VoltageInstructionTrack2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "VOLTAGE_INSTRUCTION".into(),
+                        table_name: Some("TRACK".into()),
                         version: 2,
                     }
                     

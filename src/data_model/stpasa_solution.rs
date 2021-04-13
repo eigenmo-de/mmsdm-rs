@@ -1,68 +1,108 @@
 /// # Summary
 /// 
-/// ## STPASA_CASESOLUTION
-///  _STPASA_CASESOLUTION holds one record containing results pertaining to each entire solution_
+/// ## STPASA_CONSTRAINTSOLUTION
+///  _STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
 /// 
 /// * Data Set Name: Stpasa
-/// * File Name: Casesolution
+/// * File Name: Constraintsolution
 /// * Data Version: 3
 /// 
 /// # Description
-///  STPASA_CASESOLUTION is public data. Source STPASA_CASESOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 12 Mb per month: &lt;1
+///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90 
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
 /// * RUN_DATETIME
+/// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaCasesolution3 {
+pub struct StpasaConstraintsolution3 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    /// Version of the PASA solver used to solve this case
-    pub pasaversion: Option<String>,
-    /// Low Reserve Condition (LRC) flag for the case (1 - LRC in the case, 0 - No LRCs in the case) for capacity run
-    pub reservecondition: Option<rust_decimal::Decimal>,
-    /// Lack of Reserve Condition (LOR) flag for the case indicates the most severe condition in the case  (3 = LOR3, 2 = LOR2, 1 = LOR1, 0 = No LOR)
-    pub lorcondition: Option<rust_decimal::Decimal>,
-    /// Objective Function from the Capacity Adequacy run
-    pub capacityobjfunction: Option<rust_decimal::Decimal>,
-    /// Not populated as of 2005 End of Year Release; was the demand forecast used for capacity adequacy assessment. 0 if no assessment, 1 for 10%, 2 for 50%, 3 for 90%
-    pub capacityoption: Option<rust_decimal::Decimal>,
-    /// Not populated as of 2005 End of Year Release; was the demand forecast used for assessment of Maximum surplus Reserve. 0 if no assessment, 1 for 10%, 2 for 50%, 3 for 90%
-    pub maxsurplusreserveoption: Option<rust_decimal::Decimal>,
-    /// Not populated as of 2005 End of Year Release; was the demand forecast used for assessment of Maximum Spare Capacity. 0 if no assessment, 1 for 10%, 2 for 50%, 3 for 90%
-    pub maxsparecapacityoption: Option<rust_decimal::Decimal>,
-    /// The penalty for non-zero interconnector flow
-    pub interconnectorflowpenalty: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Constraint identifier (synonymous with GenConID)
+    pub constraintid: String,
+    /// The RHS value in the capacity evaluation.
+    pub capacityrhs: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment marginal value, 0 if not binding
+    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment violation degree for generic constraint; 0 if not violating
+    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Specifies the Probability of Exceedence (POE) demand forecast for Reliability LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
-    pub reliabilitylrcdemandoption: Option<rust_decimal::Decimal>,
-    /// Specifies the Probability of Exceedence (POE) demand forecast for outage LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
-    pub outagelrcdemandoption: Option<rust_decimal::Decimal>,
-    /// Specifies the Probability of Exceedence (POE) demand forecast for LOR assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
-    pub lordemandoption: Option<rust_decimal::Decimal>,
-    /// Generation Availability to be used in Reliability LRC run (either PASA or MARKET)
-    pub reliabilitylrccapacityoption: Option<String>,
-    /// Generation Availability to be used in Outage LRC run (either PASA or MARKET)
-    pub outagelrccapacityoption: Option<String>,
-    /// Generation Availability to be used in LOR run (either PASA or MARKET)
-    pub lorcapacityoption: Option<String>,
-    /// UIGF POE forecast availability used for this option
-    pub loruigf_option: Option<rust_decimal::Decimal>,
-    /// UIGF POE forecast availability used for this option
-    pub reliability_lrcuigf_option: Option<rust_decimal::Decimal>,
-    /// UIGF POE forecast availability used for this option
-    pub outage_lrcuigf_option: Option<rust_decimal::Decimal>,
+    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
+    pub runtype: String,
 }
-impl crate::GetTable for StpasaCasesolution3 {
+impl crate::GetTable for StpasaConstraintsolution3 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "STPASA".into(),
-                        table_name: Some("CASESOLUTION".into()),
+                        table_name: Some("CONSTRAINTSOLUTION".into()),
+                        version: 3,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## STPASA_INTERCONNECTORSOLN
+///  _STPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
+/// 
+/// * Data Set Name: Stpasa
+/// * File Name: Interconnectorsoln
+/// * Data Version: 3
+/// 
+/// # Description
+///  STPASA_INTERCONNECTORSOLN is public so is available to all participants. Source STPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 576 Mb per month: 4
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * INTERCONNECTORID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * RUNTYPE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct StpasaInterconnectorsoln3 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Interconnector Identifier
+    pub interconnectorid: String,
+    /// Interconnector loading level (MW) that can be reached in case of capacity scarcity in neighbouring regions subject to network and energy constraints
+    pub capacitymwflow: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment marginal value, 0 if not binding
+    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment violation degree for interconnector capacity; 0 if not violating
+    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit
+    pub calculatedexportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
+    pub calculatedimportlimit: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
+    pub runtype: String,
+    /// ID of the constraint that sets the Interconnector Export Limit
+    pub exportlimitconstraintid: Option<String>,
+    /// ID of the constraint that sets the Interconnector Import Limit
+    pub importlimitconstraintid: Option<String>,
+}
+impl crate::GetTable for StpasaInterconnectorsoln3 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "STPASA".into(),
+                        table_name: Some("INTERCONNECTORSOLN".into()),
                         version: 3,
                     }
                     
@@ -75,7 +115,7 @@ impl crate::GetTable for StpasaCasesolution3 {
 /// 
 /// * Data Set Name: Stpasa
 /// * File Name: Regionsolution
-/// * Data Version: 5
+/// * Data Version: 6
 /// 
 /// # Description
 ///  STPASA_REGIONSOLUTION is public so is available to all participants. Source STPASA_REGIONSOLUTION is updated each STPASA run (i.e every 2 hours). Volume Rows per day: 480 Mb per month: 8
@@ -90,7 +130,7 @@ impl crate::GetTable for StpasaCasesolution3 {
 /// * RUN_DATETIME
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaRegionsolution5 {
+pub struct StpasaRegionsolution6 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     #[serde(with = "crate::mms_datetime")]
@@ -176,123 +216,83 @@ pub struct StpasaRegionsolution5 {
     /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is wind and StudyRegion = Region
     pub ss_wind_cleared: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for StpasaRegionsolution5 {
+impl crate::GetTable for StpasaRegionsolution6 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "STPASA".into(),
                         table_name: Some("REGIONSOLUTION".into()),
-                        version: 5,
+                        version: 6,
                     }
                     
     }
 }
 /// # Summary
 /// 
-/// ## STPASA_CONSTRAINTSOLUTION
-///  _STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
+/// ## STPASA_CASESOLUTION
+///  _STPASA_CASESOLUTION holds one record containing results pertaining to each entire solution_
 /// 
 /// * Data Set Name: Stpasa
-/// * File Name: Constraintsolution
-/// * Data Version: 2
+/// * File Name: Casesolution
+/// * Data Version: 3
 /// 
 /// # Description
-///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90 
+///  STPASA_CASESOLUTION is public data. Source STPASA_CASESOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 12 Mb per month: &lt;1
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
-/// * CONSTRAINTID
-/// * INTERVAL_DATETIME
 /// * RUN_DATETIME
-/// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaConstraintsolution2 {
+pub struct StpasaCasesolution3 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Constraint identifier (synonymous with GenConID)
-    pub constraintid: String,
-    /// The RHS value in the capacity evaluation.
-    pub capacityrhs: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment marginal value, 0 if not binding
-    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment violation degree for generic constraint; 0 if not violating
-    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
+    /// Version of the PASA solver used to solve this case
+    pub pasaversion: Option<String>,
+    /// Low Reserve Condition (LRC) flag for the case (1 - LRC in the case, 0 - No LRCs in the case) for capacity run
+    pub reservecondition: Option<rust_decimal::Decimal>,
+    /// Lack of Reserve Condition (LOR) flag for the case indicates the most severe condition in the case  (3 = LOR3, 2 = LOR2, 1 = LOR1, 0 = No LOR)
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// Objective Function from the Capacity Adequacy run
+    pub capacityobjfunction: Option<rust_decimal::Decimal>,
+    /// Not populated as of 2005 End of Year Release; was the demand forecast used for capacity adequacy assessment. 0 if no assessment, 1 for 10%, 2 for 50%, 3 for 90%
+    pub capacityoption: Option<rust_decimal::Decimal>,
+    /// Not populated as of 2005 End of Year Release; was the demand forecast used for assessment of Maximum surplus Reserve. 0 if no assessment, 1 for 10%, 2 for 50%, 3 for 90%
+    pub maxsurplusreserveoption: Option<rust_decimal::Decimal>,
+    /// Not populated as of 2005 End of Year Release; was the demand forecast used for assessment of Maximum Spare Capacity. 0 if no assessment, 1 for 10%, 2 for 50%, 3 for 90%
+    pub maxsparecapacityoption: Option<rust_decimal::Decimal>,
+    /// The penalty for non-zero interconnector flow
+    pub interconnectorflowpenalty: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
-    pub runtype: String,
+    /// Specifies the Probability of Exceedence (POE) demand forecast for Reliability LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
+    pub reliabilitylrcdemandoption: Option<rust_decimal::Decimal>,
+    /// Specifies the Probability of Exceedence (POE) demand forecast for outage LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
+    pub outagelrcdemandoption: Option<rust_decimal::Decimal>,
+    /// Specifies the Probability of Exceedence (POE) demand forecast for LOR assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
+    pub lordemandoption: Option<rust_decimal::Decimal>,
+    /// Generation Availability to be used in Reliability LRC run (either PASA or MARKET)
+    pub reliabilitylrccapacityoption: Option<String>,
+    /// Generation Availability to be used in Outage LRC run (either PASA or MARKET)
+    pub outagelrccapacityoption: Option<String>,
+    /// Generation Availability to be used in LOR run (either PASA or MARKET)
+    pub lorcapacityoption: Option<String>,
+    /// UIGF POE forecast availability used for this option
+    pub loruigf_option: Option<rust_decimal::Decimal>,
+    /// UIGF POE forecast availability used for this option
+    pub reliability_lrcuigf_option: Option<rust_decimal::Decimal>,
+    /// UIGF POE forecast availability used for this option
+    pub outage_lrcuigf_option: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for StpasaConstraintsolution2 {
+impl crate::GetTable for StpasaCasesolution3 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "STPASA".into(),
-                        table_name: Some("CONSTRAINTSOLUTION".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## STPASA_INTERCONNECTORSOLN
-///  _STPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
-/// 
-/// * Data Set Name: Stpasa
-/// * File Name: Interconnectorsoln
-/// * Data Version: 2
-/// 
-/// # Description
-///  STPASA_INTERCONNECTORSOLN is public so is available to all participants. Source STPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 576 Mb per month: 4
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INTERCONNECTORID
-/// * INTERVAL_DATETIME
-/// * RUN_DATETIME
-/// * RUNTYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaInterconnectorsoln2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Interconnector Identifier
-    pub interconnectorid: String,
-    /// Interconnector loading level (MW) that can be reached in case of capacity scarcity in neighbouring regions subject to network and energy constraints
-    pub capacitymwflow: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment marginal value, 0 if not binding
-    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment violation degree for interconnector capacity; 0 if not violating
-    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit
-    pub calculatedexportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
-    pub calculatedimportlimit: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
-    pub runtype: String,
-    /// ID of the constraint that sets the Interconnector Export Limit
-    pub exportlimitconstraintid: Option<String>,
-    /// ID of the constraint that sets the Interconnector Import Limit
-    pub importlimitconstraintid: Option<String>,
-}
-impl crate::GetTable for StpasaInterconnectorsoln2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "STPASA".into(),
-                        table_name: Some("INTERCONNECTORSOLN".into()),
-                        version: 2,
+                        table_name: Some("CASESOLUTION".into()),
+                        version: 3,
                     }
                     
     }

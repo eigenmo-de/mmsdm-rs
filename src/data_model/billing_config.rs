@@ -38,56 +38,6 @@ impl crate::GetTable for BillingConfigGstBasClass1 {
 }
 /// # Summary
 /// 
-/// ## SECDEPOSIT_PROVISION
-///  _The security deposit provision entry details_
-/// 
-/// * Data Set Name: Billing Config
-/// * File Name: Secdeposit Provision
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * PARTICIPANTID
-/// * SECURITY_DEPOSIT_ID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingConfigSecdepositProvision1 {
-    /// The security deposit ID 
-    pub security_deposit_id: String,
-    /// The Participant ID linked to the security deposit ID
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub transaction_date: Option<chrono::NaiveDateTime>,
-    /// The contract year of the billing week when the security deposit is maturing
-    pub maturity_contractyear: Option<rust_decimal::Decimal>,
-    /// The week no of the billing week when the security deposit is maturing
-    pub maturity_weekno: Option<rust_decimal::Decimal>,
-    /// The security deposit amount
-    pub amount: Option<rust_decimal::Decimal>,
-    /// The interest rate assigned to the security deposit ID. Null if INTEREST_CALC_TYPE &lt;&gt; FIXED
-    pub interest_rate: Option<rust_decimal::Decimal>,
-    /// FIXED OR DAILY
-    pub interest_calc_type: Option<String>,
-    /// The Interest Account ID for calculating the Interest Payment. This is NULL if the INTEREST_CALC_TYPE = FIXED
-    pub interest_acct_id: Option<String>,
-}
-impl crate::GetTable for BillingConfigSecdepositProvision1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING_CONFIG".into(),
-                        table_name: Some("SECDEPOSIT_PROVISION".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## BILLINGCALENDAR
 ///  _BILLINGCALENDAR sets out the billing calendar for the year, with week number 1 starting on 1 January. BILLINGCALENDAR advises preliminary and final statement posting date and corresponding  settlement for each billing week._
 /// 
@@ -185,44 +135,91 @@ impl crate::GetTable for BillingConfigGstRate1 {
 }
 /// # Summary
 /// 
-/// ## GST_TRANSACTION_CLASS
-///  _GST_TRANSACTION_CLASS maps NEM settlement transaction types with BAS (Business Activity Statement) classifications._
+/// ## GST_TRANSACTION_TYPE
+///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS. _
 /// 
 /// * Data Set Name: Billing Config
-/// * File Name: Gst Transaction Class
+/// * File Name: Gst Transaction Type
 /// * Data Version: 1
 /// 
 /// # Description
-///  GST_TRANSACTION_CLASS data is public to all participants. Source GST_TRANSACTION_CLASS updates infrequently, when new transactions are introduced to the NEM. Volume Generally volume is fewer than one hundred records.
+///  GST_TRANSACTION_TYPE data is public to all participants.
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
-/// * BAS_CLASS
-/// * EFFECTIVEDATE
 /// * TRANSACTION_TYPE
-/// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingConfigGstTransactionClass1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// The version number of the data set
-    pub versionno: rust_decimal::Decimal,
-    /// NEM settlement transaction type
+pub struct BillingConfigGstTransactionType1 {
+    /// The transaction type
     pub transaction_type: String,
-    /// The BAS classification that the transaction type corresponds to
-    pub bas_class: String,
+    /// Description of the transaction type
+    pub description: Option<String>,
+    /// &nbsp; 
+    pub gl_financialcode: Option<String>,
+    /// &nbsp; 
+    pub gl_tcode: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for BillingConfigGstTransactionClass1 {
+impl crate::GetTable for BillingConfigGstTransactionType1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "BILLING_CONFIG".into(),
-                        table_name: Some("GST_TRANSACTION_CLASS".into()),
+                        table_name: Some("GST_TRANSACTION_TYPE".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## SECDEPOSIT_PROVISION
+///  _The security deposit provision entry details_
+/// 
+/// * Data Set Name: Billing Config
+/// * File Name: Secdeposit Provision
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * PARTICIPANTID
+/// * SECURITY_DEPOSIT_ID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingConfigSecdepositProvision1 {
+    /// The security deposit ID 
+    pub security_deposit_id: String,
+    /// The Participant ID linked to the security deposit ID
+    pub participantid: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub transaction_date: Option<chrono::NaiveDateTime>,
+    /// The contract year of the billing week when the security deposit is maturing
+    pub maturity_contractyear: Option<rust_decimal::Decimal>,
+    /// The week no of the billing week when the security deposit is maturing
+    pub maturity_weekno: Option<rust_decimal::Decimal>,
+    /// The security deposit amount
+    pub amount: Option<rust_decimal::Decimal>,
+    /// The interest rate assigned to the security deposit ID. Null if INTEREST_CALC_TYPE &lt;&gt; FIXED
+    pub interest_rate: Option<rust_decimal::Decimal>,
+    /// FIXED OR DAILY
+    pub interest_calc_type: Option<String>,
+    /// The Interest Account ID for calculating the Interest Payment. This is NULL if the INTEREST_CALC_TYPE = FIXED
+    pub interest_acct_id: Option<String>,
+}
+impl crate::GetTable for BillingConfigSecdepositProvision1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "BILLING_CONFIG".into(),
+                        table_name: Some("SECDEPOSIT_PROVISION".into()),
                         version: 1,
                     }
                     
@@ -272,41 +269,44 @@ impl crate::GetTable for BillingConfigSecdepositInterestRate1 {
 }
 /// # Summary
 /// 
-/// ## GST_TRANSACTION_TYPE
-///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS. _
+/// ## GST_TRANSACTION_CLASS
+///  _GST_TRANSACTION_CLASS maps NEM settlement transaction types with BAS (Business Activity Statement) classifications._
 /// 
 /// * Data Set Name: Billing Config
-/// * File Name: Gst Transaction Type
+/// * File Name: Gst Transaction Class
 /// * Data Version: 1
 /// 
 /// # Description
-///  GST_TRANSACTION_TYPE data is public to all participants.
+///  GST_TRANSACTION_CLASS data is public to all participants. Source GST_TRANSACTION_CLASS updates infrequently, when new transactions are introduced to the NEM. Volume Generally volume is fewer than one hundred records.
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
+/// * BAS_CLASS
+/// * EFFECTIVEDATE
 /// * TRANSACTION_TYPE
+/// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingConfigGstTransactionType1 {
-    /// The transaction type
+pub struct BillingConfigGstTransactionClass1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// The version number of the data set
+    pub versionno: rust_decimal::Decimal,
+    /// NEM settlement transaction type
     pub transaction_type: String,
-    /// Description of the transaction type
-    pub description: Option<String>,
-    /// &nbsp; 
-    pub gl_financialcode: Option<String>,
-    /// &nbsp; 
-    pub gl_tcode: Option<String>,
+    /// The BAS classification that the transaction type corresponds to
+    pub bas_class: String,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for BillingConfigGstTransactionType1 {
+impl crate::GetTable for BillingConfigGstTransactionClass1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "BILLING_CONFIG".into(),
-                        table_name: Some("GST_TRANSACTION_TYPE".into()),
+                        table_name: Some("GST_TRANSACTION_CLASS".into()),
                         version: 1,
                     }
                     

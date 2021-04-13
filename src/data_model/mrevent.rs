@@ -1,5 +1,54 @@
 /// # Summary
 /// 
+/// ## MR_EVENT
+///  _MR_EVENT defines an MR Event for a given region on a specific trading date.<br>_
+/// 
+/// * Data Set Name: Mr
+/// * File Name: Event
+/// * Data Version: 1
+/// 
+/// # Description
+///  MR_EVENT defines a mandatory restriction event for a given region and trading date (04:30 to 04:00). Data within MR_EVENT includes the cut-off time for submission of MR offers for this event and a notification that the settlements figures are locked due to results from an independent expert being engaged to allocate settlement of a significant shortfall. If mandatory restrictions are defined in two regions on the same trading day, two MR events are defined. MR_EVENT data is public, so is available to all participants. Source MR_EVENT updates are ad hoc. Volume 1 Row per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * MR_DATE
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MrEvent1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub mr_date: chrono::NaiveDateTime,
+    /// Unique RegionID
+    pub regionid: String,
+    /// Description of MR
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Ignored - Tracking purpose only
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub offer_cut_off_time: Option<chrono::NaiveDateTime>,
+    /// Flag:1 = MR settlement figures locked. Do not recalculate, ·&nbsp;&nbsp;&nbsp;0 = MR settlements to be recalculated
+    pub settlement_complete: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MrEvent1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MR".into(),
+                        table_name: Some("EVENT".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## MR_DAYOFFER_STACK
 ///  _MR_DAYOFFER_STACK defines the Stack order for each version of the Acceptance Schedule, including all units submitting MR offers for that event. MR_DAYOFFER_STACK is the child to MR_EVENT_SCHEDULE, and parent to MR_PEROFFER_STACK._
 /// 
@@ -158,55 +207,6 @@ impl crate::GetTable for MrEventSchedule1 {
                     crate::FileKey {
                         data_set_name: "MR".into(),
                         table_name: Some("EVENT_SCHEDULE".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MR_EVENT
-///  _MR_EVENT defines an MR Event for a given region on a specific trading date.<br>_
-/// 
-/// * Data Set Name: Mr
-/// * File Name: Event
-/// * Data Version: 1
-/// 
-/// # Description
-///  MR_EVENT defines a mandatory restriction event for a given region and trading date (04:30 to 04:00). Data within MR_EVENT includes the cut-off time for submission of MR offers for this event and a notification that the settlements figures are locked due to results from an independent expert being engaged to allocate settlement of a significant shortfall. If mandatory restrictions are defined in two regions on the same trading day, two MR events are defined. MR_EVENT data is public, so is available to all participants. Source MR_EVENT updates are ad hoc. Volume 1 Row per year
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * MR_DATE
-/// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MrEvent1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub mr_date: chrono::NaiveDateTime,
-    /// Unique RegionID
-    pub regionid: String,
-    /// Description of MR
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// Ignored - Tracking purpose only
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub offer_cut_off_time: Option<chrono::NaiveDateTime>,
-    /// Flag:1 = MR settlement figures locked. Do not recalculate, ·&nbsp;&nbsp;&nbsp;0 = MR settlements to be recalculated
-    pub settlement_complete: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MrEvent1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MR".into(),
-                        table_name: Some("EVENT".into()),
                         version: 1,
                     }
                     
