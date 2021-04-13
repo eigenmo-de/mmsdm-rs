@@ -6,9 +6,11 @@ go
 create table mmsdm.FileLog (
     file_log_id bigint identity(1,1) not null primary key,
     data_source varchar(255) not null,
+    file_name varchar(255) not null,
     participant_name varchar(255) not null,
     privacy_level varchar(255) not null,
-    effective_date datetime,
+    effective_date date,
+    effective_time time,
     serial_number bigint not null,
     data_set varchar(255) not null,
     sub_type varchar(255) not null,
@@ -16,7 +18,8 @@ create table mmsdm.FileLog (
     [status] char(1) not null default 'P' check ([status] in ('P','E','C')),
     message varchar(max) null,
     check ((status != 'E' and message is null) or (status = 'E' and message is null)),
-    unique (serial_number, data_set, sub_type, version)
+    -- it seems the serial number can't be used as unique
+    unique (data_source, file_name, participant_name, effective_date, effective_time, data_set, sub_type, version)
 )
 go
             

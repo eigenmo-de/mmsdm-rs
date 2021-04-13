@@ -12,21 +12,26 @@ impl crate::AemoFile {
         let first_row = client.query(
             "insert into mmsdm.FileLog(
                 data_source,
+		file_name,
                 participant_name,
                 privacy_level,
                 effective_date,
+                effective_time,
                 serial_number,
                 data_set,
                 sub_type,
                 version
             )
             output inserted.file_log_id
-            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8);",
+            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8,
+@P9, @P10);",
             &[
                 &self.header.data_source,
+                &self.header.file_name,
                 &self.header.participant_name,
                 &self.header.privacy_level,
-                &self.header.get_effective(),
+                &self.header.effective_date,
+                &self.header.effective_time,
                 &self.header.serial_number,
                 &key.data_set_name.as_str(),
                 &key.table_name(),

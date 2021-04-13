@@ -1,10 +1,10 @@
 [package]
 name = "mmsdm"
 version = "0.2.0"
-authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
+authors = ["Eric Sheppard <eric@sheppard.cloud>", "Nayika Sheppard <nayika@eigenmo.de>"]
 edition = "2018"
 license = "MIT"
-repository = "https://github.com/esheppa/aemo-rs"
+repository = "https://github.com/eigenmo-de/mmsdm-rs"
 #maintenance = { status = "experimental" }
 description = "Parse and Transform MMSDM data"
 
