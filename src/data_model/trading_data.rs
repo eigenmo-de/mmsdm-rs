@@ -87,49 +87,6 @@ impl crate::GetTable for TradingPrice2 {
 }
 /// # Summary
 /// 
-/// ## AVERAGEPRICE30
-///  _New table reflecting the 30-minute average price (i.e. the pre-1 July 2021 Trading Price)._
-/// 
-/// * Data Set Name: Trading
-/// * File Name: Averageprice30
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// 
-/// 
-/// # Primary Key Columns
-/// 
-/// * PERIODDATE
-/// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingAverageprice301 {
-    #[serde(with = "crate::mms_datetime")]
-    pub perioddate: chrono::NaiveDateTime,
-    /// Region Identifier
-    pub regionid: String,
-    /// The 30-minute interval period, 1 to 48
-    pub periodid: rust_decimal::Decimal,
-    /// Regional reference price for this period
-    pub rrp: Option<rust_decimal::Decimal>,
-    /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM" or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
-    pub price_confidence: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for TradingAverageprice301 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "TRADING".into(),
-                        table_name: Some("AVERAGEPRICE30".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## TRADINGREGIONSUM
 ///  _TRADINGREGIONSUM sets out the half-hourly average regional demand and frequency control services. TRADINGREGIONSUM includes fields for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations._
 /// 
@@ -345,57 +302,6 @@ impl crate::GetTable for TradingRegionsum4 {
 }
 /// # Summary
 /// 
-/// ## TRADINGINTERCONNECT
-///  _TRADINGINTERCONNECT shows the half-hourly summary of Interconnector flows based on 5-minute averages._
-/// 
-/// * Data Set Name: Trading
-/// * File Name: Interconnectorres
-/// * Data Version: 2
-/// 
-/// # Description
-///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INTERCONNECTORID
-/// * PERIODID
-/// * RUNNO
-/// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingInterconnectorres2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Dispatch run no.
-    pub runno: rust_decimal::Decimal,
-    /// Interconnector identifier
-    pub interconnectorid: String,
-    /// Period Identifier
-    pub periodid: rust_decimal::Decimal,
-    /// Average of the metered MW flow from the start of each dispatch interval.
-    pub meteredmwflow: Option<rust_decimal::Decimal>,
-    /// Calculated MW Flow from SPD
-    pub mwflow: Option<rust_decimal::Decimal>,
-    /// MW losses at calculated MW flow
-    pub mwlosses: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for TradingInterconnectorres2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "TRADING".into(),
-                        table_name: Some("INTERCONNECTORRES".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## TRADINGLOAD
 ///  _TRADINGLOAD shows half-hourly average dispatch levels, including fields to handle the Ancillary Services functionality._
 /// 
@@ -465,6 +371,100 @@ impl crate::GetTable for TradingUnitSolution2 {
                     crate::FileKey {
                         data_set_name: "TRADING".into(),
                         table_name: Some("UNIT_SOLUTION".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## AVERAGEPRICE30
+///  _New table reflecting the 30-minute average price (i.e. the pre-1 July 2021 Trading Price)._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Averageprice30
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// 
+/// 
+/// # Primary Key Columns
+/// 
+/// * PERIODDATE
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingAverageprice301 {
+    #[serde(with = "crate::mms_datetime")]
+    pub perioddate: chrono::NaiveDateTime,
+    /// Region Identifier
+    pub regionid: String,
+    /// The 30-minute interval period, 1 to 48
+    pub periodid: rust_decimal::Decimal,
+    /// Regional reference price for this period
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM" or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
+    pub price_confidence: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for TradingAverageprice301 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("AVERAGEPRICE30".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## TRADINGINTERCONNECT
+///  _TRADINGINTERCONNECT shows the half-hourly summary of Interconnector flows based on 5-minute averages._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Interconnectorres
+/// * Data Version: 2
+/// 
+/// # Description
+///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * INTERCONNECTORID
+/// * PERIODID
+/// * RUNNO
+/// * SETTLEMENTDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingInterconnectorres2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Dispatch run no.
+    pub runno: rust_decimal::Decimal,
+    /// Interconnector identifier
+    pub interconnectorid: String,
+    /// Period Identifier
+    pub periodid: rust_decimal::Decimal,
+    /// Average of the metered MW flow from the start of each dispatch interval.
+    pub meteredmwflow: Option<rust_decimal::Decimal>,
+    /// Calculated MW Flow from SPD
+    pub mwflow: Option<rust_decimal::Decimal>,
+    /// MW losses at calculated MW flow
+    pub mwlosses: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for TradingInterconnectorres2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("INTERCONNECTORRES".into()),
                         version: 2,
                     }
                     

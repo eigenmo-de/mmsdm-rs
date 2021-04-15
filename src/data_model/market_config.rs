@@ -1,48 +1,45 @@
 /// # Summary
 /// 
-/// ## INTERCONNECTORALLOC
-///  _INTERCONNECTORALLOC shows allocations of interconnector residues to Network Service Providers._
+/// ## LOSSFACTORMODEL
+///  _LOSSFACTORMODEL sets out the demand coefficients for each interconnector, used by LP Solver modelling of interconnector flows._
 /// 
 /// * Data Set Name: Market Config
-/// * File Name: Interconnectoralloc
+/// * File Name: Lossfactormodel
 /// * Data Version: 1
 /// 
 /// # Description
-///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually. 
+///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector. 
 /// 
 /// # Notes
-///  * (Visibility) Data in this table is: Private
+///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
-/// * PARTICIPANTID
 /// * REGIONID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigInterconnectoralloc1 {
+pub struct MarketConfigLossfactormodel1 {
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
-    /// Version No in respect to effective date
+    /// Version number within effective date of the status proposed
     pub versionno: rust_decimal::Decimal,
-    /// Interconnector identifier
+    /// The unique identifier for the interconnector.
     pub interconnectorid: String,
-    /// Region Identifier
+    /// The unique region identifier for a connection point of the interconnector
     pub regionid: String,
-    /// Unique participant identifier
-    pub participantid: String,
-    /// Allocation % / 100
-    pub allocation: Option<rust_decimal::Decimal>,
+    /// The coefficient applied to the region demand in the calculation of the interconnector loss factor
+    pub demandcoefficient: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for MarketConfigInterconnectoralloc1 {
+impl crate::GetTable for MarketConfigLossfactormodel1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("INTERCONNECTORALLOC".into()),
+                        table_name: Some("LOSSFACTORMODEL".into()),
                         version: 1,
                     }
                     
@@ -50,39 +47,42 @@ impl crate::GetTable for MarketConfigInterconnectoralloc1 {
 }
 /// # Summary
 /// 
-/// ## REGION
-///  _REGION sets out valid region IDs._
+/// ## BIDTYPESTRK
+///  _BIDTYPESTRK, together with the associated data in BIDTYPES, define a set of ancillary services with bidding parameters from a given date._
 /// 
 /// * Data Set Name: Market Config
-/// * File Name: Region
+/// * File Name: Bidtypestrk
 /// * Data Version: 1
 /// 
 /// # Description
-///  REGION data is public, so is available to all participants. Source REGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
+///  BIDTYPESTRK is public to participants Source BIDTYPESTRK updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
-/// * REGIONID
+/// * EFFECTIVEDATE
+/// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigRegion1 {
-    /// Differentiates this region from all other regions
-    pub regionid: String,
-    /// Full description of region
-    pub description: Option<String>,
-    /// Status of the region e.g. working, inactive, archive.
-    pub regionstatus: Option<String>,
+pub struct MarketConfigBidtypestrk1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Record version number
+    pub versionno: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// User that authorised record. A NULL value indicates the record is not authorised.
+    pub authorisedby: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for MarketConfigRegion1 {
+impl crate::GetTable for MarketConfigBidtypestrk1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("REGION".into()),
+                        table_name: Some("BIDTYPESTRK".into()),
                         version: 1,
                     }
                     
@@ -168,15 +168,65 @@ impl crate::GetTable for MarketConfigInterconnectorconstraint1 {
 }
 /// # Summary
 /// 
-/// ## MARKET_PRICE_THRESHOLDS
-///  _MARKET_PRICE_THRESHOLDS sets out the market cap , floor and administered price thresholds applying to the electricity market_
+/// ## INTERCONNECTORALLOC
+///  _INTERCONNECTORALLOC shows allocations of interconnector residues to Network Service Providers._
 /// 
 /// * Data Set Name: Market Config
-/// * File Name: Market Price Thresholds
+/// * File Name: Interconnectoralloc
 /// * Data Version: 1
 /// 
 /// # Description
-///  MARKET_PRICE_THRESHOLDS data is public, so is available to all participants. Source MARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
+///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually. 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * INTERCONNECTORID
+/// * PARTICIPANTID
+/// * REGIONID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MarketConfigInterconnectoralloc1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version No in respect to effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Interconnector identifier
+    pub interconnectorid: String,
+    /// Region Identifier
+    pub regionid: String,
+    /// Unique participant identifier
+    pub participantid: String,
+    /// Allocation % / 100
+    pub allocation: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MarketConfigInterconnectoralloc1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MARKET_CONFIG".into(),
+                        table_name: Some("INTERCONNECTORALLOC".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## REGIONSTANDINGDATA
+///  _REGIONSTANDINGDATA sets out standing region data including the region reference node._
+/// 
+/// * Data Set Name: Market Config
+/// * File Name: Regionstandingdata
+/// * Data Version: 1
+/// 
+/// # Description
+///  REGIONSTANDINGDATA data is public, so is available to all participants. Source REGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
@@ -184,32 +234,140 @@ impl crate::GetTable for MarketConfigInterconnectorconstraint1 {
 /// # Primary Key Columns
 /// 
 /// * EFFECTIVEDATE
+/// * REGIONID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigMarketPriceThresholds1 {
+pub struct MarketConfigRegionstandingdata1 {
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
-    /// version no for the effective date
+    /// Version No of the standing data that should be effective on this date
     pub versionno: rust_decimal::Decimal,
-    /// value of lost load if total supply falls short of demand after load management then involuntary load
-    pub voll: Option<rust_decimal::Decimal>,
-    /// The floor price that the spot market price will not fall below.
-    pub marketpricefloor: Option<rust_decimal::Decimal>,
-    /// Threshold value beyond which Aggregate Prices per Region over 336 Trade Intervals (Energy), or 2016 Dispatch Intervals (FCAS), will result in an Administered Price declaration
-    pub administered_price_threshold: Option<rust_decimal::Decimal>,
+    /// Differentiates this region from all other regions
+    pub regionid: String,
+    /// the unique identifier of the participant with responsibility for the region.
+    pub rsoid: Option<String>,
+    /// unique id of a connection point, being the reference point for this region
+    pub regionalreferencepointid: Option<String>,
+    /// Period identifier of the peak trading period of this connection point
+    pub peaktradingperiod: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// user authorising
+    /// User authorising record
     pub authorisedby: Option<String>,
+    /// Scaling factor for regional FCAS requirement
+    pub scalingfactor: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for MarketConfigMarketPriceThresholds1 {
+impl crate::GetTable for MarketConfigRegionstandingdata1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("MARKET_PRICE_THRESHOLDS".into()),
+                        table_name: Some("REGIONSTANDINGDATA".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## LOSSMODEL
+///  _LOSSMODEL sets out segment breakpoints in loss model for each interconnector, used by LP Solver modelling of interconnector flows._
+/// 
+/// * Data Set Name: Market Config
+/// * File Name: Lossmodel
+/// * Data Version: 1
+/// 
+/// # Description
+///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector. 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * INTERCONNECTORID
+/// * LOSSSEGMENT
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MarketConfigLossmodel1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version number within effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Interconnector identifier
+    pub interconnectorid: String,
+    /// Not used
+    pub periodid: Option<String>,
+    /// Segment Identifier (1 to 80 at present)
+    pub losssegment: rust_decimal::Decimal,
+    /// MW Value for segment
+    pub mwbreakpoint: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub lossfactor: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MarketConfigLossmodel1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MARKET_CONFIG".into(),
+                        table_name: Some("LOSSMODEL".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## BIDTYPES
+///  _BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.<br>BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies.<br>_
+/// 
+/// * Data Set Name: Market Config
+/// * File Name: Bidtypes
+/// * Data Version: 1
+/// 
+/// # Description
+///  BIDTYPES  is public to participants Source BIDTYPES updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * BIDTYPE
+/// * EFFECTIVEDATE
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MarketConfigBidtypes1 {
+    /// Bid Type Identifier
+    pub bidtype: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Record version number
+    pub versionno: rust_decimal::Decimal,
+    /// Description of this Bid Type
+    pub description: Option<String>,
+    /// Number of active bands (1 to 10)
+    pub numberofbands: Option<rust_decimal::Decimal>,
+    /// Number of days prior to the Market Day when prices are locked from 12:30pm
+    pub numdaysaheadpricelocked: Option<rust_decimal::Decimal>,
+    /// ENERGY or AS validation rules to apply.
+    pub validationrule: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Alias for this BIDTYPE used in the SPD Solver
+    pub spdalias: Option<String>,
+}
+impl crate::GetTable for MarketConfigBidtypes1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MARKET_CONFIG".into(),
+                        table_name: Some("BIDTYPES".into()),
                         version: 1,
                     }
                     
@@ -309,15 +467,15 @@ impl crate::GetTable for MarketConfigTransmissionlossfactor2 {
 }
 /// # Summary
 /// 
-/// ## LOSSMODEL
-///  _LOSSMODEL sets out segment breakpoints in loss model for each interconnector, used by LP Solver modelling of interconnector flows._
+/// ## MARKET_PRICE_THRESHOLDS
+///  _MARKET_PRICE_THRESHOLDS sets out the market cap , floor and administered price thresholds applying to the electricity market_
 /// 
 /// * Data Set Name: Market Config
-/// * File Name: Lossmodel
+/// * File Name: Market Price Thresholds
 /// * Data Version: 1
 /// 
 /// # Description
-///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector. 
+///  MARKET_PRICE_THRESHOLDS data is public, so is available to all participants. Source MARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
@@ -325,133 +483,32 @@ impl crate::GetTable for MarketConfigTransmissionlossfactor2 {
 /// # Primary Key Columns
 /// 
 /// * EFFECTIVEDATE
-/// * INTERCONNECTORID
-/// * LOSSSEGMENT
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigLossmodel1 {
+pub struct MarketConfigMarketPriceThresholds1 {
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
-    /// Version number within effective date
+    /// version no for the effective date
     pub versionno: rust_decimal::Decimal,
-    /// Interconnector identifier
-    pub interconnectorid: String,
-    /// Not used
-    pub periodid: Option<String>,
-    /// Segment Identifier (1 to 80 at present)
-    pub losssegment: rust_decimal::Decimal,
-    /// MW Value for segment
-    pub mwbreakpoint: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub lossfactor: Option<rust_decimal::Decimal>,
+    /// value of lost load if total supply falls short of demand after load management then involuntary load
+    pub voll: Option<rust_decimal::Decimal>,
+    /// The floor price that the spot market price will not fall below.
+    pub marketpricefloor: Option<rust_decimal::Decimal>,
+    /// Threshold value beyond which Aggregate Prices per Region over 336 Trade Intervals (Energy), or 2016 Dispatch Intervals (FCAS), will result in an Administered Price declaration
+    pub administered_price_threshold: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// user authorising
+    pub authorisedby: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for MarketConfigLossmodel1 {
+impl crate::GetTable for MarketConfigMarketPriceThresholds1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("LOSSMODEL".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## LOSSFACTORMODEL
-///  _LOSSFACTORMODEL sets out the demand coefficients for each interconnector, used by LP Solver modelling of interconnector flows._
-/// 
-/// * Data Set Name: Market Config
-/// * File Name: Lossfactormodel
-/// * Data Version: 1
-/// 
-/// # Description
-///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector. 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
-/// * INTERCONNECTORID
-/// * REGIONID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigLossfactormodel1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version number within effective date of the status proposed
-    pub versionno: rust_decimal::Decimal,
-    /// The unique identifier for the interconnector.
-    pub interconnectorid: String,
-    /// The unique region identifier for a connection point of the interconnector
-    pub regionid: String,
-    /// The coefficient applied to the region demand in the calculation of the interconnector loss factor
-    pub demandcoefficient: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MarketConfigLossfactormodel1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("LOSSFACTORMODEL".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## BIDTYPES
-///  _BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.<br>BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies.<br>_
-/// 
-/// * Data Set Name: Market Config
-/// * File Name: Bidtypes
-/// * Data Version: 1
-/// 
-/// # Description
-///  BIDTYPES  is public to participants Source BIDTYPES updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * BIDTYPE
-/// * EFFECTIVEDATE
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigBidtypes1 {
-    /// Bid Type Identifier
-    pub bidtype: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Record version number
-    pub versionno: rust_decimal::Decimal,
-    /// Description of this Bid Type
-    pub description: Option<String>,
-    /// Number of active bands (1 to 10)
-    pub numberofbands: Option<rust_decimal::Decimal>,
-    /// Number of days prior to the Market Day when prices are locked from 12:30pm
-    pub numdaysaheadpricelocked: Option<rust_decimal::Decimal>,
-    /// ENERGY or AS validation rules to apply.
-    pub validationrule: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Alias for this BIDTYPE used in the SPD Solver
-    pub spdalias: Option<String>,
-}
-impl crate::GetTable for MarketConfigBidtypes1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("BIDTYPES".into()),
+                        table_name: Some("MARKET_PRICE_THRESHOLDS".into()),
                         version: 1,
                     }
                     
@@ -506,96 +563,39 @@ impl crate::GetTable for MarketConfigIntraregionalloc1 {
 }
 /// # Summary
 /// 
-/// ## BIDTYPESTRK
-///  _BIDTYPESTRK, together with the associated data in BIDTYPES, define a set of ancillary services with bidding parameters from a given date._
+/// ## REGION
+///  _REGION sets out valid region IDs._
 /// 
 /// * Data Set Name: Market Config
-/// * File Name: Bidtypestrk
+/// * File Name: Region
 /// * Data Version: 1
 /// 
 /// # Description
-///  BIDTYPESTRK is public to participants Source BIDTYPESTRK updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
+///  REGION data is public, so is available to all participants. Source REGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
 /// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
 /// 
 /// # Primary Key Columns
 /// 
-/// * EFFECTIVEDATE
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigBidtypestrk1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Record version number
-    pub versionno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// User that authorised record. A NULL value indicates the record is not authorised.
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MarketConfigBidtypestrk1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("BIDTYPESTRK".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## REGIONSTANDINGDATA
-///  _REGIONSTANDINGDATA sets out standing region data including the region reference node._
-/// 
-/// * Data Set Name: Market Config
-/// * File Name: Regionstandingdata
-/// * Data Version: 1
-/// 
-/// # Description
-///  REGIONSTANDINGDATA data is public, so is available to all participants. Source REGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
 /// * REGIONID
-/// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigRegionstandingdata1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version No of the standing data that should be effective on this date
-    pub versionno: rust_decimal::Decimal,
+pub struct MarketConfigRegion1 {
     /// Differentiates this region from all other regions
     pub regionid: String,
-    /// the unique identifier of the participant with responsibility for the region.
-    pub rsoid: Option<String>,
-    /// unique id of a connection point, being the reference point for this region
-    pub regionalreferencepointid: Option<String>,
-    /// Period identifier of the peak trading period of this connection point
-    pub peaktradingperiod: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// User authorising record
-    pub authorisedby: Option<String>,
-    /// Scaling factor for regional FCAS requirement
-    pub scalingfactor: Option<rust_decimal::Decimal>,
+    /// Full description of region
+    pub description: Option<String>,
+    /// Status of the region e.g. working, inactive, archive.
+    pub regionstatus: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for MarketConfigRegionstandingdata1 {
+impl crate::GetTable for MarketConfigRegion1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("REGIONSTANDINGDATA".into()),
+                        table_name: Some("REGION".into()),
                         version: 1,
                     }
                     

@@ -1,58 +1,5 @@
 /// # Summary
 /// 
-/// ## OFFERLSHEDDATA
-///  _OFFERLSHEDDATA shows reoffers of load shed including available load shed quantity._
-/// 
-/// * Data Set Name: Asoffer
-/// * File Name: Offerlsheddata
-/// * Data Version: 1
-/// 
-/// # Description
-///  OFFERLSHEDDATA data is confidential to the relevant participant. Source OFFERLSHEDDATA updates as reoffers process.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTID
-/// * EFFECTIVEDATE
-/// * PERIODID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct AsofferOfferlsheddata1 {
-    /// Contract identifier
-    pub contractid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// Version No of reoffer
-    pub versionno: rust_decimal::Decimal,
-    /// Available load
-    pub availableload: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// Authorised by
-    pub authorisedby: Option<String>,
-    /// Name of reoffer file
-    pub filename: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Market day trading interval number
-    pub periodid: rust_decimal::Decimal,
-}
-impl crate::GetTable for AsofferOfferlsheddata1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ASOFFER".into(),
-                        table_name: Some("OFFERLSHEDDATA".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## OFFERAGCDATA
 ///  _OFFERAGCDATA shows availability reoffers of Automatic Generation Control. _
 /// 
@@ -164,6 +111,59 @@ impl crate::GetTable for AsofferOfferrpowerdata1 {
                     crate::FileKey {
                         data_set_name: "ASOFFER".into(),
                         table_name: Some("OFFERRPOWERDATA".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## OFFERLSHEDDATA
+///  _OFFERLSHEDDATA shows reoffers of load shed including available load shed quantity._
+/// 
+/// * Data Set Name: Asoffer
+/// * File Name: Offerlsheddata
+/// * Data Version: 1
+/// 
+/// # Description
+///  OFFERLSHEDDATA data is confidential to the relevant participant. Source OFFERLSHEDDATA updates as reoffers process.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONTRACTID
+/// * EFFECTIVEDATE
+/// * PERIODID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct AsofferOfferlsheddata1 {
+    /// Contract identifier
+    pub contractid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version No of reoffer
+    pub versionno: rust_decimal::Decimal,
+    /// Available load
+    pub availableload: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Authorised by
+    pub authorisedby: Option<String>,
+    /// Name of reoffer file
+    pub filename: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Market day trading interval number
+    pub periodid: rust_decimal::Decimal,
+}
+impl crate::GetTable for AsofferOfferlsheddata1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "ASOFFER".into(),
+                        table_name: Some("OFFERLSHEDDATA".into()),
                         version: 1,
                     }
                     

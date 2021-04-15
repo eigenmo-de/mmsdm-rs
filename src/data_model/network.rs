@@ -1,80 +1,5 @@
 /// # Summary
 /// 
-/// ## NETWORK_REALTIMERATING
-///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
-/// 
-/// * Data Set Name: Network
-/// * File Name: Realtimerating
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * SETTLEMENTDATE
-/// * SPD_ID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkRealtimerating1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// ID defining this data source for use in constraints
-    pub spd_id: String,
-    /// The defined equipment rating value in MVA
-    pub ratingvalue: rust_decimal::Decimal,
-}
-impl crate::GetTable for NetworkRealtimerating1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: Some("REALTIMERATING".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_OUTAGESTATUSCODE
-///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
-/// 
-/// * Data Set Name: Network
-/// * File Name: Outagestatuscode
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * OUTAGESTATUSCODE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutagestatuscode1 {
-    /// A code representing the status of an outage
-    pub outagestatuscode: String,
-    /// A description of the status code
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for NetworkOutagestatuscode1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: Some("OUTAGESTATUSCODE".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## NETWORK_OUTAGEDETAIL
 ///  _Lists asset owners planned outages for transmission equipment. This also includes details for transmission equipment that will not have an outage, but associated secondary equipment has an outage and a related constraint set may be invoked. This scenario is indicated by the ISSECONDARY field in the table_
 /// 
@@ -179,6 +104,131 @@ impl crate::GetTable for NetworkOutageconstraintset1 {
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
                         table_name: Some("OUTAGECONSTRAINTSET".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_REALTIMERATING
+///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
+/// 
+/// * Data Set Name: Network
+/// * File Name: Realtimerating
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * SETTLEMENTDATE
+/// * SPD_ID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkRealtimerating1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// ID defining this data source for use in constraints
+    pub spd_id: String,
+    /// The defined equipment rating value in MVA
+    pub ratingvalue: rust_decimal::Decimal,
+}
+impl crate::GetTable for NetworkRealtimerating1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: Some("REALTIMERATING".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_EQUIPMENTDETAIL
+///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line.<br>_
+/// 
+/// * Data Set Name: Network
+/// * File Name: Equipmentdetail
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EQUIPMENTID
+/// * EQUIPMENTTYPE
+/// * SUBSTATIONID
+/// * VALIDFROM
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkEquipmentdetail1 {
+    /// ID uniquely identifying the substation this equipment is located at
+    pub substationid: String,
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    pub equipmenttype: String,
+    /// A unique identifier for this type of equipment at this substation
+    pub equipmentid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub validfrom: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub validto: Option<chrono::NaiveDateTime>,
+    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
+    pub voltage: Option<String>,
+    /// A short description for this equipment.
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for NetworkEquipmentdetail1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: Some("EQUIPMENTDETAIL".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_OUTAGESTATUSCODE
+///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
+/// 
+/// * Data Set Name: Network
+/// * File Name: Outagestatuscode
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * OUTAGESTATUSCODE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkOutagestatuscode1 {
+    /// A code representing the status of an outage
+    pub outagestatuscode: String,
+    /// A description of the status code
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for NetworkOutagestatuscode1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: Some("OUTAGESTATUSCODE".into()),
                         version: 1,
                     }
                     
@@ -331,56 +381,6 @@ impl crate::GetTable for NetworkRating1 {
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
                         table_name: Some("RATING".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_EQUIPMENTDETAIL
-///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line.<br>_
-/// 
-/// * Data Set Name: Network
-/// * File Name: Equipmentdetail
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EQUIPMENTID
-/// * EQUIPMENTTYPE
-/// * SUBSTATIONID
-/// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkEquipmentdetail1 {
-    /// ID uniquely identifying the substation this equipment is located at
-    pub substationid: String,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
-    pub equipmenttype: String,
-    /// A unique identifier for this type of equipment at this substation
-    pub equipmentid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub validfrom: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub validto: Option<chrono::NaiveDateTime>,
-    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
-    pub voltage: Option<String>,
-    /// A short description for this equipment.
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for NetworkEquipmentdetail1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: Some("EQUIPMENTDETAIL".into()),
                         version: 1,
                     }
                     
