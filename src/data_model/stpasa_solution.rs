@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## STPASA_CONSTRAINTSOLUTION
 ///  _STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
-/// 
+///
 /// * Data Set Name: Stpasa
 /// * File Name: Constraintsolution
 /// * Data Version: 3
-/// 
+///
 /// # Description
-///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90 
-/// 
+///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -40,32 +40,30 @@ pub struct StpasaConstraintsolution3 {
 }
 impl crate::GetTable for StpasaConstraintsolution3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "STPASA".into(),
-                        table_name: Some("CONSTRAINTSOLUTION".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "STPASA".into(),
+            table_name: Some("CONSTRAINTSOLUTION".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STPASA_INTERCONNECTORSOLN
 ///  _STPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
-/// 
+///
 /// * Data Set Name: Stpasa
 /// * File Name: Interconnectorsoln
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  STPASA_INTERCONNECTORSOLN is public so is available to all participants. Source STPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 576 Mb per month: 4
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -99,32 +97,30 @@ pub struct StpasaInterconnectorsoln3 {
 }
 impl crate::GetTable for StpasaInterconnectorsoln3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "STPASA".into(),
-                        table_name: Some("INTERCONNECTORSOLN".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "STPASA".into(),
+            table_name: Some("INTERCONNECTORSOLN".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STPASA_REGIONSOLUTION
 ///  _STPASA_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study._
-/// 
+///
 /// * Data Set Name: Stpasa
 /// * File Name: Regionsolution
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  STPASA_REGIONSOLUTION is public so is available to all participants. Source STPASA_REGIONSOLUTION is updated each STPASA run (i.e every 2 hours). Volume Rows per day: 480 Mb per month: 8
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
@@ -163,7 +159,7 @@ pub struct StpasaRegionsolution6 {
     pub reservecondition: Option<rust_decimal::Decimal>,
     /// The Maximum Surplus Reserve evaluated for this region in this period.  Calculated for each region in turn.
     pub maxsurplusreserve: Option<rust_decimal::Decimal>,
-    /// The Maximum Spare Capacity evaluated for this region in this period. Calculated for each region in turn. 
+    /// The Maximum Spare Capacity evaluated for this region in this period. Calculated for each region in turn.
     pub maxsparecapacity: Option<rust_decimal::Decimal>,
     /// The LOR Condition determined from the Maximum Spare Capacity value: 0 - no condition, 1 - LOR1 condition, 2 - LOR2 condition, 3 - LOR3 condition
     pub lorcondition: Option<rust_decimal::Decimal>,
@@ -197,7 +193,7 @@ pub struct StpasaRegionsolution6 {
     pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Aggregate Regional UIGF availability for LOR
     pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
-    /// Largest Credible Risk. MW value for highest credible contingency 
+    /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
     /// Two Largest Creditable Risks. MW value for highest two credible contingencies.
     pub lcr2: Option<rust_decimal::Decimal>,
@@ -218,32 +214,30 @@ pub struct StpasaRegionsolution6 {
 }
 impl crate::GetTable for StpasaRegionsolution6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "STPASA".into(),
-                        table_name: Some("REGIONSOLUTION".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "STPASA".into(),
+            table_name: Some("REGIONSOLUTION".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STPASA_CASESOLUTION
 ///  _STPASA_CASESOLUTION holds one record containing results pertaining to each entire solution_
-/// 
+///
 /// * Data Set Name: Stpasa
 /// * File Name: Casesolution
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  STPASA_CASESOLUTION is public data. Source STPASA_CASESOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 12 Mb per month: &lt;1
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct StpasaCasesolution3 {
@@ -288,12 +282,10 @@ pub struct StpasaCasesolution3 {
 }
 impl crate::GetTable for StpasaCasesolution3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "STPASA".into(),
-                        table_name: Some("CASESOLUTION".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "STPASA".into(),
+            table_name: Some("CASESOLUTION".into()),
+            version: 3,
+        }
     }
 }

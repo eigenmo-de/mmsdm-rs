@@ -1,13 +1,9 @@
 #![cfg(test)]
-use mmsdm;
 use log::info;
+use mmsdm;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use scraper::{html, Selector}; //, node, selector};
-use std::{
-    error, fmt,
-    io,
-    path,
-};
+use std::{error, fmt, io, path};
 
 // #[cfg(test)]
 // mod test_rooftop_forecast {
@@ -60,7 +56,6 @@ use std::{
 //     }
 // }
 
-
 // #[cfg(test)]
 // mod test_yestbid {
 //     use mmsdm::data_model;
@@ -83,7 +78,6 @@ use std::{
 //         }
 //     }
 // }
-
 
 // #[cfg(test)]
 // mod test_yestbid {
@@ -119,11 +113,10 @@ use std::{
 //     }
 // }
 
-
 #[cfg(test)]
 mod test_yestbid {
-    use mmsdm::data_model;
     use log::info;
+    use mmsdm::data_model;
     const LOCATION: &str = "https://nemweb.com.au/Reports/Current/Dispatch_SCADA";
 
     #[test]
@@ -131,25 +124,25 @@ mod test_yestbid {
         env_logger::init();
         let links = super::get_links(LOCATION).unwrap();
 
-        let rows = links.iter()
+        let rows = links
+            .iter()
             // .take(100)
             .map(|l| {
                 let aemo_file = super::download(LOCATION, &l).unwrap();
-                aemo_file.get_table::<data_model::DispatchUnitScada1>().unwrap()
+                aemo_file
+                    .get_table::<data_model::DispatchUnitScada1>()
+                    .unwrap()
             })
             .flatten()
             .collect::<Vec<_>>();
 
         info!("Downloaded and processed {} files", rows.len());
 
-
         for row in rows {
             info!("rows: {:?}", row)
         }
     }
 }
-
-
 
 // #[cfg(test)]
 // mod test_dispatch_is {
@@ -263,7 +256,6 @@ fn download(base_url: &str, link: &str) -> Result<mmsdm::AemoFile> {
 }
 
 fn get_links(url: &str) -> Result<Vec<String>> {
-    
     let doc = reqwest::blocking::get(url)?.text()?;
     info!("Doc: {}", doc);
     let parsed = scraper::Html::parse_document(&doc);

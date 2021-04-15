@@ -20,7 +20,9 @@ pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
 
 // this is useful to get the datetime part of nem settlementdate / lastchanged fields
 pub fn to_nem_datetime(ndt: &chrono::NaiveDateTime) -> chrono::DateTime<chrono_tz::Tz> {
-    chrono_tz::Australia::Brisbane.from_local_datetime(ndt).unwrap()
+    chrono_tz::Australia::Brisbane
+        .from_local_datetime(ndt)
+        .unwrap()
 }
 
 #[derive(Debug, thiserror::Error)]

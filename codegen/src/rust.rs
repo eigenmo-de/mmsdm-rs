@@ -137,7 +137,12 @@ impl pdr::Report {
     }
     pub fn struct_name(&self) -> String {
         if let Some(sub_type) = &self.sub_type {
-            format!("{}{}{}", self.name.to_camel_case(), sub_type.to_camel_case(), self.version)
+            format!(
+                "{}{}{}",
+                self.name.to_camel_case(),
+                sub_type.to_camel_case(),
+                self.version
+            )
         } else {
             format!("{}{}", self.name.to_camel_case(), self.version)
         }

@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## BILLING_MR_SHORTFALL
 ///  _BILLING_MR_SHORTFALL shows aggregate MR shortfall payments (or recovery charges) to each participant in the region for the MR event._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Mr Shortfall
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLING_MR_SHORTFALL data is confidential, and is available only to the relevant participant. Source Ad hoc - MR events only. Volume 400 rows per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * MR_DATE
@@ -44,32 +44,30 @@ pub struct BillingMrShortfall5 {
 }
 impl crate::GetTable for BillingMrShortfall5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("MR_SHORTFALL".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("MR_SHORTFALL".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_SECDEP_INTEREST_PAY
 ///  _The interest amount for security deposit calculated by billing, based on whether it is a fixed/floating rate_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Secdep Interest Pay
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BILLING_SECDEP_INTEREST_PAY data is confidential, and is available only to the relevant participant.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -98,31 +96,29 @@ pub struct BillingSecdepInterestPay1 {
 }
 impl crate::GetTable for BillingSecdepInterestPay1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("SECDEP_INTEREST_PAY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("SECDEP_INTEREST_PAY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_SECDEP_INTEREST_RATE
 ///  _The DAILY interest rates used by billing when calculating the interest amount_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Secdep Interest Rate
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * EFFECTIVEDATE
@@ -136,41 +132,39 @@ pub struct BillingSecdepInterestRate1 {
     pub weekno: rust_decimal::Decimal,
     /// The billing run no. the SDA application is processed and interest calculated
     pub billrunno: rust_decimal::Decimal,
-    /// The interest account ID used by security deposit interest calculation 
+    /// The interest account ID used by security deposit interest calculation
     pub interest_acct_id: String,
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
-    /// The interest rate to apply from the effective date 
+    /// The interest rate to apply from the effective date
     pub interest_rate: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingSecdepInterestRate1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("SECDEP_INTEREST_RATE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("SECDEP_INTEREST_RATE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRPARTSURPLUS
 ///  _BILLINGIRPARTSURPLUS supports the Settlements Residue Auction, by showing the weekly billing SRA distribution to Auction participants by Contract Identifier._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Irpartsurplus
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGIRPARTSURPLUS data is confidential to the relevant participant. Source BILLINGIRPARTSURPLUS is populated by the posting of a billing run where the participant has purchased auction units relating to that billing run. Volume An indicative maximum is 64 records inserted per billing run, or 700 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -209,32 +203,30 @@ pub struct BillingIrpartsurplus5 {
 }
 impl crate::GetTable for BillingIrpartsurplus5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRPARTSURPLUS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRPARTSURPLUS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGASPAYMENTS
 ///  _BILLINGASPAYMENTS shows Ancillary Service payments for each billing period by each of the Ancillary Service types for each participant’s connection points._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Aspayments
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  BILLINGASPAYMENTS data is confidential to relevant participant. Source Updated  with each billing run. Volume The volume is according to the number of Transmission ConnectionPointIDs a Participant may have subject to ancillary payment per billrunno. An indicative maximum is approximately 20 records are inserted per billrunno, or about 220 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONNECTIONPOINTID
 /// * CONTRACTYEAR
@@ -293,32 +285,30 @@ pub struct BillingAspayments6 {
 }
 impl crate::GetTable for BillingAspayments6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("ASPAYMENTS".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("ASPAYMENTS".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_DAILY_ENERGY_SUMMARY
 ///  _Billing result table containing daily summary data for customer and generator energy amounts_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Daily Energy Summary
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BILLING_DAILY_ENERGY_SUMMARY data is confidential  to the relevant participant. Source Populated by the posting of a billing run. Volume Approximately 20 records per billrunno.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -348,32 +338,30 @@ pub struct BillingDailyEnergySummary1 {
 }
 impl crate::GetTable for BillingDailyEnergySummary1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("DAILY_ENERGY_SUMMARY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DAILY_ENERGY_SUMMARY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRPARTSURPLUSSUM
 ///  _BILLINGIRPARTSURPLUSSUM supports the Settlements Residue Auction, by showing the weekly billing SRA distribution and associated fees to Auction participants._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Irpartsurplussum
 /// * Data Version: 7
-/// 
+///
 /// # Description
 ///  BILLINGIRPARTSURPLUSSUM data is confidential to the relevant participant. Source BILLINGIRPARTSURPLUSSUM is populated by the posting of a billing run where the participant has purchased auction units relating to that billing run. Volume An indicative maximum is 16 records inserted per billing run, or 166 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * FROMREGIONID
@@ -419,31 +407,29 @@ pub struct BillingIrpartsurplussum7 {
 }
 impl crate::GetTable for BillingIrpartsurplussum7 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRPARTSURPLUSSUM".into()),
-                        version: 7,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRPARTSURPLUSSUM".into()),
+            version: 7,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_DIRECTION_RECON_OTHER
 ///  _Billing reconciliation result table for both provisional and final directions_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Billing Direction Recon Other
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * DIRECTION_ID
@@ -490,32 +476,30 @@ pub struct BillingBillingDirectionReconOther1 {
 }
 impl crate::GetTable for BillingBillingDirectionReconOther1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("BILLING_DIRECTION_RECON_OTHER".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("BILLING_DIRECTION_RECON_OTHER".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_DIRECTION_RECONCILIATN
 ///  _Billing reconciliation result table for both provisional and final directions using the FPP methodology (prior to 1st July 2011)_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Direction Reconciliatn
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  Source BILLING_DIRECTION_RECONCILIATN is populated by the posting of a billing run. Volume One record inserted per direction per billing run, or 11 records inserted per week. Presently 
-/// 
+///  Source BILLING_DIRECTION_RECONCILIATN is populated by the posting of a billing run. Volume One record inserted per direction per billing run, or 11 records inserted per week. Presently
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * DIRECTION_ID
@@ -557,32 +541,30 @@ pub struct BillingDirectionReconciliatn1 {
 }
 impl crate::GetTable for BillingDirectionReconciliatn1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("DIRECTION_RECONCILIATN".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DIRECTION_RECONCILIATN".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGREGIONEXPORTS
 ///  _BILLINGREGIONEXPORTS sets out the region summary table of overall energy exported to and from each region for each billing run._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Regionexports
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGREGIONEXPORTS  data is public, and is available to all participants. Source BILLINGREGIONEXPORTS is populated by the posting of a billing run. Volume Eight records inserted per billing run, or 88 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * EXPORTTO
@@ -613,31 +595,29 @@ pub struct BillingRegionexports5 {
 }
 impl crate::GetTable for BillingRegionexports5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("REGIONEXPORTS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("REGIONEXPORTS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_NMAS_TST_RECOVERY
 ///  _BILLING_NMAS_TEST_RECOVERY sets out the recovery of NMAS testing payments_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Recovery
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -690,32 +670,30 @@ pub struct BillingNmasTstRecovery1 {
 }
 impl crate::GetTable for BillingNmasTstRecovery1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("NMAS_TST_RECOVERY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("NMAS_TST_RECOVERY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_GST_SUMMARY
 ///  _BILLING_GST_SUMMARY shows the GST_Exclusive and GST amount (if any)  attributable to a participant for each BAS class._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Gst Summary
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLING_GST_SUMMARY data is confidential to NSP participants. Source Populated by the posting of a billing run. Volume Approximately 5 records are inserted per billrunno, or about 55 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BAS_CLASS
 /// * BILLRUNNO
 /// * CONTRACTYEAR
@@ -742,32 +720,30 @@ pub struct BillingGstSummary5 {
 }
 impl crate::GetTable for BillingGstSummary5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("GST_SUMMARY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("GST_SUMMARY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGDAYTRK
 ///  _BILLINGDAYTRK is key for matching settlement versions with billing runs. BILLINGDAYTRK displays the billrunnos per billing week, and the settlement version numbers per settlement day comprising the billrunno._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Daytrk
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGDAYTRK  is public data, and is available to all participants. Source BILLINGDAYTRK is populated by the posting of a billing run, being several times each week. Volume Each billing run inserts approximately 7 records, being about 77 records per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * SETTLEMENTDATE
@@ -789,32 +765,30 @@ pub struct BillingDaytrk5 {
 }
 impl crate::GetTable for BillingDaytrk5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("DAYTRK".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DAYTRK".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRAUCSURPLUSSUM
 ///  _BILLINGIRAUCSURPLUSSUM contains Auction fees and Settlements Residue Auction distribution that may arise from unpurchased auction units that accrue to Transmission Network Service Providers._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Iraucsurplussum
 /// * Data Version: 7
-/// 
+///
 /// # Description
 ///  BILLINGIRAUCSURPLUSSUM is confidential to the relevant participant. Source BILLINGIRAUCSURPLUSSUM is populated by the posting of a billing run where there are unpurchased auction units. Volume An indicative maximum is eight records inserted per billing run, or 88 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * FROMREGIONID
@@ -825,7 +799,7 @@ impl crate::GetTable for BillingDaytrk5 {
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct BillingIraucsurplussum7 {
-    /// Contracted Year (calendar year) 
+    /// Contracted Year (calendar year)
     pub contractyear: rust_decimal::Decimal,
     /// Week no within the contract year. Week no 1 is the week containing 1st January
     pub weekno: rust_decimal::Decimal,
@@ -860,32 +834,30 @@ pub struct BillingIraucsurplussum7 {
 }
 impl crate::GetTable for BillingIraucsurplussum7 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRAUCSURPLUSSUM".into()),
-                        version: 7,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRAUCSURPLUSSUM".into()),
+            version: 7,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGASRECOVERY
 ///  _BILLINGASRECOVERY shows participant charges for Ancillary Services for the billing period. This view shows the billing amounts for Ancillary Service Recovery._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Asrecovery
 /// * Data Version: 7
-/// 
+///
 /// # Description
 ///  BILLINGASRECOVERY data is confidential to relevant participant. Source Updated  with each billing run. Volume Approximately 5 records are inserted per billrunno, or about 55 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -976,32 +948,30 @@ pub struct BillingAsrecovery7 {
 }
 impl crate::GetTable for BillingAsrecovery7 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("ASRECOVERY".into()),
-                        version: 7,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("ASRECOVERY".into()),
+            version: 7,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGSMELTERREDUCTION
 ///  _BILLINGSMELTERREDUCTION shows the smelter reduction payment (only applies to  participants with Victorian customer connection points)._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Smelterreduction
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGSMELTERREDUCTION data is confidential to the relevant participant. Source BILLINGSMELTERREDUCTION is populated by the posting of a billing run where the participant has Victorian customer connectionpoints. Volume One record inserted per billing run, or 11 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -1033,32 +1003,30 @@ pub struct BillingSmelterreduction5 {
 }
 impl crate::GetTable for BillingSmelterreduction5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("SMELTERREDUCTION".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("SMELTERREDUCTION".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_APC_RECOVERY
 ///  _Billing result table for recovery of APC compensation payments_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Apc Recovery
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  Updated with each billing run
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APEVENTID
 /// * BILLRUNNO
 /// * CLAIMID
@@ -1097,32 +1065,30 @@ pub struct BillingApcRecovery2 {
 }
 impl crate::GetTable for BillingApcRecovery2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("APC_RECOVERY".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("APC_RECOVERY".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGFINANCIALADJUSTMENTS
 ///  _BILLINGFINANCIALADJUSTMENTS contains any manual adjustments included in the billing run._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Financialadjustments
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGFINANCIALADJUSTMENTS data is confidential to the relevant participant. Source BILLINGFINANCIALADJUSTMENTS is populated by the posting of a billing run, being several times each week. The insertion of a manual adjustment in a billing run is infrequent. Volume Infrequent and, if included in a billing run, low volume. An indicative maximum is 15 records inserted.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * ADJUSTMENTITEM
 /// * BILLRUNNO
 /// * CONTRACTYEAR
@@ -1155,32 +1121,30 @@ pub struct BillingFinancialadjustments5 {
 }
 impl crate::GetTable for BillingFinancialadjustments5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("FINANCIALADJUSTMENTS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("FINANCIALADJUSTMENTS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGPRIORADJUSTMENTS
 ///  _BILLINGPRIORADJUSTMENTS sets out prior period adjustments and associated interest inserted in subsequent Final Statements arising from Revision Statement postings._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Prioradjustments
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGPRIORADJUSTMENTS data is confidential to the relevant participant. Source BILLINGPRIORADJUSTMENTS is populated on the posting of a Final billing run only. Volume Approximately two records inserted per week. Note Actual adjustment payable is ADJAMOUNT - PERAMOUNT + INTEREST AMOUNT.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * ADJBILLRUNNO
 /// * ADJCONTRACTYEAR
 /// * ADJWEEKNO
@@ -1206,7 +1170,7 @@ pub struct BillingPrioradjustments5 {
     pub participantid: String,
     /// Statement total of the previous posted revision statement inserted to the Final Statement.
     pub prevamount: Option<rust_decimal::Decimal>,
-    /// Adjusted amount. 
+    /// Adjusted amount.
     pub adjamount: Option<rust_decimal::Decimal>,
     /// Interest rate applied to the revision adjustment
     pub irn: Option<rust_decimal::Decimal>,
@@ -1225,32 +1189,30 @@ pub struct BillingPrioradjustments5 {
 }
 impl crate::GetTable for BillingPrioradjustments5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("PRIORADJUSTMENTS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("PRIORADJUSTMENTS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGFEES
 ///  _BILLINGFEES presents pool fees applied to the statement, per billing run._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Fees
 /// * Data Version: 5
-/// 
+///
 /// # Description
-///  BILLINGFEES data is confidential to the relevant participant. Source BILLINGFEES is populated by the posting of a billing run, being several times each week. Volume The number of records varies according to the number of pool fee types the participant may be subject to. An indicative maximum is about 13 records inserted per billrunno or 143 records inserted per week. 
-/// 
+///  BILLINGFEES data is confidential to the relevant participant. Source BILLINGFEES is populated by the posting of a billing run, being several times each week. Volume The number of records varies according to the number of pool fee types the participant may be subject to. An indicative maximum is about 13 records inserted per billrunno or 143 records inserted per week.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * MARKETFEEID
@@ -1282,32 +1244,30 @@ pub struct BillingFees5 {
 }
 impl crate::GetTable for BillingFees5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("FEES".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("FEES".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGREGIONIMPORTS
 ///  _BILLINGREGIONIMPORTS sets out the region summary table of overall energy imported to and from each region for each billing run._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Regionimports
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGREGIONIMPORTS is public data, and is available to all participants. Source BILLINGREGIONIMPORTS is populated by the posting of a billing run. Volume Eight records inserted per billing run, or 88 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * IMPORTFROM
@@ -1338,32 +1298,30 @@ pub struct BillingRegionimports5 {
 }
 impl crate::GetTable for BillingRegionimports5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("REGIONIMPORTS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("REGIONIMPORTS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRAUCSURPLUS
 ///  _BILLINGIRAUCSURPLUS supports the Settlements Residue Auction, by showing the weekly billing Interconnector Residue (IR) payments as calculated for each bill run for Network Service Providers (NSPs) from the amount not auctioned._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Iraucsurplus
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  Source Obsolete Volume This view contains a maximum of 30, 000 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -1400,31 +1358,29 @@ pub struct BillingIraucsurplus5 {
 }
 impl crate::GetTable for BillingIraucsurplus5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRAUCSURPLUS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRAUCSURPLUS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_CO2E_PUBLICATION_TRK
 ///  _Carbon Dioxide Intensity Index publication tracking table_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Billing Co2e Publication Trk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1440,32 +1396,30 @@ pub struct BillingBillingCo2ePublicationTrk1 {
 }
 impl crate::GetTable for BillingBillingCo2ePublicationTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("BILLING_CO2E_PUBLICATION_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("BILLING_CO2E_PUBLICATION_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRNSPSURPLUS
 ///  _BILLINGIRNSPSURPLUS supports the Settlements Residue Auction (SRA), by showing the weekly billing Interconnector Residue (IR) payments as calculated for each bill run for Transmission Network Service Providers (TNSP) from the amount paid by participants (i.e. derogated amounts)._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Irnspsurplus
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGIRNSPSURPLUS data is confidential to the relevant participant. Source BILLINGIRNSPSURPLUS updates in a billing run where any derogated Settlement Residue Auction purchase flows to a TNSP. Volume BILLINGIRNSPSURPLUS contains a maximum of 30, 000 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -1502,32 +1456,30 @@ pub struct BillingIrnspsurplus5 {
 }
 impl crate::GetTable for BillingIrnspsurplus5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRNSPSURPLUS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRNSPSURPLUS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_MR_RECOVERY
 ///  _BILLING_MR_RECOVERY shows aggregate recovery charges on a dispatchable unit / MR Event basis for spot market income from dispatch of MR capacity._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Mr Recovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLING_MR_RECOVERY data is confidential, and is available only to the relevant participant. Source Ad hoc - MR events only. Volume 3500 rows per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * DUID
@@ -1557,32 +1509,30 @@ pub struct BillingMrRecovery5 {
 }
 impl crate::GetTable for BillingMrRecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("MR_RECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("MR_RECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_EFTSHORTFALL_DETAIL
 ///  _The Billing Shortfall Run Amount details_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Eftshortfall Detail
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BILLING_EFTSHORTFALL_DETAIL data is confidential, and is available only to the relevant participant.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private &amp; Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -1605,32 +1555,30 @@ pub struct BillingEftshortfallDetail1 {
 }
 impl crate::GetTable for BillingEftshortfallDetail1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("EFTSHORTFALL_DETAIL".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("EFTSHORTFALL_DETAIL".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_MR_PAYMENT
 ///  _BILLING_MR_PAYMENT shows aggregate payments on a dispatchable unit/MR Event basis for accepted MR capacity_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Mr Payment
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLING_MR_PAYMENT data is confidential, and is available only to the relevant participant. Source Ad hoc - MR events only. Volume 3500 rows per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * DUID
@@ -1660,31 +1608,29 @@ pub struct BillingMrPayment5 {
 }
 impl crate::GetTable for BillingMrPayment5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("MR_PAYMENT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("MR_PAYMENT".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_NMAS_TST_PAYMENTS
 ///  _BILLING_NMAS_TEST_PAYMENTS publish the NSCAS/SRAS Testing Payments data for a posted billing week._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Payments
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -1710,32 +1656,30 @@ pub struct BillingNmasTstPayments1 {
 }
 impl crate::GetTable for BillingNmasTstPayments1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("NMAS_TST_PAYMENTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("NMAS_TST_PAYMENTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGREGIONFIGURES
 ///  _BILLINGREGIONFIGURES sets out additional summary region details including ancillary service amounts for each billing run._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Regionfigures
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGREGIONFIGURES is public data, and is available to all participants. Source BILLINGREGIONFIGURES is populated by the posting of a billing run. Volume Five records inserted per billing run, or 55 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * REGIONID
@@ -1777,32 +1721,30 @@ pub struct BillingRegionfigures5 {
 }
 impl crate::GetTable for BillingRegionfigures5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("REGIONFIGURES".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("REGIONFIGURES".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGREALLOC_DETAIL
 ///  _Billing Reallocation Data aggregated by REALLOCATIONID for each billing run over the billing week._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Realloc Detail
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  The BILLINGREALLOC_DETAIL table that will give a breakdown of the reallocations that form part of that billing run. This assists participants in their settlement reconciliation process. &nbsp; Private data Volume max 100 rows per day
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * COUNTERPARTY
@@ -1830,32 +1772,30 @@ pub struct BillingReallocDetail5 {
 }
 impl crate::GetTable for BillingReallocDetail5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("REALLOC_DETAIL".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("REALLOC_DETAIL".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRNSPSURPLUSSUM
 ///  _BILLINGIRNSPSURPLUSSUM contains derogated payments made to TNSPs arising from the Settlements Residue Auction process._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Irnspsurplussum
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  BILLINGIRNSPSURPLUSSUM data is confidential to the relevant participant. Source BILLINGIRNSPSURPLUSSUM is populated by the posting of a billing run where derogated payments apply. Volume An indicative maximum is two records inserted per billing run, or 22 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * FROMREGIONID
@@ -1897,32 +1837,30 @@ pub struct BillingIrnspsurplussum6 {
 }
 impl crate::GetTable for BillingIrnspsurplussum6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRNSPSURPLUSSUM".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRNSPSURPLUSSUM".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGRUNTRK
 ///  _BILLINGRUNTRK identifies the Statement type (i.e. Status of PRELIM, FINAL, REVISE) and date of the BillRunNo posted, per WeekNo. This provides a further extension of tracking data from the BILLINGDAYTRK table._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Runtrk
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGRUNTRK is public data, and is available to all participants. Source BILLINGRUNTRK is populated by the posting of a billing run. Volume An indicative maximum is one record inserted per billing run, or 11 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * WEEKNO
@@ -1963,32 +1901,30 @@ pub struct BillingRuntrk5 {
 }
 impl crate::GetTable for BillingRuntrk5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("RUNTRK".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("RUNTRK".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLWHITEHOLE
 ///  _BILLWHITEHOLE shows white hole payments based on participant vs region demand._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Whitehole
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  Confidential Source Obsolete; was updated weekly with each billing run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * INTERCONNECTORID
@@ -2004,7 +1940,7 @@ pub struct BillingWhitehole5 {
     pub billrunno: rust_decimal::Decimal,
     /// Unique participant identifier
     pub participantid: String,
-    /// Sum of billing week (RRP * interconnector flow) 
+    /// Sum of billing week (RRP * interconnector flow)
     pub nl: Option<rust_decimal::Decimal>,
     /// The sum of all customer purchases in MWh
     pub participantdemand: Option<rust_decimal::Decimal>,
@@ -2019,31 +1955,29 @@ pub struct BillingWhitehole5 {
 }
 impl crate::GetTable for BillingWhitehole5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("WHITEHOLE".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("WHITEHOLE".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLRESERVETRADERPAYMENT
 ///  _Details of the RERT Usage and Availability Payments made to the participant. _
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Reservetraderpayment
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -2053,13 +1987,13 @@ impl crate::GetTable for BillingWhitehole5 {
 pub struct BillingReservetraderpayment1 {
     /// Billing contract year
     pub contractyear: rust_decimal::Decimal,
-    /// Billing week number 
+    /// Billing week number
     pub weekno: rust_decimal::Decimal,
     /// Billing posted run number
     pub billrunno: rust_decimal::Decimal,
     /// Participant identifier.
     pub participantid: Option<String>,
-    /// RERT payment contract ID 
+    /// RERT payment contract ID
     pub contractid: String,
     /// RERT payment type ID. Possible values are USAGE or OTHER
     pub payment_type_id: String,
@@ -2068,32 +2002,30 @@ pub struct BillingReservetraderpayment1 {
 }
 impl crate::GetTable for BillingReservetraderpayment1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("RESERVETRADERPAYMENT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("RESERVETRADERPAYMENT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_EFTSHORTFALL_AMOUNT
 ///  _The billing shortfall run amounts_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Eftshortfall Amount
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BILLING_EFTSHORTFALL_AMOUNT data is confidential, and is available only to the relevant participant.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -2116,39 +2048,37 @@ pub struct BillingEftshortfallAmount1 {
     pub shortfall_company_id: Option<String>,
     /// The shortfall amount for the Company ID associated with the Participant ID used in the shortfall calculation
     pub company_shortfall_amount: Option<rust_decimal::Decimal>,
-    /// The participant NET energy used in shortfall calculation 
+    /// The participant NET energy used in shortfall calculation
     pub participant_net_energy: Option<rust_decimal::Decimal>,
     /// The NET energy for the Company ID associated with the Participant ID used in the shortfall calculation
     pub company_net_energy: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingEftshortfallAmount1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("EFTSHORTFALL_AMOUNT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("EFTSHORTFALL_AMOUNT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_MR_SUMMARY
 ///  _BILLING_MR_SUMMARY shows aggregate payment/recovery and shortfall figures for an MR Event._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Mr Summary
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLING_MR_SUMMARY data is public to all participants. Source Ad hoc - MR events only. Volume 200 rows per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * MR_DATE
@@ -2179,32 +2109,30 @@ pub struct BillingMrSummary5 {
 }
 impl crate::GetTable for BillingMrSummary5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("MR_SUMMARY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("MR_SUMMARY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGINTRARESIDUES
 ///  _BILLINGINTRARESIDUES shows intra-region settlement residue details for each Transmission Network Service Provider participant by region._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Intraresidues
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGINTRARESIDUES is confidential to the relevant participant. Source BILLINGINTRARESIDUES is populated by the posting of a billing run, being several times each week. Volume An indicative maximum is two records inserted per billing run, or 22 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -2233,31 +2161,29 @@ pub struct BillingIntraresidues5 {
 }
 impl crate::GetTable for BillingIntraresidues5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("INTRARESIDUES".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("INTRARESIDUES".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_NMAS_TST_RECVRY_RBF
 ///  _BILLING_NMAS_TEST_RECVRY_RBF sets out the NSCAS/SRAS Testing Payment recovery data for the posted billing week._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Recvry Rbf
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTID
 /// * CONTRACTYEAR
@@ -2289,32 +2215,30 @@ pub struct BillingNmasTstRecvryRbf1 {
 }
 impl crate::GetTable for BillingNmasTstRecvryRbf1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("NMAS_TST_RECVRY_RBF".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("NMAS_TST_RECVRY_RBF".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_APC_COMPENSATION
 ///  _Billing result table for APC compensation payments._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Apc Compensation
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  Updated with each billing run
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APEVENTID
 /// * BILLRUNNO
 /// * CLAIMID
@@ -2345,32 +2269,30 @@ pub struct BillingApcCompensation2 {
 }
 impl crate::GetTable for BillingApcCompensation2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("APC_COMPENSATION".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("APC_COMPENSATION".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGGENDATA
 ///  _BILLINGGENDATA shows the total energy sold and purchased per participant transmission connection point for a billing period._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Gendata
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGGENDATA data is confidential to the the relevant participant. Source BILLINGGENDATA is populated by the posting of a billing run, being several times each week. Volume The number of records depends on the number of transmission ConnectionPointIDs a Participant may have sold energy from per billrunno.  An indicative maximum is approximately 15 records inserted per billrunno, or about 165 records inserted per week. BILLINGGENDATA is confidential to the the relevant participant.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONNECTIONPOINTID
 /// * CONTRACTYEAR
@@ -2407,32 +2329,30 @@ pub struct BillingGendata5 {
 }
 impl crate::GetTable for BillingGendata5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("GENDATA".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("GENDATA".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_SECDEPOSIT_APPLICATION
 ///  _The security deposit application details_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Secdeposit Application
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BILLING_SECDEPOSIT_APPLICATION data is confidential, and is available only to the relevant participant.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -2452,31 +2372,29 @@ pub struct BillingSecdepositApplication1 {
 }
 impl crate::GetTable for BillingSecdepositApplication1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("SECDEPOSIT_APPLICATION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("SECDEPOSIT_APPLICATION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_CO2E_PUBLICATION
 ///  _Carbon Dioxide Intensity Index publication table_
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Billing Co2e Publication
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * REGIONID
 /// * SETTLEMENTDATE
@@ -2502,30 +2420,28 @@ pub struct BillingBillingCo2ePublication1 {
 }
 impl crate::GetTable for BillingBillingCo2ePublication1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("BILLING_CO2E_PUBLICATION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("BILLING_CO2E_PUBLICATION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLRESERVETRADERRECOVERY
 ///  _Provides details of the RERT Recovery Amount for the Market Customers._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Reservetraderrecovery
 /// * Data Version: 1
-/// 
-/// 
-/// 
-/// 
-/// 
+///
+///
+///
+///
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -2537,7 +2453,7 @@ impl crate::GetTable for BillingBillingCo2ePublication1 {
 pub struct BillingReservetraderrecovery1 {
     /// Billing contract year
     pub contractyear: rust_decimal::Decimal,
-    /// Billing week number 
+    /// Billing week number
     pub weekno: rust_decimal::Decimal,
     /// Billing posted run number
     pub billrunno: rust_decimal::Decimal,
@@ -2562,32 +2478,30 @@ pub struct BillingReservetraderrecovery1 {
 }
 impl crate::GetTable for BillingReservetraderrecovery1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("RESERVETRADERRECOVERY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("RESERVETRADERRECOVERY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGIRFM
 ///  _BILLINGIRFM shows billing amounts associated with Industrial Relations Forced Majeure events for each participant._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Irfm
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGIRFM is confidential to the relevant participant. Source BILLINGIRFM is updated with each billing run as required.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * PARTICIPANTID
@@ -2609,32 +2523,30 @@ pub struct BillingIrfm5 {
 }
 impl crate::GetTable for BillingIrfm5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("IRFM".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("IRFM".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGINTERRESIDUES
 ///  _BILLINGINTERRESIDUES shows interregion residues payable to NSP._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Interresidues
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  Source Obsolete, was weekly with billing run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * INTERCONNECTORID
@@ -2666,31 +2578,29 @@ pub struct BillingInterresidues5 {
 }
 impl crate::GetTable for BillingInterresidues5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("INTERRESIDUES".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("INTERRESIDUES".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_NMAS_TST_RECVRY_TRK
 ///  _BILLING_NMAS_TEST_RECVRY_TRK tracks the energy data used to allocate the test payment recovery over the recovery period._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Recvry Trk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * RECOVERY_BILLRUNNO
@@ -2714,32 +2624,30 @@ pub struct BillingNmasTstRecvryTrk1 {
 }
 impl crate::GetTable for BillingNmasTstRecvryTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("NMAS_TST_RECVRY_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("NMAS_TST_RECVRY_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLING_GST_DETAIL
 ///  _BILLING_GST_DETAIL shows the BAS class, GST_Exclusive and GST amount (if any) attributable to a participant for each transaction type._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Gst Detail
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLING_GST_DETAIL data is confidential to NSP participants. Source Populated by the posting of a billing run. Volume Approximately 20 records are inserted per billrunno, or about 220 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BAS_CLASS
 /// * BILLRUNNO
 /// * CONTRACTYEAR
@@ -2762,39 +2670,37 @@ pub struct BillingGstDetail5 {
     pub transaction_type: String,
     /// The GST exclusive amount paid by/to the participant to/by AEMO for this transaction type.
     pub gst_exclusive_amount: Option<rust_decimal::Decimal>,
-    /// The GST amount for this transaction type. 
+    /// The GST amount for this transaction type.
     pub gst_amount: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingGstDetail5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("GST_DETAIL".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("GST_DETAIL".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGCPDATA
 ///  _BILLINGCPDATA shows energy quantity and $ value purchased per participant connection point._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Cpdata
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  BILLINGCPDATA data is confidential to relevant participant. Source Populated by the posting of a billing run, being several times each week. Volume The number of records depends on  the number of Transmission ConnectionPointIDs a participant may use to purchase energy. An indicative maximum is approximately 150 records per billrunno, or about 1,500 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONNECTIONPOINTID
 /// * CONTRACTYEAR
@@ -2813,7 +2719,7 @@ pub struct BillingCpdata6 {
     pub participantid: String,
     /// Unique connection point identifier
     pub connectionpointid: String,
-    /// Aggregate energy purchased/sold by customer, in MWh, plus UFEA. When GS commences 6 Feb 2022, this includes the UFEA amount in the settlement runs. 
+    /// Aggregate energy purchased/sold by customer, in MWh, plus UFEA. When GS commences 6 Feb 2022, this includes the UFEA amount in the settlement runs.
     pub aggregateenergy: Option<rust_decimal::Decimal>,
     /// Value of energy purchased/sold by customer, in $. Financial value of energy transactions for the Market Customer and FRMP and TNI in the Billing run.When GS commences 6 Feb 2022, this includes the UFEA amount in the settlement runs.
     pub purchases: Option<rust_decimal::Decimal>,
@@ -2832,32 +2738,30 @@ pub struct BillingCpdata6 {
 }
 impl crate::GetTable for BillingCpdata6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("CPDATA".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("CPDATA".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BILLINGREALLOC
 ///  _BILLINGREALLOC shows reallocation contract values in each billing run, where participants have used reallocations._
-/// 
+///
 /// * Data Set Name: Billing
 /// * File Name: Realloc
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  BILLINGREALLOC data is confidential to the relevant participant. Source BILLINGREALLOC is populated by the posting of a billing run. Volume An indicative maximum is two records inserted per billing run, or 22 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BILLRUNNO
 /// * CONTRACTYEAR
 /// * COUNTERPARTY
@@ -2882,12 +2786,10 @@ pub struct BillingRealloc5 {
 }
 impl crate::GetTable for BillingRealloc5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "BILLING".into(),
-                        table_name: Some("REALLOC".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("REALLOC".into()),
+            version: 5,
+        }
     }
 }

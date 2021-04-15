@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHREGIONSUM
 ///  _PREDISPATCHREGIONSUM sets out the overall regional Pre-Dispatch results for base case details (excluding price). _
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period. Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load) Source PREDISPATCHREGIONSUM updates every thirty minutes. Note *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -244,32 +244,30 @@ pub struct PredispatchRegionSolution5 {
 }
 impl crate::GetTable for PredispatchRegionSolution5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("REGION_SOLUTION".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("REGION_SOLUTION".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHPRICESENSITIVITIES
 ///  _PREDISPATCHPRICESENSITIVITIES sets out the sensitivity prices for each region by period._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Pricesensitivities
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source The plan is to provide this data every half-hour.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -379,31 +377,29 @@ pub struct PredispatchPricesensitivities1 {
 }
 impl crate::GetTable for PredispatchPricesensitivities1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("PRICESENSITIVITIES".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("PRICESENSITIVITIES".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHSCENARIODEMANDTRK
 ///  _Tracks the predispatch scenario offset updates across time_
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Scenario Demand Trk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -421,31 +417,29 @@ pub struct PredispatchScenarioDemandTrk1 {
 }
 impl crate::GetTable for PredispatchScenarioDemandTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("SCENARIO_DEMAND_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("SCENARIO_DEMAND_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHBLOCKEDCONSTRAINT
 ///  _PREDISPATCH Blocked Constraints lists any constraints that were blocked in a Predispatch run. If no constraints are blocked, there will be no rows for that predispatch run._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Blocked Constraints
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * PREDISPATCHSEQNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -457,32 +451,30 @@ pub struct PredispatchBlockedConstraints1 {
 }
 impl crate::GetTable for PredispatchBlockedConstraints1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("BLOCKED_CONSTRAINTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("BLOCKED_CONSTRAINTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHCONSTRAINT
 ///  _PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.<br>Constraint solutions only report fixed loading /MR constraints on the next day.<br>_
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Constraint Solution
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  PREDISPATCHCONSTRAINT data is confidential on the day of creation, and public to all participants after the end of the market day. Source PREDISPATCHCONSTRAINT updates with every thirty-minute predispatch run. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -518,32 +510,30 @@ pub struct PredispatchConstraintSolution5 {
 }
 impl crate::GetTable for PredispatchConstraintSolution5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("CONSTRAINT_SOLUTION".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("CONSTRAINT_SOLUTION".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCH_MNSPBIDTRK
 ///  _PREDISPATCH_MNSPBIDTRK shows the MNSP bid tracking, including the bid version used in each predispatch run for each MNSP Interconnector Link. PREDISPATCH_MNSPBIDTRK shows the audit trail of the bid used for each predispatch run._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Mnspbidtrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source Own (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data. Volume 1, 700, 000 per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * LINKID
 /// * PERIODID
 /// * PREDISPATCHSEQNO
@@ -570,39 +560,37 @@ pub struct PredispatchMnspbidtrk1 {
 }
 impl crate::GetTable for PredispatchMnspbidtrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("MNSPBIDTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("MNSPBIDTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCH_FCAS_REQ
 ///  _PREDISPATCH_FCAS_REQ shows Predispatch Constraint tracking for Regional FCAS Requirements._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Regionfcasrequirement
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  Source PREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly) Volume Approximately 2,000 rows per day. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * DATETIME
 /// * GENCONID
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionfcasrequirement2 {
-    /// PreDispatch Sequence number 
+    /// PreDispatch Sequence number
     pub predispatchseqno: Option<String>,
     /// Case Run number
     pub runno: Option<rust_decimal::Decimal>,
@@ -641,32 +629,30 @@ pub struct PredispatchRegionfcasrequirement2 {
 }
 impl crate::GetTable for PredispatchRegionfcasrequirement2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("REGIONFCASREQUIREMENT".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("REGIONFCASREQUIREMENT".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHLOAD
 ///  _PREDISPATCHLOAD shows pre-dispatch targets for each dispatchable unit, including additional fields to handle the Ancillary Services functionality. No record is written where a unit is not dispatched. PREDISPATCHLOAD shows all the results for each period._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Unit Solution
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  Source Own (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled (i.e. is unavailable). 1 001 Not stranded, not trapped, is enabled (i.e. available). 3 011 Not stranded, is trapped, is enabled (i.e. trapped). 4 100 Is stranded, not trapped, not enabled (i.e. stranded). For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * DUID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -739,17 +725,17 @@ pub struct PredispatchUnitSolution2 {
     pub raisereg: Option<rust_decimal::Decimal>,
     /// Bid energy availability
     pub availability: Option<rust_decimal::Decimal>,
-    /// Raise 6sec status flag 
+    /// Raise 6sec status flag
     pub raise6secflags: Option<rust_decimal::Decimal>,
-    /// Raise 60sec status flag 
+    /// Raise 60sec status flag
     pub raise60secflags: Option<rust_decimal::Decimal>,
     /// Raise 5min status flag
     pub raise5minflags: Option<rust_decimal::Decimal>,
-    /// Raise reg status flag 
+    /// Raise reg status flag
     pub raiseregflags: Option<rust_decimal::Decimal>,
-    /// Lower 6sec status flag 
+    /// Lower 6sec status flag
     pub lower6secflags: Option<rust_decimal::Decimal>,
-    /// Lower 60sec status flag 
+    /// Lower 60sec status flag
     pub lower60secflags: Option<rust_decimal::Decimal>,
     /// Lower 5min status flag  
     pub lower5minflags: Option<rust_decimal::Decimal>,
@@ -776,32 +762,30 @@ pub struct PredispatchUnitSolution2 {
 }
 impl crate::GetTable for PredispatchUnitSolution2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("UNIT_SOLUTION".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("UNIT_SOLUTION".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHOFFERTRK
 ///  _PREDISPATCHOFFERTRK is for the ancillary service bid tracking of predispatch processing. PREDISPATCHOFFERTRK identifies which bids from BIDDAYOFFER and BIDPEROFFER were applied for a given unit and ancillary service for each predispatch run._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Offertrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  Source PREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day.  Volume Approximately 45,000 records per day. 
-/// 
+///  Source PREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day.  Volume Approximately 45,000 records per day.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * DUID
 /// * PERIODID
@@ -827,31 +811,29 @@ pub struct PredispatchOffertrk1 {
 }
 impl crate::GetTable for PredispatchOffertrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("OFFERTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("OFFERTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCH_LOCAL_PRICE
 ///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Local Price
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * DUID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -873,31 +855,29 @@ pub struct PredispatchLocalPrice1 {
 }
 impl crate::GetTable for PredispatchLocalPrice1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("LOCAL_PRICE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("LOCAL_PRICE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHSCENARIODEMAND
 ///  _PREDISPATCHSCENARIODEMAND defines the demand offsets that are applied for each of the predispatch sensitivity scenarios._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Scenario Demand
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * REGIONID
 /// * SCENARIO
@@ -917,31 +897,29 @@ pub struct PredispatchScenarioDemand1 {
 }
 impl crate::GetTable for PredispatchScenarioDemand1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("SCENARIO_DEMAND".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("SCENARIO_DEMAND".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHINTERSENSITIVITIES
 ///  _PREDISPATCHINTERSENSITIVITIES sets out the sensitivity flows for each interconnector by period._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Interconnectr Sens
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * INTERCONNECTORID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1051,32 +1029,30 @@ pub struct PredispatchInterconnectrSens1 {
 }
 impl crate::GetTable for PredispatchInterconnectrSens1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("INTERCONNECTR_SENS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("INTERCONNECTR_SENS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHCASESOLUTION
 ///  _PREDISPATCHCASESOLUTION provides information relating to the complete predispatch run. The fields provide an overview of the dispatch run results allowing immediate identification of conditions such as energy or FCAS deficiencies._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Case Solution
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PREDISPATCHCASESOLUTION data is public, so is available to all participants. Source PREDISPATCHCASESOLUTION updates every half-hour. Volume Approximately 48 records per day.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PREDISPATCHSEQNO
 /// * RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1124,32 +1100,30 @@ pub struct PredispatchCaseSolution1 {
 }
 impl crate::GetTable for PredispatchCaseSolution1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("CASE_SOLUTION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("CASE_SOLUTION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHINTERCONNECTORRES
 ///  _PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.<br>Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits.<br>_
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Interconnector Soln
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  Source PREDISPATCHINTERCONNECTORRES updates with every thirty-minute predispatch run. Note MW losses can be negative depending on the flow. The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in INTERCONNECTOR.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * INTERCONNECTORID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1203,32 +1177,30 @@ pub struct PredispatchInterconnectorSoln3 {
 }
 impl crate::GetTable for PredispatchInterconnectorSoln3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("INTERCONNECTOR_SOLN".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("INTERCONNECTOR_SOLN".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PREDISPATCHPRICE
 ///  _PREDISPATCHPRICE records predispatch prices for each region by period for each predispatch run, including fields to handle the Ancillary Services functionality._
-/// 
+///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Prices
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PREDISPATCHPRICE data is public, so is available to all participants. Source PREDISPATCHPRICE updates with every thirty-minute predispatch run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1302,12 +1274,10 @@ pub struct PredispatchRegionPrices1 {
 }
 impl crate::GetTable for PredispatchRegionPrices1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PREDISPATCH".into(),
-                        table_name: Some("REGION_PRICES".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PREDISPATCH".into(),
+            table_name: Some("REGION_PRICES".into()),
+            version: 1,
+        }
     }
 }

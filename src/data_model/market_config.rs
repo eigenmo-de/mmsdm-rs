@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## LOSSFACTORMODEL
 ///  _LOSSFACTORMODEL sets out the demand coefficients for each interconnector, used by LP Solver modelling of interconnector flows._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Lossfactormodel
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector. 
-/// 
+///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
 /// * REGIONID
@@ -36,32 +36,30 @@ pub struct MarketConfigLossfactormodel1 {
 }
 impl crate::GetTable for MarketConfigLossfactormodel1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("LOSSFACTORMODEL".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("LOSSFACTORMODEL".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BIDTYPESTRK
 ///  _BIDTYPESTRK, together with the associated data in BIDTYPES, define a set of ancillary services with bidding parameters from a given date._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Bidtypestrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BIDTYPESTRK is public to participants Source BIDTYPESTRK updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -79,32 +77,30 @@ pub struct MarketConfigBidtypestrk1 {
 }
 impl crate::GetTable for MarketConfigBidtypestrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("BIDTYPESTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("BIDTYPESTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INTERCONNECTORCONSTRAINT
 ///  _INTERCONNECTORCONSTRAINT sets out Interconnector limit data used as defaults in dispatch, predispatch and STPASA and used by SPD in calculating flows. INTERCONNECTORCONSTRAINT includes an additional field to restrict an interconnector from support transfer of FCAS._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Interconnectorconstraint
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  INTERCONNECTORCONSTRAINT is public data, available to all participants. Source INTERCONNECTORCONSTRAINT changes infrequently, typically annually. 
-/// 
+///  INTERCONNECTORCONSTRAINT is public data, available to all participants. Source INTERCONNECTORCONSTRAINT changes infrequently, typically annually.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
 /// * VERSIONNO
@@ -157,32 +153,30 @@ pub struct MarketConfigInterconnectorconstraint1 {
 }
 impl crate::GetTable for MarketConfigInterconnectorconstraint1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("INTERCONNECTORCONSTRAINT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("INTERCONNECTORCONSTRAINT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INTERCONNECTORALLOC
 ///  _INTERCONNECTORALLOC shows allocations of interconnector residues to Network Service Providers._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Interconnectoralloc
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually. 
-/// 
+///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
 /// * PARTICIPANTID
@@ -207,32 +201,30 @@ pub struct MarketConfigInterconnectoralloc1 {
 }
 impl crate::GetTable for MarketConfigInterconnectoralloc1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("INTERCONNECTORALLOC".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("INTERCONNECTORALLOC".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## REGIONSTANDINGDATA
 ///  _REGIONSTANDINGDATA sets out standing region data including the region reference node._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Regionstandingdata
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  REGIONSTANDINGDATA data is public, so is available to all participants. Source REGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * REGIONID
 /// * VERSIONNO
@@ -261,32 +253,30 @@ pub struct MarketConfigRegionstandingdata1 {
 }
 impl crate::GetTable for MarketConfigRegionstandingdata1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("REGIONSTANDINGDATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("REGIONSTANDINGDATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## LOSSMODEL
 ///  _LOSSMODEL sets out segment breakpoints in loss model for each interconnector, used by LP Solver modelling of interconnector flows._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Lossmodel
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector. 
-/// 
+///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
 /// * LOSSSEGMENT
@@ -312,32 +302,30 @@ pub struct MarketConfigLossmodel1 {
 }
 impl crate::GetTable for MarketConfigLossmodel1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("LOSSMODEL".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("LOSSMODEL".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BIDTYPES
 ///  _BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.<br>BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies.<br>_
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Bidtypes
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BIDTYPES  is public to participants Source BIDTYPES updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * EFFECTIVEDATE
 /// * VERSIONNO
@@ -364,32 +352,30 @@ pub struct MarketConfigBidtypes1 {
 }
 impl crate::GetTable for MarketConfigBidtypes1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("BIDTYPES".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("BIDTYPES".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INTERCONNECTOR
 ///  _INTERCONNECTOR sets out valid identifiers for each interconnector._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Interconnector
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  INTERCONNECTOR is public data, available to all participants. Source INTERCONNECTOR changes infrequently, usually annually. 
-/// 
+///  INTERCONNECTOR is public data, available to all participants. Source INTERCONNECTOR changes infrequently, usually annually.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERCONNECTORID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigInterconnector1 {
@@ -408,32 +394,30 @@ pub struct MarketConfigInterconnector1 {
 }
 impl crate::GetTable for MarketConfigInterconnector1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("INTERCONNECTOR".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("INTERCONNECTOR".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## TRANSMISSIONLOSSFACTOR
 ///  _TRANSMISSIONLOSSFACTOR shows the Transmission Loss factors applied at each connection point._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Transmissionlossfactor
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  TRANSMISSIONLOSSFACTOR is public data, and is available to all participants. Source TRANSMISSIONLOSSFACTOR updates when new connection points are created or loss factors change.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONNECTIONPOINTID
 /// * EFFECTIVEDATE
 /// * VERSIONNO
@@ -447,7 +431,7 @@ pub struct MarketConfigTransmissionlossfactor2 {
     pub versionno: rust_decimal::Decimal,
     /// Connection Point ID
     pub connectionpointid: String,
-    /// &nbsp; 
+    /// &nbsp;
     pub regionid: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -456,32 +440,30 @@ pub struct MarketConfigTransmissionlossfactor2 {
 }
 impl crate::GetTable for MarketConfigTransmissionlossfactor2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("TRANSMISSIONLOSSFACTOR".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("TRANSMISSIONLOSSFACTOR".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MARKET_PRICE_THRESHOLDS
 ///  _MARKET_PRICE_THRESHOLDS sets out the market cap , floor and administered price thresholds applying to the electricity market_
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Market Price Thresholds
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MARKET_PRICE_THRESHOLDS data is public, so is available to all participants. Source MARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -505,32 +487,30 @@ pub struct MarketConfigMarketPriceThresholds1 {
 }
 impl crate::GetTable for MarketConfigMarketPriceThresholds1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("MARKET_PRICE_THRESHOLDS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("MARKET_PRICE_THRESHOLDS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INTRAREGIONALLOC
 ///  _INTRAREGIONALLOC shows allocations of intra-regional residues to participants._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Intraregionalloc
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  INTRAREGIONALLOC data is confidential to the relevant participant. Source The data in INTRAREGIONALLOC changes infrequently. 
-/// 
+///  INTRAREGIONALLOC data is confidential to the relevant participant. Source The data in INTRAREGIONALLOC changes infrequently.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 /// * REGIONID
@@ -552,32 +532,30 @@ pub struct MarketConfigIntraregionalloc1 {
 }
 impl crate::GetTable for MarketConfigIntraregionalloc1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("INTRAREGIONALLOC".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("INTRAREGIONALLOC".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## REGION
 ///  _REGION sets out valid region IDs._
-/// 
+///
 /// * Data Set Name: Market Config
 /// * File Name: Region
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  REGION data is public, so is available to all participants. Source REGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigRegion1 {
@@ -592,12 +570,10 @@ pub struct MarketConfigRegion1 {
 }
 impl crate::GetTable for MarketConfigRegion1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MARKET_CONFIG".into(),
-                        table_name: Some("REGION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MARKET_CONFIG".into(),
+            table_name: Some("REGION".into()),
+            version: 1,
+        }
     }
 }

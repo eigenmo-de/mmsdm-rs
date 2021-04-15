@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## MARKET_SUSPEND_SCHEDULE
 ///  _Trading prices that will apply in the event of a market suspension event updated weekly._
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Schedule
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MARKET_SUSPEND_SCHEDULE is public data, so is available to all participants.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DAY_TYPE
 /// * EFFECTIVEDATE
 /// * PERIODID
@@ -25,7 +25,7 @@ pub struct ForceMajeureMarketSuspendSchedule1 {
     pub effectivedate: chrono::NaiveDateTime,
     /// Distinguishes which record set to apply - at time of writing this was Business or Non-business day but may change in the future depending on outcome of consultation
     pub day_type: String,
-    /// Region affected. 
+    /// Region affected.
     pub regionid: String,
     /// 48 intervals for a day, midnight base (equates to 00:30 - 00:00)
     pub periodid: rust_decimal::Decimal,
@@ -52,32 +52,30 @@ pub struct ForceMajeureMarketSuspendSchedule1 {
 }
 impl crate::GetTable for ForceMajeureMarketSuspendSchedule1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("MARKET_SUSPEND_SCHEDULE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("MARKET_SUSPEND_SCHEDULE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## IRFMAMOUNT
 ///  _IRFMAMOUNT sets out settlement amounts associated with Industrial Relations Forced Majeure events._
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Irfmamount
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  IRFMAMOUNTis public data. Source IRFMAMOUNT is obsolete; was updated with each settlement run as required.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * IRFMID
 /// * PERIODID
 /// * VERSIONNO
@@ -102,32 +100,30 @@ pub struct ForceMajeureIrfmamount1 {
 }
 impl crate::GetTable for ForceMajeureIrfmamount1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("IRFMAMOUNT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("IRFMAMOUNT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MARKET_SUSPEND_REGIME_SUM
 ///  _Tracks the evolution of pricing regimes applied to the suspended region and from which Dispatch Interval_
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Regime Sum
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MARKET_SUSPEND_REGIME_SUM is public data, so is available to all participants.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * REGIONID
 /// * START_INTERVAL
 /// * SUSPENSION_ID
@@ -148,32 +144,30 @@ pub struct ForceMajeureMarketSuspendRegimeSum1 {
 }
 impl crate::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("MARKET_SUSPEND_REGIME_SUM".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("MARKET_SUSPEND_REGIME_SUM".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## REGIONAPC
 ///  _REGIONAPC defines Administered Price profiles (Energy and FCAS) for a region._
-/// 
+///
 /// * Data Set Name: Ap
 /// * File Name: Regionapc
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  REGIONAPC data is public, so is available to all participants. Source REGIONAPC updates when a change is ever made to the Administered Price Cap details. Changes to this table are infrequent.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * REGIONID
 /// * VERSIONNO
@@ -194,32 +188,30 @@ pub struct ApRegionapc1 {
 }
 impl crate::GetTable for ApRegionapc1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "AP".into(),
-                        table_name: Some("REGIONAPC".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "AP".into(),
+            table_name: Some("REGIONAPC".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## REGIONAPCINTERVALS
 ///  _REGIONAPCINTERVALS contains Administered Price profiles (Energy and FCAS) applicable to each interval for a region._
-/// 
+///
 /// * Data Set Name: Ap
 /// * File Name: Regionapcintervals
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  REGIONAPCINTERVALS data is public, so is available to all participants. Source REGIONAPCINTERVALS is updated whenever an Administered Price Cap occurs.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * PERIODID
 /// * REGIONID
@@ -247,75 +239,71 @@ pub struct ApRegionapcintervals1 {
 }
 impl crate::GetTable for ApRegionapcintervals1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "AP".into(),
-                        table_name: Some("REGIONAPCINTERVALS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "AP".into(),
+            table_name: Some("REGIONAPCINTERVALS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## IRFMEVENTS
 ///  _IRFMEVENTS sets out specific Industrial Relations Forced Majeure events._
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Irfmevents
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  IRFMEVENTS is public data. Source IRFMEVENTS updates with the occurrence of any such events.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * IRFMID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ForceMajeureIrfmevents1 {
-    /// &nbsp; 
+    /// &nbsp;
     pub irfmid: String,
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
+    /// &nbsp;
     pub startperiod: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
+    /// &nbsp;
     pub endperiod: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for ForceMajeureIrfmevents1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("IRFMEVENTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("IRFMEVENTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MARKET_SUSPEND_SCHEDULE_TRK
 ///  _Parent table for pricing regimes used in suspensions_
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Schedule Trk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ForceMajeureMarketSuspendScheduleTrk1 {
@@ -334,32 +322,30 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1 {
 }
 impl crate::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("MARKET_SUSPEND_SCHEDULE_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("MARKET_SUSPEND_SCHEDULE_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MARKET_SUSPEND_REGION_SUM
 ///  _Summary of Market Suspension timings_
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Region Sum
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MARKET_SUSPEND is public data, so is available to all participants.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * REGIONID
 /// * SUSPENSION_ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -379,31 +365,29 @@ pub struct ForceMajeureMarketSuspendRegionSum1 {
 }
 impl crate::GetTable for ForceMajeureMarketSuspendRegionSum1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("MARKET_SUSPEND_REGION_SUM".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("MARKET_SUSPEND_REGION_SUM".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## APEVENT
 ///  _APEVENT is the driving data defining the existence and timeframes of an administered pricing event._
-/// 
+///
 /// * Data Set Name: Ap
 /// * File Name: Apevent
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APEVENTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ApApevent1 {
@@ -428,32 +412,30 @@ pub struct ApApevent1 {
 }
 impl crate::GetTable for ApApevent1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "AP".into(),
-                        table_name: Some("APEVENT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "AP".into(),
+            table_name: Some("APEVENT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## OVERRIDERRP
 ///  _OVERRIDERRP shows details of override price periods._
-/// 
+///
 /// * Data Set Name: Force Majeure
 /// * File Name: Overriderrp
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  OVERRIDERRP data is public, so is available to all participants. Source OVERRIDERRP updates every five minutes when override prices apply for the period. 
-/// 
+///  OVERRIDERRP data is public, so is available to all participants. Source OVERRIDERRP updates every five minutes when override prices apply for the period.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * REGIONID
 /// * STARTDATE
 /// * STARTPERIOD
@@ -482,31 +464,29 @@ pub struct ForceMajeureOverriderrp1 {
 }
 impl crate::GetTable for ForceMajeureOverriderrp1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "FORCE_MAJEURE".into(),
-                        table_name: Some("OVERRIDERRP".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "FORCE_MAJEURE".into(),
+            table_name: Some("OVERRIDERRP".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## APEVENTREGION
 ///  _APEVENTREGION is the Region detail for an administered pricing event defined through APEVENT._
-/// 
+///
 /// * Data Set Name: Ap
 /// * File Name: Apeventregion
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APEVENTID
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -538,12 +518,10 @@ pub struct ApApeventregion1 {
 }
 impl crate::GetTable for ApApeventregion1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "AP".into(),
-                        table_name: Some("APEVENTREGION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "AP".into(),
+            table_name: Some("APEVENTREGION".into()),
+            version: 1,
+        }
     }
 }

@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## OFFERAGCDATA
 ///  _OFFERAGCDATA shows availability reoffers of Automatic Generation Control. _
-/// 
+///
 /// * Data Set Name: Asoffer
 /// * File Name: Offeragcdata
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  OFFERAGCDATA data is confidential to the relevant participant. Source OFFERAGCDATA updates as reoffers submitted.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * EFFECTIVEDATE
 /// * PERIODID
@@ -50,32 +50,30 @@ pub struct AsofferOfferagcdata1 {
 }
 impl crate::GetTable for AsofferOfferagcdata1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ASOFFER".into(),
-                        table_name: Some("OFFERAGCDATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ASOFFER".into(),
+            table_name: Some("OFFERAGCDATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## OFFERRPOWERDATA
 ///  _OFFERRPOWERDATA shows reoffers of reactive power capability and settlement measurements._
-/// 
+///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerrpowerdata
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  OFFERRPOWERDATA data is confidential to the relevant participant. Source OFFERRPOWERDATA updates as reoffers process. 
-/// 
+///  OFFERRPOWERDATA data is confidential to the relevant participant. Source OFFERRPOWERDATA updates as reoffers process.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * EFFECTIVEDATE
 /// * PERIODID
@@ -107,32 +105,30 @@ pub struct AsofferOfferrpowerdata1 {
 }
 impl crate::GetTable for AsofferOfferrpowerdata1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ASOFFER".into(),
-                        table_name: Some("OFFERRPOWERDATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ASOFFER".into(),
+            table_name: Some("OFFERRPOWERDATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## OFFERLSHEDDATA
 ///  _OFFERLSHEDDATA shows reoffers of load shed including available load shed quantity._
-/// 
+///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerlsheddata
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  OFFERLSHEDDATA data is confidential to the relevant participant. Source OFFERLSHEDDATA updates as reoffers process.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * EFFECTIVEDATE
 /// * PERIODID
@@ -160,32 +156,30 @@ pub struct AsofferOfferlsheddata1 {
 }
 impl crate::GetTable for AsofferOfferlsheddata1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ASOFFER".into(),
-                        table_name: Some("OFFERLSHEDDATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ASOFFER".into(),
+            table_name: Some("OFFERLSHEDDATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## OFFERRESTARTDATA
 ///  _OFFERRESTARTDATA sets out reoffers of system restart availability._
-/// 
+///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerrestartdata
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  OFFERRESTARTDATA data is confidential to the relevant participant. Source OFFERRESTARTDATA updates as reoffers process.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * OFFERDATE
 /// * PERIODID
@@ -213,32 +207,30 @@ pub struct AsofferOfferrestartdata1 {
 }
 impl crate::GetTable for AsofferOfferrestartdata1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ASOFFER".into(),
-                        table_name: Some("OFFERRESTARTDATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ASOFFER".into(),
+            table_name: Some("OFFERRESTARTDATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## OFFERASTRK
 ///  _OFFERASTRK tracks successfully acknowledged ancillary service reoffers._
-/// 
+///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerastrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  OFFERASTRK data is confidential to the relevant participant. Source OFFERASTRK is updated as offers are successfully acknowledged.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 /// * VERSIONNO
@@ -257,12 +249,10 @@ pub struct AsofferOfferastrk1 {
 }
 impl crate::GetTable for AsofferOfferastrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ASOFFER".into(),
-                        table_name: Some("OFFERASTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ASOFFER".into(),
+            table_name: Some("OFFERASTRK".into()),
+            version: 1,
+        }
     }
 }

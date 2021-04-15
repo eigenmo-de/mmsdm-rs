@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## SETFCASREGIONRECOVERY
 ///  _SETFCASREGIONRECOVERY shows FCAS Regional Recovery Data against each Trading Interval._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Fcasregionrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETFCASREGIONRECOVERY contains public data and is available to all participants. Source SETFCASREGIONRECOVERY updates with each settlements run. Volume Approximately 10,000 rows per day
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * PERIODID
 /// * REGIONID
@@ -43,32 +43,30 @@ pub struct SettlementsFcasregionrecovery5 {
 }
 impl crate::GetTable for SettlementsFcasregionrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("FCASREGIONRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("FCASREGIONRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETRESTARTRECOVERY
 ///  _SETRESTARTRECOVERY shows reimbursements for system restart Ancillary Services to be recovered from participants. (Data no longer created for Settlement Days from 01/07/2012)_
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Restartrecovery
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETRESTARTRECOVERY data is confidential to the relevant participant. Source SETRESTARTRECOVERY updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -113,32 +111,30 @@ pub struct SettlementsRestartrecovery6 {
 }
 impl crate::GetTable for SettlementsRestartrecovery6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("RESTARTRECOVERY".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("RESTARTRECOVERY".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETIRNSPSURPLUS
 ///  _This view supports the Settlements Residue Auction, by showing the TNSP participant allocations of  Interconnector Residue (IR) Surplus (i.e. derogated amounts) arising as a result of the sold units for a quarter._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Irnspsurplus
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETIRNSPSURPLUS data is confidential to the relevant participant. Source SETIRNSPSURPLUS updates with each settlement run. Volume SETIRNSPSURPLUS contains a maximum of 10 million records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -177,32 +173,30 @@ pub struct SettlementsIrnspsurplus6 {
 }
 impl crate::GetTable for SettlementsIrnspsurplus6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("IRNSPSURPLUS".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("IRNSPSURPLUS".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLSHEDPAYMENT
 ///  _SETLSHEDPAYMENT shows specific payment details for load shed services by period._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Lshedpayment
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETLSHEDPAYMENT data is confidential to the relevant participant. Source SETLSHEDPAYMENT updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -261,32 +255,30 @@ pub struct SettlementsLshedpayment5 {
 }
 impl crate::GetTable for SettlementsLshedpayment5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LSHEDPAYMENT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LSHEDPAYMENT".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLULOADRECOVERY
 ///  _SETLULOADRECOVERY shows reimbursements for rapid-unit-load Ancillary Services to be recovered from participants._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Luloadrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
-///  SETLULOADRECOVERY became unused when Ancillary Services Review was implemented. For more details, see Change Notice 126. SETLULOADRECOVERY data is confidential to each participant. Source SETLULOADRECOVERY is unused; was updated with each settlement run. 
-/// 
+///  SETLULOADRECOVERY became unused when Ancillary Services Review was implemented. For more details, see Change Notice 126. SETLULOADRECOVERY data is confidential to each participant. Source SETLULOADRECOVERY is unused; was updated with each settlement run.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -337,31 +329,29 @@ pub struct SettlementsLuloadrecovery5 {
 }
 impl crate::GetTable for SettlementsLuloadrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LULOADRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LULOADRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_NMAS_RECOVERY_RBF
 ///  _SET_NMAS_RECOVERY_RBF publishes the RBF for NSCAS non testing payments on a half hourly basis._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Nmas Recovery Rbf
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PAYMENTTYPE
 /// * PERIODID
@@ -387,7 +377,7 @@ pub struct SettlementsNmasRecoveryRbf1 {
     pub regionid: String,
     /// The Benefitting Factor for the RegionId
     pub rbf: Option<rust_decimal::Decimal>,
-    /// The total Payment Amount to recover from all benefitting regions 
+    /// The total Payment Amount to recover from all benefitting regions
     pub payment_amount: Option<rust_decimal::Decimal>,
     /// The Total recovery amount for the period for the REGIONID
     pub recovery_amount: Option<rust_decimal::Decimal>,
@@ -396,32 +386,30 @@ pub struct SettlementsNmasRecoveryRbf1 {
 }
 impl crate::GetTable for SettlementsNmasRecoveryRbf1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("NMAS_RECOVERY_RBF".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("NMAS_RECOVERY_RBF".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_FCAS_PAYMENT
 ///  _SET_FCAS_PAYMENT sets out the enabling payment details for frequency controlled Ancillary Services._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Fcas Payment
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SET_FCAS_PAYMENT data is confidential to the relevant participant. Volume Approximately 150,000 per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * PERIODID
 /// * SETTLEMENTDATE
@@ -461,32 +449,30 @@ pub struct SettlementsFcasPayment5 {
 }
 impl crate::GetTable for SettlementsFcasPayment5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("FCAS_PAYMENT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("FCAS_PAYMENT".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETINTERVENTIONRECOVERY
 ///  _SETINTERVENTIONRECOVERY shows intervention recovery details by participant._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Interventionrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  Status SETINTERVENTIONRECOVERY became unused when Ancillary Services Review was implemented. For more details, see Change Notice 126. Confidential to participant Source Unused; was updating when intervention occurred in a billing run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -521,32 +507,30 @@ pub struct SettlementsInterventionrecovery5 {
 }
 impl crate::GetTable for SettlementsInterventionrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("INTERVENTIONRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("INTERVENTIONRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETAGCRECOVERY
 ///  _SETAGCRECOVERY shows reimbursements for Automatic Generation Control (AGC) Ancillary Services to be recovered from participants._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Agcrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETAGCRECOVERY data is confidential to the relevant participant Source SETAGCRECOVERY updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -560,7 +544,7 @@ pub struct SettlementsAgcrecovery5 {
     pub versionno: rust_decimal::Decimal,
     /// Participant to pay recovery
     pub participantid: String,
-    /// &nbsp; 
+    /// &nbsp;
     pub contractid: Option<String>,
     /// Trading Interval
     pub periodid: rust_decimal::Decimal,
@@ -585,32 +569,30 @@ pub struct SettlementsAgcrecovery5 {
 }
 impl crate::GetTable for SettlementsAgcrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("AGCRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("AGCRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DAYTRACK
 ///  _DAYTRACK identifies the actual settlement run processed for each settlement day. Settlement run is in the column EXPOSTRUNNO. Generally the number of the settlement run used in the latest statement is the maximum number._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Daytrack
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  DAYTRACK is a public data, and is available to all participants. Source DAYTRACK is populated by the posting of a billing run. Volume Daily billing runs insert one row per day. A non-interim statement has seven records inserted per week. An indicative maximum is 35 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EXPOSTRUNNO
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -634,32 +616,30 @@ pub struct SettlementsDaytrack6 {
 }
 impl crate::GetTable for SettlementsDaytrack6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("DAYTRACK".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("DAYTRACK".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETGENDATAREGION
 ///  _SETGENDATAREGION sets out summary settlement data for generation within the specified region._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Gendataregion
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETGENDATAREGION shows the regional summary. SETGENDATAREGION is public data. Source SETGENDATAREGION updates with each Settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PERIODID
 /// * REGIONID
 /// * SETTLEMENTDATE
@@ -697,32 +677,30 @@ pub struct SettlementsGendataregion5 {
 }
 impl crate::GetTable for SettlementsGendataregion5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("GENDATAREGION".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("GENDATAREGION".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_FCAS_REGULATION_TRK
 ///  _SET_FCAS_REGULATION_TRK shows FCAS Regulation Service Constraint tracking for Regional FCAS Regulation recovery_
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Set Fcas Regulation Trk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  SET_FCAS_REGULATION_TRK contains public data and is available to all participants. Volume Approximately 350,000 per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * INTERVAL_DATETIME
 /// * SETTLEMENTDATE
@@ -750,32 +728,30 @@ pub struct SettlementsSetFcasRegulationTrk1 {
 }
 impl crate::GetTable for SettlementsSetFcasRegulationTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("SET_FCAS_REGULATION_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("SET_FCAS_REGULATION_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLUNLOADPAYMENT
 ///  _SETLUNLOADPAYMENT shows specific payment details for rapid unit unload service._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Lunloadpayment
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETLUNLOADPAYMENT data is confidential to the relevant participant. Source SETLUNLOADPAYMENT updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -832,31 +808,29 @@ pub struct SettlementsLunloadpayment5 {
 }
 impl crate::GetTable for SettlementsLunloadpayment5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LUNLOADPAYMENT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LUNLOADPAYMENT".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_APC_COMPENSATION
 ///  _APC Compensation payment amounts in the Settlements timeframe_
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Apc Compensation
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APEVENTID
 /// * CLAIMID
 /// * PARTICIPANTID
@@ -882,32 +856,30 @@ pub struct SettlementsApcCompensation1 {
 }
 impl crate::GetTable for SettlementsApcCompensation1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("APC_COMPENSATION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("APC_COMPENSATION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETFCASCOMP
 ///  _SETFCASCOMP shows the compensation details for Frequency Controlled Ancillary Services (FCAS). These compensation values are calculated by a separate “what if” run of the LP Solver and entered as an unconstrained MW value into settlements._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Fcascomp
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETFCASCOMP data is confidential to the relevant participant Source SETFCASCOMP updates with each Settlement run, if required.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -948,32 +920,30 @@ pub struct SettlementsFcascomp5 {
 }
 impl crate::GetTable for SettlementsFcascomp5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("FCASCOMP".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("FCASCOMP".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETREALLOCATIONS
 ///  _SETREALLOCATIONS shows the trading interval value of reallocations processed, for those participants whose reallocation submissions have been accepted by AEMO._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Reallocations
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETREALLOCATIONS data is confidential to participants party to the reallocation. Source SETREALLOCATIONS updates by the posting of a billing run. Volume Generally, there are approximately 550 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REALLOCATIONID
@@ -1002,32 +972,30 @@ pub struct SettlementsReallocations5 {
 }
 impl crate::GetTable for SettlementsReallocations5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("REALLOCATIONS".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("REALLOCATIONS".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_ANCILLARY_SUMMARY
 ///  _SET_ANCILLARY_SUMMARY summarises payments for all Ancillary Services to participants on the basis of regions and trading intervals._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Ancillary Summary
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SET_ANCILLARY_SUMMARY data is available to all participants. Volume Approximately 30, 000 per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PAYMENTTYPE
 /// * PERIODID
 /// * REGIONID
@@ -1055,32 +1023,30 @@ pub struct SettlementsAncillarySummary5 {
 }
 impl crate::GetTable for SettlementsAncillarySummary5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("ANCILLARY_SUMMARY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("ANCILLARY_SUMMARY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETRESTARTPAYMENT
 ///  _SETRESTARTPAYMENT shows specific payment details for System Restart services by period._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Restartpayment
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETRESTARTPAYMENT data is confidential to the relevant participant. Source SETRESTARTPAYMENT updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -1123,32 +1089,30 @@ pub struct SettlementsRestartpayment6 {
 }
 impl crate::GetTable for SettlementsRestartpayment6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("RESTARTPAYMENT".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("RESTARTPAYMENT".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_FCAS_RECOVERY
 ///  _SET_FCAS_RECOVERY shows reimbursements for the Frequency Control Ancillary Services (FCAS) to be recovered from participants. Beware of potential confusion with the table SETFCASRECOVERY, which reports reimbursements for Frequency Control Ancillary Services Compensation (now unused)._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Fcas Recovery
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SET_FCAS_RECOVERY data is confidential to the relevant participant. Volume Approximately 1, 500, 000 per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -1203,32 +1167,30 @@ pub struct SettlementsFcasRecovery6 {
 }
 impl crate::GetTable for SettlementsFcasRecovery6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("FCAS_RECOVERY".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("FCAS_RECOVERY".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETRPOWERRECOVERY
 ///  _SETRPOWERRECOVERY shows reimbursements for Reactive Power Ancillary Services to be recovered from participants. (Data no longer created for Settlement Days from 01/07/2012)_
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Rpowerrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETRPOWERRECOVERY data is confidential to the relevant participant. Source SETRPOWERRECOVERY updates with each settlement run. Note Only the payment fields (AVAILABILITYPAYMENT, ENABLINGPAYMENT and CCPAYMENT) are on a regional basis. All other demand and recovery fields are on NEM basis rather than a regional basis.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -1279,32 +1241,30 @@ pub struct SettlementsRpowerrecovery5 {
 }
 impl crate::GetTable for SettlementsRpowerrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("RPOWERRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("RPOWERRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETCPDATA
 ///  _SETCPDATA shows meter settlement data for each connection point. This is the key view for retailers to verify energy charges. A regional summary view is also provided. As the view has values for each connection point by period, for each meter data file, it is a very large view._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Cpdata
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  The Connection point details (in SETCPDATA) are confidential to the participant and host retailer that the connection points relate to. By comparison, the regional data (SETCPDATAREGION) is publically available. Source SETCPDATA updates with each Settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * MDA
 /// * PARTICIPANTID
 /// * PERIODID
@@ -1376,32 +1336,30 @@ pub struct SettlementsCpdata6 {
 }
 impl crate::GetTable for SettlementsCpdata6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("CPDATA".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("CPDATA".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETCPDATAREGION
 ///  _SETCPDATAREGION sets out summary meter settlement data for each region._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Cpdataregion
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETCPDATAREGION data is public, so is available to all participants. Source SETCPDATAREGION is a summary based on grouping on SETCPDATA and is updated with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PERIODID
 /// * REGIONID
 /// * SETTLEMENTDATE
@@ -1435,32 +1393,30 @@ pub struct SettlementsCpdataregion5 {
 }
 impl crate::GetTable for SettlementsCpdataregion5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("CPDATAREGION".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("CPDATAREGION".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETMARKETFEES
 ///  _SETMARKETFEES shows payments for market fees for each settlement date._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Marketfees
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETMARKETFEES is confidential data. Source SETMARKETFEES updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * MARKETFEEID
 /// * PARTICIPANTCATEGORYID
 /// * PARTICIPANTID
@@ -1494,32 +1450,30 @@ pub struct SettlementsMarketfees6 {
 }
 impl crate::GetTable for SettlementsMarketfees6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("MARKETFEES".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("MARKETFEES".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETIRPARTSURPLUS
 ///  _This view supports the Settlements Residue Auction, holding the participant allocations of IRSurplus._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Irpartsurplus
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETIRPARTSURPLUS data is confidential to each participant. Source SETIRPARTSURPLUS updates with each settlement run. Volume SETIRPARTSURPLUS contains a maximum of 20 million records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -1558,32 +1512,30 @@ pub struct SettlementsIrpartsurplus6 {
 }
 impl crate::GetTable for SettlementsIrpartsurplus6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("IRPARTSURPLUS".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("IRPARTSURPLUS".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETGENDATA
 ///  _SETGENDATA shows meter settlement data for each generation meter point. A regional summary is also provided._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Gendata
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETGENDATA shows generator meter details, and SETGENDATA data is confidential to the participant. By comparison, the regional summary (SETGENDATAREGION) is public data. Source SETGENDATA updates with each Settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * GENSETID
 /// * PERIODID
@@ -1654,32 +1606,30 @@ pub struct SettlementsGendata6 {
 }
 impl crate::GetTable for SettlementsGendata6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("GENDATA".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("GENDATA".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETIRFMRECOVERY
 ///  _SETIRFMRECOVERY sets out reimbursements for Industrial Relations Force Majeure to be recovered from participants._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Irfmrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETIRFMRECOVERY data is confidential to the relevant participant. Source SETIRFMRECOVERY updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * IRFMID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -1714,32 +1664,30 @@ pub struct SettlementsIrfmrecovery5 {
 }
 impl crate::GetTable for SettlementsIrfmrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("IRFMRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("IRFMRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETINTERVENTION
 ///  _SETINTERVENTION shows intervention settlement payment details by unit._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Intervention
 /// * Data Version: 5
-/// 
+///
 /// # Description
-///  SETINTERVENTION became unused when Ancillary Services Review was implemented. For more details, see Change Notice 126. SETINTERVENTION data is confidential to each participant. Source SETINTERVENTION is unused; was updating when intervention occurred in a billing run. 
-/// 
+///  SETINTERVENTION became unused when Ancillary Services Review was implemented. For more details, see Change Notice 126. SETINTERVENTION data is confidential to each participant. Source SETINTERVENTION is unused; was updating when intervention occurred in a billing run.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * PERIODID
 /// * SETTLEMENTDATE
@@ -1771,32 +1719,30 @@ pub struct SettlementsIntervention5 {
 }
 impl crate::GetTable for SettlementsIntervention5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("INTERVENTION".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("INTERVENTION".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_RUN_PARAMETER
 ///  _SET_RUN_PARAMETER shows the input parameters and value associated with each settlement run (e.g. Residual System Load Causer Pays Factor)._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Run Parameter
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  Change History 19 August 2005 for 4.5.0: Changed index name again to have suffix of _LCX Note: primary key shows PK_ as prefix in Oracle SQL script, even though name of key has _PK as suffix - but cannot change since would not improve participant systems . &nbsp; 17 August 2005 for v4.5.0 Added tablespace (02) for recently added index, and gave index a better name
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARAMETERID
 /// * SETTLEMENTDATE
 /// * VERSIONNO
@@ -1815,31 +1761,29 @@ pub struct SettlementsRunParameter5 {
 }
 impl crate::GetTable for SettlementsRunParameter5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("RUN_PARAMETER".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("RUN_PARAMETER".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLOCALAREATNI
 ///  _SETLOCALAREATNI shows the list of TNIs constituent to a local area in a settlement run. _
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Localareatni
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * LOCALAREAID
 /// * SETTLEMENTDATE
 /// * SETTLEMENTRUNNO
@@ -1859,32 +1803,30 @@ pub struct SettlementsLocalareatni1 {
 }
 impl crate::GetTable for SettlementsLocalareatni1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LOCALAREATNI".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LOCALAREATNI".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETRPOWERPAYMENT
 ///  _SETRPOWERPAYMENT shows specific payment details for Reactive power services by period._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Rpowerpayment
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETRPOWERPAYMENT data is confidential to the relevant participant. Source SETRPOWERPAYMENT updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -1953,32 +1895,30 @@ pub struct SettlementsRpowerpayment6 {
 }
 impl crate::GetTable for SettlementsRpowerpayment6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("RPOWERPAYMENT".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("RPOWERPAYMENT".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETVICENERGYFIGURES
 ///  _SETVICENERGYFIGURES is used in settlement of Victorian Vesting contracts._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Vicenergyfigures
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETVICENERGYFIGURES data is public, so is available to all participants. Source SETVICENERGYFIGURES updates daily, with settlements.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PERIODID
 /// * SETTLEMENTDATE
 /// * VERSIONNO
@@ -2003,31 +1943,29 @@ pub struct SettlementsVicenergyfigures5 {
 }
 impl crate::GetTable for SettlementsVicenergyfigures5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("VICENERGYFIGURES".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("VICENERGYFIGURES".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_APC_RECOVERY
 ///  _APC Compensation recovery amounts in the Settlements timeframe_
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Apc Recovery
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APEVENTID
 /// * CLAIMID
 /// * PARTICIPANTID
@@ -2058,32 +1996,30 @@ pub struct SettlementsApcRecovery1 {
 }
 impl crate::GetTable for SettlementsApcRecovery1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("APC_RECOVERY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("APC_RECOVERY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETIRAUCSURPLUS
 ///  _This view supports the Settlements Residue Auction, by holding the NSP participant allocations of IRSurplus arising as a result of the unsold units for a quarter._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Iraucsurplus
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETIRAUCSURPLUS data is confidential to the relevant participant. Source SETIRAUCSURPLUS updates with each settlement run. Volume SETIRAUCSURPLUS contains a maximum of 10 million records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -2122,32 +2058,30 @@ pub struct SettlementsIraucsurplus6 {
 }
 impl crate::GetTable for SettlementsIraucsurplus6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("IRAUCSURPLUS".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("IRAUCSURPLUS".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETINTRAREGIONRESIDUES
 ///  _&nbsp; _
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Intraregionresidues
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETINTRAREGIONRESIDUES data is public to all participants. Source SETINTRAREGIONRESIDUES updates with each settlement run. Note The relationship between the data columns for each key is expressed in the following formula: EP + EC + (EXP * RRP) = IRSS
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PERIODID
 /// * REGIONID
 /// * RUNNO
@@ -2177,32 +2111,30 @@ pub struct SettlementsIntraregionresidues5 {
 }
 impl crate::GetTable for SettlementsIntraregionresidues5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("INTRAREGIONRESIDUES".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("INTRAREGIONRESIDUES".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETVICBOUNDARYENERGY
 ///  _SETVICBOUNDARYENERGY is as requested by Participants for the settlement of Victorian Vesting contracts._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Vicboundaryenergy
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETVICBOUNDARYENERGY data is confidential to the relevant participants. Source SETVICBOUNDARYENERGY is populated by the posting of a billing run. Volume Generally there are approximately 550 records inserted per week.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * SETTLEMENTDATE
@@ -2224,32 +2156,30 @@ pub struct SettlementsVicboundaryenergy5 {
 }
 impl crate::GetTable for SettlementsVicboundaryenergy5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("VICBOUNDARYENERGY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("VICBOUNDARYENERGY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_MR_RECOVERY
 ///  _SET_MR_RECOVERY shows the trading interval recovery charges on a dispatchable unit basis for spot market income from dispatch of MR capacity._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Mr Recovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SET_MR_RECOVERY data is confidential to the relevant participant. Source SET_MR_RECOVERY updates are ad hoc, being for  MR events only. Volume 24000 rows per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * PERIODID
 /// * REGIONID
@@ -2278,32 +2208,30 @@ pub struct SettlementsMrRecovery5 {
 }
 impl crate::GetTable for SettlementsMrRecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("MR_RECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("MR_RECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETIRSURPLUS
 ///  _SETIRSURPLUS records the interregional residue calculation for each interconnector and each side of the interconnector._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Irsurplus
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  SETIRSURPLUS data is public, so is available to all participants. Source SETIRSURPLUS updates once a day at 8am. Note MWFLOW and LOSSFACTOR are now both calculated as MWh (energy) values for the half hour, and not MW (average demand) values. By way of clarification, the MWFLOW value is derived from half-hour revenue class metering, adjusted by a fixed fraction of the LOSSFACTOR value. The LOSSFACTOR value is taken to be exactly half of the MWLOSSES value in the TRADINGINTERCONNECT table. The METEREDMWFLOW field in the TRADINGINTERCONNECT table contains averaged SCADA metering demand values available in “real time”, whereas the MWFLOW field in the SETIRSURPLUS table contains settlement energy metering values available only after a settlement run is posted.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERCONNECTORID
 /// * PERIODID
 /// * REGIONID
@@ -2336,32 +2264,30 @@ pub struct SettlementsIrsurplus6 {
 }
 impl crate::GetTable for SettlementsIrsurplus6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("IRSURPLUS".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("IRSURPLUS".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_MR_PAYMENT
 ///  _SET_MR_PAYMENT shows trading interval payments on a dispatchable unit basis for accepted MR capacity._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Mr Payment
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SET_MR_PAYMENT data is confidential to the relevant participant. Source SET_MR_PAYMENT updates are ad hoc, being for MR events only. Volume 24000 rows per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * PERIODID
 /// * REGIONID
@@ -2392,31 +2318,29 @@ pub struct SettlementsMrPayment5 {
 }
 impl crate::GetTable for SettlementsMrPayment5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("MR_PAYMENT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("MR_PAYMENT".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLOCALAREAENERGY
 ///  _SETLOCALAREAENERGY shows the UFE, AGE and associated values for each local area and trading interval in a settlement run._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Localareaenergy
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * LOCALAREAID
 /// * PERIODID
 /// * SETTLEMENTDATE
@@ -2446,31 +2370,29 @@ pub struct SettlementsLocalareaenergy1 {
 }
 impl crate::GetTable for SettlementsLocalareaenergy1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LOCALAREAENERGY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LOCALAREAENERGY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETSMALLGENDATA
 ///  _Publishes metering data and associated settlement values for with a registered Small Generator Aggregator participants connection points._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Smallgendata
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONNECTIONPOINTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -2507,32 +2429,30 @@ pub struct SettlementsSmallgendata1 {
 }
 impl crate::GetTable for SettlementsSmallgendata1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("SMALLGENDATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("SMALLGENDATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETVICENERGYFLOW
 ///  _SETVICENERGYFLOW is used in settlement of Victorian Vesting contracts._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Vicenergyflow
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETVICENERGYFLOW data is public, so is available to all participants. Source SETVICENERGYFLOW updates daily, with settlements
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PERIODID
 /// * SETTLEMENTDATE
 /// * VERSIONNO
@@ -2551,31 +2471,29 @@ pub struct SettlementsVicenergyflow5 {
 }
 impl crate::GetTable for SettlementsVicenergyflow5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("VICENERGYFLOW".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("VICENERGYFLOW".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SET_NMAS_RECOVERY
 ///  _SET_NMAS_RECOVERY sets out the NSCAS recovery data for payments other than testing._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Nmas Recovery
 /// * Data Version: 2
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PAYMENTTYPE
@@ -2604,7 +2522,7 @@ pub struct SettlementsNmasRecovery2 {
     pub regionid: String,
     /// The Benefitting Factor for the RegionId
     pub rbf: Option<rust_decimal::Decimal>,
-    /// The total Payment Amount to recover from all  benefitting regions 
+    /// The total Payment Amount to recover from all  benefitting regions
     pub payment_amount: Option<rust_decimal::Decimal>,
     /// The Participant energy in MWh for the period
     pub participant_energy: Option<rust_decimal::Decimal>,
@@ -2625,32 +2543,30 @@ pub struct SettlementsNmasRecovery2 {
 }
 impl crate::GetTable for SettlementsNmasRecovery2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("NMAS_RECOVERY".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("NMAS_RECOVERY".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLSHEDRECOVERY
 ///  _SETLSHEDRECOVERY shows reimbursements for Load shed Ancillary Services to be recovered from participants. (Data no longer created for Settlement Days from 01/07/2012)_
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Lshedrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETLSHEDRECOVERY data is confidential to the relevant participant. Source SETLSHEDRECOVERY updates with each settlement run. Note Only the payment fields (LSEPAYMENT and CCPAYMENT) are on a regional basis. All other demand and recovery fields are on NEM basis rather than a regional basis.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -2699,32 +2615,30 @@ pub struct SettlementsLshedrecovery5 {
 }
 impl crate::GetTable for SettlementsLshedrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LSHEDRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LSHEDRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETLUNLOADRECOVERY
 ///  _SETLUNLOADRECOVERY shows reimbursements for rapid unit unloading Ancillary Services to be recovered from participants._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Lunloadrecovery
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETLUNLOADRECOVERY data is confidential to the relevant participant. Source SETLUNLOADRECOVERY updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PERIODID
 /// * REGIONID
@@ -2775,32 +2689,30 @@ pub struct SettlementsLunloadrecovery5 {
 }
 impl crate::GetTable for SettlementsLunloadrecovery5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("LUNLOADRECOVERY".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("LUNLOADRECOVERY".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SETAGCPAYMENT
 ///  _SETAGCPAYMENT sets out specific payment details for Automatic Generation Control (AGC) services by period._
-/// 
+///
 /// * Data Set Name: Settlements
 /// * File Name: Agcpayment
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  SETAGCPAYMENT data is confidential to the relevant participant Source SETAGCPAYMENT updates with each settlement run.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 /// * PERIODID
@@ -2845,12 +2757,10 @@ pub struct SettlementsAgcpayment5 {
 }
 impl crate::GetTable for SettlementsAgcpayment5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENTS".into(),
-                        table_name: Some("AGCPAYMENT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("AGCPAYMENT".into()),
+            version: 5,
+        }
     }
 }

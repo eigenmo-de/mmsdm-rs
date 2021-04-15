@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## P5MIN_CONSTRAINTSOLUTION
 ///  _The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.<br>_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Constraintsolution
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  P5MIN_CONSTRAINTSOLUTION is public data, so is available to all participants. Source P5MIN_CONSTRAINTSOLUTION updates every five minutes. Volume Rows per day: ~2.3 million
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private &amp; Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -47,31 +47,29 @@ pub struct P5minConstraintsolution6 {
 }
 impl crate::GetTable for P5minConstraintsolution6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("CONSTRAINTSOLUTION".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("CONSTRAINTSOLUTION".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_BLOCKEDCONSTRAINT
 ///  _P5MIN Blocked Constraints lists any constraints that were blocked in a P5MIN run. If no constraints are blocked, there will be no rows for that 5 minute predispatch run._
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Blocked Constraints
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -83,32 +81,30 @@ pub struct P5minBlockedConstraints1 {
 }
 impl crate::GetTable for P5minBlockedConstraints1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("BLOCKED_CONSTRAINTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("BLOCKED_CONSTRAINTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_INTERCONNECTORSOLN
 ///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.<br>_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Interconnectorsoln
 /// * Data Version: 4
-/// 
+///
 /// # Description
 ///  P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants. Source P5MIN_INTERCONNECTORSOLN updates every 5 minutes. Volume Rows per day: 1440 Based on 200 interconnector/binding constraints per interval
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -161,32 +157,30 @@ pub struct P5minInterconnectorsoln4 {
 }
 impl crate::GetTable for P5minInterconnectorsoln4 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("INTERCONNECTORSOLN".into()),
-                        version: 4,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("INTERCONNECTORSOLN".into()),
+            version: 4,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_REGIONSOLUTION
 ///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study.<br>_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  P5MIN_REGIONSOLUTION is public data, so is available to all participants. Source P5MIN_REGIONSOLUTION updates every 5 minutes. Volume Rows per day: 1440
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
@@ -397,32 +391,30 @@ pub struct P5minRegionsolution6 {
 }
 impl crate::GetTable for P5minRegionsolution6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("REGIONSOLUTION".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("REGIONSOLUTION".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_UNITSOLUTION
 ///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study.<br>_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Unitsolution
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -466,7 +458,7 @@ pub struct P5minUnitsolution3 {
     pub raisereg: Option<rust_decimal::Decimal>,
     /// Energy Availability (MW)
     pub availability: Option<rust_decimal::Decimal>,
-    /// Raise 6sec status flag 
+    /// Raise 6sec status flag
     pub raise6secflags: Option<rust_decimal::Decimal>,
     /// Raise 60sec status flag  
     pub raise60secflags: Option<rust_decimal::Decimal>,
@@ -474,7 +466,7 @@ pub struct P5minUnitsolution3 {
     pub raise5minflags: Option<rust_decimal::Decimal>,
     /// Raise Reg status flag  
     pub raiseregflags: Option<rust_decimal::Decimal>,
-    /// Lower 6sec status flag 
+    /// Lower 6sec status flag
     pub lower6secflags: Option<rust_decimal::Decimal>,
     /// Lower 60sec status flag  
     pub lower60secflags: Option<rust_decimal::Decimal>,
@@ -491,31 +483,29 @@ pub struct P5minUnitsolution3 {
 }
 impl crate::GetTable for P5minUnitsolution3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("UNITSOLUTION".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("UNITSOLUTION".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_LOCAL_PRICE
 ///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Local Price
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -534,32 +524,30 @@ pub struct P5minLocalPrice1 {
 }
 impl crate::GetTable for P5minLocalPrice1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("LOCAL_PRICE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("LOCAL_PRICE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_CASESOLUTION
 ///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution.<br>_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Casesolution
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  P5MIN_CASESOLUTION data is public, so is available to all participants. Source P5MIN_CASESOLUTION updates every 5 minutes. Volume Rows per day: 288
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minCasesolution2 {
@@ -604,12 +592,10 @@ pub struct P5minCasesolution2 {
 }
 impl crate::GetTable for P5minCasesolution2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("CASESOLUTION".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("CASESOLUTION".into()),
+            version: 2,
+        }
     }
 }

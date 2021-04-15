@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## DUDETAIL
 ///  _DUDETAIL sets out a records specific details for each unit including start type and whether normally on or off load. Much of this data is information only and is not used in dispatch or settlements._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetail
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  DUDETAIL is public data, and is available to all participants. Source DUDETAIL updates only when registration details change. Note To find the current set of details for selected dispatchable units, query the participant's local database as follows. Select du.* from dudetail du where (du.EFFECTIVEDATE, du.VERSIONNO) = ( select effectivedate, max(versionno) from dudetail where EFFECTIVEDATE = (select max(effectivedate) from  dudetail where EFFECTIVEDATE &lt;= sysdate and duid = du.duid and authoriseddate is not null) and duid = du.duid and authoriseddate is not null group by effectivedate ) and du.duid in ('UNIT1', 'UNIT2') ; The following notes apply to this SQL code: ·	 This table is specific to dispatch units only. ·	 If you wish to query details for a different date, substitute a date expression for "sysdate" in the "where EFFECTIVEDATE &lt;= sysdate" clause. ·	 If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')" ·	 The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER ) ·	 If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC. ·	 If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * EFFECTIVEDATE
 /// * VERSIONNO
@@ -63,32 +63,30 @@ pub struct ParticipantRegistrationDudetail3 {
 }
 impl crate::GetTable for ParticipantRegistrationDudetail3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("DUDETAIL".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("DUDETAIL".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PARTICIPANT
 ///  _PARTICIPANT sets out Participant ID, name and class for all participants._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participant
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PARTICIPANT is public data, so is available to all participants. Source PARTICIPANT updates as new participants register or existing participants change details.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationParticipant1 {
@@ -109,32 +107,30 @@ pub struct ParticipantRegistrationParticipant1 {
 }
 impl crate::GetTable for ParticipantRegistrationParticipant1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("PARTICIPANT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PARTICIPANT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DUALLOC
 ///  _DUALLOC cross references dispatch unit identifier to genset ID for each participant._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dualloc
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source DUALLOC updates where changed.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * EFFECTIVEDATE
 /// * GENSETID
@@ -154,32 +150,30 @@ pub struct ParticipantRegistrationDualloc1 {
 }
 impl crate::GetTable for ParticipantRegistrationDualloc1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("DUALLOC".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("DUALLOC".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PARTICIPANTCATEGORY
 ///  _PARTICIPANTCATEGORY sets out valid participant categories._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantcategory
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PARTICIPANTCATEGORY is public data, so is available to all participants. Source PARTICIPANTCATEGORY updates as categories change. PARTICIPANTCATEGORY changes infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTCATEGORYID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationParticipantcategory1 {
@@ -192,32 +186,30 @@ pub struct ParticipantRegistrationParticipantcategory1 {
 }
 impl crate::GetTable for ParticipantRegistrationParticipantcategory1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("PARTICIPANTCATEGORY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PARTICIPANTCATEGORY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MNSP_INTERCONNECTOR
 ///  _MNSP_INTERCONNECTOR sets out attributes of each interconnector._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Mnsp Interconnector
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  MNSP_INTERCONNECTOR data is public, so is available to all participants. Source MNSP_INTERCONNECTOR changes infrequently, typically annually. Volume Twice the number of MNSPs.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * LINKID
 /// * VERSIONNO
@@ -256,32 +248,30 @@ pub struct ParticipantRegistrationMnspInterconnector2 {
 }
 impl crate::GetTable for ParticipantRegistrationMnspInterconnector2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("MNSP_INTERCONNECTOR".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("MNSP_INTERCONNECTOR".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DUDETAILSUMMARY
 ///  _DUDETAILSUMMARY sets out a single summary unit table so reducing the need for participants to use the various dispatchable unit detail and owner tables to establish generating unit specific details._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetailsummary
 /// * Data Version: 4
-/// 
+///
 /// # Description
 ///  DUDETAILSUMMARY is a public table, and is available to all participants. Source DUDETAILSUMMARY updates only when registration details change.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * START_DATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -306,7 +296,7 @@ pub struct ParticipantRegistrationDudetailsummary4 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The transmission level loss factor for currently assigned connection point
     pub transmissionlossfactor: Option<rust_decimal::Decimal>,
-    /// Unit start type. At this time restricted to Fast, Slow or Non Dispatched 
+    /// Unit start type. At this time restricted to Fast, Slow or Non Dispatched
     pub starttype: Option<String>,
     /// The distribution loss factor to the currently assigned connection point
     pub distributionlossfactor: Option<rust_decimal::Decimal>,
@@ -329,43 +319,41 @@ pub struct ParticipantRegistrationDudetailsummary4 {
 }
 impl crate::GetTable for ParticipantRegistrationDudetailsummary4 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("DUDETAILSUMMARY".into()),
-                        version: 4,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("DUDETAILSUMMARY".into()),
+            version: 4,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PARTICIPANTCREDITDETAIL
 ///  _&nbsp; _
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantcreditdetail
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PARTICIPANTCREDITDETAIL data is confidential to each participant. Source PARTICIPANTCREDITDETAIL updates infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationParticipantcreditdetail1 {
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
-    /// &nbsp; 
+    /// &nbsp;
     pub participantid: String,
-    /// &nbsp; 
+    /// &nbsp;
     pub creditlimit: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub authorisedby: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
@@ -374,32 +362,30 @@ pub struct ParticipantRegistrationParticipantcreditdetail1 {
 }
 impl crate::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("PARTICIPANTCREDITDETAIL".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PARTICIPANTCREDITDETAIL".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PARTICIPANTACCOUNT
 ///  _PARTICIPANTACCOUNT shows financial details on participants._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantaccount
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PARTICIPANTACCOUNT data is confidential to the relevant participant. Source PARTICIPANTACCOUNT updates as new participants register or existing participants change details.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationParticipantaccount1 {
@@ -436,32 +422,30 @@ pub struct ParticipantRegistrationParticipantaccount1 {
 }
 impl crate::GetTable for ParticipantRegistrationParticipantaccount1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("PARTICIPANTACCOUNT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PARTICIPANTACCOUNT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STATIONOPERATINGSTATUS
 ///  _STATIONOPERATINGSTATUS sets out the operating status of each station._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stationoperatingstatus
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * STATIONID
 /// * VERSIONNO
@@ -484,31 +468,29 @@ pub struct ParticipantRegistrationStationoperatingstatus1 {
 }
 impl crate::GetTable for ParticipantRegistrationStationoperatingstatus1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("STATIONOPERATINGSTATUS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("STATIONOPERATINGSTATUS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## GENUNITS_UNIT
 ///  _Physical units within a Gen Unit Set_
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Genunits Unit
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * GENSETID
 /// * UNIT_GROUPING_LABEL
@@ -536,32 +518,30 @@ pub struct ParticipantRegistrationGenunitsUnit1 {
 }
 impl crate::GetTable for ParticipantRegistrationGenunitsUnit1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("GENUNITS_UNIT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("GENUNITS_UNIT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STATION
 ///  _STATION sets out valid station identifiers._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Station
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  STATION is public data, and is available to all participants. Source STATION updates whenever there is a station configuration change or new unit registration.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * STATIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationStation1 {
@@ -590,32 +570,30 @@ pub struct ParticipantRegistrationStation1 {
 }
 impl crate::GetTable for ParticipantRegistrationStation1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("STATION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("STATION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STATIONOWNERTRK
 ///  _STATIONOWNERTRK shows the tracking for the associated object STATIONOWNER. Together, STATIONOWNERTRK and STATIONOWNER sets out the owner details of each station._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stationownertrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 /// * VERSIONNO
@@ -636,32 +614,30 @@ pub struct ParticipantRegistrationStationownertrk1 {
 }
 impl crate::GetTable for ParticipantRegistrationStationownertrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("STATIONOWNERTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("STATIONOWNERTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BIDDUIDDETAILS
 ///  _BIDDUIDDETAILS and the associated tracking object BIDDUIDDETAILSTRK define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Bidduiddetails
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BIDDUIDDETAILS data is public to participants. Source BIDDUIDDETAILS updates as dispatchable unit registration details are modified. Volume Approximately 1000 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * DUID
 /// * EFFECTIVEDATE
@@ -691,32 +667,30 @@ pub struct ParticipantRegistrationBidduiddetails1 {
 }
 impl crate::GetTable for ParticipantRegistrationBidduiddetails1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("BIDDUIDDETAILS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("BIDDUIDDETAILS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MNSP_PARTICIPANT
 ///  _MNSP_PARTICIPANT registers MNSP ownership._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Mnsp Participant
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MNSP_PARTICIPANT data is public, so is available to all participants. Source MNSP_PARTICIPANT updates infrequently, typically annually. Volume Number of MNSPs.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
 /// * PARTICIPANTID
@@ -736,32 +710,30 @@ pub struct ParticipantRegistrationMnspParticipant1 {
 }
 impl crate::GetTable for ParticipantRegistrationMnspParticipant1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("MNSP_PARTICIPANT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("MNSP_PARTICIPANT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## BIDDUIDDETAILSTRK
 ///  _BIDDUIDDETAILSTRK shows the tracking for the associated object BIDDUIDDETAILS. Together, BIDDUIDDETAILSTRK and BIDDUIDDETAILS define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Bidduiddetailstrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  BIDDUIDDETAILSTRK data is public to participants. Source BIDDUIDDETAILSTRK updates as dispatchable unit registration details are modified. Volume Approximately 200 records per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * EFFECTIVEDATE
 /// * VERSIONNO
@@ -782,32 +754,30 @@ pub struct ParticipantRegistrationBidduiddetailstrk1 {
 }
 impl crate::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("BIDDUIDDETAILSTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("BIDDUIDDETAILSTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHABLEUNIT
 ///  _DISPATCHABLEUNIT sets out the unit name and type of each dispatchable unit in the market._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dispatchableunit
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  DISPATCHABLEUNIT data is public data, and is available to all participants. Source DISPATCHABLEUNIT pdates as new units added or names changed.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationDispatchableunit1 {
@@ -822,32 +792,30 @@ pub struct ParticipantRegistrationDispatchableunit1 {
 }
 impl crate::GetTable for ParticipantRegistrationDispatchableunit1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("DISPATCHABLEUNIT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("DISPATCHABLEUNIT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## GENUNITS
 ///  _GENUNITS shows Genset details for each physical unit with the relevant station.<br>_
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Genunits
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  GENUNITS data is confidential to the relevant participant. Source GENUNITS updates whenever plant details change.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * GENSETID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationGenunits2 {
@@ -892,32 +860,30 @@ pub struct ParticipantRegistrationGenunits2 {
 }
 impl crate::GetTable for ParticipantRegistrationGenunits2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("GENUNITS".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("GENUNITS".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PARTICIPANTCLASS
 ///  _PARTICIPANTCLASS sets out valid participant classifications._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantclass
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PARTICIPANTCLASS data is public, so is available to all participants. Source PARTICIPANTCLASS updates only if classifications change. This table changes infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTCLASSID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationParticipantclass1 {
@@ -930,32 +896,30 @@ pub struct ParticipantRegistrationParticipantclass1 {
 }
 impl crate::GetTable for ParticipantRegistrationParticipantclass1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("PARTICIPANTCLASS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PARTICIPANTCLASS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## GENMETER
 ///  _GENMETER shows details of generator meter sets._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Genmeter
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  GENMETER data is confidential to the relevant participant. Source GENMETER updates only when meter details change.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * APPLYDATE
 /// * METERID
 /// * VERSIONNO
@@ -996,32 +960,30 @@ pub struct ParticipantRegistrationGenmeter1 {
 }
 impl crate::GetTable for ParticipantRegistrationGenmeter1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("GENMETER".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("GENMETER".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PARTICIPANTCATEGORYALLOC
 ///  _PARTICIPANTCATEGORYALLOC sets out the assignment of participants to particular categories._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantcategoryalloc
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  PARTICIPANTCATEGORYALLOC data is public, so is available to all participants. Source PARTICIPANTCATEGORYALLOC updates for new participants or when categories change. PARTICIPANTCATEGORYALLOC changes infrequently.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTCATEGORYID
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1035,32 +997,30 @@ pub struct ParticipantRegistrationParticipantcategoryalloc1 {
 }
 impl crate::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("PARTICIPANTCATEGORYALLOC".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PARTICIPANTCATEGORYALLOC".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STATIONOWNER
 ///  _STATIONOWNER sets out the owner details of each station._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stationowner
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 /// * STATIONID
@@ -1080,32 +1040,30 @@ pub struct ParticipantRegistrationStationowner1 {
 }
 impl crate::GetTable for ParticipantRegistrationStationowner1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("STATIONOWNER".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("STATIONOWNER".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## STADUALLOC
 ///  _STADUALLOC sets out details on the allocation of dispatchable units to particular sites or stations._
-/// 
+///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stadualloc
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  STADUALLOC is public data, and is available to all participants. Source STADUALLOC is updated whenever there is a station configuration change or new unit registration.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * EFFECTIVEDATE
 /// * STATIONID
@@ -1125,12 +1083,10 @@ pub struct ParticipantRegistrationStadualloc1 {
 }
 impl crate::GetTable for ParticipantRegistrationStadualloc1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PARTICIPANT_REGISTRATION".into(),
-                        table_name: Some("STADUALLOC".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("STADUALLOC".into()),
+            version: 1,
+        }
     }
 }

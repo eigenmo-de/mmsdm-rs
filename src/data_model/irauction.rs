@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## AUCTION_IC_ALLOCATIONS
 ///  _AUCTION_IC_ALLOCATIONS supports the Settlement Residue Auction by providing the basis for setting up contracts for individual tranches. AUCTION_IC_ALLOCATIONS shows the default definitions for the total number of units and proportion applicable to each directional interconnector for a specified auction quarter._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction Ic Allocations
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  AUCTION_IC_ALLOCATIONS is public data, and is available to all participants. Source Updates are usually quarterly as auctions are held from Settlement Residue Auction team's SRIS interface. Volume AUCTION_IC_ALLOCATIONS contains a maximum of 100 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -49,32 +49,30 @@ pub struct IrauctionConfigAuctionIcAllocations2 {
 }
 impl crate::GetTable for IrauctionConfigAuctionIcAllocations2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION_IC_ALLOCATIONS".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION_IC_ALLOCATIONS".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_PRICE_BID
 ///  _RESIDUE_PRICE_BID supports the Settlement Residue Auction, holding the unit and bid price details for each participant._
-/// 
+///
 /// * Data Set Name: Irauction Bids
 /// * File Name: Price Bid
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  Source The participant's own bid file RESIDUE_PRICE_BID data is confidential to the relevant participant. The public version of the data is available to all auction participants post the associated auction date in RESIDUE_PRICE_FUNDS_BID. Volume RESIDUE_PRICE_BID shows a maximum of 10,000 records per year. 
-/// 
+///  Source The participant's own bid file RESIDUE_PRICE_BID data is confidential to the relevant participant. The public version of the data is available to all auction participants post the associated auction date in RESIDUE_PRICE_FUNDS_BID. Volume RESIDUE_PRICE_BID shows a maximum of 10,000 records per year.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * LOADDATE
 /// * OPTIONID
@@ -98,32 +96,30 @@ pub struct IrauctionBidsPriceBid1 {
 }
 impl crate::GetTable for IrauctionBidsPriceBid1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_BIDS".into(),
-                        table_name: Some("PRICE_BID".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_BIDS".into(),
+            table_name: Some("PRICE_BID".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_PRICE_FUNDS_BID
 ///  _RESIDUE_PRICE_FUNDS_BIDshows the bids producing the auction outcome, without exposing participant-specific details. RESIDUE_PRICE_FUNDS_BID is new in March 2003 to support SRA Inter-Temporal Linking._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Price Funds Bid
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  RESIDUE_PRICE_FUNDS_BID data is public. The data is available to all auction participants post the associated auction date. Volume The volume is very dependent on the number of active bids. An indication is about 250,000 per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * CONTRACTID
 /// * FROMREGIONID
@@ -150,32 +146,30 @@ pub struct IrauctionResiduePriceFundsBid1 {
 }
 impl crate::GetTable for IrauctionResiduePriceFundsBid1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_PRICE_FUNDS_BID".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_PRICE_FUNDS_BID".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_FUNDS_BID
 ///  _RESIDUE_FUNDS_BID supports the Settlement Residue Auction, by showing the fund details for each SRA bid by each Participant._
-/// 
+///
 /// * Data Set Name: Irauction Bids
 /// * File Name: Funds Bid
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source Participant's bid file. RESIDUE_FUNDS_BID data is confidential to the relevant participant. RESIDUE_FUNDS_BID shows a maximum of 30,000 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -203,31 +197,29 @@ pub struct IrauctionBidsFundsBid1 {
 }
 impl crate::GetTable for IrauctionBidsFundsBid1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_BIDS".into(),
-                        table_name: Some("FUNDS_BID".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_BIDS".into(),
+            table_name: Some("FUNDS_BID".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_PRUDENTIAL_EXPOSURE
 ///  _Records details of the Prudential Exposure of an SRA Auction Participant_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Prudential Exposure
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * FROMREGIONID
 /// * INTERCONNECTORID
 /// * PARTICIPANTID
@@ -245,7 +237,7 @@ pub struct IrauctionSraPrudentialExposure1 {
     pub participantid: String,
     /// AEMO Contract Year number starting the week beginning 1 January
     pub sra_year: i64,
-    /// Contract Relevant Quarter 
+    /// Contract Relevant Quarter
     pub sra_quarter: i64,
     /// The identifier for the Directional Interconnector
     pub interconnectorid: String,
@@ -257,7 +249,7 @@ pub struct IrauctionSraPrudentialExposure1 {
     pub auctionid: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub offer_submissiontime: Option<chrono::NaiveDateTime>,
-    /// Calculated Average Purchase Price for the Product 
+    /// Calculated Average Purchase Price for the Product
     pub average_purchase_price: Option<rust_decimal::Decimal>,
     /// Calculated average cancellation price for product.
     pub average_cancellation_price: Option<rust_decimal::Decimal>,
@@ -268,31 +260,29 @@ pub struct IrauctionSraPrudentialExposure1 {
 }
 impl crate::GetTable for IrauctionSraPrudentialExposure1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_PRUDENTIAL_EXPOSURE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_PRUDENTIAL_EXPOSURE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_CASH_SECURITY
 ///  _Records the Cash Security details provided by an SRA Auction Participant as collateral to cover their Trading Position in the SRA market_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Cash Security
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CASH_SECURITY_ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionSraCashSecurity1 {
@@ -319,32 +309,30 @@ pub struct IrauctionSraCashSecurity1 {
 }
 impl crate::GetTable for IrauctionSraCashSecurity1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_CASH_SECURITY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_CASH_SECURITY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## AUCTION_RP_ESTIMATE
 ///  _AUCTION_RP_ESTIMATE supports the Settlement Residue Auction, by holding the evaluator’s estimates of revenue prices for a given quarter.<br>Since reserve prices are no longer applicable from the end of 2001, zero is used as a default to avoid rewriting the system._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction Rp Estimate
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  AUCTION_RP_ESTIMATE is public data, and is available to all participants. Source Updates are quarterly by SRA team via SRIS interface. Volume This view contains a maximum of 100 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -372,32 +360,30 @@ pub struct IrauctionConfigAuctionRpEstimate1 {
 }
 impl crate::GetTable for IrauctionConfigAuctionRpEstimate1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION_RP_ESTIMATE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION_RP_ESTIMATE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## AUCTION_TRANCHE
 ///  _AUCTION_TRANCHE supports the Settlement Residue Auction, by holding the default definitions for the percentage number of units allocated and dates applicable to each tranche for a specified auction quarter. This information provides the basis for setting up contracts for individual tranches._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction Tranche
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  AUCTION_TRANCHE is public data, and is available to all participants. Source Updates are quarterly from SRA team via SRIS interface. Volume AUCTION_TRANCHE contains a maximum of 100 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * QUARTER
 /// * TRANCHE
@@ -427,32 +413,30 @@ pub struct IrauctionConfigAuctionTranche1 {
 }
 impl crate::GetTable for IrauctionConfigAuctionTranche1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION_TRANCHE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION_TRANCHE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_CON_FUNDS
 ///  _RESIDUE_CON_FUNDS supports the Settlement Residue Auction, by holding the fund details for each contract._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Con Funds
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  RESIDUE_CON_FUNDS data is public, so is available to all participants. Source RESIDUE_CON_FUNDS updates are quarterly from SRA team via SRIS interface. Volume Assuming quarterly contracts, RESIDUE_CON_FUNDS contains a maximum of 600 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -483,32 +467,30 @@ pub struct IrauctionResidueConFunds1 {
 }
 impl crate::GetTable for IrauctionResidueConFunds1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_CON_FUNDS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_CON_FUNDS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_CONTRACTS
 ///  _RESIDUE_CONTRACTS supports the Settlement Residue Auction, by holding the contract details for each period for which a residue contract will be offered._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Contracts
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  RESIDUE_CONTRACTS data is public, so is available to all participants. Source RESIDUE_CONTRACTS updates are quarterly by AEMO. Volume Assuming quarterly contracts, RESIDUE_CONTRACTS contains a maximum of 50 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * QUARTER
 /// * TRANCHE
@@ -548,37 +530,35 @@ pub struct IrauctionResidueContracts1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Description of Contract
     pub description: Option<String>,
-    /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking) 
+    /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
     pub auctionid: Option<String>,
 }
 impl crate::GetTable for IrauctionResidueContracts1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_CONTRACTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_CONTRACTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## AUCTION_REVENUE_TRACK
 ///  _AUCTION_REVENUE_TRACK supports the Settlement Residue Auction, by holding the tracking information for each evaluator’s estimates for a given quarter. The status field is dynamic and is used for selection of estimates to be published._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction Revenue Track
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  AUCTION_REVENUE_TRACK is public data, and is available to all participants. Source Updates are quarterly after SRA team updates SRIS interface. Volume AUCTION_REVENUE_TRACK contains a maximum of 100 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * QUARTER
 /// * VALUATIONID
@@ -608,31 +588,29 @@ pub struct IrauctionConfigAuctionRevenueTrack1 {
 }
 impl crate::GetTable for IrauctionConfigAuctionRevenueTrack1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION_REVENUE_TRACK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION_REVENUE_TRACK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_FINANCIAL_AUC_MARGIN
 ///  _Records the amount of Cash Security required to be held by an Auction Participant after settlement_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Financial Auc Margin
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * SRA_QUARTER
 /// * SRA_RUNNO
@@ -658,32 +636,30 @@ pub struct IrauctionSraFinancialAucMargin1 {
 }
 impl crate::GetTable for IrauctionSraFinancialAucMargin1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_FINANCIAL_AUC_MARGIN".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_FINANCIAL_AUC_MARGIN".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## AUCTION_REVENUE_ESTIMATE
 ///  _AUCTION_REVENUE_ESTIMATE supports the Settlement Residue Auction, by holding the evaluator’s estimates of revenue for each month of a given quarter.<br>Since reserve prices are no longer applicable from the end of 2001, zero is used as a default to avoid rewriting the system._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction Revenue Estimate
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  AUCTION_REVENUE_ESTIMATE is public data, and is available to all participants. Source Updates are quarterly from SRA team via SRIS interface Volume AUCTION_REVENUE_ESTIMATE contains a maximum of 300 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -705,7 +681,7 @@ pub struct IrauctionConfigAuctionRevenueEstimate1 {
     pub interconnectorid: String,
     /// Nominated source region for Interconnector
     pub fromregionid: String,
-    /// Month number within quarter (1..3) 
+    /// Month number within quarter (1..3)
     pub monthno: rust_decimal::Decimal,
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
@@ -718,32 +694,30 @@ pub struct IrauctionConfigAuctionRevenueEstimate1 {
 }
 impl crate::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION_REVENUE_ESTIMATE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION_REVENUE_ESTIMATE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUECONTRACTPAYMENTS
 ///  _RESIDUECONTRACTPAYMENTS shows Settlement Residue Auction payment Participant notifications._
-/// 
+///
 /// * Data Set Name: Settlement Config
 /// * File Name: Residuecontractpayments
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  RESIDUECONTRACTPAYMENTS data is confidential to the relevant participant.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -757,31 +731,29 @@ pub struct SettlementConfigResiduecontractpayments1 {
 }
 impl crate::GetTable for SettlementConfigResiduecontractpayments1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "SETTLEMENT_CONFIG".into(),
-                        table_name: Some("RESIDUECONTRACTPAYMENTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "SETTLEMENT_CONFIG".into(),
+            table_name: Some("RESIDUECONTRACTPAYMENTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_FINANCIAL_AUCPAY_DETAIL
 ///  _Records details of the SRA financial auction payment_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Financial Aucpay Detail
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -828,32 +800,30 @@ pub struct IrauctionSraFinancialAucpayDetail1 {
 }
 impl crate::GetTable for IrauctionSraFinancialAucpayDetail1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_FINANCIAL_AUCPAY_DETAIL".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_FINANCIAL_AUCPAY_DETAIL".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## VALUATIONID
 ///  _VALUATIONID shows the identifiers and descriptions of the valuers submitting estimates of upcoming settlement residues. VALUATIONID supports the Settlement Residue Auction._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Valuationid
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  VALUATIONID is public data, and is available to all participants. Source VALUATIONID updates are quarterly from the Settlement Residues Information System [SRIS]. Volume VALUATIONID shows up to five (5) records. Updates are rare.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * VALUATIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionValuationid1 {
@@ -866,32 +836,30 @@ pub struct IrauctionValuationid1 {
 }
 impl crate::GetTable for IrauctionValuationid1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("VALUATIONID".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("VALUATIONID".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## AUCTION_CALENDAR
 ///  _AUCTION_CALENDAR holds the definitions of each auction quarter in a contract year. AUCTION_CALENDAR supports the Settlement Residue Auction._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction Calendar
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  AUCTION_CALENDAR is public data, and is available to all participants. Source Updates are usually quarterly by the SRA team. Volume AUCTION_CALENDAR shows a maximum of 16 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTYEAR
 /// * QUARTER
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -923,32 +891,30 @@ pub struct IrauctionConfigAuctionCalendar2 {
 }
 impl crate::GetTable for IrauctionConfigAuctionCalendar2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION_CALENDAR".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION_CALENDAR".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_BID_TRK
 ///  _RESIDUE_BID_TRK supports the Settlement Residue Auction, by detailing which bid was used for which SRA Contract run._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Bid Trk
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  Source RESIDUE_BID_TRK updates are usually quarterly from participants before an Auction. RESIDUE_BID_TRK data is confidential to the relevant participant. RESIDUE_BID_TRK excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume Assuming monthly contracts, RESIDUE_BID_TRK shows a maximum of 500 records per year. 
-/// 
+///  Source RESIDUE_BID_TRK updates are usually quarterly from participants before an Auction. RESIDUE_BID_TRK data is confidential to the relevant participant. RESIDUE_BID_TRK excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume Assuming monthly contracts, RESIDUE_BID_TRK shows a maximum of 500 records per year.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * PARTICIPANTID
 /// * VERSIONNO
@@ -964,36 +930,34 @@ pub struct IrauctionResidueBidTrk1 {
     pub bidloaddate: Option<chrono::NaiveDateTime>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking) 
+    /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
     pub auctionid: String,
 }
 impl crate::GetTable for IrauctionResidueBidTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_BID_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_BID_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_FINANCIAL_AUC_RECEIPTS
 ///  _Records details of the Cancelled Units and their value for the Auction Participant_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Financial Auc Receipts
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -1032,31 +996,29 @@ pub struct IrauctionSraFinancialAucReceipts1 {
 }
 impl crate::GetTable for IrauctionSraFinancialAucReceipts1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_FINANCIAL_AUC_RECEIPTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_FINANCIAL_AUC_RECEIPTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_FINANCIAL_AUCPAY_SUM
 ///  _Records a summary of the Auction payment amount_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Financial Aucpay Sum
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * SRA_QUARTER
 /// * SRA_RUNNO
@@ -1086,31 +1048,29 @@ pub struct IrauctionSraFinancialAucpaySum1 {
 }
 impl crate::GetTable for IrauctionSraFinancialAucpaySum1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_FINANCIAL_AUCPAY_SUM".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_FINANCIAL_AUCPAY_SUM".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_PRUDENTIAL_COMP_POSITION
 ///  _The prudential position of each company at the date and time of a specific prudential run_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Prudential Comp Position
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PARTICIPANTID
 /// * PRUDENTIAL_DATE
 /// * PRUDENTIAL_RUNNO
@@ -1122,7 +1082,7 @@ pub struct IrauctionSraPrudentialCompPosition1 {
     pub prudential_runno: i64,
     /// Unique participant identifier
     pub participantid: String,
-    /// The Trading Limit of the company at the time of the prudential run 
+    /// The Trading Limit of the company at the time of the prudential run
     pub trading_limit: Option<rust_decimal::Decimal>,
     /// Current Prudential Exposure of the Auction Participant including Offers
     pub prudential_exposure_amount: Option<rust_decimal::Decimal>,
@@ -1131,32 +1091,30 @@ pub struct IrauctionSraPrudentialCompPosition1 {
 }
 impl crate::GetTable for IrauctionSraPrudentialCompPosition1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_PRUDENTIAL_COMP_POSITION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_PRUDENTIAL_COMP_POSITION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_PUBLIC_DATA
 ///  _RESIDUE_PUBLIC_DATA shows the public auction results.<br>RESIDUE_PUBLIC_DATA supports the Settlement Residue Auction, by holding the public details of the auction for a given contract. RESIDUE_PUBLIC_DATA joins to RESIDUE_CON_DATA and RESIDUE.<br>_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Public Data
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  RESIDUE_PUBLIC_DATA excludes contracts and versions without a valid publication date (i.e. invalid bids are ignored).  The data is available to all auction participants post the associated auction date. Source RESIDUE_PUBLIC_DATA updates are quarterly from NEMMCO. Volume RESIDUE_PUBLIC_DATA shows a maximum of 120 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -1184,32 +1142,30 @@ pub struct IrauctionResiduePublicData1 {
 }
 impl crate::GetTable for IrauctionResiduePublicData1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_PUBLIC_DATA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_PUBLIC_DATA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_CON_DATA
 ///  _RESIDUE_CON_DATA supports the Settlement Residue Auction, by holding for each participant the confidential data from the auction. RESIDUE_CON_DATA joins to RESIDUE_PUBLIC_DATA and RESIDUE_TRK._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Con Data
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  Source RESIDUE_CON_DATA refreshes whenever a Settlement Residue Auction is run (i.e. quarterly). RESIDUE_CON_DATA data is confidential to the relevant participant. RESIDUE_CON_DATA excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume RESIDUE_CON_DATA shows a maximum of 6000 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
@@ -1238,32 +1194,30 @@ pub struct IrauctionResidueConData2 {
 }
 impl crate::GetTable for IrauctionResidueConData2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_CON_DATA".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_CON_DATA".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## AUCTION
 ///  _AUCTION holds auction details. AUCTION is new in March 2003 to support SRA Inter-Temporal Linking._
-/// 
+///
 /// * Data Set Name: Irauction Config
 /// * File Name: Auction
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  AUCTION is public data, and is available to all participants. Source Static. Volume 4 records per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionConfigAuction1 {
@@ -1281,38 +1235,36 @@ pub struct IrauctionConfigAuction1 {
     pub description: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
+    /// &nbsp;
     pub authorisedby: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for IrauctionConfigAuction1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_CONFIG".into(),
-                        table_name: Some("AUCTION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_CONFIG".into(),
+            table_name: Some("AUCTION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_PRUDENTIAL_RUN
 ///  _Records the prudential run details for each prudential date_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Prudential Run
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * PRUDENTIAL_DATE
 /// * PRUDENTIAL_RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1324,32 +1276,30 @@ pub struct IrauctionSraPrudentialRun1 {
 }
 impl crate::GetTable for IrauctionSraPrudentialRun1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_PRUDENTIAL_RUN".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_PRUDENTIAL_RUN".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUEFILETRK
 ///  _RESIDUEFILETRK records all Settlement Residue Auction offers submitted by participants._
-/// 
+///
 /// * Data Set Name: Irauction Bids
 /// * File Name: File Trk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  RESIDUEFILETRK data is confidential to each participant Source RESIDUEFILETRK updates are ad hoc from participants Volume Assuming quarterly contracts RESIDUEFILETRK contains a maximum of 5,000 records per annum. Each bid file can contain many bids for each auction. Participants can input multiple bids (with the last acknowledged file being used in the auction).
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * LOADDATE
 /// * PARTICIPANTID
@@ -1374,31 +1324,29 @@ pub struct IrauctionBidsFileTrk1 {
 }
 impl crate::GetTable for IrauctionBidsFileTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION_BIDS".into(),
-                        table_name: Some("FILE_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION_BIDS".into(),
+            table_name: Some("FILE_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_OFFER_PRODUCT
 ///  _Holds the Product details for each Offer File submitted by each SRA Auction Participant._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Offer Product
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * LOADDATE
 /// * OPTIONID
@@ -1428,32 +1376,30 @@ pub struct IrauctionSraOfferProduct1 {
 }
 impl crate::GetTable for IrauctionSraOfferProduct1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_OFFER_PRODUCT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_OFFER_PRODUCT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_TRK
 ///  _RESIDUE_TRK supports the Settlement Residue Auction, by showing the tracking records for different residue auction runs. RESIDUE_TRK joins to RESIDUE_PUBLIC_DATA and RESIDUE_CON_DATA._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Trk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source RESIDUE_TRK updates whenever Settlement Residue Auctions are run and the results published (i.e. quarterly). The RESIDUE_TRK data is available to all participants post the associated auction date. Volume Assuming quarterly contracts, RESIDUE_TRK shows a maximum of 50 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1481,32 +1427,30 @@ pub struct IrauctionResidueTrk1 {
 }
 impl crate::GetTable for IrauctionResidueTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## RESIDUE_CON_ESTIMATES_TRK
 ///  _RESIDUE_CON_ESTIMATES_TRK supports the Settlement Residue Auction, by holding the tracking details of the estimates used to generate the reserve price for each contract._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Con Estimates Trk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source RESIDUE_CON_ESTIMATES_TRK updates are quarterly by SRA team. Volume Assuming monthly contracts, RESIDUE_CON_ESTIMATES_TRK shows a maximum of 50 records per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * CONTRACTYEAR
 /// * QUARTER
@@ -1528,31 +1472,29 @@ pub struct IrauctionResidueConEstimatesTrk1 {
 }
 impl crate::GetTable for IrauctionResidueConEstimatesTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("RESIDUE_CON_ESTIMATES_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_CON_ESTIMATES_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_OFFER_PROFILE
 ///  _Holds the data of an SRA Auction Participant Offer Submission._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Offer Profile
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AUCTIONID
 /// * LOADDATE
 /// * PARTICIPANTID
@@ -1575,31 +1517,29 @@ pub struct IrauctionSraOfferProfile1 {
 }
 impl crate::GetTable for IrauctionSraOfferProfile1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_OFFER_PROFILE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_OFFER_PROFILE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_FINANCIAL_AUC_MARDETAIL
 ///  _This table stores details of the margins returned to the participants._
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Financial Auc Mardetail
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CASH_SECURITY_ID
 /// * PARTICIPANTID
 /// * SRA_QUARTER
@@ -1624,31 +1564,29 @@ pub struct IrauctionSraFinancialAucMardetail1 {
 }
 impl crate::GetTable for IrauctionSraFinancialAucMardetail1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_FINANCIAL_AUC_MARDETAIL".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_FINANCIAL_AUC_MARDETAIL".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_PRUDENTIAL_CASH_SECURITY
 ///  _Records the Cash Security details provided by an SRA Auction Participant as collateral to cover their Trading Position in the SRA market_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Prudential Cash Security
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CASH_SECURITY_ID
 /// * PARTICIPANTID
 /// * PRUDENTIAL_DATE
@@ -1668,31 +1606,29 @@ pub struct IrauctionSraPrudentialCashSecurity1 {
 }
 impl crate::GetTable for IrauctionSraPrudentialCashSecurity1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_PRUDENTIAL_CASH_SECURITY".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_PRUDENTIAL_CASH_SECURITY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## SRA_FINANCIAL_RUNTRK
 ///  _Records details of the settlement process for the cancellation and purchase of SRA Auction Units_
-/// 
+///
 /// * Data Set Name: Irauction
 /// * File Name: Sra Financial Runtrk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
@@ -1719,12 +1655,10 @@ pub struct IrauctionSraFinancialRuntrk1 {
 }
 impl crate::GetTable for IrauctionSraFinancialRuntrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "IRAUCTION".into(),
-                        table_name: Some("SRA_FINANCIAL_RUNTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("SRA_FINANCIAL_RUNTRK".into()),
+            version: 1,
+        }
     }
 }

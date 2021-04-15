@@ -183,4 +183,3 @@ mod voltage_instructions;
 
 #[cfg(feature = "voltage_instructions")]
 pub use voltage_instructions::*;
-

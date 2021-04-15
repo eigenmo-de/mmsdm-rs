@@ -1,20 +1,20 @@
 /// # Summary
-/// 
+///
 /// ## DISPATCHOFFERTRK
 ///  _DISPATCHOFFERTRK is the energy and ancillary service bid tracking table for the Dispatch process. The table identifies which bids from BIDDAYOFFER and BIDPEROFFER were applied for a given unit and bid type for each dispatch interval._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Offertrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  DISPATCHOFFERTRK  data is confidential to each participant until the next trading day, when the data is public to all participants.  Source DISPATCHOFFERTRK updates every 5 minutes. Volume Approximately 250,000 records per day.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * DUID
 /// * SETTLEMENTDATE
@@ -35,32 +35,30 @@ pub struct DispatchOffertrk1 {
 }
 impl crate::GetTable for DispatchOffertrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("OFFERTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("OFFERTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_UNIT_CONFORMANCE
 ///  _DISPATCH_UNIT_CONFORMANCE details the conformance of a scheduled units operation with respect to a cleared target on dispatch interval basis.<br>Data is confidential_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Unit Conformance
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  DISPATCH_UNIT_CONFORMANCE data is confidential. Source DISPATCH_UNIT_CONFORMANCE shows data for every 5 minutes for all scheduled units Volume Rows per day: 288 per scheduled unit
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * INTERVAL_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -104,32 +102,30 @@ pub struct DispatchUnitConformance1 {
 }
 impl crate::GetTable for DispatchUnitConformance1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("UNIT_CONFORMANCE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("UNIT_CONFORMANCE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHPRICE
 ///  _DISPATCHPRICE records 5 minute dispatch prices for energy and FCAS, including whether an intervention has occurred, or price override (e.g. for Administered Price Cap). DISPATCHPRICE updates when price adjustments occur, in which case the new price is written to the RRP field, and the old price to the ROP field as an audit trail._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Price
 /// * Data Version: 4
-/// 
+///
 /// # Description
 ///  Source DISPATCHPRICE updates every 5 minutes. Note APCFLAG is a 5-bit Region-based field indicating that the original Dispatch Price (ROP) calculated by the Dispatch Algorithm for a region has undergone modification by one of more of the following processes: Bit Value Description 5 16 Price Scaling via Inter-regional Loss Factor (IRLF) 4 8 Price manually overwritten 3 4 MPC or MPF binding (ROP was outside of MPC/MPF) 2 2 VoLL Override applied 1 1 APC or APF binding (ROP was outside of APC/APF) Where: ·	 MPC = Market Price Cap ·	 MPF = Market Price Floor ·	 APC = Administered Price Cap ·	 APF = Administered Price Floor xxxAPCFLAGs are each a 5-bit Region-based field indicating FCAS price post-processing (where "ROP" is the original NEMDE Solver price): Bit Cum Value Description 5 16 Not applicable 4 8 Price manually overwritten 3 4 MPC ($VoLL) or MPF ($zero) binding (xxFCAS ROP was outside of MPC/MPF) 2 2 Not applicable 1 1 APC or APF binding (ROP was outside of APC/APF)
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DISPATCHINTERVAL
 /// * INTERVENTION
 /// * REGIONID
@@ -159,53 +155,53 @@ pub struct DispatchPrice4 {
     pub marketsuspendedflag: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise6secrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise6secrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise6secapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise60secrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise60secrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise60secapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise5minrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise5minrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise5minapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raiseregrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raiseregrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raiseregapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower6secrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower6secrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower6secapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower60secrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower60secrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower60secapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower5minrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower5minrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lower5minapcflag: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lowerregrrp: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lowerregrop: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub lowerregapcflag: Option<rust_decimal::Decimal>,
     /// Status of regional prices for this dispatch interval "NOT FIRM" or "FIRM"
     pub price_status: Option<String>,
@@ -252,31 +248,29 @@ pub struct DispatchPrice4 {
 }
 impl crate::GetTable for DispatchPrice4 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("PRICE".into()),
-                        version: 4,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("PRICE".into()),
+            version: 4,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_PRICE_REVISION
 ///  _An audit trail of price changes on the DISPATCHPRICE table (i.e. for 5 minute dispatch prices for energy and FCAS)._
-/// 
+///
 /// * Data Set Name: Priceload
 /// * File Name: Price Revision
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * INTERVENTION
 /// * REGIONID
@@ -306,31 +300,29 @@ pub struct PriceloadPriceRevision1 {
 }
 impl crate::GetTable for PriceloadPriceRevision1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PRICELOAD".into(),
-                        table_name: Some("PRICE_REVISION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PRICELOAD".into(),
+            table_name: Some("PRICE_REVISION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_INTERCONNECTION
 ///  _Inter-regional flow information common to or aggregated for regulated (i.e. not MNSP) Interconnectors spanning the From-Region and To-Region - NB only the physical run is calculated'_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Interconnection
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * FROM_REGIONID
 /// * INTERVENTION
 /// * RUNNO
@@ -365,31 +357,29 @@ pub struct DispatchInterconnection1 {
 }
 impl crate::GetTable for DispatchInterconnection1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("INTERCONNECTION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("INTERCONNECTION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## NEGATIVE_RESIDUE
 ///  _Shows the inputs provided to the Negative Residue Constraints in the Dispatch horizon_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Negative Residue
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DIRECTIONAL_INTERCONNECTORID
 /// * NRM_DATETIME
 /// * SETTLEMENTDATE
@@ -428,31 +418,29 @@ pub struct DispatchNegativeResidue1 {
 }
 impl crate::GetTable for DispatchNegativeResidue1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("NEGATIVE_RESIDUE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("NEGATIVE_RESIDUE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHBLOCKEDCONSTRAINT
 ///  _DISPATCH Blocked Constraints lists any constraints that were blocked in a dispatch run. If no constraints are blocked, there will be no rows for that dispatch run._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Blocked Constraints
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * RUNNO
 /// * SETTLEMENTDATE
@@ -467,32 +455,30 @@ pub struct DispatchBlockedConstraints1 {
 }
 impl crate::GetTable for DispatchBlockedConstraints1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("BLOCKED_CONSTRAINTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("BLOCKED_CONSTRAINTS".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_MNSPBIDTRK
 ///  _DISPATCH_MNSPBIDTRK shows the MNSP bid tracking, including the bid version used in each dispatch run for each MNSP Interconnector Link. DISPATCH_MNSPBIDTRK is the audit trail of the bids actually used for each dispatch run._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Mnspbidtrk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  DISPATCH_MNSPBIDTRK shows own details for participant as they occur, with all details until close of business yesterday being available to all participants after end of day. Source DISPATCH_MNSPBIDTRK potentially updates every 5 minutes. Volume 220, 000 per year
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * LINKID
 /// * PARTICIPANTID
 /// * RUNNO
@@ -518,31 +504,29 @@ pub struct DispatchMnspbidtrk1 {
 }
 impl crate::GetTable for DispatchMnspbidtrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("MNSPBIDTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("MNSPBIDTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_CONSTRAINT_FCAS_OCD
 ///  _FCAS constraint solution from OCD re-run._
-/// 
+///
 /// * Data Set Name: Priceload
 /// * File Name: Constraint Fcas Ocd
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * INTERVENTION
 /// * RUNNO
@@ -571,31 +555,29 @@ pub struct PriceloadConstraintFcasOcd1 {
 }
 impl crate::GetTable for PriceloadConstraintFcasOcd1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PRICELOAD".into(),
-                        table_name: Some("CONSTRAINT_FCAS_OCD".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PRICELOAD".into(),
+            table_name: Some("CONSTRAINT_FCAS_OCD".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_LOCAL_PRICE
 ///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period. Note that from 2014 Mid year release only records with non-zero Local_Price_Adjustment values are issued_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Local Price
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -611,32 +593,30 @@ pub struct DispatchLocalPrice1 {
 }
 impl crate::GetTable for DispatchLocalPrice1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("LOCAL_PRICE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("LOCAL_PRICE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHREGIONSUM
 ///  _DISPATCHREGIONSUM sets out the 5-minute solution for each dispatch run for each region, including the Frequency Control Ancillary Services (FCAS) services provided. Additional fields are for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Regionsum
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  DISPATCHREGIONSUM is public data, and is available to all participants. Source DISPATCHREGIONSUM updates every 5 minutes. Note For details of calculations about load calculations, refer to Chapter 3 of the "Statement of Opportunities" *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DISPATCHINTERVAL
 /// * INTERVENTION
 /// * REGIONID
@@ -869,32 +849,30 @@ pub struct DispatchRegionsum5 {
 }
 impl crate::GetTable for DispatchRegionsum5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("REGIONSUM".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("REGIONSUM".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_UNIT_SCADA
 ///  _Dispatchable unit MW from SCADA at the start of the dispatch interval. The table includes all scheduled and semi-scheduled (and non-scheduled units where SCADA is available)_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Unit Scada
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  DISPATCH_UNIT_SCADA data  is public data, and is available to all participants. Source DISPATCH_UNIT_SCADA shows data for every 5 minutes for all scheduled units Volume Rows per day: 288 per each scheduled, semi-scheduled (and non-scheduled unit where SCADA is available)
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -908,32 +886,30 @@ pub struct DispatchUnitScada1 {
 }
 impl crate::GetTable for DispatchUnitScada1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("UNIT_SCADA".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("UNIT_SCADA".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## CONSTRAINTRELAXATION_OCD
 ///  _CONSTRAINTRELAXATION_OCD contains details of interconnector constraints and unit ancillary service constraints relaxed in the over-constrained dispatch (OCD) re-run for this interval (if there was one).<br>Note: INTERVENTION is not included in CONSTRAINTRELAXATION_OCD, since the relaxation of the same constraint is the same amount in both intervened and non-intervened cases.<br>_
-/// 
+///
 /// * Data Set Name: Priceload
 /// * File Name: Constraintrelaxation
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  Source The occurrences of Over-Constrained Dispatch (OCD) re-runs are ad hoc, with significant dependencies on the configuration or events in the physical power system. Over-constrained dispatch (OCD) re-run (if there was one). Volume Rows per day: ~2 Mb per month: &lt;1 The estimates on the number of rows are based on a 1% occurrence rate for OCD runs.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * RUNNO
 /// * SETTLEMENTDATE
@@ -955,32 +931,30 @@ pub struct PriceloadConstraintrelaxation1 {
 }
 impl crate::GetTable for PriceloadConstraintrelaxation1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PRICELOAD".into(),
-                        table_name: Some("CONSTRAINTRELAXATION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PRICELOAD".into(),
+            table_name: Some("CONSTRAINTRELAXATION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHCASESOLUTION
 ///  _DISPATCHCASESOLUTION shows information relating to the complete dispatch run. The fields in DISPATCHCASESOLUTION provide an overview of the dispatch run results allowing immediate identification of conditions such as energy or FCAS deficiencies._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Case Solution
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  The DISPATCHCASESOLUTION data is public. Source DISPATCHCASESOLUTION updates every 5 minutes. Volume Approximately 288 records per day.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * RUNNO
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1036,32 +1010,30 @@ pub struct DispatchCaseSolution2 {
 }
 impl crate::GetTable for DispatchCaseSolution2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("CASE_SOLUTION".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("CASE_SOLUTION".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHINTERCONNECTORRES
 ///  _DISPATCHINTERCONNECTORRES sets out MW flow and losses on each interconnector for each dispatch period, including fields for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraints set the energy import and export limits._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Interconnectorres
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  DISPATCHINTERCONNECTORRES is public data, and is available to all participants. Source DISPATCHINTERCONNECTORRES updates every 5 minutes. Note MW losses can be negative depending on the flow. The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in the INTERCONNECTOR table.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DISPATCHINTERVAL
 /// * INTERCONNECTORID
 /// * INTERVENTION
@@ -1116,32 +1088,30 @@ pub struct DispatchInterconnectorres3 {
 }
 impl crate::GetTable for DispatchInterconnectorres3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("INTERCONNECTORRES".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("INTERCONNECTORRES".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHCONSTRAINT
 ///  _DISPATCHCONSTRAINT sets out details of all binding and interregion constraints in each dispatch run. Note: invoked constraints can be established from GENCONSETINVOKE. Binding constraints show as marginal value &gt;$0. Interconnector constraints are listed so RHS (SCADA calculated limits) can be reported._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Constraint
 /// * Data Version: 5
-/// 
+///
 /// # Description
 ///  DISPATCHCONSTRAINT is public data, and is available to all participants. Source DISPATCHCONSTRAINT updates every five minutes.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * DISPATCHINTERVAL
 /// * INTERVENTION
@@ -1178,32 +1148,30 @@ pub struct DispatchConstraint5 {
 }
 impl crate::GetTable for DispatchConstraint5 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("CONSTRAINT".into()),
-                        version: 5,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("CONSTRAINT".into()),
+            version: 5,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_FCAS_REQ
 ///  _DISPATCH_FCAS_REQ shows Dispatch Constraint tracking for Regional FCAS recovery._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Fcas Req
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  DISPATCH_FCAS_REQ is public data and is available to all participants. Source DISPATCH_FCAS_REQ updates with each dispatch run (5 minutes). Volume Approximately 10,000 rows per day
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * BIDTYPE
 /// * GENCONID
 /// * INTERVENTION
@@ -1220,7 +1188,7 @@ pub struct DispatchFcasReq2 {
     pub intervention: rust_decimal::Decimal,
     /// Generic Constraint ID - Join to table GenConData
     pub genconid: String,
-    /// &nbsp; 
+    /// &nbsp;
     pub regionid: String,
     /// DUID offered type
     pub bidtype: String,
@@ -1228,7 +1196,7 @@ pub struct DispatchFcasReq2 {
     pub genconeffectivedate: Option<chrono::NaiveDateTime>,
     /// Generic Constraint Version number - Join to table GenConData
     pub genconversionno: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub marginalvalue: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -1247,32 +1215,30 @@ pub struct DispatchFcasReq2 {
 }
 impl crate::GetTable for DispatchFcasReq2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("FCAS_REQ".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("FCAS_REQ".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCH_MR_SCHEDULE_TRK
 ///  _DISPATCH_MR_SCHEDULE_TRK records the Mandatory Restrictions Acceptance Schedule applied to this dispatch interval for this region.<br>DISPATCH_MR_SCHEDULE_TRK is populated by the Dispatch process and records the MR Offer Stack applied in each dispatch interval. DISPATCH_MR_SCHEDULE_TRK is used by Settlements to calculate payments according to the correct MR offer stack.<br>_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Mr Schedule Trk
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  DISPATCH_MR_SCHEDULE_TRK  data is public to all participants. Source DISPATCH_MR_SCHEDULE_TRK updates are ad hoc. Volume 2 rows per year.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * REGIONID
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1290,31 +1256,29 @@ pub struct DispatchMrScheduleTrk1 {
 }
 impl crate::GetTable for DispatchMrScheduleTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("MR_SCHEDULE_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("MR_SCHEDULE_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## INTERMITTENT_FORECAST_TRK
 ///  _Uniquely tracks which Intermittent Generation forecast was used for the DUID in which Dispatch run_
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Intermittent Forecast Trk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1332,32 +1296,30 @@ pub struct DispatchIntermittentForecastTrk1 {
 }
 impl crate::GetTable for DispatchIntermittentForecastTrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("INTERMITTENT_FORECAST_TRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("INTERMITTENT_FORECAST_TRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## DISPATCHLOAD
 ///  _DISPATCHLOAD set out the current SCADA MW and target MW for each dispatchable unit, including relevant Frequency Control Ancillary Services (FCAS) enabling targets for each five minutes and additional fields to handle the new Ancillary Services functionality. Fast Start Plant status is indicated by dispatch mode._
-/// 
+///
 /// * Data Set Name: Dispatch
 /// * File Name: Unit Solution
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  DISPATCHLOAD data is confidential for the current day, showing own details for participant and becomes public after close of business yesterday, and is available to all participants. Source DISPATCHLOAD shows data for every 5 minutes for all units, even zero targets. Volume Expect 40-50,000 records per day. All units are repeated, even zero targets. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled (i.e. is unavailable). 1 001 Not stranded, not trapped, is enabled (i.e. available). 3 011 Not stranded, is trapped, is enabled (i.e. trapped). 4 100 Is stranded, not trapped, not enabled (i.e. stranded). For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * INTERVENTION
 /// * RUNNO
@@ -1430,21 +1392,21 @@ pub struct DispatchUnitSolution2 {
     pub raisereg: Option<rust_decimal::Decimal>,
     /// Bid energy availability
     pub availability: Option<rust_decimal::Decimal>,
-    /// Raise 6sec status flag  - see 
+    /// Raise 6sec status flag  - see
     pub raise6secflags: Option<rust_decimal::Decimal>,
-    /// Raise 60sec status flag  - see 
+    /// Raise 60sec status flag  - see
     pub raise60secflags: Option<rust_decimal::Decimal>,
-    /// &nbsp; 
+    /// &nbsp;
     pub raise5minflags: Option<rust_decimal::Decimal>,
-    /// Raise Reg status flag  - see 
+    /// Raise Reg status flag  - see
     pub raiseregflags: Option<rust_decimal::Decimal>,
-    /// Lower 6sec status flag  - see 
+    /// Lower 6sec status flag  - see
     pub lower6secflags: Option<rust_decimal::Decimal>,
     /// Lower 60sec status flag  
     pub lower60secflags: Option<rust_decimal::Decimal>,
     /// Lower 5min status flag  
     pub lower5minflags: Option<rust_decimal::Decimal>,
-    /// Lower Reg status flag  - see 
+    /// Lower Reg status flag  - see
     pub lowerregflags: Option<rust_decimal::Decimal>,
     /// RaiseReg availability - minimum of bid and telemetered value
     pub raiseregavailability: Option<rust_decimal::Decimal>,
@@ -1479,12 +1441,10 @@ pub struct DispatchUnitSolution2 {
 }
 impl crate::GetTable for DispatchUnitSolution2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "DISPATCH".into(),
-                        table_name: Some("UNIT_SOLUTION".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "DISPATCH".into(),
+            table_name: Some("UNIT_SOLUTION".into()),
+            version: 2,
+        }
     }
 }
