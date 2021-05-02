@@ -137,7 +137,12 @@ impl pdr::Report {
     }
     pub fn struct_name(&self) -> String {
         if let Some(sub_type) = &self.sub_type {
-            format!("{}{}{}", self.name.to_camel_case(), sub_type.to_camel_case(), self.version)
+            format!(
+                "{}{}{}",
+                self.name.to_camel_case(),
+                sub_type.to_camel_case(),
+                self.version
+            )
         } else {
             format!("{}{}", self.name.to_camel_case(), self.version)
         }
@@ -161,6 +166,26 @@ impl pdr::Report {
             version = self.version,
         )
     }
+}
+
+fn should_skip(report: &mms::Report) -> bool {
+    // skip historical dataset - there are no table definitions anyway
+    (report.name == "HISTORICAL")
+    || (report.name == "CONFIGURATION")
+
+    // temporary
+    || (report.name == "BIDS" && report.sub_type == "BIDPEROFFER_D")
+    || (report.name == "BIDS" && report.sub_type == "BIDDAYOFFER_D")
+    || (report.name == "DEMAND_FORECASTS" && report.sub_type == "INTERMITTENT_P5_RUN")
+    || (report.name == "DEMAND_FORECASTS" && report.sub_type == "INTERMITTENT_P5_PRED")
+    || (report.name == "BILLING_RUN" && report.sub_type == "BILLINGAPCCOMPENSATION")
+    || (report.name == "BILLING_RUN" && report.sub_type == "BILLINGAPCRECOVERY")
+    || (report.name == "BILLING_RUN" && report.sub_type == "BILLING_RES_TRADER_RECOVERY")
+    || (report.name == "BILLING_RUN" && report.sub_type == "BILLING_RES_TRADER_PAYMENT")
+    || (report.name == "SETTLEMENT_DATA" && report.sub_type == "SETRESERVERECOVERY")
+
+
+
 }
 
 pub fn run() -> anyhow::Result<()> {
@@ -197,6 +222,11 @@ pub fn run() -> anyhow::Result<()> {
                 name: data_set.clone(),
                 sub_type: table_key,
             };
+
+            if should_skip(&mms_report) {
+                continue;
+            }
+            
             if let Some(pdr_report) = map.get(&mms_report) {
                 let mut current_struct = codegen::Struct::new(&pdr_report.struct_name());
                 current_struct

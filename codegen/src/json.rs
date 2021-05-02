@@ -11,18 +11,20 @@ lazy_static::lazy_static! {
 
 }
 
-const BASE_URL: &str = "https://visualisations.aemo.com.au/aemo/nemweb/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files";
+const BASE_URL: &str = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files";
 
 lazy_static::lazy_static! {
     static ref LINK_MATCH: regex::Regex = regex::Regex::new(r"MMS_[0-9]{3}_[0-9]").unwrap();
 }
 
-// starting at 4
-// const BASE_URL: &str = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files";
 pub async fn run() -> anyhow::Result<()> {
-    // let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
-    let url = "https://visualisations.aemo.com.au/aemo/nemweb/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
-    let body = reqwest::get(url).await?.text().await?;
+    let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
+
+    let mut headers = reqwest::header::HeaderMap::new();
+    headers.insert(reqwest::header::ACCEPT, reqwest::header::HeaderValue::from_static("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
+    let client = reqwest::ClientBuilder::new().user_agent("Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0").default_headers(headers).build()?;
+    let body = client.get(url).send().await?.text().await?;
+    dbg!(&body);
     let doc = scraper::Html::parse_document(&body);
 
     let mut info: mms::Packages = collections::HashMap::new();
@@ -69,7 +71,8 @@ pub async fn run() -> anyhow::Result<()> {
                 let mut docs = Vec::new();
                 let inner_url = format!("{}/{}.htm", BASE_URL, link_val);
 
-                let res = reqwest::get(&inner_url).await?;
+                let res = client.get(&inner_url).send().await?;
+
 
                 if res.status().as_u16() == 200 {
                     let body = res.text().await?;
@@ -89,7 +92,7 @@ pub async fn run() -> anyhow::Result<()> {
 
                     for l in doc_pages_to_get {
                         let get_url = format!("{}/{}", BASE_URL, l);
-                        let res = reqwest::get(&get_url).await?;
+                        let res = client.get(&get_url).send().await?;
                         if res.status().as_u16() == 200 {
                             let body = res.text().await?;
                             let inner_doc = scraper::Html::parse_document(&body);

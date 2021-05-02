@@ -1,7 +1,7 @@
 /// # Summary
 /// 
 /// ## TRADINGINTERCONNECT
-///  _TRADINGINTERCONNECT shows the half-hourly summary of Interconnector flows based on 5-minute averages._
+///  _TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.<br>Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period.<br>_
 /// 
 /// * Data Set Name: Trading
 /// * File Name: Interconnectorres
@@ -27,7 +27,7 @@ pub struct TradingInterconnectorres2 {
     pub runno: rust_decimal::Decimal,
     /// Interconnector identifier
     pub interconnectorid: String,
-    /// Period Identifier
+    /// Period number where 1 represents the trading interval ending at 00:05 AEST
     pub periodid: rust_decimal::Decimal,
     /// Average of the metered MW flow from the start of each dispatch interval.
     pub meteredmwflow: Option<rust_decimal::Decimal>,
@@ -127,8 +127,52 @@ impl crate::GetTable for TradingUnitSolution2 {
 }
 /// # Summary
 /// 
+/// ## AVERAGEPRICE30
+///  _Reflects the 30-minute average price (the pre-5MS trading price)._
+/// 
+/// * Data Set Name: Trading
+/// * File Name: Averageprice30
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * PERIODDATE
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct TradingAverageprice301 {
+    #[serde(with = "crate::mms_datetime")]
+    pub perioddate: chrono::NaiveDateTime,
+    /// Region Identifier
+    pub regionid: String,
+    /// The 30-minute interval period, 1 to 48
+    pub periodid: rust_decimal::Decimal,
+    /// Regional reference price for this period
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM" or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
+    pub price_confidence: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for TradingAverageprice301 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "TRADING".into(),
+                        table_name: Some("AVERAGEPRICE30".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## TRADINGPRICE
-///  _TRADINGPRICE sets out half-hourly spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field._
+///  _TRADINGPRICE sets out 5 minutes spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field.<br>Prior to 5 Minute Settlements, this was half-hourly spot market values, which was calculated as the average of the six 5 minute dispatch intervals within the 30 minute period._
 /// 
 /// * Data Set Name: Trading
 /// * File Name: Price
@@ -154,7 +198,7 @@ pub struct TradingPrice2 {
     pub runno: rust_decimal::Decimal,
     /// Region Identifier
     pub regionid: String,
-    /// Trading Interval Period
+    /// Period number where 1 represents the trading interval ending at 00:05 AEST
     pub periodid: rust_decimal::Decimal,
     /// Regional reference price for this dispatch period
     pub rrp: Option<rust_decimal::Decimal>,

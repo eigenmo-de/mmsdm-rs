@@ -1,342 +1,11 @@
 /// # Summary
 /// 
-/// ## MTPASA_OFFERFILETRK
-///  _Participant submitted Offers for MTPASA process_
-/// 
-/// * Data Set Name: Offer
-/// * File Name: Mtpasa Offerfiletrk
-/// * Data Version: 1
-/// 
-/// # Description
-///  MTPASA_OFFERFILETRK is confidential to the relevant participant. Source MTPASA_OFFERFILETRK updates for every submitted MTPASA bid. Volume 4000 per year, being one per bid containing an MTPASA bid 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * OFFERDATETIME
-/// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferMtpasaOfferfiletrk1 {
-    /// Unique participant identifier
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub offerdatetime: chrono::NaiveDateTime,
-    /// Submitted file name
-    pub filename: Option<String>,
-}
-impl crate::GetTable for OfferMtpasaOfferfiletrk1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "OFFER".into(),
-                        table_name: Some("MTPASA_OFFERFILETRK".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MTPASA_OFFERDATA
-///  _Participant submitted Offers for MTPASA process_
-/// 
-/// * Data Set Name: Offer
-/// * File Name: Mtpasa Offerdata
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private; 
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
-/// * OFFERDATETIME
-/// * PARTICIPANTID
-/// * UNITID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferMtpasaOfferdata1 {
-    /// Unique participant identifier
-    pub participantid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub offerdatetime: chrono::NaiveDateTime,
-    /// either duid or mnsp linkid
-    pub unitid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// weekly energy constraint value
-    pub energy: Option<i64>,
-    /// capacity value day 1 (sunday)
-    pub capacity1: Option<i64>,
-    /// capacity value day 2 (monday)
-    pub capacity2: Option<i64>,
-    /// capacity value day 3 (tuesday)
-    pub capacity3: Option<i64>,
-    /// capacity value day 4 (wednesday)
-    pub capacity4: Option<i64>,
-    /// capacity value day 5 (thursday)
-    pub capacity5: Option<i64>,
-    /// capacity value day 6 (friday)
-    pub capacity6: Option<i64>,
-    /// capacity value day 7 (saturday)
-    pub capacity7: Option<i64>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for OfferMtpasaOfferdata1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "OFFER".into(),
-                        table_name: Some("MTPASA_OFFERDATA".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MNSP_PEROFFER
-///  _MNSP_PEROFFER shows period by period availability and other period data pertaining to a specific bid and LinkID for the given Settlement Date.<br>MNSP_PEROFFER is a child to MNSP_DAYOFFER and links to MNSP_OFFERTRK.<br>_
-/// 
-/// * Data Set Name: Offer
-/// * File Name: Mnsp Peroffer
-/// * Data Version: 1
-/// 
-/// # Description
-///  MNSP_PEROFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 192, 000 per year
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
-/// # Primary Key Columns
-/// 
-/// * LINKID
-/// * OFFERDATE
-/// * PARTICIPANTID
-/// * PERIODID
-/// * SETTLEMENTDATE
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferMnspPeroffer1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub offerdate: chrono::NaiveDateTime,
-    /// Version of data for other key data - a higher version for same key data will take precedence
-    pub versionno: rust_decimal::Decimal,
-    /// Participant Identifier
-    pub participantid: String,
-    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
-    pub linkid: String,
-    /// Trading Interval number
-    pub periodid: rust_decimal::Decimal,
-    /// Maximum planned availability MW
-    pub maxavail: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail1: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail2: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail3: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail4: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail5: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail6: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail7: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail8: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail9: Option<rust_decimal::Decimal>,
-    /// Band Availability for current Period
-    pub bandavail10: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Inflexibility flag and availability. Fixed unit output MW. A value of zero means no fixed load so the unit is dispatched according to bid and market (rather than zero fixed load) 
-    pub fixedload: Option<rust_decimal::Decimal>,
-    /// Ramp rate (MW / min) in the positive direction of flow for this MNSP link for this half-hour period
-    pub rampuprate: Option<rust_decimal::Decimal>,
-    /// Allows for future use for energy bids, being the physical plant capability including any capability potentially available within 24 hours
-    pub pasaavailability: Option<rust_decimal::Decimal>,
-    /// Mandatory Restriction Offer amount
-    pub mr_capacity: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for OfferMnspPeroffer1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "OFFER".into(),
-                        table_name: Some("MNSP_PEROFFER".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MNSP_OFFERTRK
-///  _MNSP_OFFERTRK records all valid MNSPOFFERS loaded into the MMS system. The authorised date reflects the date and time of the load. MNSP_OFFERTRK is key for tracking MNSP bid submission._
-/// 
-/// * Data Set Name: Offer
-/// * File Name: Mnsp Offertrk
-/// * Data Version: 1
-/// 
-/// # Description
-///  MNSP_OFFERTRK shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 4000 per year
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
-/// # Primary Key Columns
-/// 
-/// * FILENAME
-/// * OFFERDATE
-/// * PARTICIPANTID
-/// * SETTLEMENTDATE
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferMnspOffertrk1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub offerdate: chrono::NaiveDateTime,
-    /// &nbsp; 
-    pub versionno: rust_decimal::Decimal,
-    /// &nbsp; 
-    pub participantid: String,
-    /// &nbsp; 
-    pub filename: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for OfferMnspOffertrk1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "OFFER".into(),
-                        table_name: Some("MNSP_OFFERTRK".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## BIDDAYOFFER
-///  _BIDDAYOFFER shows the Energy and Ancillary Service bid data for each Market Day. BIDDAYOFFER is the parent table to BIDPEROFFER._
-/// 
-/// * Data Set Name: Offer
-/// * File Name: Biddayoffer
-/// * Data Version: 2
-/// 
-/// # Description
-///  The ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDPEROFFER) facilitate ancillary service bidding and include energy bidding.  BIDDAYOFFER data is confidential to the submitting participant until made public after 4am the next day. Source BIDDAYOFFER updates as ancillary service bids are processed. BIDDAYOFFER includes all accepted energy and ancillary service bids. Volume Approximately 1,500,000 records per year
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-/// 
-/// # Primary Key Columns
-/// 
-/// * BIDTYPE
-/// * DUID
-/// * OFFERDATE
-/// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferBiddayoffer2 {
-    /// Dispatchable unit identifier
-    pub duid: String,
-    /// Bid Type Identifier
-    pub bidtype: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Offer date of data
-    pub offerdate: chrono::NaiveDateTime,
-    /// Version No. for given offer date
-    pub versionno: Option<rust_decimal::Decimal>,
-    /// Unique participant identifier
-    pub participantid: Option<String>,
-    /// Maximum energy available from Energy Constrained Plant. (Energy Bids Only)
-    pub dailyenergyconstraint: Option<rust_decimal::Decimal>,
-    /// Explanation for all rebids and inflexibilities
-    pub rebidexplanation: Option<String>,
-    /// Price for Availability Band 1
-    pub priceband1: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 2
-    pub priceband2: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 3
-    pub priceband3: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 4
-    pub priceband4: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 5
-    pub priceband5: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 6
-    pub priceband6: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 6
-    pub priceband7: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 8
-    pub priceband8: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 9
-    pub priceband9: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 10
-    pub priceband10: Option<rust_decimal::Decimal>,
-    /// Minimum MW load fast start plant
-    pub minimumload: Option<rust_decimal::Decimal>,
-    /// Time to synchronise in minutes (Energy Bids Only)
-    pub t1: Option<rust_decimal::Decimal>,
-    /// Time to minimum load in minutes (Energy Bids Only)
-    pub t2: Option<rust_decimal::Decimal>,
-    /// Time at minimum load in minutes (Energy Bids Only)
-    pub t3: Option<rust_decimal::Decimal>,
-    /// Time to shutdown in minutes (Energy Bids Only)
-    pub t4: Option<rust_decimal::Decimal>,
-    /// not used; was ON/OFF for loads (Energy Bids Only)
-    pub normalstatus: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Mandatory Restriction Offer Factor
-    pub mr_factor: Option<rust_decimal::Decimal>,
-    /// Daily if processed before BidCutOff of previous day, otherwise REBID
-    pub entrytype: Option<String>,
-    /// The time of the event(s) or other occurrence(s) cited/adduced as the reason for the rebid. Required for rebids, not required for fixed load or low ramp rates.Expected in the format: HH:MM:SS
-    pub rebid_event_time: Option<String>,
-    /// Intended to support the AER Rebidding Guidelines.The time at which the participant became aware of the event(s) / occurrence(s) that prompted the rebid.Not validated by AEMO
-    pub rebid_aware_time: Option<String>,
-    /// Intended to support the AER Rebidding Guidelines.The time at which the participant made the decision to rebid.Not validated by AEMO
-    pub rebid_decision_time: Option<String>,
-    /// Optional for Rebid. [P,A,F,E] - (P)lant or physical change, (A)EMO forecast or Dispatch change, (F)inancial or commercial change, (E)rror requiring Rebid remediation
-    pub rebid_category: Option<String>,
-    /// A participants unique Reference Id
-    pub reference_id: Option<String>,
-}
-impl crate::GetTable for OfferBiddayoffer2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "OFFER".into(),
-                        table_name: Some("BIDDAYOFFER".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
 /// ## MNSP_DAYOFFER
-///  _MNSP_DAYOFFER shows price and other non-period data pertaining to a specific MNSP bid and Link ID to be effective from the given Settlement Date.<br>MNSP_DAYOFFER is the parent table to MNSP_PEROFFER, and joins to MNSP_OFFERTRK.<br>_
+///  _MNSP_DAYOFFER updates as bids are processed. All bids are available as part of next day market data. MNSP_DAYOFFER is the parent table to MNSP_BIDOFFERPERIOD, and joins to BIDOFFERFILETRK for 5MS Bids._
 /// 
-/// * Data Set Name: Offer
+/// * Data Set Name: Bids
 /// * File Name: Mnsp Dayoffer
-/// * Data Version: 2
+/// * Data Version: 1
 /// 
 /// # Description
 ///  MNSP_DAYOFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 4, 000 per year
@@ -352,10 +21,10 @@ impl crate::GetTable for OfferBiddayoffer2 {
 /// * SETTLEMENTDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferMnspDayoffer2 {
+pub struct BidsMnspDayoffer1 {
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
-    /// Offer date for bid
+    /// Time this bid was processed and loaded
     pub offerdate: chrono::NaiveDateTime,
     /// Version of data for other key data - a higher version for same key data will take precedence
     pub versionno: rust_decimal::Decimal,
@@ -391,24 +60,24 @@ pub struct OfferMnspDayoffer2 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Mandatory Restriction Offer Factor
     pub mr_factor: Option<rust_decimal::Decimal>,
-    /// The time of the event(s) or other occurrence(s) cited/adduced as the reason for the rebid. Required for rebids, not required for fixed load or low ramp rates. Expected in the format: HH:MM:SS
+    /// The time of the event(s) or other occurrence(s) cited/adduced as the reason for the rebid. Required for rebids, not required for fixed load or low ramp rates. Expected in the format: HH:MM:SS e.g. 20:11:00
     pub rebid_event_time: Option<String>,
-    /// Intended to support the AER Rebidding Guidelines. The time at which the participant became aware of the event(s) / occurrence(s) that prompted the rebid. Not validated by AEMO
+    /// Intended to support the Rebidding and Technical Parameters Guideline. The time at which the participant became aware of the event(s) / occurrence(s) that prompted the rebid. Not validated by AEMO
     pub rebid_aware_time: Option<String>,
-    /// Intended to support the AER Rebidding Guidelines. The time at which the participant made the decision to rebid. Not validated by AEMO
+    /// Intended to support the Rebidding and Technical Parameters Guideline. The time at which the participant made the decision to rebid. Not validated by AEMO
     pub rebid_decision_time: Option<String>,
-    /// Intended to support the AER Rebidding Guidelines. A provided rebid category. Not validated by AEMO
+    /// Intended to support the Rebidding and Technical Parameters Guideline. A provided rebid category. Not validated by AEMO
     pub rebid_category: Option<String>,
     /// A participants unique Reference Id
     pub reference_id: Option<String>,
 }
-impl crate::GetTable for OfferMnspDayoffer2 {
+impl crate::GetTable for BidsMnspDayoffer1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
-                        data_set_name: "OFFER".into(),
+                        data_set_name: "BIDS".into(),
                         table_name: Some("MNSP_DAYOFFER".into()),
-                        version: 2,
+                        version: 1,
                     }
                     
     }
@@ -418,7 +87,7 @@ impl crate::GetTable for OfferMnspDayoffer2 {
 /// ## BIDOFFERFILETRK
 ///  _BIDOFFERFILETRK shows an audit trail of all files submitted containing an FCAS bid, including corrupt bids and rebids._
 /// 
-/// * Data Set Name: Offer
+/// * Data Set Name: Bids
 /// * File Name: Bidofferfiletrk
 /// * Data Version: 1
 /// 
@@ -433,10 +102,10 @@ impl crate::GetTable for OfferMnspDayoffer2 {
 /// * OFFERDATE
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferBidofferfiletrk1 {
+pub struct BidsBidofferfiletrk1 {
     /// Unique participant identifier
     pub participantid: String,
-    /// Date file offered
+    /// Time this bid was processed and loaded
     pub offerdate: chrono::NaiveDateTime,
     /// Submitted file name
     pub filename: String,
@@ -457,11 +126,11 @@ pub struct OfferBidofferfiletrk1 {
     /// A participant provided comment
     pub comments: Option<String>,
 }
-impl crate::GetTable for OfferBidofferfiletrk1 {
+impl crate::GetTable for BidsBidofferfiletrk1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
-                        data_set_name: "OFFER".into(),
+                        data_set_name: "BIDS".into(),
                         table_name: Some("BIDOFFERFILETRK".into()),
                         version: 1,
                     }
@@ -560,49 +229,126 @@ impl crate::GetTable for OfferBidperoffer1 {
 }
 /// # Summary
 /// 
-/// ## BIDPEROFFER_D
-///  _BIDPEROFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for the<br>intervals identified. BIDPEROFFER_D is the child to BIDDAYOFFER_D._
+/// ## MNSP_PEROFFER
+///  _MNSP_PEROFFER shows period by period availability and other period data pertaining to a specific bid and LinkID for the given Settlement Date.<br>MNSP_PEROFFER is a child to MNSP_DAYOFFER and links to MNSP_OFFERTRK.<br>_
 /// 
 /// * Data Set Name: Bid
-/// * File Name: Bidperoffer D
-/// * Data Version: 2
+/// * File Name: Mnsp Peroffer
+/// * Data Version: 1
 /// 
 /// # Description
-///  BIDPEROFFER_D is public data, so is available to all participants. Source BIDPEROFFER_D updates daily shortly after 4am.  See also BIDPEROFFER.
+///  MNSP_PEROFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 192, 000 per year
 /// 
 /// # Notes
-///  * (Visibility) Data in this table is: Public
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * LINKID
+/// * OFFERDATE
+/// * PARTICIPANTID
+/// * PERIODID
+/// * SETTLEMENTDATE
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BidMnspPeroffer1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub offerdate: chrono::NaiveDateTime,
+    /// Version of data for other key data - a higher version for same key data will take precedence
+    pub versionno: rust_decimal::Decimal,
+    /// Participant Identifier
+    pub participantid: String,
+    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
+    pub linkid: String,
+    /// Trading Interval number
+    pub periodid: rust_decimal::Decimal,
+    /// Maximum planned availability MW
+    pub maxavail: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail1: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail2: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail3: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail4: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail5: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail6: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail7: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail8: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail9: Option<rust_decimal::Decimal>,
+    /// Band Availability for current Period
+    pub bandavail10: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Inflexibility flag and availability. Fixed unit output MW. A value of zero means no fixed load so the unit is dispatched according to bid and market (rather than zero fixed load) 
+    pub fixedload: Option<rust_decimal::Decimal>,
+    /// Ramp rate (MW / min) in the positive direction of flow for this MNSP link for this half-hour period
+    pub rampuprate: Option<rust_decimal::Decimal>,
+    /// Allows for future use for energy bids, being the physical plant capability including any capability potentially available within 24 hours
+    pub pasaavailability: Option<rust_decimal::Decimal>,
+    /// Mandatory Restriction Offer amount
+    pub mr_capacity: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for BidMnspPeroffer1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "BID".into(),
+                        table_name: Some("MNSP_PEROFFER".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## BIDOFFERPERIOD
+///  _BIDOFFERPERIOD shows 5-minute period-based Energy and Ancillary Service bid data.BIDOFFERPERIOD is a child table of BIDDAYOFFER_
+/// 
+/// * Data Set Name: Bids
+/// * File Name: Bidofferperiod
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
 /// 
 /// # Primary Key Columns
 /// 
 /// * BIDTYPE
 /// * DUID
-/// * INTERVAL_DATETIME
-/// * SETTLEMENTDATE
+/// * OFFERDATETIME
+/// * PERIODID
+/// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BidBidperofferD2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Dispatchable Unit identifier
+pub struct BidsBidofferperiod1 {
+    /// Dispatchable Unit ID
     pub duid: String,
-    /// Bid Type Identifier
+    /// The type of bid, one-of ENERGY, RAISE6SEC, RAISE60SEC, RAISE5MIN, RAISEREG, LOWER6SEC, LOWER60SEC, LOWER5MIN, LOWERREG 
     pub bidtype: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub bidsettlementdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub offerdate: Option<chrono::NaiveDateTime>,
-    /// The trading interval period identifier (1-48)
-    pub periodid: Option<rust_decimal::Decimal>,
-    /// Version number of offer
-    pub versionno: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime")]
+    pub tradingdate: chrono::NaiveDateTime,
+    /// Time this bid was processed and loaded
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Period ID 1 to 288
+    pub periodid: rust_decimal::Decimal,
     /// Maximum availability for this BidType in this period
     pub maxavail: Option<rust_decimal::Decimal>,
-    /// Fixed unit output MW (Energy Bids Only).  A value of zero means no fixed load so the unit is dispatched according to bid and market (rather than zero fixed load)
+    /// Fixed unit output MW (Energy bids only) A null value means no fixed load so the unit is dispatched according to bid and market
     pub fixedload: Option<rust_decimal::Decimal>,
-    /// MW/min for raise (Energy Bids Only)
-    pub rocup: Option<rust_decimal::Decimal>,
-    /// MW/Min for lower (Energy Bids Only)
-    pub rocdown: Option<rust_decimal::Decimal>,
+    /// MW/Min for raise (Energy bids only)
+    pub rampuprate: Option<i64>,
+    /// MW/Min for lower (Energy bids only)
+    pub rampdownrate: Option<i64>,
     /// Minimum Energy Output (MW) at which this ancillary service becomes available (AS Only)
     pub enablementmin: Option<rust_decimal::Decimal>,
     /// Maximum Energy Output (MW) at which this ancillary service can be supplied (AS Only)
@@ -631,22 +377,16 @@ pub struct BidBidperofferD2 {
     pub bandavail9: Option<rust_decimal::Decimal>,
     /// Availability at price band 10
     pub bandavail10: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Allows for future use for energy bids, being the physical plant capability including any capability potentially available within 24 hours
+    /// Allows for future use for Energy bids, being the physical plant capability including any capability potentially available within 24 hours
     pub pasaavailability: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Mandatory Restriction Offer amount
-    pub mr_capacity: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for BidBidperofferD2 {
+impl crate::GetTable for BidsBidofferperiod1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
-                        data_set_name: "BID".into(),
-                        table_name: Some("BIDPEROFFER_D".into()),
-                        version: 2,
+                        data_set_name: "BIDS".into(),
+                        table_name: Some("BIDOFFERPERIOD".into()),
+                        version: 1,
                     }
                     
     }
@@ -702,36 +442,134 @@ impl crate::GetTable for BidMnspFiletrk1 {
 }
 /// # Summary
 /// 
-/// ## BIDDAYOFFER_D
-///  _BIDDAYOFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for the<br>intervals identified. BIDDAYOFFER_D is the parent table to BIDPEROFFER_D._
+/// ## MTPASA_OFFERDATA
+///  _Participant submitted Offers for MTPASA process_
 /// 
-/// * Data Set Name: Bid
-/// * File Name: Biddayoffer D
-/// * Data Version: 2
+/// * Data Set Name: Offer
+/// * File Name: Mtpasa Offerdata
+/// * Data Version: 1
 /// 
-/// # Description
-///  BIDDAYOFFER_D data is made public after 4am the next day. Source BIDDAYOFFER_D updates as ancillary service bids are processed. BIDDAYOFFER_D shows latest accepted energy and ancillary service bids. Volume Summary - approximately 1,000 rows per day
+/// 
 /// 
 /// # Notes
-///  * (Visibility) Data in this table is: Public
+///  * (Visibility) Data in this table is: Private; 
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * OFFERDATETIME
+/// * PARTICIPANTID
+/// * UNITID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct OfferMtpasaOfferdata1 {
+    /// Unique participant identifier
+    pub participantid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// either duid or mnsp linkid
+    pub unitid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// weekly energy constraint value
+    pub energy: Option<i64>,
+    /// capacity value day 1 (sunday)
+    pub capacity1: Option<i64>,
+    /// capacity value day 2 (monday)
+    pub capacity2: Option<i64>,
+    /// capacity value day 3 (tuesday)
+    pub capacity3: Option<i64>,
+    /// capacity value day 4 (wednesday)
+    pub capacity4: Option<i64>,
+    /// capacity value day 5 (thursday)
+    pub capacity5: Option<i64>,
+    /// capacity value day 6 (friday)
+    pub capacity6: Option<i64>,
+    /// capacity value day 7 (saturday)
+    pub capacity7: Option<i64>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for OfferMtpasaOfferdata1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "OFFER".into(),
+                        table_name: Some("MTPASA_OFFERDATA".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## MTPASA_OFFERFILETRK
+///  _Participant submitted Offers for MTPASA process_
+/// 
+/// * Data Set Name: Offer
+/// * File Name: Mtpasa Offerfiletrk
+/// * Data Version: 1
+/// 
+/// # Description
+///  MTPASA_OFFERFILETRK is confidential to the relevant participant. Source MTPASA_OFFERFILETRK updates for every submitted MTPASA bid. Volume 4000 per year, being one per bid containing an MTPASA bid 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+/// 
+/// # Primary Key Columns
+/// 
+/// * OFFERDATETIME
+/// * PARTICIPANTID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct OfferMtpasaOfferfiletrk1 {
+    /// Unique participant identifier
+    pub participantid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Submitted file name
+    pub filename: Option<String>,
+}
+impl crate::GetTable for OfferMtpasaOfferfiletrk1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "OFFER".into(),
+                        table_name: Some("MTPASA_OFFERFILETRK".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## BIDDAYOFFER
+///  _BIDDAYOFFER shows the Energy and Ancillary Service bid data for each Market Day. BIDDAYOFFER is the parent table to BIDOFFERPERIOD. BIDDAYOFFER is a child table to BIDOFFERFILETRK_
+/// 
+/// * Data Set Name: Bids
+/// * File Name: Biddayoffer
+/// * Data Version: 1
+/// 
+/// # Description
+///  The ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDPEROFFER) facilitate ancillary service bidding and include energy bidding.  BIDDAYOFFER data is confidential to the submitting participant until made public after 4am the next day. Source BIDDAYOFFER updates as ancillary service bids are processed. BIDDAYOFFER includes all accepted energy and ancillary service bids. Volume Approximately 1,500,000 records per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
 /// 
 /// # Primary Key Columns
 /// 
 /// * BIDTYPE
 /// * DUID
+/// * OFFERDATE
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BidBiddayofferD2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
+pub struct BidsBiddayoffer1 {
     /// Dispatchable unit identifier
     pub duid: String,
     /// Bid Type Identifier
     pub bidtype: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub bidsettlementdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub offerdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Time this bid was processed and loaded
+    pub offerdate: chrono::NaiveDateTime,
     /// Version No. for given offer date
     pub versionno: Option<rust_decimal::Decimal>,
     /// Unique participant identifier
@@ -752,7 +590,7 @@ pub struct BidBiddayofferD2 {
     pub priceband5: Option<rust_decimal::Decimal>,
     /// Price for Availability Band 6
     pub priceband6: Option<rust_decimal::Decimal>,
-    /// Price for Availability Band 7
+    /// Price for Availability Band 6
     pub priceband7: Option<rust_decimal::Decimal>,
     /// Price for Availability Band 8
     pub priceband8: Option<rust_decimal::Decimal>,
@@ -770,22 +608,154 @@ pub struct BidBiddayofferD2 {
     pub t3: Option<rust_decimal::Decimal>,
     /// Time to shutdown in minutes (Energy Bids Only)
     pub t4: Option<rust_decimal::Decimal>,
-    /// ON/OFF for loads (Energy Bids Only)
+    /// not used; was ON/OFF for loads (Energy Bids Only)
     pub normalstatus: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Mandatory Restriction Scaling Factor
+    /// Mandatory Restriction Offer Factor
     pub mr_factor: Option<rust_decimal::Decimal>,
     /// Daily if processed before BidCutOff of previous day, otherwise REBID
     pub entrytype: Option<String>,
+    /// The time of the event(s) or other occurrence(s) cited/adduced as the reason for the rebid. Required for rebids, not required for fixed load or low ramp rates. Expected in the format: HH:MM:SS e.g. 20:11:00
+    pub rebid_event_time: Option<String>,
+    /// Intended to support the Rebidding and Technical Parameters Guideline. The time at which the participant became aware of the event(s) / occurrence(s) that prompted the rebid.Not validated by AEMO
+    pub rebid_aware_time: Option<String>,
+    /// Intended to support the Rebidding and Technical Parameters Guideline. The time at which the participant made the decision to rebid. Not validated by AEMO
+    pub rebid_decision_time: Option<String>,
+    /// Intended to support the Rebidding and Technical Parameters Guideline. A provided rebid category. Not validated by AEMO
+    pub rebid_category: Option<String>,
+    /// A participants unique Reference Id
+    pub reference_id: Option<String>,
 }
-impl crate::GetTable for BidBiddayofferD2 {
+impl crate::GetTable for BidsBiddayoffer1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "BIDS".into(),
+                        table_name: Some("BIDDAYOFFER".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## MNSP_BIDOFFERPERIOD
+///  _MNSP_BIDOFFERPERIOD shows availability for 5-minute periods for a specific Bid and LinkID for the given Trading Date and period. MNSP_BIDOFFERPERIOD is a child to MNSP_DAYOFFER and links to BIDOFFERFILETRK for 5MS Bids._
+/// 
+/// * Data Set Name: Bids
+/// * File Name: Mnsp Bidofferperiod
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * LINKID
+/// * OFFERDATETIME
+/// * PERIODID
+/// * TRADINGDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BidsMnspBidofferperiod1 {
+    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
+    pub linkid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub tradingdate: chrono::NaiveDateTime,
+    /// Time this bid was processed and loaded
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Period ID, 1 to 288
+    pub periodid: rust_decimal::Decimal,
+    /// Maximum planned availability MW
+    pub maxavail: Option<rust_decimal::Decimal>,
+    /// Fixed unit output, in MW. A value of NULL means no fixed load so the unit is dispatched according to bid and the market.
+    pub fixedload: Option<rust_decimal::Decimal>,
+    /// Ramp rate (MW / min) in the positive direction of flow for this MNSP link for this half-hour period
+    pub rampuprate: Option<i64>,
+    /// Availability at price band 1
+    pub bandavail1: Option<rust_decimal::Decimal>,
+    /// Availability at price band 2
+    pub bandavail2: Option<rust_decimal::Decimal>,
+    /// Availability at price band 3
+    pub bandavail3: Option<rust_decimal::Decimal>,
+    /// Availability at price band 4
+    pub bandavail4: Option<rust_decimal::Decimal>,
+    /// Availability at price band 5
+    pub bandavail5: Option<rust_decimal::Decimal>,
+    /// Availability at price band 6
+    pub bandavail6: Option<rust_decimal::Decimal>,
+    /// Availability at price band 7
+    pub bandavail7: Option<rust_decimal::Decimal>,
+    /// Availability at price band 8
+    pub bandavail8: Option<rust_decimal::Decimal>,
+    /// Availability at price band 9
+    pub bandavail9: Option<rust_decimal::Decimal>,
+    /// Availability at price band 10
+    pub bandavail10: Option<rust_decimal::Decimal>,
+    /// Allows for future use for Energy bids, being the physical plant capability including any capability potentially available within 24 hours
+    pub pasaavailability: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for BidsMnspBidofferperiod1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "BIDS".into(),
+                        table_name: Some("MNSP_BIDOFFERPERIOD".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## MNSP_OFFERTRK
+///  _MNSP_OFFERTRK records all valid MNSPOFFERS loaded into the MMS system. The authorised date reflects the date and time of the load. MNSP_OFFERTRK is key for tracking MNSP bid submission._
+/// 
+/// * Data Set Name: Bid
+/// * File Name: Mnsp Offertrk
+/// * Data Version: 1
+/// 
+/// # Description
+///  MNSP_OFFERTRK shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 4000 per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * FILENAME
+/// * OFFERDATE
+/// * PARTICIPANTID
+/// * SETTLEMENTDATE
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BidMnspOffertrk1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub offerdate: chrono::NaiveDateTime,
+    /// &nbsp; 
+    pub versionno: rust_decimal::Decimal,
+    /// &nbsp; 
+    pub participantid: String,
+    /// &nbsp; 
+    pub filename: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// &nbsp; 
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for BidMnspOffertrk1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "BID".into(),
-                        table_name: Some("BIDDAYOFFER_D".into()),
-                        version: 2,
+                        table_name: Some("MNSP_OFFERTRK".into()),
+                        version: 1,
                     }
                     
     }

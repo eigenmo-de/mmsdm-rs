@@ -1,10 +1,10 @@
 /// # Summary
 /// 
-/// ## NETWORK_OUTAGECONSTRAINTSET
-///  _NETWORK_OUTAGECONSTRAINTSET lists the Constraint Set or Sets that are expected to be invoked for the outage once it is confirmed to proceed._
+/// ## NETWORK_SUBSTATIONDETAIL
+///  _NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time_
 /// 
 /// * Data Set Name: Network
-/// * File Name: Outageconstraintset
+/// * File Name: Substationdetail
 /// * Data Version: 1
 /// 
 /// 
@@ -14,25 +14,31 @@
 /// 
 /// # Primary Key Columns
 /// 
-/// * GENCONSETID
-/// * OUTAGEID
+/// * SUBSTATIONID
+/// * VALIDFROM
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutageconstraintset1 {
-    /// ID uniquely identifying the outage
-    pub outageid: rust_decimal::Decimal,
-    /// ID for the constraint set
-    pub genconsetid: String,
+pub struct NetworkSubstationdetail1 {
+    /// ID uniquely identifying this substation
+    pub substationid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub validfrom: chrono::NaiveDateTime,
     #[serde(with = "crate::mms_datetime_opt")]
-    pub startinterval: Option<chrono::NaiveDateTime>,
+    pub validto: Option<chrono::NaiveDateTime>,
+    /// Description of the substation
+    pub description: Option<String>,
+    /// The NEM region the substation is in
+    pub regionid: Option<String>,
+    /// The TNSP who is responsible for this substation
+    pub ownerid: Option<String>,
     #[serde(with = "crate::mms_datetime_opt")]
-    pub endinterval: Option<chrono::NaiveDateTime>,
+    pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for NetworkOutageconstraintset1 {
+impl crate::GetTable for NetworkSubstationdetail1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
-                        table_name: Some("OUTAGECONSTRAINTSET".into()),
+                        table_name: Some("SUBSTATIONDETAIL".into()),
                         version: 1,
                     }
                     
@@ -85,52 +91,6 @@ impl crate::GetTable for NetworkRating1 {
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
                         table_name: Some("RATING".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## NETWORK_SUBSTATIONDETAIL
-///  _NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time_
-/// 
-/// * Data Set Name: Network
-/// * File Name: Substationdetail
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * SUBSTATIONID
-/// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkSubstationdetail1 {
-    /// ID uniquely identifying this substation
-    pub substationid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub validfrom: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub validto: Option<chrono::NaiveDateTime>,
-    /// Description of the substation
-    pub description: Option<String>,
-    /// The NEM region the substation is in
-    pub regionid: Option<String>,
-    /// The TNSP who is responsible for this substation
-    pub ownerid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for NetworkSubstationdetail1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "NETWORK".into(),
-                        table_name: Some("SUBSTATIONDETAIL".into()),
                         version: 1,
                     }
                     
@@ -209,11 +169,11 @@ impl crate::GetTable for NetworkOutagedetail3 {
 }
 /// # Summary
 /// 
-/// ## NETWORK_OUTAGESTATUSCODE
-///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
+/// ## NETWORK_REALTIMERATING
+///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
 /// 
 /// * Data Set Name: Network
-/// * File Name: Outagestatuscode
+/// * File Name: Realtimerating
 /// * Data Version: 1
 /// 
 /// 
@@ -223,22 +183,23 @@ impl crate::GetTable for NetworkOutagedetail3 {
 /// 
 /// # Primary Key Columns
 /// 
-/// * OUTAGESTATUSCODE
+/// * SETTLEMENTDATE
+/// * SPD_ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutagestatuscode1 {
-    /// A code representing the status of an outage
-    pub outagestatuscode: String,
-    /// A description of the status code
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
+pub struct NetworkRealtimerating1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// ID defining this data source for use in constraints
+    pub spd_id: String,
+    /// The defined equipment rating value in MVA
+    pub ratingvalue: rust_decimal::Decimal,
 }
-impl crate::GetTable for NetworkOutagestatuscode1 {
+impl crate::GetTable for NetworkRealtimerating1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
-                        table_name: Some("OUTAGESTATUSCODE".into()),
+                        table_name: Some("REALTIMERATING".into()),
                         version: 1,
                     }
                     
@@ -296,11 +257,11 @@ impl crate::GetTable for NetworkEquipmentdetail1 {
 }
 /// # Summary
 /// 
-/// ## NETWORK_REALTIMERATING
-///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
+/// ## NETWORK_OUTAGESTATUSCODE
+///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
 /// 
 /// * Data Set Name: Network
-/// * File Name: Realtimerating
+/// * File Name: Outagestatuscode
 /// * Data Version: 1
 /// 
 /// 
@@ -310,23 +271,62 @@ impl crate::GetTable for NetworkEquipmentdetail1 {
 /// 
 /// # Primary Key Columns
 /// 
-/// * SETTLEMENTDATE
-/// * SPD_ID
+/// * OUTAGESTATUSCODE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkRealtimerating1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// ID defining this data source for use in constraints
-    pub spd_id: String,
-    /// The defined equipment rating value in MVA
-    pub ratingvalue: rust_decimal::Decimal,
+pub struct NetworkOutagestatuscode1 {
+    /// A code representing the status of an outage
+    pub outagestatuscode: String,
+    /// A description of the status code
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for NetworkRealtimerating1 {
+impl crate::GetTable for NetworkOutagestatuscode1 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "NETWORK".into(),
-                        table_name: Some("REALTIMERATING".into()),
+                        table_name: Some("OUTAGESTATUSCODE".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## NETWORK_OUTAGECONSTRAINTSET
+///  _NETWORK_OUTAGECONSTRAINTSET lists the Constraint Set or Sets that are expected to be invoked for the outage once it is confirmed to proceed._
+/// 
+/// * Data Set Name: Network
+/// * File Name: Outageconstraintset
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * GENCONSETID
+/// * OUTAGEID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct NetworkOutageconstraintset1 {
+    /// ID uniquely identifying the outage
+    pub outageid: rust_decimal::Decimal,
+    /// ID for the constraint set
+    pub genconsetid: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startinterval: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub endinterval: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for NetworkOutageconstraintset1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "NETWORK".into(),
+                        table_name: Some("OUTAGECONSTRAINTSET".into()),
                         version: 1,
                     }
                     

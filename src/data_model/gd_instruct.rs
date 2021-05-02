@@ -1,5 +1,46 @@
 /// # Summary
 /// 
+/// ## INSTRUCTIONSUBTYPE
+///  _Each Dispatch instruction (GD instruct) has a type and subtype. INSTRUCTIONSUBTYPE, together with INSTRUCTIONTYPE, sets out valid instruction types._
+/// 
+/// * Data Set Name: Gd Instruct
+/// * File Name: Instructionsubtype
+/// * Data Version: 1
+/// 
+/// # Description
+///  INSTRUCTIONSUBTYPE is public data, and is available to all participants. Source INSTRUCTIONSUBTYPE shows ad hoc updates to market configuration. 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * INSTRUCTIONSUBTYPEID
+/// * INSTRUCTIONTYPEID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct GdInstructInstructionsubtype1 {
+    /// Instruction type
+    pub instructiontypeid: String,
+    /// Subtype for each dispatch instruction type, for example governor off.
+    pub instructionsubtypeid: String,
+    /// Description of instruction subtype
+    pub description: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for GdInstructInstructionsubtype1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "GD_INSTRUCT".into(),
+                        table_name: Some("INSTRUCTIONSUBTYPE".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## INSTRUCTIONTYPE
 ///  _Dispatch instruction (GD instruct) has types and subtypes. INSTRUCTIONTYPE, together with INSTRUCTIONSUBTYPE, sets out valid instruction types._
 /// 
@@ -95,47 +136,6 @@ impl crate::GetTable for GdInstructGdinstruct1 {
                     crate::FileKey {
                         data_set_name: "GD_INSTRUCT".into(),
                         table_name: Some("GDINSTRUCT".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## INSTRUCTIONSUBTYPE
-///  _Each Dispatch instruction (GD instruct) has a type and subtype. INSTRUCTIONSUBTYPE, together with INSTRUCTIONTYPE, sets out valid instruction types._
-/// 
-/// * Data Set Name: Gd Instruct
-/// * File Name: Instructionsubtype
-/// * Data Version: 1
-/// 
-/// # Description
-///  INSTRUCTIONSUBTYPE is public data, and is available to all participants. Source INSTRUCTIONSUBTYPE shows ad hoc updates to market configuration. 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INSTRUCTIONSUBTYPEID
-/// * INSTRUCTIONTYPEID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct GdInstructInstructionsubtype1 {
-    /// Instruction type
-    pub instructiontypeid: String,
-    /// Subtype for each dispatch instruction type, for example governor off.
-    pub instructionsubtypeid: String,
-    /// Description of instruction subtype
-    pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for GdInstructInstructionsubtype1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "GD_INSTRUCT".into(),
-                        table_name: Some("INSTRUCTIONSUBTYPE".into()),
                         version: 1,
                     }
                     

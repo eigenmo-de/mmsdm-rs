@@ -75,7 +75,7 @@ impl crate::GetTable for StpasaCasesolution3 {
 /// 
 /// * Data Set Name: Stpasa
 /// * File Name: Regionsolution
-/// * Data Version: 5
+/// * Data Version: 6
 /// 
 /// # Description
 ///  STPASA_REGIONSOLUTION is public so is available to all participants. Source STPASA_REGIONSOLUTION is updated each STPASA run (i.e every 2 hours). Volume Rows per day: 480 Mb per month: 8
@@ -90,7 +90,7 @@ impl crate::GetTable for StpasaCasesolution3 {
 /// * RUN_DATETIME
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaRegionsolution5 {
+pub struct StpasaRegionsolution6 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     #[serde(with = "crate::mms_datetime")]
@@ -176,13 +176,13 @@ pub struct StpasaRegionsolution5 {
     /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is wind and StudyRegion = Region
     pub ss_wind_cleared: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for StpasaRegionsolution5 {
+impl crate::GetTable for StpasaRegionsolution6 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "STPASA".into(),
                         table_name: Some("REGIONSOLUTION".into()),
-                        version: 5,
+                        version: 6,
                     }
                     
     }
@@ -194,7 +194,7 @@ impl crate::GetTable for StpasaRegionsolution5 {
 /// 
 /// * Data Set Name: Stpasa
 /// * File Name: Constraintsolution
-/// * Data Version: 2
+/// * Data Version: 3
 /// 
 /// # Description
 ///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90 
@@ -208,8 +208,9 @@ impl crate::GetTable for StpasaRegionsolution5 {
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
 /// * RUNTYPE
+/// * STUDYREGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaConstraintsolution2 {
+pub struct StpasaConstraintsolution3 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     #[serde(with = "crate::mms_datetime")]
@@ -226,14 +227,16 @@ pub struct StpasaConstraintsolution2 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
     pub runtype: String,
+    /// Primary Region for LP Solve (or MARKET if none).
+    pub studyregionid: String,
 }
-impl crate::GetTable for StpasaConstraintsolution2 {
+impl crate::GetTable for StpasaConstraintsolution3 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "STPASA".into(),
                         table_name: Some("CONSTRAINTSOLUTION".into()),
-                        version: 2,
+                        version: 3,
                     }
                     
     }
@@ -245,7 +248,7 @@ impl crate::GetTable for StpasaConstraintsolution2 {
 /// 
 /// * Data Set Name: Stpasa
 /// * File Name: Interconnectorsoln
-/// * Data Version: 2
+/// * Data Version: 3
 /// 
 /// # Description
 ///  STPASA_INTERCONNECTORSOLN is public so is available to all participants. Source STPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 576 Mb per month: 4
@@ -259,8 +262,9 @@ impl crate::GetTable for StpasaConstraintsolution2 {
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
 /// * RUNTYPE
+/// * STUDYREGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct StpasaInterconnectorsoln2 {
+pub struct StpasaInterconnectorsoln3 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     #[serde(with = "crate::mms_datetime")]
@@ -285,14 +289,16 @@ pub struct StpasaInterconnectorsoln2 {
     pub exportlimitconstraintid: Option<String>,
     /// ID of the constraint that sets the Interconnector Import Limit
     pub importlimitconstraintid: Option<String>,
+    /// Primary Region for LP Solve (or MARKET if none).
+    pub studyregionid: String,
 }
-impl crate::GetTable for StpasaInterconnectorsoln2 {
+impl crate::GetTable for StpasaInterconnectorsoln3 {
     fn get_file_key() -> crate::FileKey {
 
                     crate::FileKey {
                         data_set_name: "STPASA".into(),
                         table_name: Some("INTERCONNECTORSOLN".into()),
-                        version: 2,
+                        version: 3,
                     }
                     
     }

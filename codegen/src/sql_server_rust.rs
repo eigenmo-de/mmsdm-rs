@@ -32,6 +32,7 @@ pub fn run() -> anyhow::Result<()> {
     let mut fmt_str = String::new();
     fmt_str.push_str(
         r#"
+use std::collections;
 use crate::data_model;
 use futures::{AsyncRead, AsyncWrite};
 
@@ -45,21 +46,25 @@ impl crate::AemoFile {
         let first_row = client.query(
             "insert into mmsdm.FileLog(
                 data_source,
-                participant_name,
-                privacy_level,
+                file_name,
+                from_participant,
+                to_participant,
                 effective_date,
+                effective_time,
                 serial_number,
                 data_set,
                 sub_type,
                 version
             )
             output inserted.file_log_id
-            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8);",
+            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8, @P9, @P10);",
             &[
                 &self.header.data_source,
-                &self.header.participant_name,
-                &self.header.privacy_level,
-                &self.header.get_effective(),
+                &self.header.file_name,
+                &self.header.from_participant,
+                &self.header.to_participant,
+                &self.header.effective_date,
+                &self.header.effective_time,
                 &self.header.serial_number,
                 &key.data_set_name.as_str(),
                 &key.table_name(),
@@ -81,7 +86,7 @@ impl crate::AemoFile {
         
         let total = data.len();
         let mut current = 0_usize;
-        for chunk in data.chunks(100_000_usize) {
+        for chunk in data.chunks(4_500_usize) {
             current += chunk.len();
             let json = serde_json::to_string(chunk)?;
             if let Err(e) = client
@@ -108,11 +113,15 @@ impl crate::AemoFile {
 
 /// This function is meant to be used in conjunction with the iterator over
 /// the data contained within the AemoFile struct
-pub async fn load_data<S>(&self, client: &mut tiberius::Client<S>) -> crate::Result<()>
+pub async fn load_data<S>(&self, client: &mut tiberius::Client<S>, skip_keys: Option<&collections::HashSet<crate::FileKey       >>) -> crate::Result<()>
 where
 S: AsyncRead + AsyncWrite + Unpin + Send,
 {
 for file_key in self.data.keys() {
+    if skip_keys.map(|set| set.contains(file_key)).unwrap_or(false) {
+    	log::info!("Skippping file key {} as it is in the list of keys to skip", file_key);                            
+        continue;                                                                                                      
+    }   
     match (
         file_key.data_set_name.as_str(),
         file_key.table_name.as_ref().map(|s| s.as_str()),
@@ -131,7 +140,7 @@ for file_key in self.data.keys() {
                 use heck::SnakeCase;
                 let block = format!(
                     r#"
-            ("{data_set_name}",{table_name},{version}_i32) =>  {{
+            ("{data_set_name}",{table_name}, version) if version <= {version}_i32 => {{
                 #[cfg(feature = "{module}")]
                 {{
                     let d: Vec<data_model::{local_name}> = self.get_table()?;
