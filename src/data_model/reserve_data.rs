@@ -1,109 +1,20 @@
 /// # Summary
-///
-/// ## MTPASA_RESERVELIMIT
-///  _MT PASA input table defining a MT PASA Reserve Requirement within a single set. An MT PASA Reserve Requirement can span more than one region._
-///
-/// * Data Set Name: Mtpasa
-/// * File Name: Reservelimit
-/// * Data Version: 1
-///
-/// # Description
-///  Source MTPASA_RESERVELIMIT is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~20 rows per year
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * EFFECTIVEDATE
-/// * RESERVELIMITID
-/// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaReservelimit1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub version_datetime: chrono::NaiveDateTime,
-    /// MT PASA Reserve Requirement identifier
-    pub reservelimitid: String,
-    /// Description of this Reserve Requirement
-    pub description: Option<String>,
-    /// Right hand side value for this Reserve requirement
-    pub rhs: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaReservelimit1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "MTPASA".into(),
-            table_name: Some("RESERVELIMIT".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## MTPASA_RESERVELIMIT_REGION
-///  _MT PASA input table to define the regions that are part of a single MT PASA Reserve Requirement_
-///
-/// * Data Set Name: Mtpasa
-/// * File Name: Reservelimit Region
-/// * Data Version: 1
-///
-/// # Description
-///  Source MTPASA_RESERVELIMIT_REGION is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~50 rows per year
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * EFFECTIVEDATE
-/// * REGIONID
-/// * RESERVELIMITID
-/// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaReservelimitRegion1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub version_datetime: chrono::NaiveDateTime,
-    /// MT PASA Reserve requirement identifier
-    pub reservelimitid: String,
-    /// Region ID - identifier of a NEM region included in this requirement
-    pub regionid: String,
-    /// Coefficient for the region in this reserve requirement
-    pub coef: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaReservelimitRegion1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "MTPASA".into(),
-            table_name: Some("RESERVELIMIT_REGION".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
+/// 
 /// ## RESERVE
 ///  _RESERVE sets out specific reserve requirements for dispatch, predispatch and STPASA, for each half-hour interval by region. Updates show as new versions for a date.<br>_
-///
+/// 
 /// * Data Set Name: Reserve Data
 /// * File Name: Reserve
 /// * Data Version: 1
-///
+/// 
 /// # Description
 ///  Two fields specify Frequency Controlled Ancillary Services requirements for the regulation ancillary services. Another two fields specify the Lack of Reserve levels to be applied in the ST PASA solver.  Change Notice 324 (for the FCAS Constraint enhancements project) means that Dispatch no longer utilises the static FCAS requirements defined in the DELTAMW and RESERVE tables. These tables are replaced with constraint data as a source of FCAS requirements. RESERVE data is public, so is available to all participants. Source RESERVE updates as AEMO updates forecasts, daily.
-///
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * PERIODID
 /// * REGIONID
 /// * SETTLEMENTDATE
@@ -147,30 +58,79 @@ pub struct ReserveDataReserve1 {
 }
 impl crate::GetTable for ReserveDataReserve1 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "RESERVE_DATA".into(),
-            table_name: Some("RESERVE".into()),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "RESERVE_DATA".into(),
+                        table_name: Some("RESERVE".into()),
+                        version: 1,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
+/// ## MTPASA_RESERVELIMIT_REGION
+///  _MT PASA input table to define the regions that are part of a single MT PASA Reserve Requirement_
+/// 
+/// * Data Set Name: Mtpasa
+/// * File Name: Reservelimit Region
+/// * Data Version: 1
+/// 
+/// # Description
+///  Source MTPASA_RESERVELIMIT_REGION is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~50 rows per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * REGIONID
+/// * RESERVELIMITID
+/// * VERSION_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaReservelimitRegion1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    /// MT PASA Reserve requirement identifier
+    pub reservelimitid: String,
+    /// Region ID - identifier of a NEM region included in this requirement
+    pub regionid: String,
+    /// Coefficient for the region in this reserve requirement
+    pub coef: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaReservelimitRegion1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MTPASA".into(),
+                        table_name: Some("RESERVELIMIT_REGION".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## MTPASA_RESERVELIMIT_SET
 ///  _MT PASA input table defining a set of MT PASA Reserve Requirements. Note only one set can be active on a given date._
-///
+/// 
 /// * Data Set Name: Mtpasa
 /// * File Name: Reservelimit Set
 /// * Data Version: 1
-///
+/// 
 /// # Description
 ///  Source MTPASA_RESERVELIMIT_SET is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~2 rows per year
-///
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * EFFECTIVEDATE
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -192,10 +152,58 @@ pub struct MtpasaReservelimitSet1 {
 }
 impl crate::GetTable for MtpasaReservelimitSet1 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "MTPASA".into(),
-            table_name: Some("RESERVELIMIT_SET".into()),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "MTPASA".into(),
+                        table_name: Some("RESERVELIMIT_SET".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## MTPASA_RESERVELIMIT
+///  _MT PASA input table defining a MT PASA Reserve Requirement within a single set. An MT PASA Reserve Requirement can span more than one region._
+/// 
+/// * Data Set Name: Mtpasa
+/// * File Name: Reservelimit
+/// * Data Version: 1
+/// 
+/// # Description
+///  Source MTPASA_RESERVELIMIT is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~20 rows per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * RESERVELIMITID
+/// * VERSION_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaReservelimit1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    /// MT PASA Reserve Requirement identifier
+    pub reservelimitid: String,
+    /// Description of this Reserve Requirement
+    pub description: Option<String>,
+    /// Right hand side value for this Reserve requirement
+    pub rhs: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaReservelimit1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "MTPASA".into(),
+                        table_name: Some("RESERVELIMIT".into()),
+                        version: 1,
+                    }
+                    
     }
 }

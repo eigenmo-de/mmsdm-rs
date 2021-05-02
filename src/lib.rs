@@ -116,18 +116,18 @@ pub enum RecordType {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct AemoHeader {
-    record_type: RecordType,
-    data_source: String,
-    file_name: String,
-    participant_name: String,
-    privacy_level: String,
+    pub record_type: RecordType,
+    pub data_source: String,
+    pub file_name: String,
+    pub from_participant: String,
+    pub to_participant: String,
     #[serde(with = "mms_date")]
-    effective_date: chrono::NaiveDate,
+    pub effective_date: chrono::NaiveDate,
     #[serde(with = "mms_time")]
-    effective_time: chrono::NaiveTime,
-    serial_number: i64,
-    file_name_2: Option<String>,
-    serial_number_2: i64,
+    pub effective_time: chrono::NaiveTime,
+    pub serial_number: i64,
+    pub file_name_2: Option<String>,
+    pub serial_number_2: Option<i64>,
 }
 
 impl AemoHeader {
@@ -135,10 +135,12 @@ impl AemoHeader {
         self.effective_date.and_time(self.effective_time)
     }
 
+    /// This function as currently implemented will generally produce
+    /// a name close but not exact to the original name
     pub fn get_filename(&self) -> String {
         format!(
             "{}_{}_{}{}_{}.CSV",
-            self.participant_name,
+            self.to_participant,
             self.file_name,
             self.effective_date.format("%Y%m%d"),
             self.effective_time.format("%H%M%S"),
@@ -207,14 +209,6 @@ impl fmt::Display for FileKey {
     }
 }
 
-pub struct FileKeys {}
-
-impl std::iter::Iterator for FileKeys {
-    type Item = FileKey;
-    fn next(&mut self) -> Option<Self::Item> {
-        todo!()
-    }
-}
 /// This trait is designed as a convenient way to extract a Vec of the desired Strct representing
 /// a row of the table from the `AemoFile` which represents the whole file.
 /// Most `AemoFiles` would contain multiple tables

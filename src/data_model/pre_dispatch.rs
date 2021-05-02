@@ -1,20 +1,513 @@
 /// # Summary
-///
+/// 
+/// ## PREDISPATCHOFFERTRK
+///  _PREDISPATCHOFFERTRK is for the ancillary service bid tracking of predispatch processing. PREDISPATCHOFFERTRK identifies which bids from BIDDAYOFFER and BIDOFFERPERIOD were applied for a given unit and ancillary service for each predispatch run._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Offertrk
+/// * Data Version: 1
+/// 
+/// # Description
+///  Source PREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day.  Volume Approximately 45,000 records per day. 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * BIDTYPE
+/// * DUID
+/// * PERIODID
+/// * PREDISPATCHSEQNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchOffertrk1 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    /// Dispatchable Unit identifier
+    pub duid: String,
+    /// Bid type Identifier - the ancillary service to which the bid applies
+    pub bidtype: String,
+    /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
+    pub periodid: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub bidsettlementdate: Option<chrono::NaiveDateTime>,
+    /// Time this bid was processed and loaded
+    pub bidofferdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub datetime: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for PredispatchOffertrk1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("OFFERTRK".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCHINTERCONNECTORRES
+///  _PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.<br>Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits.<br>_
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Interconnector Soln
+/// * Data Version: 3
+/// 
+/// # Description
+///  Source PREDISPATCHINTERCONNECTORRES updates with every thirty-minute predispatch run. Note MW losses can be negative depending on the flow. The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in INTERCONNECTOR.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * DATETIME
+/// * INTERCONNECTORID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchInterconnectorSoln3 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
+    pub runno: Option<rust_decimal::Decimal>,
+    /// Interconnector identifier
+    pub interconnectorid: String,
+    /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
+    pub periodid: Option<String>,
+    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
+    pub intervention: Option<rust_decimal::Decimal>,
+    /// Metered MW Flow from EMS. For periods subsequent to the first period of a Pre-Dispatch run, this value represents the cleared target for the previous period of that Pre-Dispatch run.
+    pub meteredmwflow: Option<rust_decimal::Decimal>,
+    /// Calculated MW Flow
+    pub mwflow: Option<rust_decimal::Decimal>,
+    /// Calculated MW Losses
+    pub mwlosses: Option<rust_decimal::Decimal>,
+    /// $ Marginal value of interconnector constraint from SPD
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Degree of violation of interconnector constraint in MW
+    pub violationdegree: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime")]
+    pub datetime: chrono::NaiveDateTime,
+    /// Calculated export limit.
+    pub exportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated import limit.
+    pub importlimit: Option<rust_decimal::Decimal>,
+    /// Marginal loss factor. Use this to adjust bids between reports.
+    pub marginalloss: Option<rust_decimal::Decimal>,
+    /// Generic Constraint setting the export limit
+    pub exportgenconid: Option<String>,
+    /// Generic Constraint setting the import limit
+    pub importgenconid: Option<String>,
+    /// Calculated export limit applying to energy + FCAS.
+    pub fcasexportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated import limit applying to energy + FCAS.
+    pub fcasimportlimit: Option<rust_decimal::Decimal>,
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
+    pub local_price_adjustment_export: Option<rust_decimal::Decimal>,
+    /// Key for Local_Price_Adjustment_Export: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
+    pub locally_constrained_export: Option<rust_decimal::Decimal>,
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor &gt;= 0)
+    pub local_price_adjustment_import: Option<rust_decimal::Decimal>,
+    /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
+    pub locally_constrained_import: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for PredispatchInterconnectorSoln3 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("INTERCONNECTOR_SOLN".into()),
+                        version: 3,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCH_FCAS_REQ
+///  _PREDISPATCH_FCAS_REQ shows Predispatch Constraint tracking for Regional FCAS Requirements._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Regionfcasrequirement
+/// * Data Version: 2
+/// 
+/// # Description
+///  Source PREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly) Volume Approximately 2,000 rows per day. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * BIDTYPE
+/// * DATETIME
+/// * GENCONID
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchRegionfcasrequirement2 {
+    /// PreDispatch Sequence number 
+    pub predispatchseqno: Option<String>,
+    /// Case Run number
+    pub runno: Option<rust_decimal::Decimal>,
+    /// Intervention Flag
+    pub intervention: Option<rust_decimal::Decimal>,
+    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
+    pub periodid: Option<String>,
+    /// Generic Constraint ID - Join to table GenConData
+    pub genconid: String,
+    /// Region ID
+    pub regionid: String,
+    /// Bid Type Identifier
+    pub bidtype: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub genconeffectivedate: Option<chrono::NaiveDateTime>,
+    /// Generic Constraint Version number - Join to table GenConData
+    pub genconversionno: Option<rust_decimal::Decimal>,
+    /// Marginal Value of generic constraint
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime")]
+    pub datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The base cost of the constraint for this service, before the regulation/contingency split
+    pub base_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted cost of the constraint for this service, before the regulation/contingency split
+    pub adjusted_cost: Option<rust_decimal::Decimal>,
+    /// An estimated value for the constraint CMPF, based on dispatched data
+    pub estimated_cmpf: Option<rust_decimal::Decimal>,
+    /// An estimated value for the constraint CRMPF, based on dispatched data
+    pub estimated_crmpf: Option<rust_decimal::Decimal>,
+    /// Estimated recovery factor for CMPF based recovery
+    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
+    /// Estimated recovery factor for CRMPF based recovery
+    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for PredispatchRegionfcasrequirement2 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("REGIONFCASREQUIREMENT".into()),
+                        version: 2,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCHCONSTRAINT
+///  _PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.<br>Constraint solutions only report fixed loading /MR constraints on the next day.<br>_
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Constraint Solution
+/// * Data Version: 5
+/// 
+/// # Description
+///  PREDISPATCHCONSTRAINT data is confidential on the day of creation, and public to all participants after the end of the market day. Source PREDISPATCHCONSTRAINT updates with every thirty-minute predispatch run. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONSTRAINTID
+/// * DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchConstraintSolution5 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
+    pub runno: Option<rust_decimal::Decimal>,
+    /// Generic constraint identifier
+    pub constraintid: String,
+    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
+    pub periodid: Option<String>,
+    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
+    pub intervention: Option<rust_decimal::Decimal>,
+    /// RHS value used.
+    pub rhs: Option<rust_decimal::Decimal>,
+    /// Marginal value of violated constraint
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Degree of constraint violation
+    pub violationdegree: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime")]
+    pub datetime: chrono::NaiveDateTime,
+    /// DUID to which the Constraint is confidential. Null denotes non-confidential
+    pub duid: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
+    /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
+    pub genconid_versionno: Option<rust_decimal::Decimal>,
+    /// Aggregation of the constraints LHS term solution values
+    pub lhs: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for PredispatchConstraintSolution5 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("CONSTRAINT_SOLUTION".into()),
+                        version: 5,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCHPRICE
+///  _PREDISPATCHPRICE records predispatch prices for each region by period for each predispatch run, including fields to handle the Ancillary Services functionality._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Region Prices
+/// * Data Version: 1
+/// 
+/// # Description
+///  PREDISPATCHPRICE data is public, so is available to all participants. Source PREDISPATCHPRICE updates with every thirty-minute predispatch run.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * DATETIME
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchRegionPrices1 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
+    pub runno: Option<rust_decimal::Decimal>,
+    /// Unique region identifier
+    pub regionid: String,
+    /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
+    pub periodid: Option<String>,
+    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
+    pub intervention: Option<rust_decimal::Decimal>,
+    /// Regional Reference Price
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// Excess energy price
+    pub eep: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp1: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep1: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp2: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep2: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp3: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep3: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp4: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep4: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp5: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep5: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp6: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep6: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp7: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep7: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub rrp8: Option<rust_decimal::Decimal>,
+    /// Not used
+    pub eep8: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime")]
+    pub datetime: chrono::NaiveDateTime,
+    /// Regional reference price for this dispatch period
+    pub raise6secrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raise60secrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raise5minrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub raiseregrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lower6secrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lower60secrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lower5minrrp: Option<rust_decimal::Decimal>,
+    /// Regional reference price for this dispatch period
+    pub lowerregrrp: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for PredispatchRegionPrices1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("REGION_PRICES".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCHBLOCKEDCONSTRAINT
+///  _PREDISPATCH Blocked Constraints lists any constraints that were blocked in a Predispatch run. If no constraints are blocked, there will be no rows for that predispatch run._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Blocked Constraints
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * CONSTRAINTID
+/// * PREDISPATCHSEQNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchBlockedConstraints1 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    /// Generic Constraint identifier (synonymous with GenConID)
+    pub constraintid: String,
+}
+impl crate::GetTable for PredispatchBlockedConstraints1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("BLOCKED_CONSTRAINTS".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCH_MNSPBIDTRK
+///  _PREDISPATCH_MNSPBIDTRK shows the MNSP bid tracking, including the bid version used in each predispatch run for each MNSP Interconnector Link. PREDISPATCH_MNSPBIDTRK shows the audit trail of the bid used for each predispatch run._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Mnspbidtrk
+/// * Data Version: 1
+/// 
+/// # Description
+///  Source Own (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data. Volume 1, 700, 000 per year
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * LINKID
+/// * PERIODID
+/// * PREDISPATCHSEQNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchMnspbidtrk1 {
+    /// Predispatch run identifier
+    pub predispatchseqno: String,
+    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
+    pub linkid: String,
+    /// Trading Interval number
+    pub periodid: String,
+    /// Participant Identifier
+    pub participantid: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub settlementdate: Option<chrono::NaiveDateTime>,
+    /// Time this bid was processed and loaded
+    pub offerdate: Option<chrono::NaiveDateTime>,
+    /// Version No. for given offer date and settlement date used
+    pub versionno: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub datetime: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for PredispatchMnspbidtrk1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("MNSPBIDTRK".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCHSCENARIODEMAND
+///  _PREDISPATCHSCENARIODEMAND defines the demand offsets that are applied for each of the predispatch sensitivity scenarios._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Scenario Demand
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * EFFECTIVEDATE
+/// * REGIONID
+/// * SCENARIO
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchScenarioDemand1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// The version of this set of scenarios
+    pub versionno: i64,
+    /// The scenario identifier.
+    pub scenario: i64,
+    /// The region to which to apply the deltaMW for this SCENARIO.
+    pub regionid: String,
+    /// The MW offset that is applied for this scenario
+    pub deltamw: Option<i64>,
+}
+impl crate::GetTable for PredispatchScenarioDemand1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("SCENARIO_DEMAND".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## PREDISPATCHREGIONSUM
 ///  _PREDISPATCHREGIONSUM sets out the overall regional Pre-Dispatch results for base case details (excluding price). _
-///
+/// 
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
 /// * Data Version: 5
-///
+/// 
 /// # Description
 ///  PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period. Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load) Source PREDISPATCHREGIONSUM updates every thirty minutes. Note *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
-///
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -244,30 +737,151 @@ pub struct PredispatchRegionSolution5 {
 }
 impl crate::GetTable for PredispatchRegionSolution5 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("REGION_SOLUTION".into()),
-            version: 5,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("REGION_SOLUTION".into()),
+                        version: 5,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
+/// ## PREDISPATCHCASESOLUTION
+///  _PREDISPATCHCASESOLUTION provides information relating to the complete predispatch run. The fields provide an overview of the dispatch run results allowing immediate identification of conditions such as energy or FCAS deficiencies._
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Case Solution
+/// * Data Version: 1
+/// 
+/// # Description
+///  PREDISPATCHCASESOLUTION data is public, so is available to all participants. Source PREDISPATCHCASESOLUTION updates every half-hour. Volume Approximately 48 records per day.
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+/// 
+/// # Primary Key Columns
+/// 
+/// * PREDISPATCHSEQNO
+/// * RUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchCaseSolution1 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    /// Predispatch run no, normally 1.
+    pub runno: rust_decimal::Decimal,
+    /// If non-zero indicated one of the following conditions: 1 = Supply Scarcity, Excess generation or constraint violations, -X = Model failure
+    pub solutionstatus: Option<rust_decimal::Decimal>,
+    /// Current version of SPD
+    pub spdversion: Option<String>,
+    /// Non-Physical Losses algorithm invoked during this run
+    pub nonphysicallosses: Option<rust_decimal::Decimal>,
+    /// The Objective function from the LP
+    pub totalobjective: Option<rust_decimal::Decimal>,
+    /// Total Region Demand violations
+    pub totalareagenviolation: Option<rust_decimal::Decimal>,
+    /// Total interconnector violations
+    pub totalinterconnectorviolation: Option<rust_decimal::Decimal>,
+    /// Total generic constraint violations
+    pub totalgenericviolation: Option<rust_decimal::Decimal>,
+    /// Total ramp rate violations
+    pub totalramprateviolation: Option<rust_decimal::Decimal>,
+    /// Total unit capacity violations
+    pub totalunitmwcapacityviolation: Option<rust_decimal::Decimal>,
+    /// Total of 5 minute ancillary service region violations
+    pub total5minviolation: Option<rust_decimal::Decimal>,
+    /// Total of Regulation ancillary service region violations
+    pub totalregviolation: Option<rust_decimal::Decimal>,
+    /// Total of 6 second ancillary service region violations
+    pub total6secviolation: Option<rust_decimal::Decimal>,
+    /// Total of 60 second ancillary service region violations
+    pub total60secviolation: Option<rust_decimal::Decimal>,
+    /// Total of ancillary service trader profile violations
+    pub totalasprofileviolation: Option<rust_decimal::Decimal>,
+    /// Total of Energy Constrained unit offer violations.
+    pub totalenergyconstrviolation: Option<rust_decimal::Decimal>,
+    /// Total of unit summated offer band violations
+    pub totalenergyofferviolation: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Flag to indicate if this Pre-Dispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
+    pub intervention: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for PredispatchCaseSolution1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("CASE_SOLUTION".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
+/// ## PREDISPATCH_LOCAL_PRICE
+///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
+/// 
+/// * Data Set Name: Predispatch
+/// * File Name: Local Price
+/// * Data Version: 1
+/// 
+/// 
+/// 
+/// # Notes
+///  * (Visibility) Data in this table is: Private; Public Next-Day
+/// 
+/// # Primary Key Columns
+/// 
+/// * DATETIME
+/// * DUID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PredispatchLocalPrice1 {
+    #[serde(with = "crate::trading_period")]
+    pub predispatchseqno: crate::TradingPeriod,
+    #[serde(with = "crate::mms_datetime")]
+    pub datetime: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier
+    pub duid: String,
+    /// A period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period
+    pub periodid: Option<String>,
+    /// Aggregate Constraint contribution cost of this unit: Sum(MarginalValue x Factor) for all relevant Constraints
+    pub local_price_adjustment: Option<rust_decimal::Decimal>,
+    /// Key for Local_Price_Adjustment: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
+    pub locally_constrained: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for PredispatchLocalPrice1 {
+    fn get_file_key() -> crate::FileKey {
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("LOCAL_PRICE".into()),
+                        version: 1,
+                    }
+                    
+    }
+}
+/// # Summary
+/// 
 /// ## PREDISPATCHPRICESENSITIVITIES
 ///  _PREDISPATCHPRICESENSITIVITIES sets out the sensitivity prices for each region by period._
-///
+/// 
 /// * Data Set Name: Predispatch
 /// * File Name: Pricesensitivities
 /// * Data Version: 1
-///
+/// 
 /// # Description
 ///  Source The plan is to provide this data every half-hour.
-///
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -377,29 +991,31 @@ pub struct PredispatchPricesensitivities1 {
 }
 impl crate::GetTable for PredispatchPricesensitivities1 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("PRICESENSITIVITIES".into()),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("PRICESENSITIVITIES".into()),
+                        version: 1,
+                    }
+                    
     }
 }
 /// # Summary
-///
+/// 
 /// ## PREDISPATCHSCENARIODEMANDTRK
 ///  _Tracks the predispatch scenario offset updates across time_
-///
+/// 
 /// * Data Set Name: Predispatch
 /// * File Name: Scenario Demand Trk
 /// * Data Version: 1
-///
-///
-///
+/// 
+/// 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -417,242 +1033,32 @@ pub struct PredispatchScenarioDemandTrk1 {
 }
 impl crate::GetTable for PredispatchScenarioDemandTrk1 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("SCENARIO_DEMAND_TRK".into()),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("SCENARIO_DEMAND_TRK".into()),
+                        version: 1,
+                    }
+                    
     }
 }
 /// # Summary
-///
-/// ## PREDISPATCHBLOCKEDCONSTRAINT
-///  _PREDISPATCH Blocked Constraints lists any constraints that were blocked in a Predispatch run. If no constraints are blocked, there will be no rows for that predispatch run._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Blocked Constraints
-/// * Data Version: 1
-///
-///
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * CONSTRAINTID
-/// * PREDISPATCHSEQNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchBlockedConstraints1 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    /// Generic Constraint identifier (synonymous with GenConID)
-    pub constraintid: String,
-}
-impl crate::GetTable for PredispatchBlockedConstraints1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("BLOCKED_CONSTRAINTS".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCHCONSTRAINT
-///  _PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.<br>Constraint solutions only report fixed loading /MR constraints on the next day.<br>_
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Constraint Solution
-/// * Data Version: 5
-///
-/// # Description
-///  PREDISPATCHCONSTRAINT data is confidential on the day of creation, and public to all participants after the end of the market day. Source PREDISPATCHCONSTRAINT updates with every thirty-minute predispatch run. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-///
-/// # Primary Key Columns
-///
-/// * CONSTRAINTID
-/// * DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchConstraintSolution5 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
-    pub runno: Option<rust_decimal::Decimal>,
-    /// Generic constraint identifier
-    pub constraintid: String,
-    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
-    pub periodid: Option<String>,
-    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
-    /// RHS value used.
-    pub rhs: Option<rust_decimal::Decimal>,
-    /// Marginal value of violated constraint
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Degree of constraint violation
-    pub violationdegree: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime")]
-    pub datetime: chrono::NaiveDateTime,
-    /// DUID to which the Constraint is confidential. Null denotes non-confidential
-    pub duid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
-    /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
-    pub genconid_versionno: Option<rust_decimal::Decimal>,
-    /// Aggregation of the constraints LHS term solution values
-    pub lhs: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for PredispatchConstraintSolution5 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("CONSTRAINT_SOLUTION".into()),
-            version: 5,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCH_MNSPBIDTRK
-///  _PREDISPATCH_MNSPBIDTRK shows the MNSP bid tracking, including the bid version used in each predispatch run for each MNSP Interconnector Link. PREDISPATCH_MNSPBIDTRK shows the audit trail of the bid used for each predispatch run._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Mnspbidtrk
-/// * Data Version: 1
-///
-/// # Description
-///  Source Own (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data. Volume 1, 700, 000 per year
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * LINKID
-/// * PERIODID
-/// * PREDISPATCHSEQNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchMnspbidtrk1 {
-    /// Predispatch run identifier
-    pub predispatchseqno: String,
-    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
-    pub linkid: String,
-    /// Trading Interval number
-    pub periodid: String,
-    /// Participant Identifier
-    pub participantid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub settlementdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub offerdate: Option<chrono::NaiveDateTime>,
-    /// Version No. for given offer date and settlement date used
-    pub versionno: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub datetime: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for PredispatchMnspbidtrk1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("MNSPBIDTRK".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCH_FCAS_REQ
-///  _PREDISPATCH_FCAS_REQ shows Predispatch Constraint tracking for Regional FCAS Requirements._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Regionfcasrequirement
-/// * Data Version: 2
-///
-/// # Description
-///  Source PREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly) Volume Approximately 2,000 rows per day. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * BIDTYPE
-/// * DATETIME
-/// * GENCONID
-/// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchRegionfcasrequirement2 {
-    /// PreDispatch Sequence number
-    pub predispatchseqno: Option<String>,
-    /// Case Run number
-    pub runno: Option<rust_decimal::Decimal>,
-    /// Intervention Flag
-    pub intervention: Option<rust_decimal::Decimal>,
-    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
-    pub periodid: Option<String>,
-    /// Generic Constraint ID - Join to table GenConData
-    pub genconid: String,
-    /// Region ID
-    pub regionid: String,
-    /// Bid Type Identifier
-    pub bidtype: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub genconeffectivedate: Option<chrono::NaiveDateTime>,
-    /// Generic Constraint Version number - Join to table GenConData
-    pub genconversionno: Option<rust_decimal::Decimal>,
-    /// Marginal Value of generic constraint
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime")]
-    pub datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// The base cost of the constraint for this service, before the regulation/contingency split
-    pub base_cost: Option<rust_decimal::Decimal>,
-    /// The adjusted cost of the constraint for this service, before the regulation/contingency split
-    pub adjusted_cost: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CMPF, based on dispatched data
-    pub estimated_cmpf: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CRMPF, based on dispatched data
-    pub estimated_crmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CMPF based recovery
-    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CRMPF based recovery
-    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for PredispatchRegionfcasrequirement2 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("REGIONFCASREQUIREMENT".into()),
-            version: 2,
-        }
-    }
-}
-/// # Summary
-///
+/// 
 /// ## PREDISPATCHLOAD
 ///  _PREDISPATCHLOAD shows pre-dispatch targets for each dispatchable unit, including additional fields to handle the Ancillary Services functionality. No record is written where a unit is not dispatched. PREDISPATCHLOAD shows all the results for each period._
-///
+/// 
 /// * Data Set Name: Predispatch
 /// * File Name: Unit Solution
 /// * Data Version: 2
-///
+/// 
 /// # Description
-///  Source Own (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled (i.e. is unavailable). 1 001 Not stranded, not trapped, is enabled (i.e. available). 3 011 Not stranded, is trapped, is enabled (i.e. trapped). 4 100 Is stranded, not trapped, not enabled (i.e. stranded). For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
-///
+///  Source Own (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled. 1 001 Not stranded, not trapped, is enabled. 3 011 Not stranded, is trapped, is enabled. 4 100 Is stranded, not trapped, not enabled. For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Private; Public Next-Day
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * DATETIME
 /// * DUID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -725,17 +1131,17 @@ pub struct PredispatchUnitSolution2 {
     pub raisereg: Option<rust_decimal::Decimal>,
     /// Bid energy availability
     pub availability: Option<rust_decimal::Decimal>,
-    /// Raise 6sec status flag
+    /// Raise 6sec status flag 
     pub raise6secflags: Option<rust_decimal::Decimal>,
-    /// Raise 60sec status flag
+    /// Raise 60sec status flag 
     pub raise60secflags: Option<rust_decimal::Decimal>,
     /// Raise 5min status flag
     pub raise5minflags: Option<rust_decimal::Decimal>,
-    /// Raise reg status flag
+    /// Raise reg status flag 
     pub raiseregflags: Option<rust_decimal::Decimal>,
-    /// Lower 6sec status flag
+    /// Lower 6sec status flag 
     pub lower6secflags: Option<rust_decimal::Decimal>,
-    /// Lower 60sec status flag
+    /// Lower 60sec status flag 
     pub lower60secflags: Option<rust_decimal::Decimal>,
     /// Lower 5min status flag  
     pub lower5minflags: Option<rust_decimal::Decimal>,
@@ -762,164 +1168,31 @@ pub struct PredispatchUnitSolution2 {
 }
 impl crate::GetTable for PredispatchUnitSolution2 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("UNIT_SOLUTION".into()),
-            version: 2,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("UNIT_SOLUTION".into()),
+                        version: 2,
+                    }
+                    
     }
 }
 /// # Summary
-///
-/// ## PREDISPATCHOFFERTRK
-///  _PREDISPATCHOFFERTRK is for the ancillary service bid tracking of predispatch processing. PREDISPATCHOFFERTRK identifies which bids from BIDDAYOFFER and BIDPEROFFER were applied for a given unit and ancillary service for each predispatch run._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Offertrk
-/// * Data Version: 1
-///
-/// # Description
-///  Source PREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day.  Volume Approximately 45,000 records per day.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-///
-/// # Primary Key Columns
-///
-/// * BIDTYPE
-/// * DUID
-/// * PERIODID
-/// * PREDISPATCHSEQNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchOffertrk1 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    /// Dispatchable Unit identifier
-    pub duid: String,
-    /// Bid type Identifier - the ancillary service to which the bid applies
-    pub bidtype: String,
-    /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
-    pub periodid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub bidsettlementdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub bidofferdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub datetime: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for PredispatchOffertrk1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("OFFERTRK".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCH_LOCAL_PRICE
-///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Local Price
-/// * Data Version: 1
-///
-///
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-///
-/// # Primary Key Columns
-///
-/// * DATETIME
-/// * DUID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchLocalPrice1 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    #[serde(with = "crate::mms_datetime")]
-    pub datetime: chrono::NaiveDateTime,
-    /// Dispatchable unit identifier
-    pub duid: String,
-    /// A period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period
-    pub periodid: Option<String>,
-    /// Aggregate Constraint contribution cost of this unit: Sum(MarginalValue x Factor) for all relevant Constraints
-    pub local_price_adjustment: Option<rust_decimal::Decimal>,
-    /// Key for Local_Price_Adjustment: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
-    pub locally_constrained: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for PredispatchLocalPrice1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("LOCAL_PRICE".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCHSCENARIODEMAND
-///  _PREDISPATCHSCENARIODEMAND defines the demand offsets that are applied for each of the predispatch sensitivity scenarios._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Scenario Demand
-/// * Data Version: 1
-///
-///
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * EFFECTIVEDATE
-/// * REGIONID
-/// * SCENARIO
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchScenarioDemand1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    /// The version of this set of scenarios
-    pub versionno: i64,
-    /// The scenario identifier.
-    pub scenario: i64,
-    /// The region to which to apply the deltaMW for this SCENARIO.
-    pub regionid: String,
-    /// The MW offset that is applied for this scenario
-    pub deltamw: Option<i64>,
-}
-impl crate::GetTable for PredispatchScenarioDemand1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("SCENARIO_DEMAND".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
+/// 
 /// ## PREDISPATCHINTERSENSITIVITIES
 ///  _PREDISPATCHINTERSENSITIVITIES sets out the sensitivity flows for each interconnector by period._
-///
+/// 
 /// * Data Set Name: Predispatch
 /// * File Name: Interconnectr Sens
 /// * Data Version: 1
-///
-///
-///
+/// 
+/// 
+/// 
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-///
+/// 
 /// # Primary Key Columns
-///
+/// 
 /// * DATETIME
 /// * INTERCONNECTORID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -1029,255 +1302,12 @@ pub struct PredispatchInterconnectrSens1 {
 }
 impl crate::GetTable for PredispatchInterconnectrSens1 {
     fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("INTERCONNECTR_SENS".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCHCASESOLUTION
-///  _PREDISPATCHCASESOLUTION provides information relating to the complete predispatch run. The fields provide an overview of the dispatch run results allowing immediate identification of conditions such as energy or FCAS deficiencies._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Case Solution
-/// * Data Version: 1
-///
-/// # Description
-///  PREDISPATCHCASESOLUTION data is public, so is available to all participants. Source PREDISPATCHCASESOLUTION updates every half-hour. Volume Approximately 48 records per day.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * PREDISPATCHSEQNO
-/// * RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchCaseSolution1 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    /// Predispatch run no, normally 1.
-    pub runno: rust_decimal::Decimal,
-    /// If non-zero indicated one of the following conditions: 1 = Supply Scarcity, Excess generation or constraint violations, -X = Model failure
-    pub solutionstatus: Option<rust_decimal::Decimal>,
-    /// Current version of SPD
-    pub spdversion: Option<String>,
-    /// Non-Physical Losses algorithm invoked during this run
-    pub nonphysicallosses: Option<rust_decimal::Decimal>,
-    /// The Objective function from the LP
-    pub totalobjective: Option<rust_decimal::Decimal>,
-    /// Total Region Demand violations
-    pub totalareagenviolation: Option<rust_decimal::Decimal>,
-    /// Total interconnector violations
-    pub totalinterconnectorviolation: Option<rust_decimal::Decimal>,
-    /// Total generic constraint violations
-    pub totalgenericviolation: Option<rust_decimal::Decimal>,
-    /// Total ramp rate violations
-    pub totalramprateviolation: Option<rust_decimal::Decimal>,
-    /// Total unit capacity violations
-    pub totalunitmwcapacityviolation: Option<rust_decimal::Decimal>,
-    /// Total of 5 minute ancillary service region violations
-    pub total5minviolation: Option<rust_decimal::Decimal>,
-    /// Total of Regulation ancillary service region violations
-    pub totalregviolation: Option<rust_decimal::Decimal>,
-    /// Total of 6 second ancillary service region violations
-    pub total6secviolation: Option<rust_decimal::Decimal>,
-    /// Total of 60 second ancillary service region violations
-    pub total60secviolation: Option<rust_decimal::Decimal>,
-    /// Total of ancillary service trader profile violations
-    pub totalasprofileviolation: Option<rust_decimal::Decimal>,
-    /// Total of Energy Constrained unit offer violations.
-    pub totalenergyconstrviolation: Option<rust_decimal::Decimal>,
-    /// Total of unit summated offer band violations
-    pub totalenergyofferviolation: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Flag to indicate if this Pre-Dispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
-    pub intervention: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for PredispatchCaseSolution1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("CASE_SOLUTION".into()),
-            version: 1,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCHINTERCONNECTORRES
-///  _PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.<br>Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits.<br>_
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Interconnector Soln
-/// * Data Version: 3
-///
-/// # Description
-///  Source PREDISPATCHINTERCONNECTORRES updates with every thirty-minute predispatch run. Note MW losses can be negative depending on the flow. The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in INTERCONNECTOR.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * DATETIME
-/// * INTERCONNECTORID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchInterconnectorSoln3 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
-    pub runno: Option<rust_decimal::Decimal>,
-    /// Interconnector identifier
-    pub interconnectorid: String,
-    /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
-    pub periodid: Option<String>,
-    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
-    /// Metered MW Flow from EMS. For periods subsequent to the first period of a Pre-Dispatch run, this value represents the cleared target for the previous period of that Pre-Dispatch run.
-    pub meteredmwflow: Option<rust_decimal::Decimal>,
-    /// Calculated MW Flow
-    pub mwflow: Option<rust_decimal::Decimal>,
-    /// Calculated MW Losses
-    pub mwlosses: Option<rust_decimal::Decimal>,
-    /// $ Marginal value of interconnector constraint from SPD
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Degree of violation of interconnector constraint in MW
-    pub violationdegree: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime")]
-    pub datetime: chrono::NaiveDateTime,
-    /// Calculated export limit.
-    pub exportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated import limit.
-    pub importlimit: Option<rust_decimal::Decimal>,
-    /// Marginal loss factor. Use this to adjust bids between reports.
-    pub marginalloss: Option<rust_decimal::Decimal>,
-    /// Generic Constraint setting the export limit
-    pub exportgenconid: Option<String>,
-    /// Generic Constraint setting the import limit
-    pub importgenconid: Option<String>,
-    /// Calculated export limit applying to energy + FCAS.
-    pub fcasexportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated import limit applying to energy + FCAS.
-    pub fcasimportlimit: Option<rust_decimal::Decimal>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
-    pub local_price_adjustment_export: Option<rust_decimal::Decimal>,
-    /// Key for Local_Price_Adjustment_Export: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
-    pub locally_constrained_export: Option<rust_decimal::Decimal>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor &gt;= 0)
-    pub local_price_adjustment_import: Option<rust_decimal::Decimal>,
-    /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
-    pub locally_constrained_import: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for PredispatchInterconnectorSoln3 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("INTERCONNECTOR_SOLN".into()),
-            version: 3,
-        }
-    }
-}
-/// # Summary
-///
-/// ## PREDISPATCHPRICE
-///  _PREDISPATCHPRICE records predispatch prices for each region by period for each predispatch run, including fields to handle the Ancillary Services functionality._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Region Prices
-/// * Data Version: 1
-///
-/// # Description
-///  PREDISPATCHPRICE data is public, so is available to all participants. Source PREDISPATCHPRICE updates with every thirty-minute predispatch run.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * DATETIME
-/// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchRegionPrices1 {
-    #[serde(with = "crate::trading_period")]
-    pub predispatchseqno: crate::TradingPeriod,
-    /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
-    pub runno: Option<rust_decimal::Decimal>,
-    /// Unique region identifier
-    pub regionid: String,
-    /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
-    pub periodid: Option<String>,
-    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
-    /// Regional Reference Price
-    pub rrp: Option<rust_decimal::Decimal>,
-    /// Excess energy price
-    pub eep: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp1: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep1: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp2: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep2: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp3: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep3: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp4: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep4: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp5: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep5: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp6: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep6: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp7: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep7: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub rrp8: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub eep8: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime")]
-    pub datetime: chrono::NaiveDateTime,
-    /// Regional reference price for this dispatch period
-    pub raise6secrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raise60secrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raise5minrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub raiseregrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lower6secrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lower60secrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lower5minrrp: Option<rust_decimal::Decimal>,
-    /// Regional reference price for this dispatch period
-    pub lowerregrrp: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for PredispatchRegionPrices1 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "PREDISPATCH".into(),
-            table_name: Some("REGION_PRICES".into()),
-            version: 1,
-        }
+
+                    crate::FileKey {
+                        data_set_name: "PREDISPATCH".into(),
+                        table_name: Some("INTERCONNECTR_SENS".into()),
+                        version: 1,
+                    }
+                    
     }
 }
