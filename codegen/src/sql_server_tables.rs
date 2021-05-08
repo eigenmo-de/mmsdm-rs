@@ -107,9 +107,11 @@ go
 create table mmsdm.FileLog (
     file_log_id bigint identity(1,1) not null primary key,
     data_source varchar(255) not null,
+    file_name varchar(255) not null,
     from_participant varchar(255) not null,
     to_participant varchar(255) not null,
-    effective_date datetime,
+    effective_date date,
+    effective_time time,
     serial_number bigint not null,
     data_set varchar(255) not null,
     sub_type varchar(255) not null,
@@ -117,7 +119,7 @@ create table mmsdm.FileLog (
     [status] char(1) not null default 'P' check ([status] in ('P','E','C')),
     message varchar(max) null,
     check ((status != 'E' and message is null) or (status = 'E' and message is not null)),
-    unique (serial_number, data_set, sub_type, version)
+    unique (to_participant, serial_number, data_set, sub_type)
 )
 go
             "#
