@@ -1,19 +1,253 @@
 /// # Summary
-/// 
+///
+/// ## P5MIN_BLOCKEDCONSTRAINT
+///  _P5MIN Blocked Constraints lists any constraints that were blocked in a P5MIN run. If no constraints are blocked, there will be no rows for that 5 minute predispatch run._
+///
+/// * Data Set Name: P5min
+/// * File Name: Blocked Constraints
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * CONSTRAINTID
+/// * RUN_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct P5minBlockedConstraints1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Generic Constraint identifier (synonymous with GenConID)
+    pub constraintid: String,
+}
+impl crate::GetTable for P5minBlockedConstraints1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("BLOCKED_CONSTRAINTS".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
+/// ## P5MIN_CASESOLUTION
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution.<br>_
+///
+/// * Data Set Name: P5min
+/// * File Name: Casesolution
+/// * Data Version: 2
+///
+/// # Description
+///  P5MIN_CASESOLUTION data is public, so is available to all participants. Source P5MIN_CASESOLUTION updates every 5 minutes. Volume Rows per day: 288
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * RUN_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct P5minCasesolution2 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Date and Time of first interval in study
+    pub startinterval_datetime: Option<String>,
+    /// The Objective function from the LP
+    pub totalobjective: Option<rust_decimal::Decimal>,
+    /// Flag to indicate non-physical losses occurred in this study
+    pub nonphysicallosses: Option<rust_decimal::Decimal>,
+    /// Sum of Regional Energy balance violations
+    pub totalareagenviolation: Option<rust_decimal::Decimal>,
+    /// Sum of Interconnector violations of standing data limits
+    pub totalinterconnectorviolation: Option<rust_decimal::Decimal>,
+    /// Sum of Generic Constraint violations
+    pub totalgenericviolation: Option<rust_decimal::Decimal>,
+    /// Sum of Unit Ramp Rate violations
+    pub totalramprateviolation: Option<rust_decimal::Decimal>,
+    /// Sum of unit capacity violations
+    pub totalunitmwcapacityviolation: Option<rust_decimal::Decimal>,
+    /// Sum of regional 5 min FCAS violations
+    pub total5minviolation: Option<rust_decimal::Decimal>,
+    /// Sum of regional regulation FCAS violations
+    pub totalregviolation: Option<rust_decimal::Decimal>,
+    /// Sum of regional 6 sec FCAS violations
+    pub total6secviolation: Option<rust_decimal::Decimal>,
+    /// Sum of regional 60 sec FCAS violations
+    pub total60secviolation: Option<rust_decimal::Decimal>,
+    /// Sum of unit energy constrained violations
+    pub totalenergyconstrviolation: Option<rust_decimal::Decimal>,
+    /// Sum of unit offer violations
+    pub totalenergyofferviolation: Option<rust_decimal::Decimal>,
+    /// Sum of unit FCAS profile offer violations
+    pub totalasprofileviolation: Option<rust_decimal::Decimal>,
+    /// Sum of unit Fast start profile violations
+    pub totalfaststartviolation: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Flag to indicate if this Predispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
+    pub intervention: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for P5minCasesolution2 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("CASESOLUTION".into()),
+            version: 2,
+        }
+    }
+}
+/// # Summary
+///
+/// ## P5MIN_CONSTRAINTSOLUTION
+///  _The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.<br>_
+///
+/// * Data Set Name: P5min
+/// * File Name: Constraintsolution
+/// * Data Version: 6
+///
+/// # Description
+///  P5MIN_CONSTRAINTSOLUTION is public data, so is available to all participants. Source P5MIN_CONSTRAINTSOLUTION updates every five minutes. Volume Rows per day: ~2.3 million
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private &amp; Public
+///
+/// # Primary Key Columns
+///
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct P5minConstraintsolution6 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Constraint identifier (synonymous with GenConID)
+    pub constraintid: String,
+    /// Right Hand Side value in the capacity evaluation
+    pub rhs: Option<rust_decimal::Decimal>,
+    /// Marginal cost of constraint (&gt;0 if binding)
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Amount of Violation (&gt;0 if  violating)
+    pub violationdegree: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// DUID to which the Constraint is confidential. Null denotes non-confidential
+    pub duid: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
+    /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
+    pub genconid_versionno: Option<rust_decimal::Decimal>,
+    /// Aggregation of the constraints LHS term solution values
+    pub lhs: Option<rust_decimal::Decimal>,
+    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run(INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
+    pub intervention: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for P5minConstraintsolution6 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("CONSTRAINTSOLUTION".into()),
+            version: 6,
+        }
+    }
+}
+/// # Summary
+///
+/// ## P5MIN_INTERCONNECTORSOLN
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.<br>_
+///
+/// * Data Set Name: P5min
+/// * File Name: Interconnectorsoln
+/// * Data Version: 4
+///
+/// # Description
+///  P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants. Source P5MIN_INTERCONNECTORSOLN updates every 5 minutes. Volume Rows per day: 1440 Based on 200 interconnector/binding constraints per interval
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * INTERCONNECTORID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct P5minInterconnectorsoln4 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Interconnector identifier
+    pub interconnectorid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// SCADA MW Flow measured at Run start. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run.
+    pub meteredmwflow: Option<rust_decimal::Decimal>,
+    /// Cleared Interconnector loading level (MW)
+    pub mwflow: Option<rust_decimal::Decimal>,
+    /// Interconnector Losses at cleared flow
+    pub mwlosses: Option<rust_decimal::Decimal>,
+    /// Marginal cost of Interconnector standing data limits (if binding)
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Violation of Interconnector standing data limits
+    pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Flag indicating MNSP registration
+    pub mnsp: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit
+    pub exportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
+    pub importlimit: Option<rust_decimal::Decimal>,
+    /// Marginal loss factor at the cleared flow
+    pub marginalloss: Option<rust_decimal::Decimal>,
+    /// Generic Constraint setting the export limit
+    pub exportgenconid: Option<String>,
+    /// Generic Constraint setting the import limit
+    pub importgenconid: Option<String>,
+    /// Calculated export limit applying to energy + Frequency Controlled Ancillary Services.
+    pub fcasexportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated import limit applying to energy + Frequency Controlled Ancillary Services.
+    pub fcasimportlimit: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
+    pub local_price_adjustment_export: Option<rust_decimal::Decimal>,
+    /// Key for Local_Price_Adjustment_Export: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
+    pub locally_constrained_export: Option<rust_decimal::Decimal>,
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor &gt;= 0)
+    pub local_price_adjustment_import: Option<rust_decimal::Decimal>,
+    /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
+    pub locally_constrained_import: Option<rust_decimal::Decimal>,
+    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
+    pub intervention: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for P5minInterconnectorsoln4 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("INTERCONNECTORSOLN".into()),
+            version: 4,
+        }
+    }
+}
+/// # Summary
+///
 /// ## P5MIN_INTERSENSITIVITIES
 ///  _Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Intersensitivities
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -120,169 +354,29 @@ pub struct P5minIntersensitivities1 {
 }
 impl crate::GetTable for P5minIntersensitivities1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("INTERSENSITIVITIES".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("INTERSENSITIVITIES".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## P5MIN_UNITSOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study.<br>_
-/// 
-/// * Data Set Name: P5min
-/// * File Name: Unitsolution
-/// * Data Version: 3
-/// 
-/// # Description
-///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * DUID
-/// * INTERVAL_DATETIME
-/// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minUnitsolution3 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Dispatchable unit identifier
-    pub duid: String,
-    /// Connection point identifier for DUID
-    pub connectionpointid: Option<String>,
-    /// Generator or Load
-    pub tradetype: Option<rust_decimal::Decimal>,
-    /// AGC Status from EMS: 1 = on, 0 = off
-    pub agcstatus: Option<rust_decimal::Decimal>,
-    /// Initial MW at start of period. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run.
-    pub initialmw: Option<rust_decimal::Decimal>,
-    /// Target MW for end of period
-    pub totalcleared: Option<rust_decimal::Decimal>,
-    /// Ramp down rate (lessor of bid or telemetered rate).
-    pub rampdownrate: Option<rust_decimal::Decimal>,
-    /// Ramp up rate (lessor of bid or telemetered rate).
-    pub rampuprate: Option<rust_decimal::Decimal>,
-    /// Lower 5 min reserve target
-    pub lower5min: Option<rust_decimal::Decimal>,
-    /// Lower 60 sec reserve target
-    pub lower60sec: Option<rust_decimal::Decimal>,
-    /// Lower 6 sec reserve target
-    pub lower6sec: Option<rust_decimal::Decimal>,
-    /// Raise 5 min reserve target
-    pub raise5min: Option<rust_decimal::Decimal>,
-    /// Raise 60 sec reserve target
-    pub raise60sec: Option<rust_decimal::Decimal>,
-    /// Raise 6 sec reserve target
-    pub raise6sec: Option<rust_decimal::Decimal>,
-    /// Lower Regulation reserve target
-    pub lowerreg: Option<rust_decimal::Decimal>,
-    /// Raise Regulation reserve target
-    pub raisereg: Option<rust_decimal::Decimal>,
-    /// Energy Availability (MW)
-    pub availability: Option<rust_decimal::Decimal>,
-    /// Raise 6sec status flag 
-    pub raise6secflags: Option<rust_decimal::Decimal>,
-    /// Raise 60sec status flag  
-    pub raise60secflags: Option<rust_decimal::Decimal>,
-    /// Raise 5min status flag  
-    pub raise5minflags: Option<rust_decimal::Decimal>,
-    /// Raise Reg status flag  
-    pub raiseregflags: Option<rust_decimal::Decimal>,
-    /// Lower 6sec status flag 
-    pub lower6secflags: Option<rust_decimal::Decimal>,
-    /// Lower 60sec status flag  
-    pub lower60secflags: Option<rust_decimal::Decimal>,
-    /// Lower 5min status flag  
-    pub lower5minflags: Option<rust_decimal::Decimal>,
-    /// Lower Reg status flag  
-    pub lowerregflags: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Boolean representation flagging if the Target is Capped
-    pub semidispatchcap: Option<rust_decimal::Decimal>,
-    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run(INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for P5minUnitsolution3 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("UNITSOLUTION".into()),
-                        version: 3,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## P5MIN_SCENARIODEMAND
-///  _The P5Min scenario MW offsets_
-/// 
-/// * Data Set Name: P5min
-/// * File Name: Scenariodemand
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * EFFECTIVEDATE
-/// * REGIONID
-/// * SCENARIO
-/// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minScenariodemand1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub effectivedate: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub version_datetime: chrono::NaiveDateTime,
-    /// The scenario identifier
-    pub scenario: rust_decimal::Decimal,
-    /// The region to which to apply the deltaMW for this SCENARIO
-    pub regionid: String,
-    /// The MW offset to apply to region total demand for this SCENARIO
-    pub deltamw: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for P5minScenariodemand1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("SCENARIODEMAND".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
+///
 /// ## P5MIN_LOCAL_PRICE
 ///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Local Price
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -301,32 +395,159 @@ pub struct P5minLocalPrice1 {
 }
 impl crate::GetTable for P5minLocalPrice1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("LOCAL_PRICE".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("LOCAL_PRICE".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
+/// ## P5MIN_PRICESENSITIVITIES
+///  _Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND_
+///
+/// * Data Set Name: P5min
+/// * File Name: Pricesensitivities
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * INTERVAL_DATETIME
+/// * REGIONID
+/// * RUN_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct P5minPricesensitivities1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Region
+    pub regionid: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Whether an Intervention constraint was defined in this run
+    pub intervention: rust_decimal::Decimal,
+    /// Flag to indicate if this period has an active intervention constraint: 0= No, 1= Yes
+    pub intervention_active: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 1
+    pub rrp1: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 2
+    pub rrp2: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 3
+    pub rrp3: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 4
+    pub rrp4: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 5
+    pub rrp5: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 6
+    pub rrp6: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 7
+    pub rrp7: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 8
+    pub rrp8: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 9
+    pub rrp9: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 10
+    pub rrp10: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 11
+    pub rrp11: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 12
+    pub rrp12: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 13
+    pub rrp13: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 14
+    pub rrp14: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 15
+    pub rrp15: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 16
+    pub rrp16: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 17
+    pub rrp17: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 18
+    pub rrp18: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 19
+    pub rrp19: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 20
+    pub rrp20: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 21
+    pub rrp21: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 22
+    pub rrp22: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 23
+    pub rrp23: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 24
+    pub rrp24: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 25
+    pub rrp25: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 26
+    pub rrp26: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 27
+    pub rrp27: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 28
+    pub rrp28: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 29
+    pub rrp29: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 30
+    pub rrp30: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 31
+    pub rrp31: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 32
+    pub rrp32: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 33
+    pub rrp33: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 34
+    pub rrp34: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 35
+    pub rrp35: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 36
+    pub rrp36: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 37
+    pub rrp37: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 38
+    pub rrp38: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 39
+    pub rrp39: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 40
+    pub rrp40: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 41
+    pub rrp41: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 42
+    pub rrp42: Option<rust_decimal::Decimal>,
+    /// Regional Reference price for scenario 43
+    pub rrp43: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for P5minPricesensitivities1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("PRICESENSITIVITIES".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
 /// ## P5MIN_REGIONSOLUTION
 ///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study.<br>_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  P5MIN_REGIONSOLUTION is public data, so is available to all participants. Source P5MIN_REGIONSOLUTION updates every 5 minutes. Volume Rows per day: 1440
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
@@ -537,145 +758,71 @@ pub struct P5minRegionsolution6 {
 }
 impl crate::GetTable for P5minRegionsolution6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("REGIONSOLUTION".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("REGIONSOLUTION".into()),
+            version: 6,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## P5MIN_INTERCONNECTORSOLN
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.<br>_
-/// 
+///
+/// ## P5MIN_SCENARIODEMAND
+///  _The P5Min scenario MW offsets_
+///
 /// * Data Set Name: P5min
-/// * File Name: Interconnectorsoln
-/// * Data Version: 4
-/// 
-/// # Description
-///  P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants. Source P5MIN_INTERCONNECTORSOLN updates every 5 minutes. Volume Rows per day: 1440 Based on 200 interconnector/binding constraints per interval
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INTERCONNECTORID
-/// * INTERVAL_DATETIME
-/// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minInterconnectorsoln4 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Interconnector identifier
-    pub interconnectorid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// SCADA MW Flow measured at Run start. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run.
-    pub meteredmwflow: Option<rust_decimal::Decimal>,
-    /// Cleared Interconnector loading level (MW)
-    pub mwflow: Option<rust_decimal::Decimal>,
-    /// Interconnector Losses at cleared flow
-    pub mwlosses: Option<rust_decimal::Decimal>,
-    /// Marginal cost of Interconnector standing data limits (if binding)
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Violation of Interconnector standing data limits
-    pub violationdegree: Option<rust_decimal::Decimal>,
-    /// Flag indicating MNSP registration
-    pub mnsp: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit
-    pub exportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
-    pub importlimit: Option<rust_decimal::Decimal>,
-    /// Marginal loss factor at the cleared flow
-    pub marginalloss: Option<rust_decimal::Decimal>,
-    /// Generic Constraint setting the export limit
-    pub exportgenconid: Option<String>,
-    /// Generic Constraint setting the import limit
-    pub importgenconid: Option<String>,
-    /// Calculated export limit applying to energy + Frequency Controlled Ancillary Services.
-    pub fcasexportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated import limit applying to energy + Frequency Controlled Ancillary Services.
-    pub fcasimportlimit: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
-    pub local_price_adjustment_export: Option<rust_decimal::Decimal>,
-    /// Key for Local_Price_Adjustment_Export: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
-    pub locally_constrained_export: Option<rust_decimal::Decimal>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor &gt;= 0)
-    pub local_price_adjustment_import: Option<rust_decimal::Decimal>,
-    /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
-    pub locally_constrained_import: Option<rust_decimal::Decimal>,
-    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
-    pub intervention: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for P5minInterconnectorsoln4 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("INTERCONNECTORSOLN".into()),
-                        version: 4,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## P5MIN_BLOCKEDCONSTRAINT
-///  _P5MIN Blocked Constraints lists any constraints that were blocked in a P5MIN run. If no constraints are blocked, there will be no rows for that 5 minute predispatch run._
-/// 
-/// * Data Set Name: P5min
-/// * File Name: Blocked Constraints
+/// * File Name: Scenariodemand
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
-/// * CONSTRAINTID
-/// * RUN_DATETIME
+///
+/// * EFFECTIVEDATE
+/// * REGIONID
+/// * SCENARIO
+/// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minBlockedConstraints1 {
+pub struct P5minScenariodemand1 {
     #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Generic Constraint identifier (synonymous with GenConID)
-    pub constraintid: String,
+    pub effectivedate: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    /// The scenario identifier
+    pub scenario: rust_decimal::Decimal,
+    /// The region to which to apply the deltaMW for this SCENARIO
+    pub regionid: String,
+    /// The MW offset to apply to region total demand for this SCENARIO
+    pub deltamw: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for P5minBlockedConstraints1 {
+impl crate::GetTable for P5minScenariodemand1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("BLOCKED_CONSTRAINTS".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("SCENARIODEMAND".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## P5MIN_SCENARIODEMANDTRK
 ///  _Tracks the 5Min scenario offset updates across time_
-/// 
+///
 /// * Data Set Name: P5min
 /// * File Name: Scenariodemandtrk
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * EFFECTIVEDATE
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -691,271 +838,102 @@ pub struct P5minScenariodemandtrk1 {
 }
 impl crate::GetTable for P5minScenariodemandtrk1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("SCENARIODEMANDTRK".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("SCENARIODEMANDTRK".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## P5MIN_CASESOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution.<br>_
-/// 
+///
+/// ## P5MIN_UNITSOLUTION
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study.<br>_
+///
 /// * Data Set Name: P5min
-/// * File Name: Casesolution
-/// * Data Version: 2
-/// 
+/// * File Name: Unitsolution
+/// * Data Version: 3
+///
 /// # Description
-///  P5MIN_CASESOLUTION data is public, so is available to all participants. Source P5MIN_CASESOLUTION updates every 5 minutes. Volume Rows per day: 288
-/// 
+///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
+///
 /// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
+///  * (Visibility) Data in this table is: Private
+///
 /// # Primary Key Columns
-/// 
-/// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minCasesolution2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Date and Time of first interval in study
-    pub startinterval_datetime: Option<String>,
-    /// The Objective function from the LP
-    pub totalobjective: Option<rust_decimal::Decimal>,
-    /// Flag to indicate non-physical losses occurred in this study
-    pub nonphysicallosses: Option<rust_decimal::Decimal>,
-    /// Sum of Regional Energy balance violations
-    pub totalareagenviolation: Option<rust_decimal::Decimal>,
-    /// Sum of Interconnector violations of standing data limits
-    pub totalinterconnectorviolation: Option<rust_decimal::Decimal>,
-    /// Sum of Generic Constraint violations
-    pub totalgenericviolation: Option<rust_decimal::Decimal>,
-    /// Sum of Unit Ramp Rate violations
-    pub totalramprateviolation: Option<rust_decimal::Decimal>,
-    /// Sum of unit capacity violations
-    pub totalunitmwcapacityviolation: Option<rust_decimal::Decimal>,
-    /// Sum of regional 5 min FCAS violations
-    pub total5minviolation: Option<rust_decimal::Decimal>,
-    /// Sum of regional regulation FCAS violations
-    pub totalregviolation: Option<rust_decimal::Decimal>,
-    /// Sum of regional 6 sec FCAS violations
-    pub total6secviolation: Option<rust_decimal::Decimal>,
-    /// Sum of regional 60 sec FCAS violations
-    pub total60secviolation: Option<rust_decimal::Decimal>,
-    /// Sum of unit energy constrained violations
-    pub totalenergyconstrviolation: Option<rust_decimal::Decimal>,
-    /// Sum of unit offer violations
-    pub totalenergyofferviolation: Option<rust_decimal::Decimal>,
-    /// Sum of unit FCAS profile offer violations
-    pub totalasprofileviolation: Option<rust_decimal::Decimal>,
-    /// Sum of unit Fast start profile violations
-    pub totalfaststartviolation: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Flag to indicate if this Predispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
-    pub intervention: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for P5minCasesolution2 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("CASESOLUTION".into()),
-                        version: 2,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## P5MIN_PRICESENSITIVITIES
-///  _Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND_
-/// 
-/// * Data Set Name: P5min
-/// * File Name: Pricesensitivities
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INTERVAL_DATETIME
-/// * REGIONID
-/// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minPricesensitivities1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Region
-    pub regionid: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Whether an Intervention constraint was defined in this run
-    pub intervention: rust_decimal::Decimal,
-    /// Flag to indicate if this period has an active intervention constraint: 0= No, 1= Yes
-    pub intervention_active: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 1
-    pub rrp1: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 2
-    pub rrp2: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 3
-    pub rrp3: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 4
-    pub rrp4: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 5
-    pub rrp5: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 6
-    pub rrp6: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 7
-    pub rrp7: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 8
-    pub rrp8: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 9
-    pub rrp9: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 10
-    pub rrp10: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 11
-    pub rrp11: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 12
-    pub rrp12: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 13
-    pub rrp13: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 14
-    pub rrp14: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 15
-    pub rrp15: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 16
-    pub rrp16: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 17
-    pub rrp17: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 18
-    pub rrp18: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 19
-    pub rrp19: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 20
-    pub rrp20: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 21
-    pub rrp21: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 22
-    pub rrp22: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 23
-    pub rrp23: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 24
-    pub rrp24: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 25
-    pub rrp25: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 26
-    pub rrp26: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 27
-    pub rrp27: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 28
-    pub rrp28: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 29
-    pub rrp29: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 30
-    pub rrp30: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 31
-    pub rrp31: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 32
-    pub rrp32: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 33
-    pub rrp33: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 34
-    pub rrp34: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 35
-    pub rrp35: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 36
-    pub rrp36: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 37
-    pub rrp37: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 38
-    pub rrp38: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 39
-    pub rrp39: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 40
-    pub rrp40: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 41
-    pub rrp41: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 42
-    pub rrp42: Option<rust_decimal::Decimal>,
-    /// Regional Reference price for scenario 43
-    pub rrp43: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for P5minPricesensitivities1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("PRICESENSITIVITIES".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## P5MIN_CONSTRAINTSOLUTION
-///  _The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.<br>_
-/// 
-/// * Data Set Name: P5min
-/// * File Name: Constraintsolution
-/// * Data Version: 6
-/// 
-/// # Description
-///  P5MIN_CONSTRAINTSOLUTION is public data, so is available to all participants. Source P5MIN_CONSTRAINTSOLUTION updates every five minutes. Volume Rows per day: ~2.3 million
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private &amp; Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONSTRAINTID
+///
+/// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minConstraintsolution6 {
+pub struct P5minUnitsolution3 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
-    /// Constraint identifier (synonymous with GenConID)
-    pub constraintid: String,
-    /// Right Hand Side value in the capacity evaluation
-    pub rhs: Option<rust_decimal::Decimal>,
-    /// Marginal cost of constraint (&gt;0 if binding)
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Amount of Violation (&gt;0 if  violating)
-    pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Dispatchable unit identifier
+    pub duid: String,
+    /// Connection point identifier for DUID
+    pub connectionpointid: Option<String>,
+    /// Generator or Load
+    pub tradetype: Option<rust_decimal::Decimal>,
+    /// AGC Status from EMS: 1 = on, 0 = off
+    pub agcstatus: Option<rust_decimal::Decimal>,
+    /// Initial MW at start of period. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run.
+    pub initialmw: Option<rust_decimal::Decimal>,
+    /// Target MW for end of period
+    pub totalcleared: Option<rust_decimal::Decimal>,
+    /// Ramp down rate (lessor of bid or telemetered rate).
+    pub rampdownrate: Option<rust_decimal::Decimal>,
+    /// Ramp up rate (lessor of bid or telemetered rate).
+    pub rampuprate: Option<rust_decimal::Decimal>,
+    /// Lower 5 min reserve target
+    pub lower5min: Option<rust_decimal::Decimal>,
+    /// Lower 60 sec reserve target
+    pub lower60sec: Option<rust_decimal::Decimal>,
+    /// Lower 6 sec reserve target
+    pub lower6sec: Option<rust_decimal::Decimal>,
+    /// Raise 5 min reserve target
+    pub raise5min: Option<rust_decimal::Decimal>,
+    /// Raise 60 sec reserve target
+    pub raise60sec: Option<rust_decimal::Decimal>,
+    /// Raise 6 sec reserve target
+    pub raise6sec: Option<rust_decimal::Decimal>,
+    /// Lower Regulation reserve target
+    pub lowerreg: Option<rust_decimal::Decimal>,
+    /// Raise Regulation reserve target
+    pub raisereg: Option<rust_decimal::Decimal>,
+    /// Energy Availability (MW)
+    pub availability: Option<rust_decimal::Decimal>,
+    /// Raise 6sec status flag
+    pub raise6secflags: Option<rust_decimal::Decimal>,
+    /// Raise 60sec status flag  
+    pub raise60secflags: Option<rust_decimal::Decimal>,
+    /// Raise 5min status flag  
+    pub raise5minflags: Option<rust_decimal::Decimal>,
+    /// Raise Reg status flag  
+    pub raiseregflags: Option<rust_decimal::Decimal>,
+    /// Lower 6sec status flag
+    pub lower6secflags: Option<rust_decimal::Decimal>,
+    /// Lower 60sec status flag  
+    pub lower60secflags: Option<rust_decimal::Decimal>,
+    /// Lower 5min status flag  
+    pub lower5minflags: Option<rust_decimal::Decimal>,
+    /// Lower Reg status flag  
+    pub lowerregflags: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// DUID to which the Constraint is confidential. Null denotes non-confidential
-    pub duid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
-    /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
-    pub genconid_versionno: Option<rust_decimal::Decimal>,
-    /// Aggregation of the constraints LHS term solution values
-    pub lhs: Option<rust_decimal::Decimal>,
-    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run(INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
+    /// Boolean representation flagging if the Target is Capped
+    pub semidispatchcap: Option<rust_decimal::Decimal>,
+    /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run(INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
     pub intervention: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for P5minConstraintsolution6 {
+impl crate::GetTable for P5minUnitsolution3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "P5MIN".into(),
-                        table_name: Some("CONSTRAINTSOLUTION".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("UNITSOLUTION".into()),
+            version: 3,
+        }
     }
 }

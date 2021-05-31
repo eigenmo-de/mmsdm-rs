@@ -183,9 +183,6 @@ fn should_skip(report: &mms::Report) -> bool {
     || (report.name == "BILLING_RUN" && report.sub_type == "BILLING_RES_TRADER_RECOVERY")
     || (report.name == "BILLING_RUN" && report.sub_type == "BILLING_RES_TRADER_PAYMENT")
     || (report.name == "SETTLEMENT_DATA" && report.sub_type == "SETRESERVERECOVERY")
-
-
-
 }
 
 pub fn run() -> anyhow::Result<()> {
@@ -226,7 +223,7 @@ pub fn run() -> anyhow::Result<()> {
             if should_skip(&mms_report) {
                 continue;
             }
-            
+
             if let Some(pdr_report) = map.get(&mms_report) {
                 let mut current_struct = codegen::Struct::new(&pdr_report.struct_name());
                 current_struct

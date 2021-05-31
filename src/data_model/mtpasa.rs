@@ -1,20 +1,59 @@
 /// # Summary
-/// 
+///
+/// ## MTPASA_CASERESULT
+///  _MTPASA solution header table_
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Caseresult
+/// * Data Version: 1
+///
+/// # Description
+///  MTPASA_CASERESULT is public data. Holds one Record for entire solution
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * RUN_DATETIME
+/// * RUN_NO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaCaseresult1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Unique run id.
+    pub run_no: i64,
+    /// Version of PLEXOS used
+    pub plexos_version: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaCaseresult1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("CASERESULT".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
 /// ## MTPASA_CONSTRAINTRESULT
 ///  _Constraint results for Binding or Violating Constraints_
-/// 
+///
 /// * Data Set Name: Mtpasa
 /// * File Name: Constraintresult
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MTPASA_CONSTRAINTRESULT is public data. &nbsp;
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * DAY
 /// * DEMAND_POE_TYPE
@@ -25,7 +64,7 @@
 pub struct MtpasaConstraintresult1 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
+    /// Unique run id.
     pub run_no: i64,
     /// Type of run. Always RELIABILITY
     pub runtype: String,
@@ -56,73 +95,359 @@ pub struct MtpasaConstraintresult1 {
 }
 impl crate::GetTable for MtpasaConstraintresult1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("CONSTRAINTRESULT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("CONSTRAINTRESULT".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## MTPASA_CASERESULT
-///  _MTPASA solution header table_
-/// 
+///
+/// ## MTPASA_CONSTRAINTSUMMARY
+///  _Constraint Summary results over aggregation periods_
+///
 /// * Data Set Name: Mtpasa
-/// * File Name: Caseresult
+/// * File Name: Constraintsummary
 /// * Data Version: 1
-/// 
+///
 /// # Description
-///  MTPASA_CASERESULT is public data. Holds one Record for entire solution
-/// 
+///  MTPASA_CONSTRAINTSUMMARY is public data.
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
+/// * AGGREGATION_PERIOD
+/// * CONSTRAINTID
+/// * DAY
+/// * DEMAND_POE_TYPE
 /// * RUN_DATETIME
 /// * RUN_NO
+/// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaCaseresult1 {
+pub struct MtpasaConstraintsummary1 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
+    /// Unique run id.
     pub run_no: i64,
-    /// Version of PLEXOS used
-    pub plexos_version: Option<String>,
+    /// Type of run. Always RELIABILITY
+    pub runtype: String,
+    /// Demand POE type used. Value is POE10
+    pub demand_poe_type: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub day: chrono::NaiveDateTime,
+    /// The unique identifier for the constraint. Only binding or violating constraints are reported
+    pub constraintid: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub effectivedate: Option<chrono::NaiveDateTime>,
+    /// The version of the constraintID
+    pub versionno: Option<rust_decimal::Decimal>,
+    /// Period data is aggregated over. Values are PEAK, SHOULDER, OFFPEAK. PEAK = 14:00-19:59, SHOULDER = 07:00-13:59 and 20:00-21:59, OFFPEAK = 22:00-06:59
+    pub aggregation_period: String,
+    /// Constraint hours binding or violating for period, averaged across iterations and reference years
+    pub constrainthoursbinding: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for MtpasaCaseresult1 {
+impl crate::GetTable for MtpasaConstraintsummary1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("CASERESULT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("CONSTRAINTSUMMARY".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
+/// ## MTPASA_DUIDAVAILABILITY
+///  _Offered PASA Availability of the scheduled generator DUID for each day over the Medium Term PASA period. The data in this table is input data to the MT PASA process it is not part of the MTPASA solution. The availability does not reflect any energy limitations in the MT PASA offers_
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Duidavailability
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * DAY
+/// * DUID
+/// * PUBLISH_DATETIME
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaDuidavailability1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub publish_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub day: chrono::NaiveDateTime,
+    /// NEM Region.
+    pub regionid: String,
+    /// NEM DUID.
+    pub duid: String,
+    /// Offered PASA Availability of Scheduled generator DUID for the day.
+    pub pasaavailability: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaDuidavailability1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("DUIDAVAILABILITY".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
+/// ## MTPASA_INTERCONNECTORRESULT
+///  _Interconnector results for interval of max demand per day_
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Interconnectorresult
+/// * Data Version: 1
+///
+/// # Description
+///  MTPASA_INTERCONNECTORRESULT is public data.
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * DAY
+/// * DEMAND_POE_TYPE
+/// * INTERCONNECTORID
+/// * RUN_DATETIME
+/// * RUN_NO
+/// * RUNTYPE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaInterconnectorresult1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Unique run id.
+    pub run_no: i64,
+    /// Type of run. Always RELIABILITY
+    pub runtype: String,
+    /// Demand POE type used. Value is POE10
+    pub demand_poe_type: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub day: chrono::NaiveDateTime,
+    /// The unique identifier for the interconnector
+    pub interconnectorid: String,
+    /// Half hourly period reported, selected as period of maximum NEM scheduled demand (calculated as maximum of scheduled demands, averaged across iterations and reference years)
+    pub periodid: Option<rust_decimal::Decimal>,
+    /// The 90th percentile for flows, across iterations and reference years. Positive values indicate exporting, negative values indicate importing (MW)
+    pub flow90: Option<rust_decimal::Decimal>,
+    /// The 50th percentile for flows, across iterations and reference years. Positive values indicate exporting, negative values indicate importing (MW)
+    pub flow50: Option<rust_decimal::Decimal>,
+    /// The 10th percentile for flows, across iterations and reference years. Positive values indicate exporting, negative values indicate importing (MW)
+    pub flow10: Option<rust_decimal::Decimal>,
+    /// Proportion of iterations and reference years with interconnector constrained when exporting
+    pub probabilityofbindingexport: Option<rust_decimal::Decimal>,
+    /// Proportion of iterations and reference years with interconnector constrained when importing
+    pub probabilityofbindingimport: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit, averaged across iterations and reference years
+    pub calculatedexportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit, averaged across iterations and reference years
+    pub calculatedimportlimit: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaInterconnectorresult1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("INTERCONNECTORRESULT".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
+/// ## MTPASA_LOLPRESULT
+///  _Results for Loss of Load Probability (LOLP) run per day_
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Lolpresult
+/// * Data Version: 1
+///
+/// # Description
+///  MTPASA_LOLPRESULT is public data.
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * DAY
+/// * REGIONID
+/// * RUN_DATETIME
+/// * RUN_NO
+/// * RUNTYPE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaLolpresult1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Unique run id.
+    pub run_no: i64,
+    /// Type of run. Always LOLP
+    pub runtype: String,
+    #[serde(with = "crate::mms_datetime")]
+    pub day: chrono::NaiveDateTime,
+    /// The unique region identifier
+    pub regionid: String,
+    /// The half hourly interval period with the highest LOLP, or highest region demand if LOLP = 0 for all intervals (1..48)
+    pub worst_interval_periodid: Option<rust_decimal::Decimal>,
+    /// The Abstract Operational Demand for the worst interval in this region (MW)
+    pub worst_interval_demand: Option<rust_decimal::Decimal>,
+    /// The half hourly aggregate intermittent generation for the worst interval in this region (MW)
+    pub worst_interval_intgen: Option<rust_decimal::Decimal>,
+    /// The half hourly aggregate demand side participation for the worst interval period in this region (MW)
+    pub worst_interval_dsp: Option<rust_decimal::Decimal>,
+    /// Loss of Load Probability for the worst interval in this region
+    pub lossofloadprobability: Option<rust_decimal::Decimal>,
+    /// Loss of Load Magnitude for the worst interval in this region. Values are LOW, MEDIUM, HIGH
+    pub lossofloadmagnitude: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaLolpresult1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("LOLPRESULT".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
+/// ## MTPASA_REGIONAVAILABILITY
+///  _Stores the Region-aggregate offered PASA Availability of scheduled generators for each day over the Medium Term PASA period. The data in this table is an aggregate of input data to the MT PASA process it is not part of the MTPASA solution. The aggregate availability does not reflect any energy limitations in the MT PASA offers._
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Regionavailability
+/// * Data Version: 3
+///
+/// # Description
+///  MTPASA_REGIONAVAILABILITY is public data.
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * DAY
+/// * PUBLISH_DATETIME
+/// * REGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaRegionavailability3 {
+    #[serde(with = "crate::mms_datetime")]
+    pub publish_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub day: chrono::NaiveDateTime,
+    /// NEM Region.
+    pub regionid: String,
+    /// Aggregate of the offered PASA Availability for all Scheduled generators in this region.
+    pub pasaavailability_scheduled: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
+    /// Region energy unconstrained MW capacity
+    pub energyunconstrainedcapacity: Option<rust_decimal::Decimal>,
+    /// Region energy constrained MW capacity
+    pub energyconstrainedcapacity: Option<rust_decimal::Decimal>,
+    /// Allowance made for non-scheduled generation in the demand forecast (MW)
+    pub nonscheduledgeneration: Option<rust_decimal::Decimal>,
+    /// 10% probability demand (ex non-scheduled demand)
+    pub demand10: Option<rust_decimal::Decimal>,
+    /// 50% probability demand (ex non-scheduled demand)
+    pub demand50: Option<rust_decimal::Decimal>,
+    /// Total weekly operational as generated consumption (POE 10)
+    pub energyreqdemand10: Option<rust_decimal::Decimal>,
+    /// Total weekly operational as generated consumption (POE 50)
+    pub energyreqdemand50: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Minimum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P10 traces (MW).
+    pub demand10min: Option<rust_decimal::Decimal>,
+    /// Maximum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P10 traces (MW).
+    pub demand10max: Option<rust_decimal::Decimal>,
+    /// Minimum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P50 traces (MW).
+    pub demand50min: Option<rust_decimal::Decimal>,
+    /// Maximum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P50 traces (MW).
+    pub demand50max: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for MtpasaRegionavailability3 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("REGIONAVAILABILITY".into()),
+            version: 3,
+        }
+    }
+}
+/// # Summary
+///
+/// ## MTPASA_REGIONAVAIL_TRK
+///  _The tracking table to assist in versioning of the region-aggregate offered PASA Availability data published to the MTPASA_REGIONAVAILABILITY table._
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Regionavailtrk
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * PUBLISH_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct MtpasaRegionavailtrk1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub publish_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for MtpasaRegionavailtrk1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("REGIONAVAILTRK".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
 /// ## MTPASA_REGIONITERATION
 ///  _Region results for Unserved Energy (USE)_
-/// 
+///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regioniteration
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MTPASA_REGIONITERATION is public data.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AGGREGATION_PERIOD
 /// * DEMAND_POE_TYPE
 /// * PERIOD_ENDING
@@ -135,7 +460,7 @@ impl crate::GetTable for MtpasaCaseresult1 {
 pub struct MtpasaRegioniteration1 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
+    /// Unique run id.
     pub run_no: i64,
     /// Type of run. Always RELIABILITY
     pub runtype: String,
@@ -158,32 +483,30 @@ pub struct MtpasaRegioniteration1 {
 }
 impl crate::GetTable for MtpasaRegioniteration1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("REGIONITERATION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("REGIONITERATION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## MTPASA_REGIONRESULT
 ///  _Region results for interval of max demand per day._
-/// 
+///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regionresult
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  MTPASA_REGIONRESULT is public data.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * DAY
 /// * DEMAND_POE_TYPE
 /// * REGIONID
@@ -194,7 +517,7 @@ impl crate::GetTable for MtpasaRegioniteration1 {
 pub struct MtpasaRegionresult2 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
+    /// Unique run id.
     pub run_no: i64,
     /// Type of run. Always RELIABILITY
     pub runtype: String,
@@ -267,306 +590,30 @@ pub struct MtpasaRegionresult2 {
 }
 impl crate::GetTable for MtpasaRegionresult2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("REGIONRESULT".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("REGIONRESULT".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## MTPASA_REGIONAVAILABILITY
-///  _Stores the Region-aggregate offered PASA Availability of scheduled generators for each day over the Medium Term PASA period. The data in this table is an aggregate of input data to the MT PASA process it is not part of the MTPASA solution. The aggregate availability does not reflect any energy limitations in the MT PASA offers._
-/// 
-/// * Data Set Name: Mtpasa
-/// * File Name: Regionavailability
-/// * Data Version: 3
-/// 
-/// # Description
-///  MTPASA_REGIONAVAILABILITY is public data.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * DAY
-/// * PUBLISH_DATETIME
-/// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaRegionavailability3 {
-    #[serde(with = "crate::mms_datetime")]
-    pub publish_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub day: chrono::NaiveDateTime,
-    /// NEM Region.
-    pub regionid: String,
-    /// Aggregate of the offered PASA Availability for all Scheduled generators in this region.
-    pub pasaavailability_scheduled: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
-    /// Region energy unconstrained MW capacity 
-    pub energyunconstrainedcapacity: Option<rust_decimal::Decimal>,
-    /// Region energy constrained MW capacity 
-    pub energyconstrainedcapacity: Option<rust_decimal::Decimal>,
-    /// Allowance made for non-scheduled generation in the demand forecast (MW)
-    pub nonscheduledgeneration: Option<rust_decimal::Decimal>,
-    /// 10% probability demand (ex non-scheduled demand)
-    pub demand10: Option<rust_decimal::Decimal>,
-    /// 50% probability demand (ex non-scheduled demand)
-    pub demand50: Option<rust_decimal::Decimal>,
-    /// Total weekly operational as generated consumption (POE 10)
-    pub energyreqdemand10: Option<rust_decimal::Decimal>,
-    /// Total weekly operational as generated consumption (POE 50)
-    pub energyreqdemand50: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Minimum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P10 traces (MW).
-    pub demand10min: Option<rust_decimal::Decimal>,
-    /// Maximum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P10 traces (MW).
-    pub demand10max: Option<rust_decimal::Decimal>,
-    /// Minimum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P50 traces (MW).
-    pub demand50min: Option<rust_decimal::Decimal>,
-    /// Maximum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P50 traces (MW).
-    pub demand50max: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for MtpasaRegionavailability3 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("REGIONAVAILABILITY".into()),
-                        version: 3,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MTPASA_LOLPRESULT
-///  _Results for Loss of Load Probability (LOLP) run per day_
-/// 
-/// * Data Set Name: Mtpasa
-/// * File Name: Lolpresult
-/// * Data Version: 1
-/// 
-/// # Description
-///  MTPASA_LOLPRESULT is public data.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * DAY
-/// * REGIONID
-/// * RUN_DATETIME
-/// * RUN_NO
-/// * RUNTYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaLolpresult1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
-    pub run_no: i64,
-    /// Type of run. Always LOLP
-    pub runtype: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub day: chrono::NaiveDateTime,
-    /// The unique region identifier
-    pub regionid: String,
-    /// The half hourly interval period with the highest LOLP, or highest region demand if LOLP = 0 for all intervals (1..48)
-    pub worst_interval_periodid: Option<rust_decimal::Decimal>,
-    /// The Abstract Operational Demand for the worst interval in this region (MW)
-    pub worst_interval_demand: Option<rust_decimal::Decimal>,
-    /// The half hourly aggregate intermittent generation for the worst interval in this region (MW)
-    pub worst_interval_intgen: Option<rust_decimal::Decimal>,
-    /// The half hourly aggregate demand side participation for the worst interval period in this region (MW)
-    pub worst_interval_dsp: Option<rust_decimal::Decimal>,
-    /// Loss of Load Probability for the worst interval in this region
-    pub lossofloadprobability: Option<rust_decimal::Decimal>,
-    /// Loss of Load Magnitude for the worst interval in this region. Values are LOW, MEDIUM, HIGH
-    pub lossofloadmagnitude: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaLolpresult1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("LOLPRESULT".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MTPASA_REGIONAVAIL_TRK
-///  _The tracking table to assist in versioning of the region-aggregate offered PASA Availability data published to the MTPASA_REGIONAVAILABILITY table._
-/// 
-/// * Data Set Name: Mtpasa
-/// * File Name: Regionavailtrk
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * PUBLISH_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaRegionavailtrk1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub publish_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub enddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaRegionavailtrk1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("REGIONAVAILTRK".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MTPASA_DUIDAVAILABILITY
-///  _Offered PASA Availability of the scheduled generator DUID for each day over the Medium Term PASA period. The data in this table is input data to the MT PASA process it is not part of the MTPASA solution. The availability does not reflect any energy limitations in the MT PASA offers_
-/// 
-/// * Data Set Name: Mtpasa
-/// * File Name: Duidavailability
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// 
-/// 
-/// # Primary Key Columns
-/// 
-/// * DAY
-/// * DUID
-/// * PUBLISH_DATETIME
-/// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaDuidavailability1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub publish_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub day: chrono::NaiveDateTime,
-    /// NEM Region.
-    pub regionid: String,
-    /// NEM DUID.
-    pub duid: String,
-    /// Offered PASA Availability of Scheduled generator DUID for the day.
-    pub pasaavailability: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaDuidavailability1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("DUIDAVAILABILITY".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MTPASA_CONSTRAINTSUMMARY
-///  _Constraint Summary results over aggregation periods_
-/// 
-/// * Data Set Name: Mtpasa
-/// * File Name: Constraintsummary
-/// * Data Version: 1
-/// 
-/// # Description
-///  MTPASA_CONSTRAINTSUMMARY is public data.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * AGGREGATION_PERIOD
-/// * CONSTRAINTID
-/// * DAY
-/// * DEMAND_POE_TYPE
-/// * RUN_DATETIME
-/// * RUN_NO
-/// * RUNTYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaConstraintsummary1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
-    pub run_no: i64,
-    /// Type of run. Always RELIABILITY
-    pub runtype: String,
-    /// Demand POE type used. Value is POE10
-    pub demand_poe_type: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub day: chrono::NaiveDateTime,
-    /// The unique identifier for the constraint. Only binding or violating constraints are reported
-    pub constraintid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub effectivedate: Option<chrono::NaiveDateTime>,
-    /// The version of the constraintID
-    pub versionno: Option<rust_decimal::Decimal>,
-    /// Period data is aggregated over. Values are PEAK, SHOULDER, OFFPEAK. PEAK = 14:00-19:59, SHOULDER = 07:00-13:59 and 20:00-21:59, OFFPEAK = 22:00-06:59
-    pub aggregation_period: String,
-    /// Constraint hours binding or violating for period, averaged across iterations and reference years
-    pub constrainthoursbinding: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaConstraintsummary1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("CONSTRAINTSUMMARY".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
+///
 /// ## MTPASA_REGIONSUMMARY
 ///  _Region Results summary over aggregation periods._
-/// 
+///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regionsummary
 /// * Data Version: 1
-/// 
+///
 /// # Description
 ///  MTPASA_REGIONSUMMARY is public data.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * AGGREGATION_PERIOD
 /// * DEMAND_POE_TYPE
 /// * PERIOD_ENDING
@@ -578,7 +625,7 @@ impl crate::GetTable for MtpasaConstraintsummary1 {
 pub struct MtpasaRegionsummary1 {
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
+    /// Unique run id.
     pub run_no: i64,
     /// Type of run. Always RELIABILITY
     pub runtype: String,
@@ -639,79 +686,10 @@ pub struct MtpasaRegionsummary1 {
 }
 impl crate::GetTable for MtpasaRegionsummary1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("REGIONSUMMARY".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
-/// ## MTPASA_INTERCONNECTORRESULT
-///  _Interconnector results for interval of max demand per day_
-/// 
-/// * Data Set Name: Mtpasa
-/// * File Name: Interconnectorresult
-/// * Data Version: 1
-/// 
-/// # Description
-///  MTPASA_INTERCONNECTORRESULT is public data.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * DAY
-/// * DEMAND_POE_TYPE
-/// * INTERCONNECTORID
-/// * RUN_DATETIME
-/// * RUN_NO
-/// * RUNTYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaInterconnectorresult1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Unique run id. 
-    pub run_no: i64,
-    /// Type of run. Always RELIABILITY
-    pub runtype: String,
-    /// Demand POE type used. Value is POE10
-    pub demand_poe_type: String,
-    #[serde(with = "crate::mms_datetime")]
-    pub day: chrono::NaiveDateTime,
-    /// The unique identifier for the interconnector
-    pub interconnectorid: String,
-    /// Half hourly period reported, selected as period of maximum NEM scheduled demand (calculated as maximum of scheduled demands, averaged across iterations and reference years)
-    pub periodid: Option<rust_decimal::Decimal>,
-    /// The 90th percentile for flows, across iterations and reference years. Positive values indicate exporting, negative values indicate importing (MW)
-    pub flow90: Option<rust_decimal::Decimal>,
-    /// The 50th percentile for flows, across iterations and reference years. Positive values indicate exporting, negative values indicate importing (MW)
-    pub flow50: Option<rust_decimal::Decimal>,
-    /// The 10th percentile for flows, across iterations and reference years. Positive values indicate exporting, negative values indicate importing (MW)
-    pub flow10: Option<rust_decimal::Decimal>,
-    /// Proportion of iterations and reference years with interconnector constrained when exporting
-    pub probabilityofbindingexport: Option<rust_decimal::Decimal>,
-    /// Proportion of iterations and reference years with interconnector constrained when importing
-    pub probabilityofbindingimport: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit, averaged across iterations and reference years
-    pub calculatedexportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit, averaged across iterations and reference years
-    pub calculatedimportlimit: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for MtpasaInterconnectorresult1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "MTPASA".into(),
-                        table_name: Some("INTERCONNECTORRESULT".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "MTPASA".into(),
+            table_name: Some("REGIONSUMMARY".into()),
+            version: 1,
+        }
     }
 }

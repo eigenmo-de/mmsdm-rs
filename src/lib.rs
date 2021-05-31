@@ -248,9 +248,13 @@ impl AemoFile {
                 table_name: latest_version.table_name.clone(),
             };
             if let Ok(parsed) = self.get_specific_table(current_key) {
-                return Ok(parsed)
+                return Ok(parsed);
             } else {
-                log::warn!("For file key {}, version {} was not available", latest_version, version);
+                log::warn!(
+                    "For file key {}, version {} was not available",
+                    latest_version,
+                    version
+                );
             }
         }
         Err(Error::MissingFile(latest_version))

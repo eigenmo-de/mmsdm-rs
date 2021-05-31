@@ -52,12 +52,14 @@ impl crate::AemoFile {
                 effective_date,
                 effective_time,
                 serial_number,
+                file_name_2,
+                serial_number_2,
                 data_set,
                 sub_type,
                 version
             )
             output inserted.file_log_id
-            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8, @P9, @P10);",
+            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8, @P9, @P10, @P11, @P12);",
             &[
                 &self.header.data_source,
                 &self.header.file_name,
@@ -66,6 +68,8 @@ impl crate::AemoFile {
                 &self.header.effective_date,
                 &self.header.effective_time,
                 &self.header.serial_number,
+                &self.header.file_name_2,
+                &self.header.serial_number_2,
                 &key.data_set_name.as_str(),
                 &key.table_name(),
                 &key.version,

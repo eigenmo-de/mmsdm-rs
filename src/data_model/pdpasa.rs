@@ -1,81 +1,20 @@
 /// # Summary
-/// 
-/// ## PDPASA_INTERCONNECTORSOLN
-///  _PDPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
-/// 
-/// * Data Set Name: Pdpasa
-/// * File Name: Interconnectorsoln
-/// * Data Version: 1
-/// 
-/// 
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-/// 
-/// # Primary Key Columns
-/// 
-/// * INTERCONNECTORID
-/// * INTERVAL_DATETIME
-/// * RUN_DATETIME
-/// * RUNTYPE
-/// * STUDYREGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PdpasaInterconnectorsoln1 {
-    #[serde(with = "crate::mms_datetime")]
-    pub run_datetime: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime")]
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// Interconnector Identifier
-    pub interconnectorid: String,
-    /// Interconnector loading level (MW) that can be reached in case of capacity scarcity in neighbouring regions subject to network and energy constraints
-    pub capacitymwflow: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment marginal value, 0 if not binding
-    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
-    /// Capacity adequacy assessment violation degree for interconnector capacity; 0 if not violating
-    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit
-    pub calculatedexportlimit: Option<rust_decimal::Decimal>,
-    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
-    pub calculatedimportlimit: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
-    pub runtype: String,
-    /// ID of the constraint that sets the Interconnector Export Limit
-    pub exportlimitconstraintid: Option<String>,
-    /// ID of the constraint that sets the Interconnector Import Limit
-    pub importlimitconstraintid: Option<String>,
-    /// Primary Region for LP Solve (or MARKET if none).
-    pub studyregionid: String,
-}
-impl crate::GetTable for PdpasaInterconnectorsoln1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: Some("INTERCONNECTORSOLN".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
+///
 /// ## PDPASA_CASESOLUTION
 ///  _The top-level table identifying a PDPASA case, reporting options applied in the case and summary results_
-/// 
+///
 /// * Data Set Name: Pdpasa
 /// * File Name: Casesolution
 /// * Data Version: 3
-/// 
+///
 /// # Description
 ///  PDPASA_CASESOLUTION is public data. Source PDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 48 Mb per month: &lt;1
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PdpasaCasesolution3 {
@@ -120,31 +59,29 @@ pub struct PdpasaCasesolution3 {
 }
 impl crate::GetTable for PdpasaCasesolution3 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: Some("CASESOLUTION".into()),
-                        version: 3,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PDPASA".into(),
+            table_name: Some("CASESOLUTION".into()),
+            version: 3,
+        }
     }
 }
 /// # Summary
-/// 
+///
 /// ## PDPASA_CONSTRAINTSOLUTION
 ///  _PDPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
-/// 
+///
 /// * Data Set Name: Pdpasa
 /// * File Name: Constraintsolution
 /// * Data Version: 1
-/// 
-/// 
-/// 
+///
+///
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONSTRAINTID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
@@ -173,32 +110,89 @@ pub struct PdpasaConstraintsolution1 {
 }
 impl crate::GetTable for PdpasaConstraintsolution1 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: Some("CONSTRAINTSOLUTION".into()),
-                        version: 1,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PDPASA".into(),
+            table_name: Some("CONSTRAINTSOLUTION".into()),
+            version: 1,
+        }
     }
 }
 /// # Summary
-/// 
+///
+/// ## PDPASA_INTERCONNECTORSOLN
+///  _PDPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Interconnectorsoln
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * INTERCONNECTORID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * RUNTYPE
+/// * STUDYREGIONID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct PdpasaInterconnectorsoln1 {
+    #[serde(with = "crate::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Interconnector Identifier
+    pub interconnectorid: String,
+    /// Interconnector loading level (MW) that can be reached in case of capacity scarcity in neighbouring regions subject to network and energy constraints
+    pub capacitymwflow: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment marginal value, 0 if not binding
+    pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
+    /// Capacity adequacy assessment violation degree for interconnector capacity; 0 if not violating
+    pub capacityviolationdegree: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of exporting energy on the basis of invoked constraints and static interconnector export limit
+    pub calculatedexportlimit: Option<rust_decimal::Decimal>,
+    /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
+    pub calculatedimportlimit: Option<rust_decimal::Decimal>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Type of run.  Values are RELIABILITY_LRC and OUTAGE_LRC
+    pub runtype: String,
+    /// ID of the constraint that sets the Interconnector Export Limit
+    pub exportlimitconstraintid: Option<String>,
+    /// ID of the constraint that sets the Interconnector Import Limit
+    pub importlimitconstraintid: Option<String>,
+    /// Primary Region for LP Solve (or MARKET if none).
+    pub studyregionid: String,
+}
+impl crate::GetTable for PdpasaInterconnectorsoln1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "PDPASA".into(),
+            table_name: Some("INTERCONNECTORSOLN".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
 /// ## PDPASA_REGIONSOLUTION
 ///  _The PDPASA region solution data_
-/// 
+///
 /// * Data Set Name: Pdpasa
 /// * File Name: Regionsolution
 /// * Data Version: 6
-/// 
+///
 /// # Description
 ///  PDPASA_REGIONSOLUTION is public so is available to all participants. Source PDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 32000 Notes LRC Determination SURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement. &nbsp; The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions. &nbsp; LOR Determination MAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions. &nbsp; Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
@@ -271,7 +265,7 @@ pub struct PdpasaRegionsolution6 {
     pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Aggregate Regional UIGF availability for LOR
     pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
-    /// Largest Credible Risk. MW value for highest credible contingency 
+    /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
     /// Two Largest Creditable Risks. MW value for highest two credible contingencies.
     pub lcr2: Option<rust_decimal::Decimal>,
@@ -292,12 +286,10 @@ pub struct PdpasaRegionsolution6 {
 }
 impl crate::GetTable for PdpasaRegionsolution6 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "PDPASA".into(),
-                        table_name: Some("REGIONSOLUTION".into()),
-                        version: 6,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "PDPASA".into(),
+            table_name: Some("REGIONSOLUTION".into()),
+            version: 6,
+        }
     }
 }

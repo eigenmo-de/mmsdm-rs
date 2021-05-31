@@ -1,20 +1,79 @@
 /// # Summary
-/// 
+///
+/// ## CONTRACTAGC
+///  _CONTRACTAGC shows Automatic Generation Control (AGC) contract details for each dispatchable unit. There is a separate contract for each unit._
+///
+/// * Data Set Name: Ancilliary Services
+/// * File Name: Contractagc
+/// * Data Version: 1
+///
+/// # Description
+///  CONTRACTAGC data is confidential to the relevant participant. Source CONTRACTAGC updates only where there is a contract variation.
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * CONTRACTID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct AncilliaryServicesContractagc1 {
+    /// Contract Identifier
+    pub contractid: String,
+    /// Contract Version No
+    pub versionno: rust_decimal::Decimal,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    /// Unique participant identifier
+    pub participantid: Option<String>,
+    /// Dispatchable Unit ID
+    pub duid: Option<String>,
+    /// Control Range Raise 5 Min MW
+    pub crr: Option<rust_decimal::Decimal>,
+    /// Control Range Lower 5 Min MW
+    pub crl: Option<rust_decimal::Decimal>,
+    /// Enabling Price in $
+    pub rlprice: Option<rust_decimal::Decimal>,
+    /// Compensation Cap in $
+    pub ccprice: Option<rust_decimal::Decimal>,
+    /// Block Size
+    pub bs: Option<rust_decimal::Decimal>,
+    /// User Name
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for AncilliaryServicesContractagc1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "ANCILLIARY_SERVICES".into(),
+            table_name: Some("CONTRACTAGC".into()),
+            version: 1,
+        }
+    }
+}
+/// # Summary
+///
 /// ## CONTRACTLOADSHED
 ///  _CONTRACTLOADSHED shows Governor contract details used in the settlement and dispatch of this service. Note: services are dispatched as 6 and 60 raise Frequency Control Ancillary Services (FCAS). Mandatory requirements and breakpoint details are not used for load shed._
-/// 
+///
 /// * Data Set Name: Ancilliary Services
 /// * File Name: Contractloadshed
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  CONTRACTLOADSHED data is confidential to the relevant participant. Source CONTRACTLOADSHED updates only where there is a contract variation.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -106,93 +165,30 @@ pub struct AncilliaryServicesContractloadshed2 {
 }
 impl crate::GetTable for AncilliaryServicesContractloadshed2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ANCILLIARY_SERVICES".into(),
-                        table_name: Some("CONTRACTLOADSHED".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ANCILLIARY_SERVICES".into(),
+            table_name: Some("CONTRACTLOADSHED".into()),
+            version: 2,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## CONTRACTAGC
-///  _CONTRACTAGC shows Automatic Generation Control (AGC) contract details for each dispatchable unit. There is a separate contract for each unit._
-/// 
-/// * Data Set Name: Ancilliary Services
-/// * File Name: Contractagc
-/// * Data Version: 1
-/// 
-/// # Description
-///  CONTRACTAGC data is confidential to the relevant participant. Source CONTRACTAGC updates only where there is a contract variation.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct AncilliaryServicesContractagc1 {
-    /// Contract Identifier
-    pub contractid: String,
-    /// Contract Version No
-    pub versionno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub startdate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub enddate: Option<chrono::NaiveDateTime>,
-    /// Unique participant identifier
-    pub participantid: Option<String>,
-    /// Dispatchable Unit ID
-    pub duid: Option<String>,
-    /// Control Range Raise 5 Min MW
-    pub crr: Option<rust_decimal::Decimal>,
-    /// Control Range Lower 5 Min MW
-    pub crl: Option<rust_decimal::Decimal>,
-    /// Enabling Price in $
-    pub rlprice: Option<rust_decimal::Decimal>,
-    /// Compensation Cap in $
-    pub ccprice: Option<rust_decimal::Decimal>,
-    /// Block Size
-    pub bs: Option<rust_decimal::Decimal>,
-    /// User Name
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for AncilliaryServicesContractagc1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ANCILLIARY_SERVICES".into(),
-                        table_name: Some("CONTRACTAGC".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
+///
 /// ## CONTRACTREACTIVEPOWER
 ///  _CONTRACTREACTIVEPOWER shows Reactive Power contract details used in the settlement and dispatch of this service._
-/// 
+///
 /// * Data Set Name: Ancilliary Services
 /// * File Name: Contractreactivepower
 /// * Data Version: 4
-/// 
+///
 /// # Description
 ///  CONTRACTREACTIVEPOWER data is confidential to the relevant participant. Source CONTRACTREACTIVEPOWER updates only where there is a contract variation.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -256,78 +252,30 @@ pub struct AncilliaryServicesContractreactivepower4 {
 }
 impl crate::GetTable for AncilliaryServicesContractreactivepower4 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ANCILLIARY_SERVICES".into(),
-                        table_name: Some("CONTRACTREACTIVEPOWER".into()),
-                        version: 4,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ANCILLIARY_SERVICES".into(),
+            table_name: Some("CONTRACTREACTIVEPOWER".into()),
+            version: 4,
+        }
     }
 }
 /// # Summary
-/// 
-/// ## CONTRACTRESTARTUNITS
-///  _CONTRACTRESTARTUNITS shows Restart units provided under a system restart contract. A service can have multiple units._
-/// 
-/// * Data Set Name: Ancilliary Services
-/// * File Name: Contractrestartunits
-/// * Data Version: 1
-/// 
-/// # Description
-///  CONTRACTRESTARTUNITS data is confidential to each participant with a restart contract. Source CONTRACTRESTARTUNITS updates only where there is a contract variation.
-/// 
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-/// 
-/// # Primary Key Columns
-/// 
-/// * CONTRACTID
-/// * DUID
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct AncilliaryServicesContractrestartunits1 {
-    /// Contract Identifier
-    pub contractid: String,
-    /// Version No of contract
-    pub versionno: rust_decimal::Decimal,
-    /// Dispatchable Unit identifier
-    pub duid: String,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// &nbsp; 
-    pub authorisedby: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub authoriseddate: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for AncilliaryServicesContractrestartunits1 {
-    fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ANCILLIARY_SERVICES".into(),
-                        table_name: Some("CONTRACTRESTARTUNITS".into()),
-                        version: 1,
-                    }
-                    
-    }
-}
-/// # Summary
-/// 
+///
 /// ## CONTRACTRESTARTSERVICES
 ///  _CONTRACTRESTARTSERVICES shows Restart Services contract details used in the settlement and dispatch of this service._
-/// 
+///
 /// * Data Set Name: Ancilliary Services
 /// * File Name: Contractrestartservices
 /// * Data Version: 2
-/// 
+///
 /// # Description
 ///  CONTRACTRESTARTSERVICES data is confidential to the participant holding the contract. Source CONTRACTRESTARTSERVICES updates only where there is a contract variation.
-/// 
+///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
-/// 
+///
 /// # Primary Key Columns
-/// 
+///
 /// * CONTRACTID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -361,12 +309,54 @@ pub struct AncilliaryServicesContractrestartservices2 {
 }
 impl crate::GetTable for AncilliaryServicesContractrestartservices2 {
     fn get_file_key() -> crate::FileKey {
-
-                    crate::FileKey {
-                        data_set_name: "ANCILLIARY_SERVICES".into(),
-                        table_name: Some("CONTRACTRESTARTSERVICES".into()),
-                        version: 2,
-                    }
-                    
+        crate::FileKey {
+            data_set_name: "ANCILLIARY_SERVICES".into(),
+            table_name: Some("CONTRACTRESTARTSERVICES".into()),
+            version: 2,
+        }
+    }
+}
+/// # Summary
+///
+/// ## CONTRACTRESTARTUNITS
+///  _CONTRACTRESTARTUNITS shows Restart units provided under a system restart contract. A service can have multiple units._
+///
+/// * Data Set Name: Ancilliary Services
+/// * File Name: Contractrestartunits
+/// * Data Version: 1
+///
+/// # Description
+///  CONTRACTRESTARTUNITS data is confidential to each participant with a restart contract. Source CONTRACTRESTARTUNITS updates only where there is a contract variation.
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * CONTRACTID
+/// * DUID
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct AncilliaryServicesContractrestartunits1 {
+    /// Contract Identifier
+    pub contractid: String,
+    /// Version No of contract
+    pub versionno: rust_decimal::Decimal,
+    /// Dispatchable Unit identifier
+    pub duid: String,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// &nbsp;
+    pub authorisedby: Option<String>,
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for AncilliaryServicesContractrestartunits1 {
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "ANCILLIARY_SERVICES".into(),
+            table_name: Some("CONTRACTRESTARTUNITS".into()),
+            version: 1,
+        }
     }
 }

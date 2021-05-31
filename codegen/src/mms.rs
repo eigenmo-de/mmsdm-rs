@@ -20,7 +20,7 @@ pub struct Report {
     pub sub_type: String,
 }
 
-pub type Packages = collections::HashMap<String, collections::HashMap<String, TablePage>>;
+pub type Packages = collections::BTreeMap<String, collections::BTreeMap<String, TablePage>>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TablePage {
