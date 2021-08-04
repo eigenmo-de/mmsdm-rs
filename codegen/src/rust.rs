@@ -25,24 +25,22 @@ impl mms::TableColumn {
             format!("Option<{}>", self.data_type.as_rust_type())
         }
     }
-    fn get_comment(&self) -> &str {
-        &self.comment
-    }
+
 }
 
 impl mms::TableNote {
-    fn get_doc(&self) -> String {
+    fn get_rust_doc(&self) -> String {
         format!("* ({}) {} {}", self.name, self.comment, self.value)
     }
 }
 
 impl mms::TableNotes {
-    fn get_doc(&self) -> String {
+    fn get_rust_doc(&self) -> String {
         format!(
             "# Notes\n {}",
             self.notes
                 .iter()
-                .map(|n| n.get_doc())
+                .map(|n| n.get_rust_doc())
                 .collect::<Vec<_>>()
                 .join("\n")
         )
@@ -50,13 +48,13 @@ impl mms::TableNotes {
 }
 
 impl mms::Description {
-    fn get_doc(&self) -> String {
+    fn get_rust_doc(&self) -> String {
         format!("# Description\n {}", self.inner)
     }
 }
 
 impl mms::PkColumns {
-    fn get_doc(&self) -> String {
+    fn get_rust_doc(&self) -> String {
         self.cols
             .iter()
             .map(|c| format!("* {}", c))
@@ -66,13 +64,13 @@ impl mms::PkColumns {
 }
 
 impl mms::TableSummary {
-    fn get_doc(&self) -> String {
+    fn get_rust_doc(&self) -> String {
         format!("## {}\n _{}_", self.name, self.comment)
     }
 }
 
 impl mms::TablePage {
-    pub fn get_doc(&self, report: &pdr::Report) -> String {
+    pub fn get_rust_doc(&self, report: &pdr::Report) -> String {
         //use heck::TitleCase;
         format!(
             r#"# Summary
@@ -89,25 +87,25 @@ impl mms::TablePage {
 
 {primary_key}
 "#,
-            summary = self.summary.get_doc(),
-            pdr_report = report.get_doc(),
+            summary = self.summary.get_rust_doc(),
+            pdr_report = report.get_rust_doc(),
             description_opt = self
                 .description
                 .as_ref()
-                .map(|d| d.get_doc())
+                .map(|d| d.get_rust_doc())
                 .unwrap_or_else(|| "".into()),
             notes_opt = self
                 .notes
                 .as_ref()
-                .map(|n| n.get_doc())
+                .map(|n| n.get_rust_doc())
                 .unwrap_or_else(|| "".into()),
-            primary_key = self.primary_key_columns.get_doc(),
+            primary_key = self.primary_key_columns.get_rust_doc(),
         )
     }
 }
 
 impl pdr::Report {
-    fn get_doc(&self) -> String {
+    fn get_rust_doc(&self) -> String {
         format!(
             r#"* Data Set Name: {mms_data_set_name}
 * File Name: {mms_file_name}
@@ -122,20 +120,8 @@ impl pdr::Report {
             version = self.version,
         )
     }
-    pub fn sql_table_name(&self) -> String {
-        format!(
-            "{}{}{}",
-            self.name.to_camel_case(),
-            if let Some(sub_type) = &self.sub_type {
-                sub_type
-            } else {
-                ""
-            }
-            .to_camel_case(),
-            self.version
-        )
-    }
-    pub fn struct_name(&self) -> String {
+
+    pub fn get_rust_struct_name(&self) -> String {
         if let Some(sub_type) = &self.sub_type {
             format!(
                 "{}{}{}",
@@ -147,7 +133,7 @@ impl pdr::Report {
             format!("{}{}", self.name.to_camel_case(), self.version)
         }
     }
-    pub fn file_key_literal(&self) -> String {
+    pub fn get_rust_file_key_literal(&self) -> String {
         format!(
             r#"
             crate::FileKey {{
@@ -168,22 +154,7 @@ impl pdr::Report {
     }
 }
 
-fn should_skip(report: &mms::Report) -> bool {
-    // skip historical dataset - there are no table definitions anyway
-    (report.name == "HISTORICAL")
-    || (report.name == "CONFIGURATION")
 
-    // temporary
-    || (report.name == "BIDS" && report.sub_type == "BIDPEROFFER_D")
-    || (report.name == "BIDS" && report.sub_type == "BIDDAYOFFER_D")
-    || (report.name == "DEMAND_FORECASTS" && report.sub_type == "INTERMITTENT_P5_RUN")
-    || (report.name == "DEMAND_FORECASTS" && report.sub_type == "INTERMITTENT_P5_PRED")
-    || (report.name == "BILLING_RUN" && report.sub_type == "BILLINGAPCCOMPENSATION")
-    || (report.name == "BILLING_RUN" && report.sub_type == "BILLINGAPCRECOVERY")
-    || (report.name == "BILLING_RUN" && report.sub_type == "BILLING_RES_TRADER_RECOVERY")
-    || (report.name == "BILLING_RUN" && report.sub_type == "BILLING_RES_TRADER_PAYMENT")
-    || (report.name == "SETTLEMENT_DATA" && report.sub_type == "SETRESERVERECOVERY")
-}
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;
@@ -220,15 +191,15 @@ pub fn run() -> anyhow::Result<()> {
                 sub_type: table_key,
             };
 
-            if should_skip(&mms_report) {
+            if mms_report.should_skip() {
                 continue;
             }
 
             if let Some(pdr_report) = map.get(&mms_report) {
-                let mut current_struct = codegen::Struct::new(&pdr_report.struct_name());
+                let mut current_struct = codegen::Struct::new(&pdr_report.get_rust_struct_name());
                 current_struct
                     .vis("pub")
-                    .doc(&table.get_doc(&pdr_report))
+                    .doc(&table.get_rust_doc(&pdr_report))
                     .derive("Debug")
                     .derive("Clone")
                     .derive("PartialEq")
@@ -272,19 +243,19 @@ pub fn run() -> anyhow::Result<()> {
                             &format!("pub {}", col.field_name()),
                             &col.to_rust_type(),
                         );
-                        field.doc(vec![&col.get_comment()]);
+                        field.doc(vec![&col.comment]);
                         current_struct.push_field(field);
                     };
                 }
                 current_struct.fmt(&mut fmtr)?;
 
-                let mut current_impl = codegen::Impl::new(pdr_report.struct_name());
+                let mut current_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
                 current_impl.impl_trait("crate::GetTable");
 
                 let mut get_file_key = codegen::Function::new("get_file_key");
                 get_file_key.ret("crate::FileKey");
 
-                get_file_key.line(&pdr_report.file_key_literal());
+                get_file_key.line(&pdr_report.get_rust_file_key_literal());
 
                 current_impl.push_fn(get_file_key);
                 current_impl.fmt(&mut fmtr)?;

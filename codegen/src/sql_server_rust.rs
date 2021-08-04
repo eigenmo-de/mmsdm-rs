@@ -164,7 +164,7 @@ for file_key in self.data.keys() {
                         "None".to_string()
                     },
                     version = pdr_report.version,
-                    local_name = pdr_report.struct_name(),
+                    local_name = pdr_report.get_rust_struct_name(),
                     db_name = pdr_report.sql_table_name(),
                     module = data_set.to_snake_case(),
                 );

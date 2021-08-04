@@ -20,6 +20,25 @@ pub struct Report {
     pub sub_type: String,
 }
 
+impl Report {
+    pub fn should_skip(&self) -> bool {
+        // skip historical dataset - there are no table definitions anyway
+        (self.name == "HISTORICAL")
+        || (self.name == "CONFIGURATION")
+    
+        // temporary
+        || (self.name == "BIDS" && self.sub_type == "BIDPEROFFER_D")
+        || (self.name == "BIDS" && self.sub_type == "BIDDAYOFFER_D")
+        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_RUN")
+        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_PRED")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCCOMPENSATION")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCRECOVERY")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_RECOVERY")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_PAYMENT")
+        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRESERVERECOVERY")
+    }
+}
+
 pub type Packages = collections::BTreeMap<String, collections::BTreeMap<String, TablePage>>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
