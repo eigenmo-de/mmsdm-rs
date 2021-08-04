@@ -135,17 +135,17 @@ pub fn run() -> anyhow::Result<()> {
                 let optional_extractors = table.columns.columns.iter()
                     .enumerate()
                     .filter(|(_, col)| !col.mandatory)
-                    .map(|(idx, col)| {
+                    .filter_map(|(idx, col)| {
                         let row_part = format!("row[{}]", idx + 1);
                         let extractor = match col.data_type {
                             mms::DataType::Decimal { .. } =>  format!("decimal.Decimal({})", row_part),
                             mms::DataType::Integer { .. } => format!("int({})", row_part),
                             mms::DataType::Date => format!("datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\").date()", row_part),
                             mms::DataType::DateTime => format!("datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\")", row_part),
-                            _ => panic!("Optional extractor doesn't make sense for column {:#?}", col),
+                            _ => return None,
                         };
 
-                        format!(r#"
+                        Some(format!(r#"
     if {row_part} is None:
         {column_name} = None
     else:
@@ -154,7 +154,7 @@ pub fn run() -> anyhow::Result<()> {
                         row_part = row_part,
                         column_name = col.name.to_snake_case(),
                         extractor = extractor,
-                        )
+                        ))
                     })
                     .collect::<Vec<_>>()
                     .join("\n");

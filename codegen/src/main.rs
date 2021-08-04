@@ -37,7 +37,7 @@ async fn main() -> Result<(), anyhow::Error> {
         }
         AemoCodegen::Python => {
             // todo!();
-            python::run();
+            python::run()?;
         }
         AemoCodegen::Parquet => {
             todo!();
