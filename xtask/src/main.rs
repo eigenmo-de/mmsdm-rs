@@ -27,11 +27,14 @@ fn main() -> anyhow::Result<()> {
                 // codegen_cmd("clickhouse-rust-part")?;
                 // codegen_cmd("parquet")?;
             }
-            // "python" => {
-            //     codegen_cmd("python")?;
-            //     codegen_cmd("sql-server-tables")?;
-            //     codegen_cmd("clickhouse-tables")?;
-            // }
+            // cmd => {
+            //     codegen_cmd(cmd)?;
+            // },
+            "python" => {
+                codegen_cmd("python")?;
+                // codegen_cmd("sql-server-tables")?;
+                // codegen_cmd("clickhouse-tables")?;
+            }
             _ => help(),
         }
     } else {

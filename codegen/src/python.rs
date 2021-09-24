@@ -47,10 +47,10 @@ impl pdr::Report {
     pub fn get_python_file_key_literal(&self) -> String {
         format!(
 r#"key.TableKey(
-    collection="{}",
-    name="{}",
-    version={}
-)"#,
+            collection="{}",
+            name="{}",
+            version={}
+        )"#,
             data_set = self.name.to_shouty_snake_case(),
             table = if let Some(sub_type) = &self.sub_type {
                 sub_type
@@ -89,8 +89,88 @@ pub fn run() -> anyhow::Result<()> {
     }
     // abv
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
+
+
+// import mmsdm.data_model.settlement_data as settlement_data
+// from typing import Callable, Any, List
+// import mmsdm
+// import mmsdm.key as key
+
+
+// # this needs to be updated as move modules are added above
+// def mapping(key: key.TableKey) -> Callable[[List[str]], Any]:
+//     to_fn = {
+//         # start settlements
+//         settlement_data.DayTrack.key(): settlement_data.DayTrack.from_row,
+//         settlement_data.Cpdata.key(): settlement_data.Cpdata.from_row,
+//         settlement_data.FcasRecovery.key(): settlement_data.FcasRecovery.from_row,
+//         settlement_data.Marketfees.key(): settlement_data.Marketfees.from_row,
+//         settlement_data.NmasRecovery.key(): settlement_data.NmasRecovery.from_row,
+//         settlement_data.Reallocations.key(): settlement_data.Reallocations.from_row,
+//         # end settlements
+//     }
+//     return to_fn[key]
+
+    let mut imports = collections::BTreeSet::new();
+    let mut dataset_mappings = String::new();
+
+    for (data_set, tables) in local_info.iter() {
+        for (table_key, _) in tables.iter() {
+            let mms_report = mms::Report {
+                name: data_set.clone(),
+                sub_type: table_key.to_string(),
+            };
+
+            if mms_report.should_skip() {
+                continue;
+            }
+
+            if let Some(pdr_report) = map.get(&mms_report) {
+                // println!("DS {}, TK {}", data_set.to_snake_case(), pdr_report.get_python_class_name());
+                imports.insert(data_set.to_snake_case());
+                dataset_mappings.push_str(
+                    &format!(
+                        "       {data_set}.{python_class}.key(): {data_set}.{python_class}.from_row,\n",
+                        data_set = data_set.to_snake_case(),
+                        python_class = pdr_report.get_python_class_name(),
+                    )
+                );
+                
+            }
+        }
+    }
+
+    fs::write(
+        "python/mmsdm/data_model/__init__.py",
+        format!(r#"import mmsdm
+import mmsdm.key as key
+from typing import Callable, Any, List
+{imports}
+        
+def mapping(key: key.TableKey) -> Callable[[List[str]], Any]:
+    to_fn = {{
+{dataset_mappings}
+    }}
+    return to_fn[key]
+"#,
+        imports = imports.iter().map(|ds| format!("import mmsdm.data_model.{0} as {0}", ds)).collect::<Vec<_>>().join("\n"),
+        dataset_mappings = dataset_mappings,
+        ),
+    )?;
+
     for (data_set, tables) in local_info.into_iter() {
+        
         let mut fmt_str = String::new();
+        fmt_str.push_str(r#"
+import typing
+import datetime
+import mmsdm
+import mmsdm.key as key
+
+from dataclasses import dataclass
+import decimal
+        "#);
+
         for (table_key, table) in tables.into_iter() {
             let mms_report = mms::Report {
                 name: data_set.clone(),
@@ -108,12 +188,12 @@ pub fn run() -> anyhow::Result<()> {
                 let column_definitions = table.columns.columns.iter()
                     .map(|col| format!("{}: {}", col.name.to_snake_case(), col.to_python_type()))
                     .collect::<Vec<_>>()
-                    .join("\n");
+                    .join("\n    ");
 
                 let column_extractors = table.columns.columns.iter()
                     .enumerate()
                     .map(|(idx, col)| {
-                        let row_part = format!("row[{}]", idx + 1);
+                        let row_part = format!("row[{}]", idx + 4);
                         let extractor = match (col.data_type.clone(), col.mandatory) {
                             (mms::DataType::Varchar { .. }, _) => row_part,
                             (mms::DataType::Char, _) => row_part,
@@ -130,13 +210,13 @@ pub fn run() -> anyhow::Result<()> {
                         format!("{}={}", col.name.to_snake_case(), extractor)
                     })
                     .collect::<Vec<_>>()
-                    .join(",\n");
+                    .join(",\n            ");
                 
                 let optional_extractors = table.columns.columns.iter()
                     .enumerate()
                     .filter(|(_, col)| !col.mandatory)
                     .filter_map(|(idx, col)| {
-                        let row_part = format!("row[{}]", idx + 1);
+                        let row_part = format!("row[{}]", idx + 4);
                         let extractor = match col.data_type {
                             mms::DataType::Decimal { .. } =>  format!("decimal.Decimal({})", row_part),
                             mms::DataType::Integer { .. } => format!("int({})", row_part),
@@ -146,10 +226,10 @@ pub fn run() -> anyhow::Result<()> {
                         };
 
                         Some(format!(r#"
-    if {row_part} is None:
-        {column_name} = None
-    else:
-        {column_name} = {extractor}
+        if {row_part} is None or {row_part} == "":
+            {column_name} = None
+        else:
+            {column_name} = {extractor}
 "#,
                         row_part = row_part,
                         column_name = col.name.to_snake_case(),
@@ -157,7 +237,7 @@ pub fn run() -> anyhow::Result<()> {
                         ))
                     })
                     .collect::<Vec<_>>()
-                    .join("\n");
+                    .join("");
 
                 fmt_str.push_str(&format!(r#"
 @dataclass(frozen=True)
@@ -169,7 +249,7 @@ class {class_name}:
         return {table_key_literal}
 
     @staticmethod
-    def from_row(row: List[str]) -> "{class_name}":
+    def from_row(row: typing.List[str]) -> "{class_name}":
         {optional_extractors}
         return {class_name}(
             {column_extractors}
