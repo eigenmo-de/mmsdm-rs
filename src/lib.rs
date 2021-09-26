@@ -234,6 +234,20 @@ pub trait GetTable: serde::de::DeserializeOwned + Send {
     fn get_file_key() -> FileKey;
 }
 
+pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {
+
+}
+
+pub trait CompareWithRow {
+    type Row: GetTable;
+    fn compare_with_row(&self, row: &Self::Row) -> bool;
+}
+
+pub trait CompareWithPrimaryKey {
+    type PrimaryKey: PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool;
+}
+
 impl AemoFile {
     pub fn get_table<T>(&self) -> Result<Vec<T>>
     where

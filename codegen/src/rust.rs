@@ -428,6 +428,11 @@ pub fn run() -> anyhow::Result<()> {
                 pk_impl.push_fn(compare_with_row);
 
                 pk_impl.fmt(&mut fmtr)?;
+
+                let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+                pk_trait.impl_trait("crate::PrimaryKey");
+                pk_trait.fmt(&mut fmtr)?;
+                
             } else {
                 println!("Cannot find:");
                 dbg!(mms_report);
