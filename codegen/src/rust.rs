@@ -223,7 +223,7 @@ pub fn run() -> anyhow::Result<()> {
                     .derive("serde::Serialize");
                 for col in table.columns.columns.iter() {
                     if &col.field_name() == "type" {
-                        let mut field = codegen::Field::new("pub type_", &col.to_rust_type());
+                        let mut field = codegen::Field::new("pub r#type", &col.to_rust_type());
                         field.annotation(vec!["#[serde(rename = \"type\")]"]);
                         current_struct.push_field(field);
                     } else if col.comment.contains("YYYYMMDDPPP") {
@@ -284,37 +284,18 @@ pub fn run() -> anyhow::Result<()> {
 }}"#,
                     pk_name = pdr_report.get_rust_pk_name(),
                     pk_fields = table.primary_key_columns.cols.iter()
-                        .map(|name| format!("    {0}: self.{0}.clone()", name.to_lowercase()))
+                        .map(|name| format!("    {0}: self.{0}.clone()", lowercase_and_escape(name)))
                         .collect::<Vec<String>>()
                         .join(",\n"),
                 ));
 
                 current_impl.push_fn(primary_key);
 
-
-                let mut compare_with_key = codegen::Function::new("compare_with_key");
-                compare_with_key.ret("bool");
-                compare_with_key.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == other.{0}", name.to_lowercase()))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );                
-                compare_with_key.arg_ref_self();
-                compare_with_key.arg("other", &format!("&{}", pdr_report.get_rust_pk_name()));
-
-                current_impl.push_fn(compare_with_key);
+                current_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
 
 
-                let mut compare_with_other = codegen::Function::new("compare_with_other");
-                compare_with_other.ret("bool");
-                compare_with_other.arg_ref_self();
-                compare_with_other.arg("other", "&Self");
-                compare_with_other.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == other.{0}", name.to_lowercase()))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );    
-                current_impl.push_fn(compare_with_other);
+
+
 
 
                 let mut partition_suffix = codegen::Function::new("partition_suffix");
@@ -323,7 +304,7 @@ pub fn run() -> anyhow::Result<()> {
 
                 if table.primary_key_columns.cols.iter().any(|c| c.to_lowercase() == "settlementdate") {
 
-                    partition_suffix.line(r#"format!("{}_{}", chrono::Datelike::year(self.settlementdate), chrono::Datelike::month(self.settlementdate))"#);
+                    partition_suffix.line(r#"format!("{}_{}", chrono::Datelike::year(&self.settlementdate), chrono::Datelike::month(&self.settlementdate))"#);
                 } else {
                     partition_suffix.line("String::new()");
                 }
@@ -337,7 +318,7 @@ pub fn run() -> anyhow::Result<()> {
 
                     partition_name.line(
                         &format!(
-                            r#"format!("{}_{{}}_{{}}", chrono::Datelike::year(self.settlementdate), chrono::Datelike::month(self.settlementdate))"#,
+                            r#"format!("{}_{{}}_{{}}", chrono::Datelike::year(&self.settlementdate), chrono::Datelike::month(&self.settlementdate))"#,
                             pdr_report.get_partition_base()
                         )
                     );
@@ -349,6 +330,38 @@ pub fn run() -> anyhow::Result<()> {
                 current_impl.push_fn(partition_name);
 
                 current_impl.fmt(&mut fmtr)?;
+
+
+
+                let mut compare_with_row_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+                compare_with_row_impl.impl_trait("crate::CompareWithRow");
+                compare_with_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
+                let mut compare_with_other = codegen::Function::new("compare_with_row");
+                compare_with_other.ret("bool");
+                compare_with_other.arg_ref_self();
+                compare_with_other.arg("row", "&Self::Row");
+                compare_with_other.line(&table.primary_key_columns.cols.iter()
+                    .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
+                    .collect::<Vec<String>>()
+                    .join("\n&& "),
+                );    
+                compare_with_row_impl.push_fn(compare_with_other);
+                compare_with_row_impl.fmt(&mut fmtr)?;
+
+                let mut compare_with_pk_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+                compare_with_pk_impl.impl_trait("crate::CompareWithPrimaryKey");
+                compare_with_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
+                let mut compare_with_key = codegen::Function::new("compare_with_key");
+                compare_with_key.ret("bool");
+                compare_with_key.line(&table.primary_key_columns.cols.iter()
+                    .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
+                    .collect::<Vec<String>>()
+                    .join("\n&& "),
+                );                
+                compare_with_key.arg_ref_self();
+                compare_with_key.arg("key", "&Self::PrimaryKey");
+                compare_with_pk_impl.push_fn(compare_with_key);
+                compare_with_pk_impl.fmt(&mut fmtr)?;
 
 
                 let mut pk_struct = codegen::Struct::new(&pdr_report.get_rust_pk_name());
@@ -370,7 +383,7 @@ pub fn run() -> anyhow::Result<()> {
                     }
 
                     if &col.field_name() == "type" {
-                        let field = codegen::Field::new("pub type_", &col.to_rust_type());
+                        let field = codegen::Field::new("pub r#type", &col.to_rust_type());
                         pk_struct.push_field(field);
                     } else if col.comment.contains("YYYYMMDDPPP") {
                         // parse as DispatchPeriod
@@ -403,31 +416,40 @@ pub fn run() -> anyhow::Result<()> {
 
                 pk_struct.fmt(&mut fmtr)?;
 
-                let mut pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
 
-                let mut compare_with_other_pk = codegen::Function::new("compare_with_other");
-                compare_with_other_pk.ret("bool");
-                compare_with_other_pk.arg_ref_self();
-                compare_with_other_pk.arg("other", "&Self");
-                compare_with_other_pk.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == other.{0}", name.to_lowercase()))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );    
-                pk_impl.push_fn(compare_with_other_pk);
 
+                let mut pk_compare_row_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+                pk_compare_row_impl.impl_trait("crate::CompareWithRow");
+                pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
                 let mut compare_with_row = codegen::Function::new("compare_with_row");
                 compare_with_row.ret("bool");
                 compare_with_row.arg_ref_self();
-                compare_with_row.arg("row", &format!("&{}", pdr_report.get_rust_struct_name()));
+                compare_with_row.arg("row", "&Self::Row");
                 compare_with_row.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == row.{0}", name.to_lowercase()))
+                    .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
                     .collect::<Vec<String>>()
                     .join("\n&& "),
                 );    
-                pk_impl.push_fn(compare_with_row);
+                pk_compare_row_impl.push_fn(compare_with_row);
+                pk_compare_row_impl.fmt(&mut fmtr)?;
 
-                pk_impl.fmt(&mut fmtr)?;
+
+                let mut pk_compare_pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+                pk_compare_pk_impl.impl_trait("crate::CompareWithPrimaryKey");
+                pk_compare_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
+                let mut compare_with_other_pk = codegen::Function::new("compare_with_key");
+                compare_with_other_pk.ret("bool");
+                compare_with_other_pk.arg_ref_self();
+                compare_with_other_pk.arg("key", "&Self::PrimaryKey");
+                compare_with_other_pk.line(&table.primary_key_columns.cols.iter()
+                    .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
+                    .collect::<Vec<String>>()
+                    .join("\n&& "),
+                );    
+                pk_compare_pk_impl.push_fn(compare_with_other_pk);
+                pk_compare_pk_impl.fmt(&mut fmtr)?;
+
+         
 
                 let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
                 pk_trait.impl_trait("crate::PrimaryKey");
@@ -445,4 +467,66 @@ pub fn run() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+const KW: [&'static str; 51] = [
+    "as",
+    "break",
+    "const",
+    "continue",
+    "crate",
+    "else",
+    "enum",
+    "extern",
+    "false",
+    "fn",
+    "for",
+    "if",
+    "impl",
+    "in",
+    "let",
+    "loop",
+    "match",
+    "mod",
+    "move",
+    "mut",
+    "pub",
+    "ref",
+    "return",
+    "self",
+    "Self",
+    "static",
+    "struct",
+    "super",
+    "trait",
+    "true",
+    "type",
+    "unsafe",
+    "use",
+    "where",
+    "while",
+    "async",
+    "await",
+    "dyn",
+    "abstract",
+    "become",
+    "box",
+    "do",
+    "final",
+    "macro",
+    "override",
+    "priv",
+    "typeof",
+    "unsized",
+    "virtual",
+    "yield",
+    "try",
+];
+
+fn lowercase_and_escape(col_name: &str) -> String {
+    if KW.contains(&col_name.to_lowercase().as_str()) {
+        format!("r#{}", col_name.to_lowercase())
+    } else {
+        col_name.to_lowercase()
+    }
 }

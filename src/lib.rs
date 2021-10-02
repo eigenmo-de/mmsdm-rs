@@ -1,7 +1,7 @@
 //#![deny(clippy::all)]
 //#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, io, num, str};
+use std::{collections, fmt, io, num, str, path, fs};
 
 use chrono::TimeZone;
 
@@ -52,6 +52,9 @@ pub enum Error {
     #[error("aemo file row is empty")]
     EmptyRow,
 
+    #[error("Empty AEMO file: {0:?}")]
+    EmptyFile(FileKey),
+
     /// This occurs when a given row in the file doesn't match the expected structure for that section
     /// of the file
     #[error("unexpeted row type of {0}")]
@@ -85,6 +88,9 @@ pub enum Error {
 
     #[error("Error creating file log")]
     CreateFileLogError,
+
+    #[error(transparent)]
+    Io(#[from] io::Error),
 
     #[error("Csv error: {0})")]
     Csv(#[from] csv::Error),
@@ -231,7 +237,11 @@ impl fmt::Display for FileKey {
 /// # }
 /// ```
 pub trait GetTable: serde::de::DeserializeOwned + Send {
+    type PrimaryKey: PrimaryKey;
     fn get_file_key() -> FileKey;
+    fn partition_suffix(&self) -> Option<(i32, chrono::Month)>;
+    fn partition_name(&self) -> String;
+    fn primary_key(&self) -> Self::PrimaryKey;
 }
 
 pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {
@@ -246,6 +256,74 @@ pub trait CompareWithRow {
 pub trait CompareWithPrimaryKey {
     type PrimaryKey: PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool;
+}
+
+// handle the INSERT-UPDATE logic with lastchanged if applicibale
+pub trait LatestRow: GetTable {
+    fn latest_row(&mut self, row: Self) -> Self;
+}
+
+
+fn required_partitions<T>(data: &[T]) -> crate::Result<collections::BTreeSet<String>> 
+where
+    T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row=T>,
+{
+    todo!()
+}
+
+// potentially do one partition at a time
+// then we can do each partition in a seperate thread where they are available
+fn append_or_create_csv_at<P, T>(path: P, data: &[T]) -> crate::Result<()> 
+where
+    T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
+    P: AsRef<path::Path>,
+{
+
+    let mut files = collections::HashMap::new();
+    for row in data {
+        let file_name = match row.partition_suffix() {
+            Some((year, month)) => format!("{}_{}_{}.csv", row.partition_name(), year, month.number_from_month()),
+            None => format!("{}.csv", row.partition_name()),
+        };
+
+        let file_path = path.as_ref().join(&file_name);
+        // check if we already have the file handle and data
+        if files.get_mut(&file_name).is_none() {
+            let mut csv_writer = csv::WriterBuilder::new();
+            let mut file_data = collections::BTreeMap::new();
+            if file_path.exists() {
+                let f = fs::File::open(&file_path)?;
+                let buf = io::BufReader::new(f);
+                let mut reader = csv::Reader::from_reader(buf);
+                for result in reader.deserialize() {
+                    let existing_row: T = result?;
+                    file_data.insert(existing_row.primary_key(), existing_row);
+                }   
+                csv_writer.has_headers(false);
+            } else {
+                csv_writer.has_headers(true);
+            }
+
+            let file_handle = fs::OpenOptions::new().append(true).create(true).open(&file_path)?;
+            let csv_writer = csv_writer.from_writer(file_handle);
+
+            files.insert(file_name.to_string(), (csv_writer, file_data));
+        }
+
+        if let Some((csv_writer, file_data)) = files.get_mut(&file_name) {
+            if let Some(_existing_val) = file_data.get_mut(&row.primary_key()) {
+                log::warn!("Row {:?} was already present in file {:?}", row, &file_path);
+                // let latest = existing_val.latest_row(row);
+                // csv_writer.serialize()
+                // #TODO: compare against lastchanged if relevant
+            } else {
+                csv_writer.serialize(row)?;
+            }
+
+        }
+    }
+
+    Ok(())
 }
 
 impl AemoFile {
