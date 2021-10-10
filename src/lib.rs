@@ -1,7 +1,7 @@
 //#![deny(clippy::all)]
 //#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, io, num, str, path, fs};
+use std::{collections, fmt, io, num, str, path, fs, iter, result};
 
 use chrono::TimeZone;
 
@@ -109,6 +109,10 @@ pub enum Error {
     /// This occurs when failing to parse a trading period
     #[error("Invalid trading period: {0}")]
     InvalidTradingPeriod(String),
+
+    #[cfg(feature = "save_as_parquet")]
+    #[error(transparent)]
+    Arrow(#[from] arrow2::error::ArrowError),
 }
 
 type Result<T> = std::result::Result<T, Error>;
@@ -215,6 +219,25 @@ impl fmt::Display for FileKey {
     }
 }
 
+
+pub trait Partition: std::hash::Hash + PartialEq + Eq {
+    fn get_suffix(&self) -> String;
+}
+
+impl Partition for (i32, chrono::Month) {
+    fn get_suffix(&self) -> String {
+        format!("_{:02}_{:04}", self.1.number_from_month(), self.0)
+    }
+
+}
+impl Partition for () {
+    fn get_suffix(&self) -> String {
+        String::new()
+    }
+}
+
+
+
 /// This trait is designed as a convenient way to extract a Vec of the desired Strct representing
 /// a row of the table from the `AemoFile` which represents the whole file.
 /// Most `AemoFiles` would contain multiple tables
@@ -236,10 +259,11 @@ impl fmt::Display for FileKey {
 /// #   Ok(rows)
 /// # }
 /// ```
-pub trait GetTable: serde::de::DeserializeOwned + Send {
+pub trait GetTable: serde::Serialize + serde::de::DeserializeOwned + Send + Clone + fmt::Debug {
     type PrimaryKey: PrimaryKey;
+    type Partition: Partition;
     fn get_file_key() -> FileKey;
-    fn partition_suffix(&self) -> Option<(i32, chrono::Month)>;
+    fn partition_suffix(&self) -> Self::Partition;
     fn partition_name(&self) -> String;
     fn primary_key(&self) -> Self::PrimaryKey;
 }
@@ -259,72 +283,163 @@ pub trait CompareWithPrimaryKey {
 }
 
 // handle the INSERT-UPDATE logic with lastchanged if applicibale
-pub trait LatestRow: GetTable {
+// if the rows don't match via CompareWithRow, then the self should always be returned
+// only when the rows match and the other 'row' is newer, and this replacement behaviour is defined
+// should the other 'row' be returned 
+pub trait LatestRow: GetTable + CompareWithRow<Row=Self> {
     fn latest_row(&mut self, row: Self) -> Self;
 }
 
 
-fn required_partitions<T>(data: &[T]) -> crate::Result<collections::BTreeSet<String>> 
-where
-    T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row=T>,
-{
-    todo!()
+
+
+
+#[cfg(feature = "save_as_parquet")]
+pub trait ArrowSchema: GetTable {
+    fn arrow_schema() -> arrow2::datatypes::Schema;
+    fn partition_to_record_batch<T>(partition: collections::BTreeMap<Self::PrimaryKey, Self>) -> crate::Result<arrow2::record_batch::RecordBatch>;
 }
 
-// potentially do one partition at a time
-// then we can do each partition in a seperate thread where they are available
-fn append_or_create_csv_at<P, T>(path: P, data: &[T]) -> crate::Result<()> 
+#[cfg(feature = "save_as_parquet")]
+fn arrow_from_csv<R, T>(reader: R) -> crate::Result<arrow2::record_batch::RecordBatch> 
 where
-    T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
-    P: AsRef<path::Path>,
+    T: ArrowSchema,
+    R: io::Read,
 {
+    let mut reader = csv::ReaderBuilder::new().has_headers(true).from_reader(reader);
+    let records = reader.into_byte_records().collect::<result::Result<Vec<_>, _>>()?;
 
-    let mut files = collections::HashMap::new();
-    for row in data {
-        let file_name = match row.partition_suffix() {
-            Some((year, month)) => format!("{}_{}_{}.csv", row.partition_name(), year, month.number_from_month()),
-            None => format!("{}.csv", row.partition_name()),
-        };
 
-        let file_path = path.as_ref().join(&file_name);
-        // check if we already have the file handle and data
-        if files.get_mut(&file_name).is_none() {
-            let mut csv_writer = csv::WriterBuilder::new();
-            let mut file_data = collections::BTreeMap::new();
-            if file_path.exists() {
-                let f = fs::File::open(&file_path)?;
-                let buf = io::BufReader::new(f);
-                let mut reader = csv::Reader::from_reader(buf);
-                for result in reader.deserialize() {
-                    let existing_row: T = result?;
-                    file_data.insert(existing_row.primary_key(), existing_row);
-                }   
-                csv_writer.has_headers(false);
-            } else {
-                csv_writer.has_headers(true);
-            }
+    let batch = arrow2::io::csv::read::deserialize_batch(
+        &records,
+        &T::arrow_schema().fields(),
+        None,
+        0,
+        arrow2::io::csv::read::deserialize_column,
+    )?;
 
-            let file_handle = fs::OpenOptions::new().append(true).create(true).open(&file_path)?;
-            let csv_writer = csv_writer.from_writer(file_handle);
+    Ok(batch)
+}
 
-            files.insert(file_name.to_string(), (csv_writer, file_data));
-        }
 
-        if let Some((csv_writer, file_data)) = files.get_mut(&file_name) {
-            if let Some(_existing_val) = file_data.get_mut(&row.primary_key()) {
-                log::warn!("Row {:?} was already present in file {:?}", row, &file_path);
-                // let latest = existing_val.latest_row(row);
-                // csv_writer.serialize()
-                // #TODO: compare against lastchanged if relevant
-            } else {
-                csv_writer.serialize(row)?;
-            }
 
-        }
+
+
+fn data_partition_to_csv<T, W>(partition: collections::BTreeMap<T::PrimaryKey, T>, writer: &mut W) -> crate::Result<()>
+where
+    T: GetTable + CompareWithRow<Row=T>,
+    W: io::Write,
+{
+    let mut csv_wtr = csv::WriterBuilder::new()
+        .has_headers(true)
+        .from_writer(writer);
+    
+    for (_, row) in partition {
+        csv_wtr.serialize(row)?;
     }
+
+    csv_wtr.flush()?;
 
     Ok(())
 }
+
+fn data_partition_from_csv<T, R>(reader: R) -> crate::Result<collections::BTreeMap<T::PrimaryKey, T>> 
+where
+    T: GetTable + CompareWithRow<Row=T>,
+    R: io::Read,
+{
+    let mut reader = csv::ReaderBuilder::new().has_headers(true).from_reader(reader);
+    let mut output = collections::BTreeMap::new();
+    for res in reader.deserialize() {
+        let row: T = res?;
+        output.insert(row.primary_key(), row);
+    }
+    Ok(output)
+}
+
+
+fn required_partitions<T>(data: &[T]) -> collections::HashSet<T::Partition> 
+where
+    T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row=T>,
+{
+    data.iter().map(|row| row.partition_suffix()).collect()
+}
+
+// in memory
+// the input map is all 
+fn merge_with_partitions<T>(
+    mut existing: collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>>, 
+    data: &[T],
+) -> collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>> 
+where
+    T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
+{
+    for row in data {
+        let partition = row.partition_suffix();
+        let pk = row.primary_key();
+        if let Some(entry) = existing.get_mut(&partition) {
+            entry.entry(pk)
+                .or_insert(row.clone());
+        } else {
+            existing.insert(partition, iter::once((pk, row.clone())).collect());
+        }
+    }
+
+    existing
+}
+
+// on filesystem
+// potentially do one partition at a time
+// then we can do each partition in a seperate thread where they are available
+// fn append_or_create_csv_at<P, T>(path: P, data: &[T]) -> crate::Result<()> 
+// where
+//     T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
+//     P: AsRef<path::Path>,
+// {
+
+//     let mut files = collections::HashMap::new();
+//     for row in data {
+//         let  file_name = format!("{}{}.csv", row.partition_name(), row.partition_suffix().get_suffix());
+
+//         let file_path = path.as_ref().join(&file_name);
+//         // check if we already have the file handle and data
+//         if files.get_mut(&file_name).is_none() {
+//             let mut csv_writer = csv::WriterBuilder::new();
+//             let mut file_data = collections::BTreeMap::new();
+//             if file_path.exists() {
+//                 let f = fs::File::open(&file_path)?;
+//                 let buf = io::BufReader::new(f);
+//                 let mut reader = csv::Reader::from_reader(buf);
+//                 for result in reader.deserialize() {
+//                     let existing_row: T = result?;
+//                     file_data.insert(existing_row.primary_key(), existing_row);
+//                 }   
+//                 csv_writer.has_headers(false);
+//             } else {
+//                 csv_writer.has_headers(true);
+//             }
+
+//             let file_handle = fs::OpenOptions::new().append(true).create(true).open(&file_path)?;
+//             let csv_writer = csv_writer.from_writer(file_handle);
+
+//             files.insert(file_name.to_string(), (csv_writer, file_data));
+//         }
+
+//         if let Some((csv_writer, file_data)) = files.get_mut(&file_name) {
+//             if let Some(_existing_val) = file_data.get_mut(&row.primary_key()) {
+//                 log::warn!("Row {:?} was already present in file {:?}", row, &file_path);
+//                 // let latest = existing_val.latest_row(row);
+//                 // csv_writer.serialize()
+//                 // #TODO: compare against lastchanged if relevant
+//             } else {
+//                 csv_writer.serialize(row)?;
+//             }
+
+//         }
+//     }
+
+//     Ok(())
+// }
 
 impl AemoFile {
     pub fn get_table<T>(&self) -> Result<Vec<T>>
@@ -520,7 +635,7 @@ impl AemoFile {
         self.data.contains_key(&key)
     }
 
-    pub fn from_bufread(br: impl io::BufRead) -> Result<Self> {
+    pub fn from_reader(br: impl io::Read) -> Result<Self> {
         let mut reader = csv::ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)

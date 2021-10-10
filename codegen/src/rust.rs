@@ -295,18 +295,17 @@ pub fn run() -> anyhow::Result<()> {
 
 
 
-
-
-
+                
                 let mut partition_suffix = codegen::Function::new("partition_suffix");
-                partition_suffix.ret("String");
+                partition_suffix.ret("Self::Partition");
                 partition_suffix.arg_ref_self();
-
+                
                 if table.primary_key_columns.cols.iter().any(|c| c.to_lowercase() == "settlementdate") {
-
-                    partition_suffix.line(r#"format!("{}_{}", chrono::Datelike::year(&self.settlementdate), chrono::Datelike::month(&self.settlementdate))"#);
+                    current_impl.associate_type("Partition", "(i32, chrono::Month)");
+                    partition_suffix.line(r#"(chrono::Datelike::year(&self.settlementdate), num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate)).unwrap())"#);
                 } else {
-                    partition_suffix.line("String::new()");
+                    current_impl.associate_type("Partition", "()");
+                    partition_suffix.line("()");
                 }
                 current_impl.push_fn(partition_suffix);
 
