@@ -15,6 +15,16 @@ impl mms::DataType {
         }
         .into()
     }
+    fn as_arrow_type(&self) -> String {
+        match self {
+            mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::Utf8".to_string(),
+            mms::DataType::Char => "arrow2::datatypes::DataType::Utf8".to_string(),
+            mms::DataType::Date => "arrow2::datatypes::DataType::Date32".to_string(),
+            mms::DataType::DateTime => "arrow2::datatypes::DataType::Date64".to_string(),
+            mms::DataType::Decimal { precision, scale } => format!("arrow2::datatypes::DataType::Decimal({},{})", precision, scale),
+            mms::DataType::Integer { .. } => "arrow2::datatypes::DataType::Int64".to_string(),
+        }
+    }
 }
 
 impl mms::TableColumn {
@@ -25,7 +35,89 @@ impl mms::TableColumn {
             format!("Option<{}>", self.data_type.as_rust_type())
         }
     }
+    fn rust_field_name(&self) -> String {
+        if KW.contains(&self.field_name().as_str()) {
+            format!("r#{}", self.field_name())
+        } else {
+            self.field_name()
+        }
+    }
+    fn as_arrow_field(&self) -> String {
+        format!("arrow2::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
+            name = self.rust_field_name(),
+            ty = self.data_type.as_arrow_type(),
+            nullable = !self.mandatory,
+        )
+    }
+    fn as_arrow_array_name(&self) -> String {
+        format!("{}_array", self.rust_field_name())
+    }
+    fn as_arrow_array_extractor(&self) -> String {
+        let extractor = match (&self.data_type, self.mandatory) {
+            (_, true) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
+            (_, true) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
+            (mms::DataType::Varchar { .. }, true) => format!("row.{}", self.rust_field_name()),
+            (mms::DataType::Char, true) => format!("row.{}.to_string()", self.rust_field_name()),
+            (mms::DataType::Date, true) => format!("i32::try_from((row.{}.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days()).unwrap()", self.rust_field_name()),
+            (mms::DataType::DateTime, true) => format!("row.{}.timestamp_millis()", self.rust_field_name()),
+            (mms::DataType::Decimal { scale, .. }, true) => format!("{{
+                let mut val = row.{};
+                val.rescale({scale});
+                val.mantissa()
+            }}", self.rust_field_name(), scale = scale),
+            (mms::DataType::Integer { .. }, true) => format!("row.{}", self.rust_field_name()),
+            (mms::DataType::Varchar { .. }, false) => format!("row.{}", self.rust_field_name()),
+            (mms::DataType::Char, false) => format!("row.{}.map(|val| val.to_string())", self.rust_field_name()),
+            (mms::DataType::Date, false) =>  format!("row.{}.map(|val| i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days()).unwrap())", self.rust_field_name()),
+            (mms::DataType::DateTime, false) => format!("row.{}.map(|val| val.timestamp_millis())", self.rust_field_name()),
+            (mms::DataType::Decimal { scale, .. }, false) => format!("{{
+                row.{}.map(|mut val| {{
+                    val.rescale({scale});
+                    val.mantissa()
+                }})
+            }}", self.rust_field_name(), scale = scale),
+            (mms::DataType::Integer { .. }, false) => format!("row.{}", self.rust_field_name()),
+        };
+        format!(
+            "{array}.push({extractor});", 
+            array = self.as_arrow_array_name(),
+            extractor = extractor,
+        )
+    }
+    fn as_arrow_array_constructor(&self) -> String {
+        match (&self.data_type, self.mandatory) {
+            (_, true) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (_, true) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
 
+            (mms::DataType::Varchar { .. }, true) => format!("arrow2::array::Utf8Array::<i64>::from_slice({})", self.as_arrow_array_name()),
+            (mms::DataType::Char, true) => format!("arrow2::array::Utf8Array::<i64>::from_slice({})", self.as_arrow_array_name()),
+
+            (mms::DataType::Varchar { .. }, false) => format!("arrow2::array::Utf8Array::<i64>::from({})", self.as_arrow_array_name()),
+            (mms::DataType::Char, false) => format!("arrow2::array::Utf8Array::<i64>::from({})", self.as_arrow_array_name()),
+
+            (mms::DataType::Date, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (mms::DataType::DateTime, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (mms::DataType::Decimal { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (mms::DataType::Integer { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+
+            (mms::DataType::Date, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            (mms::DataType::DateTime, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            (mms::DataType::Decimal { .. }, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            (mms::DataType::Integer { .. }, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+        }
+    }
+
+}
+
+impl mms::TableColumns {
+    fn as_arrow_schema(&self) -> String {
+        format!(
+            "arrow2::datatypes::Schema::new(vec![
+    {fields}
+])",
+            fields = self.columns.iter().map(|col| col.as_arrow_field()).collect::<Vec<_>>().join(",\n    "),
+        )
+    }
 }
 
 impl mms::TableNote {
@@ -453,6 +545,57 @@ pub fn run() -> anyhow::Result<()> {
                 let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
                 pk_trait.impl_trait("crate::PrimaryKey");
                 pk_trait.fmt(&mut fmtr)?;
+
+
+
+
+                let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_struct_name());
+                arrow_trait.impl_trait("crate::ArrowSchema");
+                arrow_trait.r#macro("#[cfg(feature = \"save_as_parquet\")]");
+
+
+                let mut arrow_schema = codegen::Function::new("arrow_schema");
+                arrow_schema.ret("arrow2::datatypes::Schema");
+                arrow_schema.line(&table.columns.as_arrow_schema());
+                arrow_trait.push_fn(arrow_schema);
+
+                let mut partition_to_batch = codegen::Function::new("partition_to_record_batch");
+                partition_to_batch.ret("crate::Result<arrow2::record_batch::RecordBatch>");
+                partition_to_batch.arg("partition", "std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>");
+
+                partition_to_batch.line("use std::convert::TryFrom;");
+
+                for col in &table.columns.columns {
+                    partition_to_batch.line(&format!("let mut {} = Vec::new();", col.as_arrow_array_name()));
+
+                }
+
+                partition_to_batch.line("for (_, row) in partition {");
+
+                for col in &table.columns.columns {
+                    partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
+                }
+                partition_to_batch.line("}
+
+arrow2::record_batch::RecordBatch::try_new(
+    std::sync::Arc::new(Self::arrow_schema()),
+    vec!["
+                );
+
+                for col in &table.columns.columns {
+                    partition_to_batch.line(&format!("        std::sync::Arc::new({}),", col.as_arrow_array_constructor()));
+                }
+
+                partition_to_batch.line("    ]
+).map_err(Into::into)"
+                );
+
+
+
+                arrow_trait.push_fn(partition_to_batch);
+
+
+                arrow_trait.fmt(&mut fmtr)?;
                 
             } else {
                 println!("Cannot find:");
@@ -529,3 +672,65 @@ fn lowercase_and_escape(col_name: &str) -> String {
         col_name.to_lowercase()
     }
 }
+
+
+
+// example for Parquet/Arrow:
+
+// make a fn for rescale!
+// how to properly handle nullable? Optoin in the array?
+
+// #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+// pub struct DispatchUnitScada1 {
+//     #[serde(with = "crate::mms_datetime")]
+//     pub settlementdate: chrono::NaiveDateTime,
+//     /// Dispatchable Unit Identifier
+//     pub duid: String,
+//     /// Instantaneous MW reading from SCADA at the start of the Dispatch interval
+//     pub scadavalue: Option<rust_decimal::Decimal>,
+// }
+
+// impl DispatchUnitScada1 {
+
+
+//     #[cfg(feature = "save_as_parquet")]
+//     fn get_schema() -> arrow2::datatypes::Schema {
+//         use arrow2::datatypes::*;
+
+//         Schema::new(vec![
+//             Field::new("settlementdate", DataType::Date64, false),
+//             Field::new("duid", DataType::Utf8, false),
+//             Field::new("scadavalue", DataType::Decimal(16,6), true),
+//         ])
+//     }
+
+//     #[cfg(feature = "save_as_parquet")]
+//     fn from_partition(ptn: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>) -> crate::Result<arrow2::record_batch::RecordBatch> {
+
+//         use arrow2::array;
+//         use std::convert::TryFrom;
+
+//         let mut settlementdate_array = Vec::new();
+//         let mut duid_array = Vec::new();
+//         let mut scadavalue_array = Vec::new();
+
+//         for (_, row) in ptn {
+//             settlementdate_array.push(u64::try_from(row.settlementdate.timestamp_millis()).unwrap());
+//             duid_array.push(row.duid);
+//             let mut rescaled = row.scadavalue.unwrap_or_default();
+//             rescaled.rescale(6);
+//             scadavalue_array.push(rescaled.mantissa());
+//         }
+
+        
+
+//         arrow2::record_batch::RecordBatch::try_new(
+//             std::sync::Arc::new(Self::get_schema()),
+//             vec![
+//                 std::sync::Arc::new(array::PrimitiveArray::from_slice(settlementdate_array).to(arrow2::datatypes::DataType::Date64)),
+//                 std::sync::Arc::new(array::Utf8Array::<i64>::from_slice(duid_array)),
+//                 std::sync::Arc::new(array::PrimitiveArray::from_slice(scadavalue_array).to(arrow2::datatypes::DataType::Decimal(16,6)))
+//             ]
+//         ).map_err(Into::into)
+//     }
+// }

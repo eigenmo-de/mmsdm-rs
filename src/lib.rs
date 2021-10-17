@@ -297,33 +297,8 @@ pub trait LatestRow: GetTable + CompareWithRow<Row=Self> {
 #[cfg(feature = "save_as_parquet")]
 pub trait ArrowSchema: GetTable {
     fn arrow_schema() -> arrow2::datatypes::Schema;
-    fn partition_to_record_batch<T>(partition: collections::BTreeMap<Self::PrimaryKey, Self>) -> crate::Result<arrow2::record_batch::RecordBatch>;
+    fn partition_to_record_batch(partition: collections::BTreeMap<Self::PrimaryKey, Self>) -> crate::Result<arrow2::record_batch::RecordBatch>;
 }
-
-#[cfg(feature = "save_as_parquet")]
-fn arrow_from_csv<R, T>(reader: R) -> crate::Result<arrow2::record_batch::RecordBatch> 
-where
-    T: ArrowSchema,
-    R: io::Read,
-{
-    let mut reader = csv::ReaderBuilder::new().has_headers(true).from_reader(reader);
-    let records = reader.into_byte_records().collect::<result::Result<Vec<_>, _>>()?;
-
-
-    let batch = arrow2::io::csv::read::deserialize_batch(
-        &records,
-        &T::arrow_schema().fields(),
-        None,
-        0,
-        arrow2::io::csv::read::deserialize_column,
-    )?;
-
-    Ok(batch)
-}
-
-
-
-
 
 fn data_partition_to_csv<T, W>(partition: collections::BTreeMap<T::PrimaryKey, T>, writer: &mut W) -> crate::Result<()>
 where
@@ -509,9 +484,9 @@ impl DispatchPeriod {
     fn format() -> &'static str {
         "%Y%m%d"
     }
-    //    pub fn datetime_starting(&self) -> chrono::NaiveDateTime {
-    //        self.date.and_hms( self.period as u32 / 12, (self.period as u32 % 12) * 5, 0) + chrono::Duration::hours(4)
-    //    }
+    pub fn start(&self) -> chrono::NaiveDateTime {
+        self.date.and_hms( u32::from(self.period / 12), u32::from(self.period % 12) * 5, 0)
+    }
     //    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
     //        self.datetime_starting() + chrono::Duration::minutes(5)
     //    }
@@ -583,6 +558,9 @@ impl TradingPeriod {
     }
     fn format() -> &'static str {
         "%Y%m%d"
+    }
+    pub fn start(&self) -> chrono::NaiveDateTime {
+        self.date.and_hms(u32::from(self.period / 2), 30 * u32::from(self.period % 2), 0)
     }
 }
 
