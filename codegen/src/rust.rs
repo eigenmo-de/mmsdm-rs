@@ -29,10 +29,18 @@ impl mms::DataType {
 
 impl mms::TableColumn {
     fn to_rust_type(&self) -> String {
-        if self.mandatory {
-            format!("{}", self.data_type.as_rust_type())
+        let formatted_type = if self.comment.contains("YYYYMMDDPPP") {
+            "crate::DispatchPeriod".to_string()
+        } else if self.comment.contains("YYYYMMDDPP") {
+            "crate::TradingPeriod".to_string()
         } else {
-            format!("Option<{}>", self.data_type.as_rust_type())
+            self.data_type.as_rust_type()
+        };
+        
+        if self.mandatory {
+            format!("{}", formatted_type)
+        } else {
+            format!("Option<{}>", formatted_type)
         }
     }
     fn rust_field_name(&self) -> String {
@@ -43,9 +51,16 @@ impl mms::TableColumn {
         }
     }
     fn as_arrow_field(&self) -> String {
+        let arrow_type = if self.comment.contains("YYYYMMDDPPP") {
+            "arrow2::datatypes::DataType::Date64".to_string()
+        } else if self.comment.contains("YYYYMMDDPP") {
+            "arrow2::datatypes::DataType::Date32".to_string()
+        } else {
+            self.data_type.as_arrow_type()
+        };        
         format!("arrow2::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
             name = self.rust_field_name(),
-            ty = self.data_type.as_arrow_type(),
+            ty = arrow_type,
             nullable = !self.mandatory,
         )
     }
@@ -54,8 +69,10 @@ impl mms::TableColumn {
     }
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
-            (_, true) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
-            (_, true) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
+            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
+            (_, _) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
+            // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp_millis())", self.rust_field_name()),
+            // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.map(|val| val.start().timestamp_millis())", self.rust_field_name()),
             (mms::DataType::Varchar { .. }, true) => format!("row.{}", self.rust_field_name()),
             (mms::DataType::Char, true) => format!("row.{}.to_string()", self.rust_field_name()),
             (mms::DataType::Date, true) => format!("i32::try_from((row.{}.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days()).unwrap()", self.rust_field_name()),
@@ -86,8 +103,11 @@ impl mms::TableColumn {
     }
     fn as_arrow_array_constructor(&self) -> String {
         match (&self.data_type, self.mandatory) {
-            (_, true) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
-            (_, true) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (_, _) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+
 
             (mms::DataType::Varchar { .. }, true) => format!("arrow2::array::Utf8Array::<i64>::from_slice({})", self.as_arrow_array_name()),
             (mms::DataType::Char, true) => format!("arrow2::array::Utf8Array::<i64>::from_slice({})", self.as_arrow_array_name()),
