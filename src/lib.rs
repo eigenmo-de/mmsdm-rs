@@ -36,15 +36,12 @@ pub enum Error {
     MissingHeaderRecord,
 
     /// This occurs when the desired file key can't be found in the RawAemoFile
-    #[error("aemo file was missing {}.{}.v{} section in the file ", 0.0, 0.1, 0.2)]
+    #[error("aemo file was missing {}.{:?}.v{} section in the file ", .0.data_set_name, .0.table_name, .0.version)]
     MissingFile(FileKey),
 
     /// This occurs when the desired file key can't be found in the RawAemoFile
     #[error(
-        "aemo file was missing headings for {}.{}.v{} section in the file ",
-        0.0,
-        0.1,
-        0.2
+        "aemo file was missing headings for {}.{:?}.v{} section in the file ", .0.data_set_name, .0.table_name, .0.version
     )]
     MissingSubtableHeadings(FileKey),
 
@@ -342,7 +339,7 @@ where
 
 // in memory
 // the input map is all 
-fn merge_with_partitions<T>(
+pub fn merge_with_partitions<T>(
     mut existing: collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>>, 
     data: &[T],
 ) -> collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>> 
