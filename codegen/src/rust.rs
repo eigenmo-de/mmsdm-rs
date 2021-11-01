@@ -17,8 +17,8 @@ impl mms::DataType {
     }
     fn as_arrow_type(&self) -> String {
         match self {
-            mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::Utf8".to_string(),
-            mms::DataType::Char => "arrow2::datatypes::DataType::Utf8".to_string(),
+            mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
+            mms::DataType::Char => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Date => "arrow2::datatypes::DataType::Date32".to_string(),
             mms::DataType::DateTime => "arrow2::datatypes::DataType::Date64".to_string(),
             mms::DataType::Decimal { precision, scale } => format!("arrow2::datatypes::DataType::Decimal({},{})", precision, scale),
@@ -50,17 +50,19 @@ impl mms::TableColumn {
             self.field_name()
         }
     }
-    fn as_arrow_field(&self) -> String {
-        let arrow_type = if self.comment.contains("YYYYMMDDPPP") {
+    fn as_arrow_type(&self) -> String {
+        if self.comment.contains("YYYYMMDDPPP") {
             "arrow2::datatypes::DataType::Date64".to_string()
         } else if self.comment.contains("YYYYMMDDPP") {
             "arrow2::datatypes::DataType::Date32".to_string()
         } else {
             self.data_type.as_arrow_type()
-        };        
+        }
+    }
+    fn as_arrow_field(&self) -> String {
         format!("arrow2::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
             name = self.rust_field_name(),
-            ty = arrow_type,
+            ty = self.as_arrow_type(),
             nullable = !self.mandatory,
         )
     }
@@ -103,8 +105,8 @@ impl mms::TableColumn {
     }
     fn as_arrow_array_constructor(&self) -> String {
         match (&self.data_type, self.mandatory) {
-            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
-            (_, _) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
+            (_, _) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
             // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
             // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
 
@@ -115,14 +117,14 @@ impl mms::TableColumn {
             (mms::DataType::Varchar { .. }, false) => format!("arrow2::array::Utf8Array::<i64>::from({})", self.as_arrow_array_name()),
             (mms::DataType::Char, false) => format!("arrow2::array::Utf8Array::<i64>::from({})", self.as_arrow_array_name()),
 
-            (mms::DataType::Date, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
-            (mms::DataType::DateTime, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
-            (mms::DataType::Decimal { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
+            (mms::DataType::Date, true) => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
+            (mms::DataType::DateTime, true) => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
+            (mms::DataType::Decimal { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
             (mms::DataType::Integer { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
 
-            (mms::DataType::Date, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
-            (mms::DataType::DateTime, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
-            (mms::DataType::Decimal { .. }, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            (mms::DataType::Date, false) => format!("arrow2::array::PrimitiveArray::from({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
+            (mms::DataType::DateTime, false) => format!("arrow2::array::PrimitiveArray::from({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
+            (mms::DataType::Decimal { .. }, false) => format!("arrow2::array::PrimitiveArray::from({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
             (mms::DataType::Integer { .. }, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
         }
     }

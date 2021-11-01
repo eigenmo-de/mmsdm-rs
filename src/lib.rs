@@ -482,7 +482,7 @@ impl DispatchPeriod {
         "%Y%m%d"
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
-        self.date.and_hms( u32::from(self.period / 12), u32::from(self.period % 12) * 5, 0)
+        self.date.and_hms( u32::from((self.period -1) / 12), u32::from((self.period - 1) % 12) * 5, 0)
     }
     //    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
     //        self.datetime_starting() + chrono::Duration::minutes(5)
@@ -502,9 +502,15 @@ impl std::str::FromStr for DispatchPeriod {
             return Err(Error::InvalidDispatchPeriod(s.into()));
         };
 
+        let period = s[8..11].parse()?;
+
+        if period < 1 || period > 288 {
+            return Err(Error::InvalidDispatchPeriod(s.into()));
+        }
+
         Ok(crate::DispatchPeriod {
             date: chrono::NaiveDate::parse_from_str(&s[0..8], DispatchPeriod::format())?,
-            period: s[8..11].parse()?,
+            period,
         })
     }
 }
@@ -557,7 +563,7 @@ impl TradingPeriod {
         "%Y%m%d"
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
-        self.date.and_hms(u32::from(self.period / 2), 30 * u32::from(self.period % 2), 0)
+        self.date.and_hms(u32::from((self.period -1)/ 2), 30 * u32::from((self.period -1) % 2), 0)
     }
 }
 
@@ -574,9 +580,17 @@ impl std::str::FromStr for TradingPeriod {
             return Err(Error::InvalidTradingPeriod(s.into()));
         };
 
+
+        let period = s[8..10].parse()?;
+
+        if period < 1 || period > 48 {
+            return Err(Error::InvalidTradingPeriod(s.into()));
+        }
+
+
         Ok(crate::TradingPeriod {
             date: chrono::NaiveDate::parse_from_str(&s[0..8], TradingPeriod::format())?,
-            period: s[8..10].parse()?,
+            period,
         })
     }
 }
@@ -799,4 +813,69 @@ mod mms_time {
         let s = Deserialize::deserialize(d)?;
         chrono::NaiveTime::parse_from_str(s, FORMAT).map_err(Error::custom)
     }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dispatch_period() {
+
+        assert!(matches!("20211101000".parse::<DispatchPeriod>(), Err(_)));
+        assert!(matches!("20211101289".parse::<DispatchPeriod>(), Err(_)));
+        assert!(matches!("20211501288".parse::<DispatchPeriod>(), Err(_)));
+        assert!(matches!("20211132288".parse::<DispatchPeriod>(), Err(_)));
+
+        assert_eq!(
+            "20211101001".parse::<DispatchPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 0, 0),
+        );
+
+        assert_eq!(
+            "20211101002".parse::<DispatchPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 5, 0),
+        );
+
+        assert_eq!(
+            "20211101287".parse::<DispatchPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 50, 0),
+        );
+
+        assert_eq!(
+            "20211101288".parse::<DispatchPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 55, 0),
+        );
+    }
+
+    #[test]
+    fn trading_period() {
+
+        assert!(matches!("2021110100".parse::<TradingPeriod>(), Err(_)));
+        assert!(matches!("2021110149".parse::<TradingPeriod>(), Err(_)));
+        assert!(matches!("2021150148".parse::<TradingPeriod>(), Err(_)));
+        assert!(matches!("2021113248".parse::<TradingPeriod>(), Err(_)));
+
+        assert_eq!(
+            "2021110101".parse::<TradingPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 0, 0),
+        );
+
+        assert_eq!(
+            "2021110102".parse::<TradingPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 30, 0),
+        );
+
+        assert_eq!(
+            "2021110147".parse::<TradingPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 0, 0),
+        );
+
+        assert_eq!(
+            "2021110148".parse::<TradingPeriod>().unwrap().start(), 
+            chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 30, 0),
+        );
+    }
+
 }
