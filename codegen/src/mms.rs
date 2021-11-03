@@ -25,7 +25,6 @@ impl Report {
         // skip historical dataset - there are no table definitions anyway
         (self.name == "HISTORICAL")
         || (self.name == "CONFIGURATION")
-    
         // temporary
         || (self.name == "BIDS" && self.sub_type == "BIDPEROFFER_D")
         || (self.name == "BIDS" && self.sub_type == "BIDDAYOFFER_D")

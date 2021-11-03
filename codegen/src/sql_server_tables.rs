@@ -3,15 +3,14 @@ use std::{collections, fs, str};
 use crate::{mms, pdr};
 
 impl mms::PkColumns {
-    fn _get_sql(&self) -> String {
+    fn get_sql(&self) -> String {
         use heck::SnakeCase;
         let cols = self
             .cols
             .iter()
             .map(|c| c.to_snake_case())
             .collect::<Vec<_>>();
-        //format!("primary key ({})", cols.join(","))
-        format!("unique ([{}])", cols.join("],["))
+        format!("primary key ([{}])", cols.join("],["))
     }
 }
 
@@ -138,18 +137,16 @@ go
                 let create_table = format!(
                     r#"
 create table mmsdm.{table_name} (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
+file_log_id bigint not null,
 {columns}
 {primary_key}
 )
 go
-create clustered columnstore index cci_{table_name} on mmsdm.{table_name};
-go
                         "#,
                     table_name = pdr_report.sql_table_name(),
                     columns = table.columns.get_sql(),
-                    //primary_key = table.primary_key_columns.get_sql(),
-                    primary_key = ""
+                    primary_key = table.primary_key_columns.get_sql(),
+                    // primary_key = ""
                 );
 
                 table_str.push_str(&create_table);

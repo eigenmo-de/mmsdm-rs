@@ -21,7 +21,10 @@ impl mms::DataType {
             mms::DataType::Char => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Date => "arrow2::datatypes::DataType::Date32".to_string(),
             mms::DataType::DateTime => "arrow2::datatypes::DataType::Date64".to_string(),
-            mms::DataType::Decimal { precision, scale } => format!("arrow2::datatypes::DataType::Decimal({},{})", precision, scale),
+            mms::DataType::Decimal { precision, scale } => format!(
+                "arrow2::datatypes::DataType::Decimal({},{})",
+                precision, scale
+            ),
             mms::DataType::Integer { .. } => "arrow2::datatypes::DataType::Int64".to_string(),
         }
     }
@@ -36,7 +39,7 @@ impl mms::TableColumn {
         } else {
             self.data_type.as_rust_type()
         };
-        
+
         if self.mandatory {
             format!("{}", formatted_type)
         } else {
@@ -60,7 +63,8 @@ impl mms::TableColumn {
         }
     }
     fn as_arrow_field(&self) -> String {
-        format!("arrow2::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
+        format!(
+            "arrow2::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
             name = self.rust_field_name(),
             ty = self.as_arrow_type(),
             nullable = !self.mandatory,
@@ -98,37 +102,84 @@ impl mms::TableColumn {
             (mms::DataType::Integer { .. }, false) => format!("row.{}", self.rust_field_name()),
         };
         format!(
-            "{array}.push({extractor});", 
+            "{array}.push({extractor});",
             array = self.as_arrow_array_name(),
             extractor = extractor,
         )
     }
     fn as_arrow_array_constructor(&self) -> String {
         match (&self.data_type, self.mandatory) {
-            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (_, _) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
+            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!(
+                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (_, _) if self.comment.contains("YYYYMMDDPP") => format!(
+                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
             // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
             // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            (mms::DataType::Varchar { .. }, true) => format!(
+                "arrow2::array::Utf8Array::<i64>::from_slice({})",
+                self.as_arrow_array_name()
+            ),
+            (mms::DataType::Char, true) => format!(
+                "arrow2::array::Utf8Array::<i64>::from_slice({})",
+                self.as_arrow_array_name()
+            ),
 
+            (mms::DataType::Varchar { .. }, false) => format!(
+                "arrow2::array::Utf8Array::<i64>::from({})",
+                self.as_arrow_array_name()
+            ),
+            (mms::DataType::Char, false) => format!(
+                "arrow2::array::Utf8Array::<i64>::from({})",
+                self.as_arrow_array_name()
+            ),
 
-            (mms::DataType::Varchar { .. }, true) => format!("arrow2::array::Utf8Array::<i64>::from_slice({})", self.as_arrow_array_name()),
-            (mms::DataType::Char, true) => format!("arrow2::array::Utf8Array::<i64>::from_slice({})", self.as_arrow_array_name()),
+            (mms::DataType::Date, true) => format!(
+                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (mms::DataType::DateTime, true) => format!(
+                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (mms::DataType::Decimal { .. }, true) => format!(
+                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (mms::DataType::Integer { .. }, true) => format!(
+                "arrow2::array::PrimitiveArray::from_slice({})",
+                self.as_arrow_array_name()
+            ),
 
-            (mms::DataType::Varchar { .. }, false) => format!("arrow2::array::Utf8Array::<i64>::from({})", self.as_arrow_array_name()),
-            (mms::DataType::Char, false) => format!("arrow2::array::Utf8Array::<i64>::from({})", self.as_arrow_array_name()),
-
-            (mms::DataType::Date, true) => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (mms::DataType::DateTime, true) => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (mms::DataType::Decimal { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (mms::DataType::Integer { .. }, true) => format!("arrow2::array::PrimitiveArray::from_slice({})", self.as_arrow_array_name()),
-
-            (mms::DataType::Date, false) => format!("arrow2::array::PrimitiveArray::from({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (mms::DataType::DateTime, false) => format!("arrow2::array::PrimitiveArray::from({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (mms::DataType::Decimal { .. }, false) => format!("arrow2::array::PrimitiveArray::from({}).to({})", self.as_arrow_array_name(), self.as_arrow_type()),
-            (mms::DataType::Integer { .. }, false) => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
+            (mms::DataType::Date, false) => format!(
+                "arrow2::array::PrimitiveArray::from({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (mms::DataType::DateTime, false) => format!(
+                "arrow2::array::PrimitiveArray::from({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (mms::DataType::Decimal { .. }, false) => format!(
+                "arrow2::array::PrimitiveArray::from({}).to({})",
+                self.as_arrow_array_name(),
+                self.as_arrow_type()
+            ),
+            (mms::DataType::Integer { .. }, false) => format!(
+                "arrow2::array::PrimitiveArray::from({})",
+                self.as_arrow_array_name()
+            ),
         }
     }
-
 }
 
 impl mms::TableColumns {
@@ -137,7 +188,12 @@ impl mms::TableColumns {
             "arrow2::datatypes::Schema::new(vec![
     {fields}
 ])",
-            fields = self.columns.iter().map(|col| col.as_arrow_field()).collect::<Vec<_>>().join(",\n    "),
+            fields = self
+                .columns
+                .iter()
+                .map(|col| col.as_arrow_field())
+                .collect::<Vec<_>>()
+                .join(",\n    "),
         )
     }
 }
@@ -252,16 +308,14 @@ impl pdr::Report {
     }
     pub fn get_partition_base(&self) -> String {
         if let Some(sub_type) = &self.sub_type {
-            format!("{}_{}_v{}", 
+            format!(
+                "{}_{}_v{}",
                 self.name.to_snake_case(),
                 sub_type.to_snake_case(),
                 self.version,
             )
         } else {
-            format!("{}_v{}", 
-                self.name.to_snake_case(),
-                self.version,
-            )
+            format!("{}_v{}", self.name.to_snake_case(), self.version,)
         }
     }
     pub fn get_rust_file_key_literal(&self) -> String {
@@ -282,8 +336,6 @@ impl pdr::Report {
         )
     }
 }
-
-
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;
@@ -388,7 +440,6 @@ pub fn run() -> anyhow::Result<()> {
 
                 current_impl.push_fn(get_file_key);
 
-
                 let mut primary_key = codegen::Function::new("primary_key");
                 primary_key.ret(&pdr_report.get_rust_pk_name());
                 primary_key.arg_ref_self();
@@ -397,8 +448,14 @@ pub fn run() -> anyhow::Result<()> {
 {pk_fields}
 }}"#,
                     pk_name = pdr_report.get_rust_pk_name(),
-                    pk_fields = table.primary_key_columns.cols.iter()
-                        .map(|name| format!("    {0}: self.{0}.clone()", lowercase_and_escape(name)))
+                    pk_fields = table
+                        .primary_key_columns
+                        .cols
+                        .iter()
+                        .map(|name| format!(
+                            "    {0}: self.{0}.clone()",
+                            lowercase_and_escape(name)
+                        ))
                         .collect::<Vec<String>>()
                         .join(",\n"),
                 ));
@@ -407,14 +464,16 @@ pub fn run() -> anyhow::Result<()> {
 
                 current_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
 
-
-
-                
                 let mut partition_suffix = codegen::Function::new("partition_suffix");
                 partition_suffix.ret("Self::Partition");
                 partition_suffix.arg_ref_self();
-                
-                if table.primary_key_columns.cols.iter().any(|c| c.to_lowercase() == "settlementdate") {
+
+                if table
+                    .primary_key_columns
+                    .cols
+                    .iter()
+                    .any(|c| c.to_lowercase() == "settlementdate")
+                {
                     current_impl.associate_type("Partition", "(i32, chrono::Month)");
                     partition_suffix.line(r#"(chrono::Datelike::year(&self.settlementdate), num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate)).unwrap())"#);
                 } else {
@@ -427,8 +486,12 @@ pub fn run() -> anyhow::Result<()> {
                 partition_name.ret("String");
                 partition_name.arg_ref_self();
 
-                if table.primary_key_columns.cols.iter().any(|c| c.to_lowercase() == "settlementdate") {
-
+                if table
+                    .primary_key_columns
+                    .cols
+                    .iter()
+                    .any(|c| c.to_lowercase() == "settlementdate")
+                {
                     partition_name.line(
                         &format!(
                             r#"format!("{}_{{}}_{{}}", chrono::Datelike::year(&self.settlementdate), chrono::Datelike::month(&self.settlementdate))"#,
@@ -436,46 +499,55 @@ pub fn run() -> anyhow::Result<()> {
                         )
                     );
                 } else {
-                    partition_name.line(&format!(r#""{}".to_string()"#, pdr_report.get_partition_base()));
+                    partition_name.line(&format!(
+                        r#""{}".to_string()"#,
+                        pdr_report.get_partition_base()
+                    ));
                 }
-
 
                 current_impl.push_fn(partition_name);
 
                 current_impl.fmt(&mut fmtr)?;
 
-
-
-                let mut compare_with_row_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+                let mut compare_with_row_impl =
+                    codegen::Impl::new(pdr_report.get_rust_struct_name());
                 compare_with_row_impl.impl_trait("crate::CompareWithRow");
                 compare_with_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
                 let mut compare_with_other = codegen::Function::new("compare_with_row");
                 compare_with_other.ret("bool");
                 compare_with_other.arg_ref_self();
                 compare_with_other.arg("row", "&Self::Row");
-                compare_with_other.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );    
+                compare_with_other.line(
+                    &table
+                        .primary_key_columns
+                        .cols
+                        .iter()
+                        .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
+                        .collect::<Vec<String>>()
+                        .join("\n&& "),
+                );
                 compare_with_row_impl.push_fn(compare_with_other);
                 compare_with_row_impl.fmt(&mut fmtr)?;
 
-                let mut compare_with_pk_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+                let mut compare_with_pk_impl =
+                    codegen::Impl::new(pdr_report.get_rust_struct_name());
                 compare_with_pk_impl.impl_trait("crate::CompareWithPrimaryKey");
                 compare_with_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
                 let mut compare_with_key = codegen::Function::new("compare_with_key");
                 compare_with_key.ret("bool");
-                compare_with_key.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );                
+                compare_with_key.line(
+                    &table
+                        .primary_key_columns
+                        .cols
+                        .iter()
+                        .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
+                        .collect::<Vec<String>>()
+                        .join("\n&& "),
+                );
                 compare_with_key.arg_ref_self();
                 compare_with_key.arg("key", "&Self::PrimaryKey");
                 compare_with_pk_impl.push_fn(compare_with_key);
                 compare_with_pk_impl.fmt(&mut fmtr)?;
-
 
                 let mut pk_struct = codegen::Struct::new(&pdr_report.get_rust_pk_name());
                 pk_struct
@@ -488,8 +560,13 @@ pub fn run() -> anyhow::Result<()> {
                     .derive("Ord");
 
                 for pk_col_name in table.primary_key_columns.cols.iter() {
-                    let col = table.columns.columns.iter().find(|col| &col.name == pk_col_name).expect("PK column must exist");
-                    
+                    let col = table
+                        .columns
+                        .columns
+                        .iter()
+                        .find(|col| &col.name == pk_col_name)
+                        .expect("PK column must exist");
+
                     // temporary
                     if !col.mandatory {
                         panic!("Non mandatory column in primary key: {:?}", col);
@@ -529,8 +606,6 @@ pub fn run() -> anyhow::Result<()> {
 
                 pk_struct.fmt(&mut fmtr)?;
 
-
-
                 let mut pk_compare_row_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
                 pk_compare_row_impl.impl_trait("crate::CompareWithRow");
                 pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
@@ -538,14 +613,17 @@ pub fn run() -> anyhow::Result<()> {
                 compare_with_row.ret("bool");
                 compare_with_row.arg_ref_self();
                 compare_with_row.arg("row", "&Self::Row");
-                compare_with_row.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );    
+                compare_with_row.line(
+                    &table
+                        .primary_key_columns
+                        .cols
+                        .iter()
+                        .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
+                        .collect::<Vec<String>>()
+                        .join("\n&& "),
+                );
                 pk_compare_row_impl.push_fn(compare_with_row);
                 pk_compare_row_impl.fmt(&mut fmtr)?;
-
 
                 let mut pk_compare_pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
                 pk_compare_pk_impl.impl_trait("crate::CompareWithPrimaryKey");
@@ -554,27 +632,25 @@ pub fn run() -> anyhow::Result<()> {
                 compare_with_other_pk.ret("bool");
                 compare_with_other_pk.arg_ref_self();
                 compare_with_other_pk.arg("key", "&Self::PrimaryKey");
-                compare_with_other_pk.line(&table.primary_key_columns.cols.iter()
-                    .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
-                    .collect::<Vec<String>>()
-                    .join("\n&& "),
-                );    
+                compare_with_other_pk.line(
+                    &table
+                        .primary_key_columns
+                        .cols
+                        .iter()
+                        .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
+                        .collect::<Vec<String>>()
+                        .join("\n&& "),
+                );
                 pk_compare_pk_impl.push_fn(compare_with_other_pk);
                 pk_compare_pk_impl.fmt(&mut fmtr)?;
-
-         
 
                 let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
                 pk_trait.impl_trait("crate::PrimaryKey");
                 pk_trait.fmt(&mut fmtr)?;
 
-
-
-
                 let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_struct_name());
                 arrow_trait.impl_trait("crate::ArrowSchema");
                 arrow_trait.r#macro("#[cfg(feature = \"save_as_parquet\")]");
-
 
                 let mut arrow_schema = codegen::Function::new("arrow_schema");
                 arrow_schema.ret("arrow2::datatypes::Schema");
@@ -583,13 +659,18 @@ pub fn run() -> anyhow::Result<()> {
 
                 let mut partition_to_batch = codegen::Function::new("partition_to_record_batch");
                 partition_to_batch.ret("crate::Result<arrow2::record_batch::RecordBatch>");
-                partition_to_batch.arg("partition", "std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>");
+                partition_to_batch.arg(
+                    "partition",
+                    "std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>",
+                );
 
-                partition_to_batch.line("use std::convert::TryFrom;");
+                // partition_to_batch.line("use std::convert::TryFrom;");
 
                 for col in &table.columns.columns {
-                    partition_to_batch.line(&format!("let mut {} = Vec::new();", col.as_arrow_array_name()));
-
+                    partition_to_batch.line(&format!(
+                        "let mut {} = Vec::new();",
+                        col.as_arrow_array_name()
+                    ));
                 }
 
                 partition_to_batch.line("for (_, row) in partition {");
@@ -597,28 +678,29 @@ pub fn run() -> anyhow::Result<()> {
                 for col in &table.columns.columns {
                     partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
                 }
-                partition_to_batch.line("}
+                partition_to_batch.line(
+                    "}
 
 arrow2::record_batch::RecordBatch::try_new(
     std::sync::Arc::new(Self::arrow_schema()),
-    vec!["
+    vec![",
                 );
 
                 for col in &table.columns.columns {
-                    partition_to_batch.line(&format!("        std::sync::Arc::new({}),", col.as_arrow_array_constructor()));
+                    partition_to_batch.line(&format!(
+                        "        std::sync::Arc::new({}),",
+                        col.as_arrow_array_constructor()
+                    ));
                 }
 
-                partition_to_batch.line("    ]
-).map_err(Into::into)"
+                partition_to_batch.line(
+                    "    ]
+).map_err(Into::into)",
                 );
-
-
 
                 arrow_trait.push_fn(partition_to_batch);
 
-
                 arrow_trait.fmt(&mut fmtr)?;
-                
             } else {
                 println!("Cannot find:");
                 dbg!(mms_report);
@@ -634,57 +716,11 @@ arrow2::record_batch::RecordBatch::try_new(
 }
 
 const KW: [&'static str; 51] = [
-    "as",
-    "break",
-    "const",
-    "continue",
-    "crate",
-    "else",
-    "enum",
-    "extern",
-    "false",
-    "fn",
-    "for",
-    "if",
-    "impl",
-    "in",
-    "let",
-    "loop",
-    "match",
-    "mod",
-    "move",
-    "mut",
-    "pub",
-    "ref",
-    "return",
-    "self",
-    "Self",
-    "static",
-    "struct",
-    "super",
-    "trait",
-    "true",
-    "type",
-    "unsafe",
-    "use",
-    "where",
-    "while",
-    "async",
-    "await",
-    "dyn",
-    "abstract",
-    "become",
-    "box",
-    "do",
-    "final",
-    "macro",
-    "override",
-    "priv",
-    "typeof",
-    "unsized",
-    "virtual",
-    "yield",
-    "try",
+    "as", "break", "const", "continue", "crate", "else", "enum", "extern", "false", "fn", "for",
+    "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref", "return",
+    "self", "Self", "static", "struct", "super", "trait", "true", "type", "unsafe", "use", "where",
+    "while", "async", "await", "dyn", "abstract", "become", "box", "do", "final", "macro",
+    "override", "priv", "typeof", "unsized", "virtual", "yield", "try",
 ];
 
 fn lowercase_and_escape(col_name: &str) -> String {
@@ -694,8 +730,6 @@ fn lowercase_and_escape(col_name: &str) -> String {
         col_name.to_lowercase()
     }
 }
-
-
 
 // example for Parquet/Arrow:
 
@@ -713,7 +747,6 @@ fn lowercase_and_escape(col_name: &str) -> String {
 // }
 
 // impl DispatchUnitScada1 {
-
 
 //     #[cfg(feature = "save_as_parquet")]
 //     fn get_schema() -> arrow2::datatypes::Schema {
@@ -743,8 +776,6 @@ fn lowercase_and_escape(col_name: &str) -> String {
 //             rescaled.rescale(6);
 //             scadavalue_array.push(rescaled.mantissa());
 //         }
-
-        
 
 //         arrow2::record_batch::RecordBatch::try_new(
 //             std::sync::Arc::new(Self::get_schema()),

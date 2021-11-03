@@ -1,9 +1,7 @@
-
-
 use anyhow::anyhow;
+use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
 use serde::{Deserialize, Serialize};
 use std::{collections, fs, iter, str, string};
-use heck::{CamelCase, ShoutySnakeCase, TitleCase, SnakeCase};
 
 use crate::{mms, pdr};
 
@@ -46,7 +44,7 @@ impl pdr::Report {
     }
     pub fn get_python_file_key_literal(&self) -> String {
         format!(
-r#"key.TableKey(
+            r#"key.TableKey(
             collection="{}",
             name="{}",
             version={}
@@ -90,26 +88,24 @@ pub fn run() -> anyhow::Result<()> {
     // abv
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
 
+    // import mmsdm.data_model.settlement_data as settlement_data
+    // from typing import Callable, Any, List
+    // import mmsdm
+    // import mmsdm.key as key
 
-// import mmsdm.data_model.settlement_data as settlement_data
-// from typing import Callable, Any, List
-// import mmsdm
-// import mmsdm.key as key
-
-
-// # this needs to be updated as move modules are added above
-// def mapping(key: key.TableKey) -> Callable[[List[str]], Any]:
-//     to_fn = {
-//         # start settlements
-//         settlement_data.DayTrack.key(): settlement_data.DayTrack.from_row,
-//         settlement_data.Cpdata.key(): settlement_data.Cpdata.from_row,
-//         settlement_data.FcasRecovery.key(): settlement_data.FcasRecovery.from_row,
-//         settlement_data.Marketfees.key(): settlement_data.Marketfees.from_row,
-//         settlement_data.NmasRecovery.key(): settlement_data.NmasRecovery.from_row,
-//         settlement_data.Reallocations.key(): settlement_data.Reallocations.from_row,
-//         # end settlements
-//     }
-//     return to_fn[key]
+    // # this needs to be updated as move modules are added above
+    // def mapping(key: key.TableKey) -> Callable[[List[str]], Any]:
+    //     to_fn = {
+    //         # start settlements
+    //         settlement_data.DayTrack.key(): settlement_data.DayTrack.from_row,
+    //         settlement_data.Cpdata.key(): settlement_data.Cpdata.from_row,
+    //         settlement_data.FcasRecovery.key(): settlement_data.FcasRecovery.from_row,
+    //         settlement_data.Marketfees.key(): settlement_data.Marketfees.from_row,
+    //         settlement_data.NmasRecovery.key(): settlement_data.NmasRecovery.from_row,
+    //         settlement_data.Reallocations.key(): settlement_data.Reallocations.from_row,
+    //         # end settlements
+    //     }
+    //     return to_fn[key]
 
     let mut imports = collections::BTreeSet::new();
     let mut dataset_mappings = String::new();
@@ -128,21 +124,19 @@ pub fn run() -> anyhow::Result<()> {
             if let Some(pdr_report) = map.get(&mms_report) {
                 // println!("DS {}, TK {}", data_set.to_snake_case(), pdr_report.get_python_class_name());
                 imports.insert(data_set.to_snake_case());
-                dataset_mappings.push_str(
-                    &format!(
-                        "       {data_set}.{python_class}.key(): {data_set}.{python_class}.from_row,\n",
-                        data_set = data_set.to_snake_case(),
-                        python_class = pdr_report.get_python_class_name(),
-                    )
-                );
-                
+                dataset_mappings.push_str(&format!(
+                    "       {data_set}.{python_class}.key(): {data_set}.{python_class}.from_row,\n",
+                    data_set = data_set.to_snake_case(),
+                    python_class = pdr_report.get_python_class_name(),
+                ));
             }
         }
     }
 
     fs::write(
         "python/mmsdm/data_model/__init__.py",
-        format!(r#"import mmsdm
+        format!(
+            r#"import mmsdm
 import mmsdm.key as key
 from typing import Callable, Any, List
 {imports}
@@ -153,15 +147,19 @@ def mapping(key: key.TableKey) -> Callable[[List[str]], Any]:
     }}
     return to_fn[key]
 "#,
-        imports = imports.iter().map(|ds| format!("import mmsdm.data_model.{0} as {0}", ds)).collect::<Vec<_>>().join("\n"),
-        dataset_mappings = dataset_mappings,
+            imports = imports
+                .iter()
+                .map(|ds| format!("import mmsdm.data_model.{0} as {0}", ds))
+                .collect::<Vec<_>>()
+                .join("\n"),
+            dataset_mappings = dataset_mappings,
         ),
     )?;
 
     for (data_set, tables) in local_info.into_iter() {
-        
         let mut fmt_str = String::new();
-        fmt_str.push_str(r#"
+        fmt_str.push_str(
+            r#"
 import typing
 import datetime
 import mmsdm
@@ -169,7 +167,8 @@ import mmsdm.key as key
 
 from dataclasses import dataclass
 import decimal
-        "#);
+        "#,
+        );
 
         for (table_key, table) in tables.into_iter() {
             let mms_report = mms::Report {
@@ -185,22 +184,36 @@ import decimal
                 // watch for keywords in column names?
                 // likely, "type"
 
-                let column_definitions = table.columns.columns.iter()
+                let column_definitions = table
+                    .columns
+                    .columns
+                    .iter()
                     .map(|col| format!("{}: {}", col.name.to_snake_case(), col.to_python_type()))
                     .collect::<Vec<_>>()
                     .join("\n    ");
 
-                let column_extractors = table.columns.columns.iter()
+                let column_extractors = table
+                    .columns
+                    .columns
+                    .iter()
                     .enumerate()
                     .map(|(idx, col)| {
                         let row_part = format!("row[{}]", idx + 4);
                         let extractor = match (col.data_type.clone(), col.mandatory) {
                             (mms::DataType::Varchar { .. }, _) => row_part,
                             (mms::DataType::Char, _) => row_part,
-                            (mms::DataType::Decimal { .. }, true) =>  format!("decimal.Decimal({})", row_part),
+                            (mms::DataType::Decimal { .. }, true) => {
+                                format!("decimal.Decimal({})", row_part)
+                            }
                             (mms::DataType::Integer { .. }, true) => format!("int({})", row_part),
-                            (mms::DataType::Date, true) => format!("datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\").date()", row_part),
-                            (mms::DataType::DateTime, true) => format!("datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\")", row_part),
+                            (mms::DataType::Date, true) => format!(
+                                "datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\").date()",
+                                row_part
+                            ),
+                            (mms::DataType::DateTime, true) => format!(
+                                "datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\")",
+                                row_part
+                            ),
                             // the col name will be a variable created earlier that is None if the data is missing
                             (mms::DataType::Decimal { .. }, false) => col.name.to_snake_case(),
                             (mms::DataType::Integer { .. }, false) => col.name.to_snake_case(),
@@ -211,35 +224,48 @@ import decimal
                     })
                     .collect::<Vec<_>>()
                     .join(",\n            ");
-                
-                let optional_extractors = table.columns.columns.iter()
+
+                let optional_extractors = table
+                    .columns
+                    .columns
+                    .iter()
                     .enumerate()
                     .filter(|(_, col)| !col.mandatory)
                     .filter_map(|(idx, col)| {
                         let row_part = format!("row[{}]", idx + 4);
                         let extractor = match col.data_type {
-                            mms::DataType::Decimal { .. } =>  format!("decimal.Decimal({})", row_part),
+                            mms::DataType::Decimal { .. } => {
+                                format!("decimal.Decimal({})", row_part)
+                            }
                             mms::DataType::Integer { .. } => format!("int({})", row_part),
-                            mms::DataType::Date => format!("datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\").date()", row_part),
-                            mms::DataType::DateTime => format!("datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\")", row_part),
+                            mms::DataType::Date => format!(
+                                "datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\").date()",
+                                row_part
+                            ),
+                            mms::DataType::DateTime => format!(
+                                "datetime.datetime.strptime({}, \"%Y/%m/%d %H:%M:%S\")",
+                                row_part
+                            ),
                             _ => return None,
                         };
 
-                        Some(format!(r#"
+                        Some(format!(
+                            r#"
         if {row_part} is None or {row_part} == "":
             {column_name} = None
         else:
             {column_name} = {extractor}
 "#,
-                        row_part = row_part,
-                        column_name = col.name.to_snake_case(),
-                        extractor = extractor,
+                            row_part = row_part,
+                            column_name = col.name.to_snake_case(),
+                            extractor = extractor,
                         ))
                     })
                     .collect::<Vec<_>>()
                     .join("");
 
-                fmt_str.push_str(&format!(r#"
+                fmt_str.push_str(&format!(
+                    r#"
 @dataclass(frozen=True)
 class {class_name}:
     {column_definitions}
@@ -254,12 +280,12 @@ class {class_name}:
         return {class_name}(
             {column_extractors}
         )           
-"#, 
-                column_definitions = column_definitions,
-                column_extractors = column_extractors,
-                optional_extractors = optional_extractors,
-                table_key_literal = pdr_report.get_python_file_key_literal(),
-                class_name = pdr_report.get_python_class_name(),
+"#,
+                    column_definitions = column_definitions,
+                    column_extractors = column_extractors,
+                    optional_extractors = optional_extractors,
+                    table_key_literal = pdr_report.get_python_file_key_literal(),
+                    class_name = pdr_report.get_python_class_name(),
                 ))
             } else {
                 println!("Cannot find:");

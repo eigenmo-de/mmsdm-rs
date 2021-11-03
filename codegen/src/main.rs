@@ -1,8 +1,8 @@
 use structopt::StructOpt;
 
 mod json;
-mod rust;
 mod python;
+mod rust;
 //mod parquet;
 mod mms;
 mod pdr;
@@ -17,13 +17,12 @@ enum AemoCodegen {
     SqlServerTables,
     SqlServerRustPart,
     Python,
-    Parquet,
 }
+
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerRustPart => {
-            // todo!();
             sql_server_rust::run().unwrap();
         }
         AemoCodegen::SqlServerTables => {
@@ -36,12 +35,7 @@ async fn main() -> Result<(), anyhow::Error> {
             json::run().await?;
         }
         AemoCodegen::Python => {
-            // todo!();
             python::run()?;
-        }
-        AemoCodegen::Parquet => {
-            todo!();
-            //parquet::run();
         }
     }
     Ok(())

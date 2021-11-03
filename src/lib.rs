@@ -1,7 +1,7 @@
 //#![deny(clippy::all)]
 //#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, io, num, str, path, fs, iter, result};
+use std::{collections, fmt, fs, io, iter, num, path, result, str};
 
 use chrono::TimeZone;
 
@@ -216,7 +216,6 @@ impl fmt::Display for FileKey {
     }
 }
 
-
 pub trait Partition: std::hash::Hash + PartialEq + Eq {
     fn get_suffix(&self) -> String;
 }
@@ -225,15 +224,12 @@ impl Partition for (i32, chrono::Month) {
     fn get_suffix(&self) -> String {
         format!("_{:02}_{:04}", self.1.number_from_month(), self.0)
     }
-
 }
 impl Partition for () {
     fn get_suffix(&self) -> String {
         String::new()
     }
 }
-
-
 
 /// This trait is designed as a convenient way to extract a Vec of the desired Strct representing
 /// a row of the table from the `AemoFile` which represents the whole file.
@@ -256,7 +252,9 @@ impl Partition for () {
 /// #   Ok(rows)
 /// # }
 /// ```
-pub trait GetTable: serde::Serialize + serde::de::DeserializeOwned + Send + Clone + fmt::Debug {
+pub trait GetTable:
+    serde::Serialize + serde::de::DeserializeOwned + Send + Clone + fmt::Debug
+{
     type PrimaryKey: PrimaryKey;
     type Partition: Partition;
     fn get_file_key() -> FileKey;
@@ -265,9 +263,7 @@ pub trait GetTable: serde::Serialize + serde::de::DeserializeOwned + Send + Clon
     fn primary_key(&self) -> Self::PrimaryKey;
 }
 
-pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {
-
-}
+pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {}
 
 pub trait CompareWithRow {
     type Row: GetTable;
@@ -282,30 +278,31 @@ pub trait CompareWithPrimaryKey {
 // handle the INSERT-UPDATE logic with lastchanged if applicibale
 // if the rows don't match via CompareWithRow, then the self should always be returned
 // only when the rows match and the other 'row' is newer, and this replacement behaviour is defined
-// should the other 'row' be returned 
-pub trait LatestRow: GetTable + CompareWithRow<Row=Self> {
+// should the other 'row' be returned
+pub trait LatestRow: GetTable + CompareWithRow<Row = Self> {
     fn latest_row(&mut self, row: Self) -> Self;
 }
-
-
-
-
 
 #[cfg(feature = "save_as_parquet")]
 pub trait ArrowSchema: GetTable {
     fn arrow_schema() -> arrow2::datatypes::Schema;
-    fn partition_to_record_batch(partition: collections::BTreeMap<Self::PrimaryKey, Self>) -> crate::Result<arrow2::record_batch::RecordBatch>;
+    fn partition_to_record_batch(
+        partition: collections::BTreeMap<Self::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch>;
 }
 
-fn data_partition_to_csv<T, W>(partition: collections::BTreeMap<T::PrimaryKey, T>, writer: &mut W) -> crate::Result<()>
+fn data_partition_to_csv<T, W>(
+    partition: collections::BTreeMap<T::PrimaryKey, T>,
+    writer: &mut W,
+) -> crate::Result<()>
 where
-    T: GetTable + CompareWithRow<Row=T>,
+    T: GetTable + CompareWithRow<Row = T>,
     W: io::Write,
 {
     let mut csv_wtr = csv::WriterBuilder::new()
         .has_headers(true)
         .from_writer(writer);
-    
+
     for (_, row) in partition {
         csv_wtr.serialize(row)?;
     }
@@ -315,12 +312,16 @@ where
     Ok(())
 }
 
-fn data_partition_from_csv<T, R>(reader: R) -> crate::Result<collections::BTreeMap<T::PrimaryKey, T>> 
+fn data_partition_from_csv<T, R>(
+    reader: R,
+) -> crate::Result<collections::BTreeMap<T::PrimaryKey, T>>
 where
-    T: GetTable + CompareWithRow<Row=T>,
+    T: GetTable + CompareWithRow<Row = T>,
     R: io::Read,
 {
-    let mut reader = csv::ReaderBuilder::new().has_headers(true).from_reader(reader);
+    let mut reader = csv::ReaderBuilder::new()
+        .has_headers(true)
+        .from_reader(reader);
     let mut output = collections::BTreeMap::new();
     for res in reader.deserialize() {
         let row: T = res?;
@@ -329,29 +330,30 @@ where
     Ok(output)
 }
 
-
-fn required_partitions<T>(data: &[T]) -> collections::HashSet<T::Partition> 
+fn required_partitions<T>(data: &[T]) -> collections::HashSet<T::Partition>
 where
-    T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row=T>,
+    T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row = T>,
 {
     data.iter().map(|row| row.partition_suffix()).collect()
 }
 
 // in memory
-// the input map is all 
+// the input map is all
 pub fn merge_with_partitions<T>(
-    mut existing: collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>>, 
+    mut existing: collections::HashMap<
+        <T as GetTable>::Partition,
+        collections::BTreeMap<T::PrimaryKey, T>,
+    >,
     data: &[T],
-) -> collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>> 
+) -> collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>>
 where
-    T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
+    T: serde::Serialize + Send + GetTable + CompareWithRow<Row = T> + fmt::Debug,
 {
     for row in data {
         let partition = row.partition_suffix();
         let pk = row.primary_key();
         if let Some(entry) = existing.get_mut(&partition) {
-            entry.entry(pk)
-                .or_insert(row.clone());
+            entry.entry(pk).or_insert(row.clone());
         } else {
             existing.insert(partition, iter::once((pk, row.clone())).collect());
         }
@@ -363,7 +365,7 @@ where
 // on filesystem
 // potentially do one partition at a time
 // then we can do each partition in a seperate thread where they are available
-// fn append_or_create_csv_at<P, T>(path: P, data: &[T]) -> crate::Result<()> 
+// fn append_or_create_csv_at<P, T>(path: P, data: &[T]) -> crate::Result<()>
 // where
 //     T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
 //     P: AsRef<path::Path>,
@@ -385,7 +387,7 @@ where
 //                 for result in reader.deserialize() {
 //                     let existing_row: T = result?;
 //                     file_data.insert(existing_row.primary_key(), existing_row);
-//                 }   
+//                 }
 //                 csv_writer.has_headers(false);
 //             } else {
 //                 csv_writer.has_headers(true);
@@ -482,7 +484,11 @@ impl DispatchPeriod {
         "%Y%m%d"
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
-        self.date.and_hms( u32::from((self.period -1) / 12), u32::from((self.period - 1) % 12) * 5, 0)
+        self.date.and_hms(
+            u32::from((self.period - 1) / 12),
+            u32::from((self.period - 1) % 12) * 5,
+            0,
+        )
     }
     //    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
     //        self.datetime_starting() + chrono::Duration::minutes(5)
@@ -563,7 +569,11 @@ impl TradingPeriod {
         "%Y%m%d"
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
-        self.date.and_hms(u32::from((self.period -1)/ 2), 30 * u32::from((self.period -1) % 2), 0)
+        self.date.and_hms(
+            u32::from((self.period - 1) / 2),
+            30 * u32::from((self.period - 1) % 2),
+            0,
+        )
     }
 }
 
@@ -580,13 +590,11 @@ impl std::str::FromStr for TradingPeriod {
             return Err(Error::InvalidTradingPeriod(s.into()));
         };
 
-
         let period = s[8..10].parse()?;
 
         if period < 1 || period > 48 {
             return Err(Error::InvalidTradingPeriod(s.into()));
         }
-
 
         Ok(crate::TradingPeriod {
             date: chrono::NaiveDate::parse_from_str(&s[0..8], TradingPeriod::format())?,
@@ -815,67 +823,63 @@ mod mms_time {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn dispatch_period() {
-
         assert!(matches!("20211101000".parse::<DispatchPeriod>(), Err(_)));
         assert!(matches!("20211101289".parse::<DispatchPeriod>(), Err(_)));
         assert!(matches!("20211501288".parse::<DispatchPeriod>(), Err(_)));
         assert!(matches!("20211132288".parse::<DispatchPeriod>(), Err(_)));
 
         assert_eq!(
-            "20211101001".parse::<DispatchPeriod>().unwrap().start(), 
+            "20211101001".parse::<DispatchPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 0, 0),
         );
 
         assert_eq!(
-            "20211101002".parse::<DispatchPeriod>().unwrap().start(), 
+            "20211101002".parse::<DispatchPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 5, 0),
         );
 
         assert_eq!(
-            "20211101287".parse::<DispatchPeriod>().unwrap().start(), 
+            "20211101287".parse::<DispatchPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 50, 0),
         );
 
         assert_eq!(
-            "20211101288".parse::<DispatchPeriod>().unwrap().start(), 
+            "20211101288".parse::<DispatchPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 55, 0),
         );
     }
 
     #[test]
     fn trading_period() {
-
         assert!(matches!("2021110100".parse::<TradingPeriod>(), Err(_)));
         assert!(matches!("2021110149".parse::<TradingPeriod>(), Err(_)));
         assert!(matches!("2021150148".parse::<TradingPeriod>(), Err(_)));
         assert!(matches!("2021113248".parse::<TradingPeriod>(), Err(_)));
 
         assert_eq!(
-            "2021110101".parse::<TradingPeriod>().unwrap().start(), 
+            "2021110101".parse::<TradingPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 0, 0),
         );
 
         assert_eq!(
-            "2021110102".parse::<TradingPeriod>().unwrap().start(), 
+            "2021110102".parse::<TradingPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(0, 30, 0),
         );
 
         assert_eq!(
-            "2021110147".parse::<TradingPeriod>().unwrap().start(), 
+            "2021110147".parse::<TradingPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 0, 0),
         );
 
         assert_eq!(
-            "2021110148".parse::<TradingPeriod>().unwrap().start(), 
+            "2021110148".parse::<TradingPeriod>().unwrap().start(),
             chrono::NaiveDate::from_ymd(2021, 11, 1).and_hms(23, 30, 0),
         );
     }
-
 }
