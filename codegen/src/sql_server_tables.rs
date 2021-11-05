@@ -138,8 +138,8 @@ go
                     r#"
 create table mmsdm.{table_name} (
 file_log_id bigint not null,
-{columns}
-{primary_key}
+    {columns}
+    {primary_key}
 )
 go
                         "#,
