@@ -2,3 +2,4 @@
 **/*.rs.bk
 .cargo-registry
 codegen/target
+__pycache__
