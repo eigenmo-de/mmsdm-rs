@@ -59,12 +59,372 @@ pub struct PrudentialCompanyPosition1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for PrudentialCompanyPosition1 {
+    type PrimaryKey = PrudentialCompanyPosition1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "PRUDENTIAL".into(),
             table_name: Some("COMPANY_POSITION".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> PrudentialCompanyPosition1PrimaryKey {
+        PrudentialCompanyPosition1PrimaryKey {
+            company_id: self.company_id.clone(),
+            prudential_date: self.prudential_date.clone(),
+            runno: self.runno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "prudential_company_position_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for PrudentialCompanyPosition1 {
+    type Row = PrudentialCompanyPosition1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.company_id == row.company_id
+            && self.prudential_date == row.prudential_date
+            && self.runno == row.runno
+    }
+}
+impl crate::CompareWithPrimaryKey for PrudentialCompanyPosition1 {
+    type PrimaryKey = PrudentialCompanyPosition1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.company_id == key.company_id
+            && self.prudential_date == key.prudential_date
+            && self.runno == key.runno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PrudentialCompanyPosition1PrimaryKey {
+    pub company_id: String,
+    pub prudential_date: chrono::NaiveDateTime,
+    pub runno: i64,
+}
+impl crate::CompareWithRow for PrudentialCompanyPosition1PrimaryKey {
+    type Row = PrudentialCompanyPosition1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.company_id == row.company_id
+            && self.prudential_date == row.prudential_date
+            && self.runno == row.runno
+    }
+}
+impl crate::CompareWithPrimaryKey for PrudentialCompanyPosition1PrimaryKey {
+    type PrimaryKey = PrudentialCompanyPosition1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.company_id == key.company_id
+            && self.prudential_date == key.prudential_date
+            && self.runno == key.runno
+    }
+}
+impl crate::PrimaryKey for PrudentialCompanyPosition1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for PrudentialCompanyPosition1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "prudential_date",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new("runno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "company_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("mcl", arrow2::datatypes::DataType::Decimal(16, 6), true),
+            arrow2::datatypes::Field::new(
+                "credit_support",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "trading_limit",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "current_amount_balance",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "security_deposit_provision",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "security_deposit_offset",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "security_deposit_balance",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "expost_realloc_balance",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "default_balance",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "outstandings",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "trading_margin",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "typical_accrual",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "prudential_margin",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "early_payment_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "percentage_outstandings",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut prudential_date_array = Vec::new();
+        let mut runno_array = Vec::new();
+        let mut company_id_array = Vec::new();
+        let mut mcl_array = Vec::new();
+        let mut credit_support_array = Vec::new();
+        let mut trading_limit_array = Vec::new();
+        let mut current_amount_balance_array = Vec::new();
+        let mut security_deposit_provision_array = Vec::new();
+        let mut security_deposit_offset_array = Vec::new();
+        let mut security_deposit_balance_array = Vec::new();
+        let mut expost_realloc_balance_array = Vec::new();
+        let mut default_balance_array = Vec::new();
+        let mut outstandings_array = Vec::new();
+        let mut trading_margin_array = Vec::new();
+        let mut typical_accrual_array = Vec::new();
+        let mut prudential_margin_array = Vec::new();
+        let mut early_payment_amount_array = Vec::new();
+        let mut percentage_outstandings_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            prudential_date_array.push(
+                i32::try_from(
+                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            runno_array.push(row.runno);
+            company_id_array.push(row.company_id);
+            mcl_array.push({
+                row.mcl.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            credit_support_array.push({
+                row.credit_support.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            trading_limit_array.push({
+                row.trading_limit.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            current_amount_balance_array.push({
+                row.current_amount_balance.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            security_deposit_provision_array.push({
+                row.security_deposit_provision.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            security_deposit_offset_array.push({
+                row.security_deposit_offset.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            security_deposit_balance_array.push({
+                row.security_deposit_balance.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            expost_realloc_balance_array.push({
+                row.expost_realloc_balance.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            default_balance_array.push({
+                row.default_balance.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            outstandings_array.push({
+                row.outstandings.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            trading_margin_array.push({
+                row.trading_margin.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            typical_accrual_array.push({
+                row.typical_accrual.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            prudential_margin_array.push({
+                row.prudential_margin.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            early_payment_amount_array.push({
+                row.early_payment_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            percentage_outstandings_array.push({
+                row.percentage_outstandings.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(runno_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    company_id_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mcl_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(credit_support_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(trading_limit_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(current_amount_balance_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(security_deposit_provision_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(security_deposit_offset_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(security_deposit_balance_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(expost_realloc_balance_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(default_balance_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(outstandings_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(trading_margin_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(typical_accrual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(prudential_margin_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(early_payment_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(percentage_outstandings_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -99,11 +459,137 @@ pub struct PrudentialRuntrk1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for PrudentialRuntrk1 {
+    type PrimaryKey = PrudentialRuntrk1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "PRUDENTIAL".into(),
             table_name: Some("RUNTRK".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> PrudentialRuntrk1PrimaryKey {
+        PrudentialRuntrk1PrimaryKey {
+            prudential_date: self.prudential_date.clone(),
+            runno: self.runno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "prudential_runtrk_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for PrudentialRuntrk1 {
+    type Row = PrudentialRuntrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.prudential_date == row.prudential_date && self.runno == row.runno
+    }
+}
+impl crate::CompareWithPrimaryKey for PrudentialRuntrk1 {
+    type PrimaryKey = PrudentialRuntrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.prudential_date == key.prudential_date && self.runno == key.runno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PrudentialRuntrk1PrimaryKey {
+    pub prudential_date: chrono::NaiveDateTime,
+    pub runno: i64,
+}
+impl crate::CompareWithRow for PrudentialRuntrk1PrimaryKey {
+    type Row = PrudentialRuntrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.prudential_date == row.prudential_date && self.runno == row.runno
+    }
+}
+impl crate::CompareWithPrimaryKey for PrudentialRuntrk1PrimaryKey {
+    type PrimaryKey = PrudentialRuntrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.prudential_date == key.prudential_date && self.runno == key.runno
+    }
+}
+impl crate::PrimaryKey for PrudentialRuntrk1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for PrudentialRuntrk1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "prudential_date",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new("runno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut prudential_date_array = Vec::new();
+        let mut runno_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            prudential_date_array.push(
+                i32::try_from(
+                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            runno_array.push(row.runno);
+            authorisedby_array.push(row.authorisedby);
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(runno_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }

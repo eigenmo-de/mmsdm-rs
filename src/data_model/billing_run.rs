@@ -72,12 +72,454 @@ pub struct BillingAspayments6 {
     pub availability_reactive_rbt: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingAspayments6 {
+    type PrimaryKey = BillingAspayments6PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("ASPAYMENTS".into()),
             version: 6,
         }
+    }
+
+    fn primary_key(&self) -> BillingAspayments6PrimaryKey {
+        BillingAspayments6PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            connectionpointid: self.connectionpointid.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_aspayments_v6".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingAspayments6 {
+    type Row = BillingAspayments6;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingAspayments6 {
+    type PrimaryKey = BillingAspayments6PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingAspayments6PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub connectionpointid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingAspayments6PrimaryKey {
+    type Row = BillingAspayments6;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingAspayments6PrimaryKey {
+    type PrimaryKey = BillingAspayments6PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingAspayments6PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingAspayments6 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "connectionpointid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise6sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower6sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise60sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower60sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("agc", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new(
+                "fcascomp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "loadshed",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rgul",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rguu",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "reactivepower",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "systemrestart",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "lower5min",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise5min",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowerreg",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raisereg",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "availability_reactive",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "availability_reactive_rbt",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut regionid_array = Vec::new();
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut connectionpointid_array = Vec::new();
+        let mut raise6sec_array = Vec::new();
+        let mut lower6sec_array = Vec::new();
+        let mut raise60sec_array = Vec::new();
+        let mut lower60sec_array = Vec::new();
+        let mut agc_array = Vec::new();
+        let mut fcascomp_array = Vec::new();
+        let mut loadshed_array = Vec::new();
+        let mut rgul_array = Vec::new();
+        let mut rguu_array = Vec::new();
+        let mut reactivepower_array = Vec::new();
+        let mut systemrestart_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut lower5min_array = Vec::new();
+        let mut raise5min_array = Vec::new();
+        let mut lowerreg_array = Vec::new();
+        let mut raisereg_array = Vec::new();
+        let mut availability_reactive_array = Vec::new();
+        let mut availability_reactive_rbt_array = Vec::new();
+        for (_, row) in partition {
+            regionid_array.push(row.regionid);
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            connectionpointid_array.push(row.connectionpointid);
+            raise6sec_array.push({
+                row.raise6sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower6sec_array.push({
+                row.lower6sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise60sec_array.push({
+                row.raise60sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower60sec_array.push({
+                row.lower60sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            agc_array.push({
+                row.agc.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            fcascomp_array.push({
+                row.fcascomp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            loadshed_array.push({
+                row.loadshed.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            rgul_array.push({
+                row.rgul.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            rguu_array.push({
+                row.rguu.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            reactivepower_array.push({
+                row.reactivepower.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            systemrestart_array.push({
+                row.systemrestart.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            lower5min_array.push({
+                row.lower5min.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise5min_array.push({
+                row.raise5min.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lowerreg_array.push({
+                row.lowerreg.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raisereg_array.push({
+                row.raisereg.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            availability_reactive_array.push({
+                row.availability_reactive.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            availability_reactive_rbt_array.push({
+                row.availability_reactive_rbt.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    connectionpointid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(agc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(fcascomp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(loadshed_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rgul_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rguu_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(reactivepower_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(systemrestart_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower5min_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise5min_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowerreg_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raisereg_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(availability_reactive_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(availability_reactive_rbt_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -186,12 +628,720 @@ pub struct BillingAsrecovery7 {
     pub availability_reactive_rbt_gen: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingAsrecovery7 {
+    type PrimaryKey = BillingAsrecovery7PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("ASRECOVERY".into()),
             version: 7,
         }
+    }
+
+    fn primary_key(&self) -> BillingAsrecovery7PrimaryKey {
+        BillingAsrecovery7PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_asrecovery_v7".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingAsrecovery7 {
+    type Row = BillingAsrecovery7;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingAsrecovery7 {
+    type PrimaryKey = BillingAsrecovery7PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingAsrecovery7PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingAsrecovery7PrimaryKey {
+    type Row = BillingAsrecovery7;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingAsrecovery7PrimaryKey {
+    type PrimaryKey = BillingAsrecovery7PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingAsrecovery7PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingAsrecovery7 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise6sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower6sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise60sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower60sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("agc", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new(
+                "fcascomp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "loadshed",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rgul",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rguu",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "reactivepower",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "systemrestart",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "raise6sec_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower6sec_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise60sec_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower60sec_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "agc_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "fcascomp_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "loadshed_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rgul_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rguu_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "reactivepower_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "systemrestart_gen",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower5min",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise5min",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowerreg",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raisereg",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower5min_gen",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise5min_gen",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowerreg_gen",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raisereg_gen",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "availability_reactive",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "availability_reactive_rbt",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "availability_reactive_gen",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "availability_reactive_rbt_gen",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut regionid_array = Vec::new();
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut raise6sec_array = Vec::new();
+        let mut lower6sec_array = Vec::new();
+        let mut raise60sec_array = Vec::new();
+        let mut lower60sec_array = Vec::new();
+        let mut agc_array = Vec::new();
+        let mut fcascomp_array = Vec::new();
+        let mut loadshed_array = Vec::new();
+        let mut rgul_array = Vec::new();
+        let mut rguu_array = Vec::new();
+        let mut reactivepower_array = Vec::new();
+        let mut systemrestart_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut raise6sec_gen_array = Vec::new();
+        let mut lower6sec_gen_array = Vec::new();
+        let mut raise60sec_gen_array = Vec::new();
+        let mut lower60sec_gen_array = Vec::new();
+        let mut agc_gen_array = Vec::new();
+        let mut fcascomp_gen_array = Vec::new();
+        let mut loadshed_gen_array = Vec::new();
+        let mut rgul_gen_array = Vec::new();
+        let mut rguu_gen_array = Vec::new();
+        let mut reactivepower_gen_array = Vec::new();
+        let mut systemrestart_gen_array = Vec::new();
+        let mut lower5min_array = Vec::new();
+        let mut raise5min_array = Vec::new();
+        let mut lowerreg_array = Vec::new();
+        let mut raisereg_array = Vec::new();
+        let mut lower5min_gen_array = Vec::new();
+        let mut raise5min_gen_array = Vec::new();
+        let mut lowerreg_gen_array = Vec::new();
+        let mut raisereg_gen_array = Vec::new();
+        let mut availability_reactive_array = Vec::new();
+        let mut availability_reactive_rbt_array = Vec::new();
+        let mut availability_reactive_gen_array = Vec::new();
+        let mut availability_reactive_rbt_gen_array = Vec::new();
+        for (_, row) in partition {
+            regionid_array.push(row.regionid);
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            raise6sec_array.push({
+                row.raise6sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower6sec_array.push({
+                row.lower6sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise60sec_array.push({
+                row.raise60sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower60sec_array.push({
+                row.lower60sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            agc_array.push({
+                row.agc.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            fcascomp_array.push({
+                row.fcascomp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            loadshed_array.push({
+                row.loadshed.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            rgul_array.push({
+                row.rgul.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            rguu_array.push({
+                row.rguu.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            reactivepower_array.push({
+                row.reactivepower.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            systemrestart_array.push({
+                row.systemrestart.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            raise6sec_gen_array.push({
+                row.raise6sec_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower6sec_gen_array.push({
+                row.lower6sec_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise60sec_gen_array.push({
+                row.raise60sec_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower60sec_gen_array.push({
+                row.lower60sec_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            agc_gen_array.push({
+                row.agc_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            fcascomp_gen_array.push({
+                row.fcascomp_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            loadshed_gen_array.push({
+                row.loadshed_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            rgul_gen_array.push({
+                row.rgul_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            rguu_gen_array.push({
+                row.rguu_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            reactivepower_gen_array.push({
+                row.reactivepower_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            systemrestart_gen_array.push({
+                row.systemrestart_gen.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower5min_array.push({
+                row.lower5min.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise5min_array.push({
+                row.raise5min.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lowerreg_array.push({
+                row.lowerreg.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raisereg_array.push({
+                row.raisereg.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower5min_gen_array.push({
+                row.lower5min_gen.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            raise5min_gen_array.push({
+                row.raise5min_gen.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lowerreg_gen_array.push({
+                row.lowerreg_gen.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            raisereg_gen_array.push({
+                row.raisereg_gen.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            availability_reactive_array.push({
+                row.availability_reactive.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            availability_reactive_rbt_array.push({
+                row.availability_reactive_rbt.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            availability_reactive_gen_array.push({
+                row.availability_reactive_gen.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            availability_reactive_rbt_gen_array.push({
+                row.availability_reactive_rbt_gen.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(agc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(fcascomp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(loadshed_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rgul_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rguu_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(reactivepower_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(systemrestart_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise6sec_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower6sec_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise60sec_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower60sec_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(agc_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(fcascomp_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(loadshed_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rgul_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rguu_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(reactivepower_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(systemrestart_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower5min_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise5min_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowerreg_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raisereg_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower5min_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise5min_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowerreg_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raisereg_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(availability_reactive_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(availability_reactive_rbt_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(availability_reactive_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(availability_reactive_rbt_gen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -247,12 +1397,276 @@ pub struct BillingCpdata6 {
     pub age: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingCpdata6 {
+    type PrimaryKey = BillingCpdata6PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("CPDATA".into()),
             version: 6,
         }
+    }
+
+    fn primary_key(&self) -> BillingCpdata6PrimaryKey {
+        BillingCpdata6PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            connectionpointid: self.connectionpointid.clone(),
+            contractyear: self.contractyear.clone(),
+            mda: self.mda.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_cpdata_v6".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingCpdata6 {
+    type Row = BillingCpdata6;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid
+            && self.contractyear == row.contractyear
+            && self.mda == row.mda
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingCpdata6 {
+    type PrimaryKey = BillingCpdata6PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.mda == key.mda
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingCpdata6PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub connectionpointid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub mda: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingCpdata6PrimaryKey {
+    type Row = BillingCpdata6;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid
+            && self.contractyear == row.contractyear
+            && self.mda == row.mda
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingCpdata6PrimaryKey {
+    type PrimaryKey = BillingCpdata6PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.mda == key.mda
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingCpdata6PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingCpdata6 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "connectionpointid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "aggregateenergy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "purchases",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("mda", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new("afe", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new("dme", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new(
+                "ufea",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("age", arrow2::datatypes::DataType::Decimal(18, 8), true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut connectionpointid_array = Vec::new();
+        let mut aggregateenergy_array = Vec::new();
+        let mut purchases_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut mda_array = Vec::new();
+        let mut afe_array = Vec::new();
+        let mut dme_array = Vec::new();
+        let mut ufea_array = Vec::new();
+        let mut age_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            connectionpointid_array.push(row.connectionpointid);
+            aggregateenergy_array.push({
+                row.aggregateenergy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            purchases_array.push({
+                row.purchases.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            mda_array.push(row.mda);
+            afe_array.push({
+                row.afe.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            dme_array.push({
+                row.dme.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            ufea_array.push({
+                row.ufea.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            age_array.push({
+                row.age.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    connectionpointid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(aggregateenergy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(purchases_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(mda_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(afe_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(dme_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(ufea_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(age_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -292,12 +1706,197 @@ pub struct BillingDaytrk5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingDaytrk5 {
+    type PrimaryKey = BillingDaytrk5PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("DAYTRK".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingDaytrk5PrimaryKey {
+        BillingDaytrk5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            settlementdate: self.settlementdate.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "billing_daytrk_v5_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for BillingDaytrk5 {
+    type Row = BillingDaytrk5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.settlementdate == row.settlementdate
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingDaytrk5 {
+    type PrimaryKey = BillingDaytrk5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.settlementdate == key.settlementdate
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingDaytrk5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingDaytrk5PrimaryKey {
+    type Row = BillingDaytrk5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.settlementdate == row.settlementdate
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingDaytrk5PrimaryKey {
+    type PrimaryKey = BillingDaytrk5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.settlementdate == key.settlementdate
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingDaytrk5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingDaytrk5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "runno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut settlementdate_array = Vec::new();
+        let mut runno_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            runno_array.push({
+                row.runno.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(runno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -347,12 +1946,246 @@ pub struct BillingFees5 {
     pub participantcategoryid: String,
 }
 impl crate::GetTable for BillingFees5 {
+    type PrimaryKey = BillingFees5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("FEES".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingFees5PrimaryKey {
+        BillingFees5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            marketfeeid: self.marketfeeid.clone(),
+            participantcategoryid: self.participantcategoryid.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_fees_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingFees5 {
+    type Row = BillingFees5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.marketfeeid == row.marketfeeid
+            && self.participantcategoryid == row.participantcategoryid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingFees5 {
+    type PrimaryKey = BillingFees5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.marketfeeid == key.marketfeeid
+            && self.participantcategoryid == key.participantcategoryid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingFees5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub marketfeeid: String,
+    pub participantcategoryid: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingFees5PrimaryKey {
+    type Row = BillingFees5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.marketfeeid == row.marketfeeid
+            && self.participantcategoryid == row.participantcategoryid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingFees5PrimaryKey {
+    type PrimaryKey = BillingFees5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.marketfeeid == key.marketfeeid
+            && self.participantcategoryid == key.participantcategoryid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingFees5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingFees5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "rate",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "energy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "value",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "participantcategoryid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut marketfeeid_array = Vec::new();
+        let mut rate_array = Vec::new();
+        let mut energy_array = Vec::new();
+        let mut value_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut participantcategoryid_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            marketfeeid_array.push(row.marketfeeid);
+            rate_array.push({
+                row.rate.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            energy_array.push({
+                row.energy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            value_array.push({
+                row.value.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            participantcategoryid_array.push(row.participantcategoryid);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    marketfeeid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rate_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(value_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantcategoryid_array,
+                )),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -403,12 +2236,246 @@ pub struct BillingFinancialadjustments5 {
     pub bas_class: Option<String>,
 }
 impl crate::GetTable for BillingFinancialadjustments5 {
+    type PrimaryKey = BillingFinancialadjustments5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("FINANCIALADJUSTMENTS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingFinancialadjustments5PrimaryKey {
+        BillingFinancialadjustments5PrimaryKey {
+            adjustmentitem: self.adjustmentitem.clone(),
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_financialadjustments_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingFinancialadjustments5 {
+    type Row = BillingFinancialadjustments5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adjustmentitem == row.adjustmentitem
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingFinancialadjustments5 {
+    type PrimaryKey = BillingFinancialadjustments5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adjustmentitem == key.adjustmentitem
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingFinancialadjustments5PrimaryKey {
+    pub adjustmentitem: String,
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingFinancialadjustments5PrimaryKey {
+    type Row = BillingFinancialadjustments5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adjustmentitem == row.adjustmentitem
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingFinancialadjustments5PrimaryKey {
+    type PrimaryKey = BillingFinancialadjustments5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adjustmentitem == key.adjustmentitem
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingFinancialadjustments5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingFinancialadjustments5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participanttype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjustmentitem",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "amount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "value",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "financialcode",
+                arrow2::datatypes::DataType::Decimal(10, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bas_class",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut participanttype_array = Vec::new();
+        let mut adjustmentitem_array = Vec::new();
+        let mut amount_array = Vec::new();
+        let mut value_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut financialcode_array = Vec::new();
+        let mut bas_class_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            participanttype_array.push(row.participanttype);
+            adjustmentitem_array.push(row.adjustmentitem);
+            amount_array.push({
+                row.amount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            value_array.push({
+                row.value.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            financialcode_array.push({
+                row.financialcode.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bas_class_array.push(row.bas_class);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participanttype_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    adjustmentitem_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(value_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(financialcode_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(bas_class_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -463,12 +2530,262 @@ pub struct BillingGendata5 {
     pub mda: Option<String>,
 }
 impl crate::GetTable for BillingGendata5 {
+    type PrimaryKey = BillingGendata5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("GENDATA".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingGendata5PrimaryKey {
+        BillingGendata5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            connectionpointid: self.connectionpointid.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_gendata_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingGendata5 {
+    type Row = BillingGendata5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingGendata5 {
+    type PrimaryKey = BillingGendata5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingGendata5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub connectionpointid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingGendata5PrimaryKey {
+    type Row = BillingGendata5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingGendata5PrimaryKey {
+    type PrimaryKey = BillingGendata5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingGendata5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingGendata5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "connectionpointid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "stationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "aggregateenergy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "sales",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "purchases",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "purchasedenergy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("mda", arrow2::datatypes::DataType::LargeUtf8, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut connectionpointid_array = Vec::new();
+        let mut stationid_array = Vec::new();
+        let mut duid_array = Vec::new();
+        let mut aggregateenergy_array = Vec::new();
+        let mut sales_array = Vec::new();
+        let mut purchases_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut purchasedenergy_array = Vec::new();
+        let mut mda_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            connectionpointid_array.push(row.connectionpointid);
+            stationid_array.push(row.stationid);
+            duid_array.push(row.duid);
+            aggregateenergy_array.push({
+                row.aggregateenergy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            sales_array.push({
+                row.sales.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            purchases_array.push({
+                row.purchases.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            purchasedenergy_array.push({
+                row.purchasedenergy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            mda_array.push(row.mda);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    connectionpointid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(aggregateenergy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(sales_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(purchases_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(purchasedenergy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mda_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -518,12 +2835,244 @@ pub struct BillingInterresidues5 {
     pub regionid: String,
 }
 impl crate::GetTable for BillingInterresidues5 {
+    type PrimaryKey = BillingInterresidues5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("INTERRESIDUES".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingInterresidues5PrimaryKey {
+        BillingInterresidues5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_interresidues_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingInterresidues5 {
+    type Row = BillingInterresidues5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingInterresidues5 {
+    type PrimaryKey = BillingInterresidues5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingInterresidues5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingInterresidues5PrimaryKey {
+    type Row = BillingInterresidues5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingInterresidues5PrimaryKey {
+    type PrimaryKey = BillingInterresidues5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingInterresidues5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingInterresidues5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "allocation",
+                arrow2::datatypes::DataType::Decimal(6, 3),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalsurplus",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "surplusvalue",
+                arrow2::datatypes::DataType::Decimal(15, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut allocation_array = Vec::new();
+        let mut totalsurplus_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut surplusvalue_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        for (_, row) in partition {
+            allocation_array.push({
+                row.allocation.map(|mut val| {
+                    val.rescale(3);
+                    val.mantissa()
+                })
+            });
+            totalsurplus_array.push({
+                row.totalsurplus.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            surplusvalue_array.push({
+                row.surplusvalue.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            regionid_array.push(row.regionid);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(allocation_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 3)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalsurplus_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(surplusvalue_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -570,12 +3119,228 @@ pub struct BillingIntraresidues5 {
     pub regionid: String,
 }
 impl crate::GetTable for BillingIntraresidues5 {
+    type PrimaryKey = BillingIntraresidues5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("INTRARESIDUES".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingIntraresidues5PrimaryKey {
+        BillingIntraresidues5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_intraresidues_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIntraresidues5 {
+    type Row = BillingIntraresidues5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIntraresidues5 {
+    type PrimaryKey = BillingIntraresidues5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIntraresidues5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIntraresidues5PrimaryKey {
+    type Row = BillingIntraresidues5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIntraresidues5PrimaryKey {
+    type PrimaryKey = BillingIntraresidues5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIntraresidues5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIntraresidues5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "allocation",
+                arrow2::datatypes::DataType::Decimal(6, 3),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalsurplus",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "surplusvalue",
+                arrow2::datatypes::DataType::Decimal(15, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut allocation_array = Vec::new();
+        let mut totalsurplus_array = Vec::new();
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut surplusvalue_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        for (_, row) in partition {
+            allocation_array.push({
+                row.allocation.map(|mut val| {
+                    val.rescale(3);
+                    val.mantissa()
+                })
+            });
+            totalsurplus_array.push({
+                row.totalsurplus.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            surplusvalue_array.push({
+                row.surplusvalue.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            regionid_array.push(row.regionid);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(allocation_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 3)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalsurplus_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(surplusvalue_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -630,12 +3395,278 @@ pub struct BillingIraucsurplus5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingIraucsurplus5 {
+    type PrimaryKey = BillingIraucsurplus5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRAUCSURPLUS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingIraucsurplus5PrimaryKey {
+        BillingIraucsurplus5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            fromregionid: self.fromregionid.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_iraucsurplus_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIraucsurplus5 {
+    type Row = BillingIraucsurplus5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIraucsurplus5 {
+    type PrimaryKey = BillingIraucsurplus5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIraucsurplus5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub fromregionid: String,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIraucsurplus5PrimaryKey {
+    type Row = BillingIraucsurplus5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIraucsurplus5PrimaryKey {
+    type PrimaryKey = BillingIraucsurplus5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIraucsurplus5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIraucsurplus5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "residueyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "quarter",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalresidues",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjustment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut residueyear_array = Vec::new();
+        let mut quarter_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut fromregionid_array = Vec::new();
+        let mut totalresidues_array = Vec::new();
+        let mut adjustment_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            residueyear_array.push({
+                row.residueyear.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            quarter_array.push({
+                row.quarter.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            contractid_array.push(row.contractid);
+            participantid_array.push(row.participantid);
+            interconnectorid_array.push(row.interconnectorid);
+            fromregionid_array.push(row.fromregionid);
+            totalresidues_array.push({
+                row.totalresidues.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            adjustment_array.push({
+                row.adjustment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(residueyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(quarter_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    fromregionid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalresidues_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(adjustment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -699,12 +3730,352 @@ pub struct BillingIraucsurplussum7 {
     pub negative_residues: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingIraucsurplussum7 {
+    type PrimaryKey = BillingIraucsurplussum7PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRAUCSURPLUSSUM".into()),
             version: 7,
         }
+    }
+
+    fn primary_key(&self) -> BillingIraucsurplussum7PrimaryKey {
+        BillingIraucsurplussum7PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            fromregionid: self.fromregionid.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            quarter: self.quarter.clone(),
+            residueyear: self.residueyear.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_iraucsurplussum_v7".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIraucsurplussum7 {
+    type Row = BillingIraucsurplussum7;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.quarter == row.quarter
+            && self.residueyear == row.residueyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIraucsurplussum7 {
+    type PrimaryKey = BillingIraucsurplussum7PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.quarter == key.quarter
+            && self.residueyear == key.residueyear
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIraucsurplussum7PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub fromregionid: String,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub quarter: rust_decimal::Decimal,
+    pub residueyear: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIraucsurplussum7PrimaryKey {
+    type Row = BillingIraucsurplussum7;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.quarter == row.quarter
+            && self.residueyear == row.residueyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIraucsurplussum7PrimaryKey {
+    type PrimaryKey = BillingIraucsurplussum7PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.quarter == key.quarter
+            && self.residueyear == key.residueyear
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIraucsurplussum7PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIraucsurplussum7 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "residueyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "quarter",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalsurplus",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "actualpayment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees_gst",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "csp_derogation_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "unadjusted_irsr",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "negative_residues",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut residueyear_array = Vec::new();
+        let mut quarter_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut fromregionid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut totalsurplus_array = Vec::new();
+        let mut auctionfees_array = Vec::new();
+        let mut actualpayment_array = Vec::new();
+        let mut auctionfees_gst_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut csp_derogation_amount_array = Vec::new();
+        let mut unadjusted_irsr_array = Vec::new();
+        let mut negative_residues_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            residueyear_array.push({
+                let mut val = row.residueyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            quarter_array.push({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            fromregionid_array.push(row.fromregionid);
+            participantid_array.push(row.participantid);
+            totalsurplus_array.push({
+                row.totalsurplus.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            auctionfees_array.push({
+                row.auctionfees.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            actualpayment_array.push({
+                row.actualpayment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            auctionfees_gst_array.push({
+                row.auctionfees_gst.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            csp_derogation_amount_array.push({
+                row.csp_derogation_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            unadjusted_irsr_array.push({
+                row.unadjusted_irsr.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            negative_residues_array.push({
+                row.negative_residues.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(residueyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(quarter_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    fromregionid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalsurplus_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(actualpayment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_gst_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(unadjusted_irsr_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(negative_residues_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -744,12 +4115,182 @@ pub struct BillingIrfm5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingIrfm5 {
+    type PrimaryKey = BillingIrfm5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRFM".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingIrfm5PrimaryKey {
+        BillingIrfm5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_irfm_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIrfm5 {
+    type Row = BillingIrfm5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrfm5 {
+    type PrimaryKey = BillingIrfm5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIrfm5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIrfm5PrimaryKey {
+    type Row = BillingIrfm5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrfm5PrimaryKey {
+    type PrimaryKey = BillingIrfm5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIrfm5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIrfm5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "irfmpayment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut irfmpayment_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            irfmpayment_array.push({
+                row.irfmpayment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(irfmpayment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -804,12 +4345,278 @@ pub struct BillingIrnspsurplus5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingIrnspsurplus5 {
+    type PrimaryKey = BillingIrnspsurplus5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRNSPSURPLUS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingIrnspsurplus5PrimaryKey {
+        BillingIrnspsurplus5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            fromregionid: self.fromregionid.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_irnspsurplus_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIrnspsurplus5 {
+    type Row = BillingIrnspsurplus5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrnspsurplus5 {
+    type PrimaryKey = BillingIrnspsurplus5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIrnspsurplus5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub fromregionid: String,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIrnspsurplus5PrimaryKey {
+    type Row = BillingIrnspsurplus5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrnspsurplus5PrimaryKey {
+    type PrimaryKey = BillingIrnspsurplus5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIrnspsurplus5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIrnspsurplus5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "residueyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "quarter",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalresidues",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjustment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut residueyear_array = Vec::new();
+        let mut quarter_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut fromregionid_array = Vec::new();
+        let mut totalresidues_array = Vec::new();
+        let mut adjustment_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            residueyear_array.push({
+                row.residueyear.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            quarter_array.push({
+                row.quarter.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            contractid_array.push(row.contractid);
+            participantid_array.push(row.participantid);
+            interconnectorid_array.push(row.interconnectorid);
+            fromregionid_array.push(row.fromregionid);
+            totalresidues_array.push({
+                row.totalresidues.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            adjustment_array.push({
+                row.adjustment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(residueyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(quarter_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    fromregionid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalresidues_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(adjustment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -869,12 +4676,320 @@ pub struct BillingIrnspsurplussum6 {
     pub unadjusted_irsr: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingIrnspsurplussum6 {
+    type PrimaryKey = BillingIrnspsurplussum6PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRNSPSURPLUSSUM".into()),
             version: 6,
         }
+    }
+
+    fn primary_key(&self) -> BillingIrnspsurplussum6PrimaryKey {
+        BillingIrnspsurplussum6PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            fromregionid: self.fromregionid.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            quarter: self.quarter.clone(),
+            residueyear: self.residueyear.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_irnspsurplussum_v6".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIrnspsurplussum6 {
+    type Row = BillingIrnspsurplussum6;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.quarter == row.quarter
+            && self.residueyear == row.residueyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrnspsurplussum6 {
+    type PrimaryKey = BillingIrnspsurplussum6PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.quarter == key.quarter
+            && self.residueyear == key.residueyear
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIrnspsurplussum6PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub fromregionid: String,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub quarter: rust_decimal::Decimal,
+    pub residueyear: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIrnspsurplussum6PrimaryKey {
+    type Row = BillingIrnspsurplussum6;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.quarter == row.quarter
+            && self.residueyear == row.residueyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrnspsurplussum6PrimaryKey {
+    type PrimaryKey = BillingIrnspsurplussum6PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.quarter == key.quarter
+            && self.residueyear == key.residueyear
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIrnspsurplussum6PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIrnspsurplussum6 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "residueyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "quarter",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalsurplus",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees_gst",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "csp_derogation_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "unadjusted_irsr",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut residueyear_array = Vec::new();
+        let mut quarter_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut fromregionid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut totalsurplus_array = Vec::new();
+        let mut auctionfees_array = Vec::new();
+        let mut auctionfees_gst_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut csp_derogation_amount_array = Vec::new();
+        let mut unadjusted_irsr_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            residueyear_array.push({
+                let mut val = row.residueyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            quarter_array.push({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            fromregionid_array.push(row.fromregionid);
+            participantid_array.push(row.participantid);
+            totalsurplus_array.push({
+                row.totalsurplus.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            auctionfees_array.push({
+                row.auctionfees.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            auctionfees_gst_array.push({
+                row.auctionfees_gst.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            csp_derogation_amount_array.push({
+                row.csp_derogation_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            unadjusted_irsr_array.push({
+                row.unadjusted_irsr.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(residueyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(quarter_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    fromregionid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalsurplus_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_gst_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(unadjusted_irsr_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -931,12 +5046,294 @@ pub struct BillingIrpartsurplus5 {
     pub actualpayment: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingIrpartsurplus5 {
+    type PrimaryKey = BillingIrpartsurplus5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRPARTSURPLUS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingIrpartsurplus5PrimaryKey {
+        BillingIrpartsurplus5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            fromregionid: self.fromregionid.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_irpartsurplus_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIrpartsurplus5 {
+    type Row = BillingIrpartsurplus5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrpartsurplus5 {
+    type PrimaryKey = BillingIrpartsurplus5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIrpartsurplus5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub fromregionid: String,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIrpartsurplus5PrimaryKey {
+    type Row = BillingIrpartsurplus5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrpartsurplus5PrimaryKey {
+    type PrimaryKey = BillingIrpartsurplus5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIrpartsurplus5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIrpartsurplus5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "residueyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "quarter",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalresidues",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjustment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "actualpayment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut residueyear_array = Vec::new();
+        let mut quarter_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut fromregionid_array = Vec::new();
+        let mut totalresidues_array = Vec::new();
+        let mut adjustment_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut actualpayment_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            residueyear_array.push({
+                row.residueyear.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            quarter_array.push({
+                row.quarter.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            contractid_array.push(row.contractid);
+            participantid_array.push(row.participantid);
+            interconnectorid_array.push(row.interconnectorid);
+            fromregionid_array.push(row.fromregionid);
+            totalresidues_array.push({
+                row.totalresidues.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            adjustment_array.push({
+                row.adjustment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            actualpayment_array.push({
+                row.actualpayment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(residueyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(quarter_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    fromregionid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalresidues_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(adjustment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(actualpayment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1000,12 +5397,352 @@ pub struct BillingIrpartsurplussum7 {
     pub auctionfees_totalgross_adj: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingIrpartsurplussum7 {
+    type PrimaryKey = BillingIrpartsurplussum7PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("IRPARTSURPLUSSUM".into()),
             version: 7,
         }
+    }
+
+    fn primary_key(&self) -> BillingIrpartsurplussum7PrimaryKey {
+        BillingIrpartsurplussum7PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            fromregionid: self.fromregionid.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            quarter: self.quarter.clone(),
+            residueyear: self.residueyear.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_irpartsurplussum_v7".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingIrpartsurplussum7 {
+    type Row = BillingIrpartsurplussum7;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.quarter == row.quarter
+            && self.residueyear == row.residueyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrpartsurplussum7 {
+    type PrimaryKey = BillingIrpartsurplussum7PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.quarter == key.quarter
+            && self.residueyear == key.residueyear
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingIrpartsurplussum7PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub fromregionid: String,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub quarter: rust_decimal::Decimal,
+    pub residueyear: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingIrpartsurplussum7PrimaryKey {
+    type Row = BillingIrpartsurplussum7;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.fromregionid == row.fromregionid
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.quarter == row.quarter
+            && self.residueyear == row.residueyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingIrpartsurplussum7PrimaryKey {
+    type PrimaryKey = BillingIrpartsurplussum7PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.fromregionid == key.fromregionid
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.quarter == key.quarter
+            && self.residueyear == key.residueyear
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingIrpartsurplussum7PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingIrpartsurplussum7 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "residueyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "quarter",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "totalsurplus",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "actualpayment",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees_gst",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "csp_derogation_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "unadjusted_irsr",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "auctionfees_totalgross_adj",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut residueyear_array = Vec::new();
+        let mut quarter_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut fromregionid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut totalsurplus_array = Vec::new();
+        let mut auctionfees_array = Vec::new();
+        let mut actualpayment_array = Vec::new();
+        let mut auctionfees_gst_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut csp_derogation_amount_array = Vec::new();
+        let mut unadjusted_irsr_array = Vec::new();
+        let mut auctionfees_totalgross_adj_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            residueyear_array.push({
+                let mut val = row.residueyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            quarter_array.push({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            fromregionid_array.push(row.fromregionid);
+            participantid_array.push(row.participantid);
+            totalsurplus_array.push({
+                row.totalsurplus.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            auctionfees_array.push({
+                row.auctionfees.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            actualpayment_array.push({
+                row.actualpayment.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            auctionfees_gst_array.push({
+                row.auctionfees_gst.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            csp_derogation_amount_array.push({
+                row.csp_derogation_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            unadjusted_irsr_array.push({
+                row.unadjusted_irsr.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            auctionfees_totalgross_adj_array.push({
+                row.auctionfees_totalgross_adj.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(residueyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(quarter_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    fromregionid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(totalsurplus_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(actualpayment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_gst_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(unadjusted_irsr_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(auctionfees_totalgross_adj_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1068,12 +5805,349 @@ pub struct BillingPrioradjustments5 {
     pub irsr_interestamount: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingPrioradjustments5 {
+    type PrimaryKey = BillingPrioradjustments5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("PRIORADJUSTMENTS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingPrioradjustments5PrimaryKey {
+        BillingPrioradjustments5PrimaryKey {
+            adjbillrunno: self.adjbillrunno.clone(),
+            adjcontractyear: self.adjcontractyear.clone(),
+            adjweekno: self.adjweekno.clone(),
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_prioradjustments_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingPrioradjustments5 {
+    type Row = BillingPrioradjustments5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adjbillrunno == row.adjbillrunno
+            && self.adjcontractyear == row.adjcontractyear
+            && self.adjweekno == row.adjweekno
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingPrioradjustments5 {
+    type PrimaryKey = BillingPrioradjustments5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adjbillrunno == key.adjbillrunno
+            && self.adjcontractyear == key.adjcontractyear
+            && self.adjweekno == key.adjweekno
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingPrioradjustments5PrimaryKey {
+    pub adjbillrunno: rust_decimal::Decimal,
+    pub adjcontractyear: rust_decimal::Decimal,
+    pub adjweekno: rust_decimal::Decimal,
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingPrioradjustments5PrimaryKey {
+    type Row = BillingPrioradjustments5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adjbillrunno == row.adjbillrunno
+            && self.adjcontractyear == row.adjcontractyear
+            && self.adjweekno == row.adjweekno
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingPrioradjustments5PrimaryKey {
+    type PrimaryKey = BillingPrioradjustments5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adjbillrunno == key.adjbillrunno
+            && self.adjcontractyear == key.adjcontractyear
+            && self.adjweekno == key.adjweekno
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingPrioradjustments5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingPrioradjustments5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjcontractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjweekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjbillrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "prevamount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "adjamount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("irn", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new("irp", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new(
+                "interestamount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "irsr_prevamount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "irsr_adjamount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "irsr_interestamount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut adjcontractyear_array = Vec::new();
+        let mut adjweekno_array = Vec::new();
+        let mut adjbillrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut prevamount_array = Vec::new();
+        let mut adjamount_array = Vec::new();
+        let mut irn_array = Vec::new();
+        let mut irp_array = Vec::new();
+        let mut interestamount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut irsr_prevamount_array = Vec::new();
+        let mut irsr_adjamount_array = Vec::new();
+        let mut irsr_interestamount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            adjcontractyear_array.push({
+                let mut val = row.adjcontractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            adjweekno_array.push({
+                let mut val = row.adjweekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            adjbillrunno_array.push({
+                let mut val = row.adjbillrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            prevamount_array.push({
+                row.prevamount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            adjamount_array.push({
+                row.adjamount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            irn_array.push({
+                row.irn.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            irp_array.push({
+                row.irp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            interestamount_array.push({
+                row.interestamount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            irsr_prevamount_array.push({
+                row.irsr_prevamount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            irsr_adjamount_array.push({
+                row.irsr_adjamount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            irsr_interestamount_array.push({
+                row.irsr_interestamount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(adjcontractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(adjweekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(adjbillrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(prevamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(adjamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(irn_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(irp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(interestamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(irsr_prevamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(irsr_adjamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(irsr_interestamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1116,12 +6190,198 @@ pub struct BillingRealloc5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingRealloc5 {
+    type PrimaryKey = BillingRealloc5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("REALLOC".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingRealloc5PrimaryKey {
+        BillingRealloc5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            counterparty: self.counterparty.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_realloc_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingRealloc5 {
+    type Row = BillingRealloc5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.counterparty == row.counterparty
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRealloc5 {
+    type PrimaryKey = BillingRealloc5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.counterparty == key.counterparty
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingRealloc5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub counterparty: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingRealloc5PrimaryKey {
+    type Row = BillingRealloc5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.counterparty == row.counterparty
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRealloc5PrimaryKey {
+    type PrimaryKey = BillingRealloc5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.counterparty == key.counterparty
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingRealloc5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingRealloc5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "counterparty",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "value",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut counterparty_array = Vec::new();
+        let mut value_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            counterparty_array.push(row.counterparty);
+            value_array.push({
+                row.value.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    counterparty_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(value_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1167,12 +6427,214 @@ pub struct BillingReallocDetail5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingReallocDetail5 {
+    type PrimaryKey = BillingReallocDetail5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("REALLOC_DETAIL".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingReallocDetail5PrimaryKey {
+        BillingReallocDetail5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            counterparty: self.counterparty.clone(),
+            participantid: self.participantid.clone(),
+            reallocationid: self.reallocationid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_realloc_detail_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingReallocDetail5 {
+    type Row = BillingReallocDetail5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.counterparty == row.counterparty
+            && self.participantid == row.participantid
+            && self.reallocationid == row.reallocationid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingReallocDetail5 {
+    type PrimaryKey = BillingReallocDetail5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.counterparty == key.counterparty
+            && self.participantid == key.participantid
+            && self.reallocationid == key.reallocationid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingReallocDetail5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub counterparty: String,
+    pub participantid: String,
+    pub reallocationid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingReallocDetail5PrimaryKey {
+    type Row = BillingReallocDetail5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.counterparty == row.counterparty
+            && self.participantid == row.participantid
+            && self.reallocationid == row.reallocationid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingReallocDetail5PrimaryKey {
+    type PrimaryKey = BillingReallocDetail5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.counterparty == key.counterparty
+            && self.participantid == key.participantid
+            && self.reallocationid == key.reallocationid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingReallocDetail5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingReallocDetail5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "counterparty",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "reallocationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "value",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut counterparty_array = Vec::new();
+        let mut reallocationid_array = Vec::new();
+        let mut value_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            counterparty_array.push(row.counterparty);
+            reallocationid_array.push(row.reallocationid);
+            value_array.push({
+                row.value.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    counterparty_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    reallocationid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(value_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1221,12 +6683,242 @@ pub struct BillingRegionexports5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingRegionexports5 {
+    type PrimaryKey = BillingRegionexports5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("REGIONEXPORTS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingRegionexports5PrimaryKey {
+        BillingRegionexports5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            exportto: self.exportto.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_regionexports_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingRegionexports5 {
+    type Row = BillingRegionexports5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.exportto == row.exportto
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRegionexports5 {
+    type PrimaryKey = BillingRegionexports5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.exportto == key.exportto
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingRegionexports5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub exportto: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingRegionexports5PrimaryKey {
+    type Row = BillingRegionexports5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.exportto == row.exportto
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRegionexports5PrimaryKey {
+    type PrimaryKey = BillingRegionexports5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.exportto == key.exportto
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingRegionexports5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingRegionexports5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "exportto",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "energy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "value",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "surplusenergy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "surplusvalue",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut exportto_array = Vec::new();
+        let mut energy_array = Vec::new();
+        let mut value_array = Vec::new();
+        let mut surplusenergy_array = Vec::new();
+        let mut surplusvalue_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            exportto_array.push(row.exportto);
+            energy_array.push({
+                row.energy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            value_array.push({
+                row.value.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            surplusenergy_array.push({
+                row.surplusenergy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            surplusvalue_array.push({
+                row.surplusvalue.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(exportto_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(value_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(surplusenergy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(surplusvalue_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1284,14 +6976,378 @@ pub struct BillingRegionfigures5 {
     pub poolfees: Option<rust_decimal::Decimal>,
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// WDR Settlement Quantity Capped in MWh
+    pub wdrsq: Option<rust_decimal::Decimal>,
+    /// WDR transaction amount in $
+    pub wdrta: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingRegionfigures5 {
+    type PrimaryKey = BillingRegionfigures5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("REGIONFIGURES".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingRegionfigures5PrimaryKey {
+        BillingRegionfigures5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_regionfigures_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingRegionfigures5 {
+    type Row = BillingRegionfigures5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRegionfigures5 {
+    type PrimaryKey = BillingRegionfigures5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingRegionfigures5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingRegionfigures5PrimaryKey {
+    type Row = BillingRegionfigures5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRegionfigures5PrimaryKey {
+    type PrimaryKey = BillingRegionfigures5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingRegionfigures5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingRegionfigures5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "energyout",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "valueout",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "energypurchased",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "valuepurchased",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "excessgen",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "reservetrading",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "intcompo",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "adminpricecompo",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "settsurplus",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "aspayment",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "poolfees",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "wdrsq",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrta",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut energyout_array = Vec::new();
+        let mut valueout_array = Vec::new();
+        let mut energypurchased_array = Vec::new();
+        let mut valuepurchased_array = Vec::new();
+        let mut excessgen_array = Vec::new();
+        let mut reservetrading_array = Vec::new();
+        let mut intcompo_array = Vec::new();
+        let mut adminpricecompo_array = Vec::new();
+        let mut settsurplus_array = Vec::new();
+        let mut aspayment_array = Vec::new();
+        let mut poolfees_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut wdrsq_array = Vec::new();
+        let mut wdrta_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            energyout_array.push({
+                row.energyout.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            valueout_array.push({
+                row.valueout.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            energypurchased_array.push({
+                row.energypurchased.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            valuepurchased_array.push({
+                row.valuepurchased.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            excessgen_array.push({
+                row.excessgen.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            reservetrading_array.push({
+                row.reservetrading.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            intcompo_array.push({
+                row.intcompo.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            adminpricecompo_array.push({
+                row.adminpricecompo.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            settsurplus_array.push({
+                row.settsurplus.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            aspayment_array.push({
+                row.aspayment.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            poolfees_array.push({
+                row.poolfees.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            wdrsq_array.push({
+                row.wdrsq.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            wdrta_array.push({
+                row.wdrta.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(energyout_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(valueout_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(energypurchased_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(valuepurchased_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(excessgen_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(reservetrading_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(intcompo_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(adminpricecompo_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(settsurplus_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(aspayment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(poolfees_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrsq_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrta_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1340,12 +7396,244 @@ pub struct BillingRegionimports5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingRegionimports5 {
+    type PrimaryKey = BillingRegionimports5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("REGIONIMPORTS".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingRegionimports5PrimaryKey {
+        BillingRegionimports5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            importfrom: self.importfrom.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_regionimports_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingRegionimports5 {
+    type Row = BillingRegionimports5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.importfrom == row.importfrom
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRegionimports5 {
+    type PrimaryKey = BillingRegionimports5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.importfrom == key.importfrom
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingRegionimports5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub importfrom: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingRegionimports5PrimaryKey {
+    type Row = BillingRegionimports5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.importfrom == row.importfrom
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRegionimports5PrimaryKey {
+    type PrimaryKey = BillingRegionimports5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.importfrom == key.importfrom
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingRegionimports5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingRegionimports5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "importfrom",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "energy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "value",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "surplusenergy",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "surplusvalue",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut importfrom_array = Vec::new();
+        let mut energy_array = Vec::new();
+        let mut value_array = Vec::new();
+        let mut surplusenergy_array = Vec::new();
+        let mut surplusvalue_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            importfrom_array.push(row.importfrom);
+            energy_array.push({
+                row.energy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            value_array.push({
+                row.value.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            surplusenergy_array.push({
+                row.surplusenergy.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            surplusvalue_array.push({
+                row.surplusvalue.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    importfrom_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(value_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(surplusenergy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(surplusvalue_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1404,6 +7692,9 @@ pub struct BillingRuntrk5 {
     pub makeup: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingRuntrk5 {
+    type PrimaryKey = BillingRuntrk5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
@@ -1411,60 +7702,264 @@ impl crate::GetTable for BillingRuntrk5 {
             version: 5,
         }
     }
-}
-/// # Summary
-///
-/// ## BILLINGSMELTERREDUCTION
-///  _BILLINGSMELTERREDUCTION shows the smelter reduction payment (only applies to  participants with Victorian customer connection points)._
-///
-/// * Data Set Name: Billing
-/// * File Name: Smelterreduction
-/// * Data Version: 5
-///
-/// # Description
-///  BILLINGSMELTERREDUCTION data is confidential to the relevant participant. Source BILLINGSMELTERREDUCTION is populated by the posting of a billing run where the participant has Victorian customer connectionpoints. Volume One record inserted per billing run, or 11 records inserted per week.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * PARTICIPANTID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingSmelterreduction5 {
-    /// AEMO Contract Year number starting in week containing 1st January
-    pub contractyear: rust_decimal::Decimal,
-    /// Week no within the contract year. Week no 1 is the week containing 1st January
-    pub weekno: rust_decimal::Decimal,
-    /// Unique run no within a given contract year and week no
-    pub billrunno: rust_decimal::Decimal,
-    /// Unique participant identifier
-    pub participantid: String,
-    /// Rate in $/MWh
-    pub rate1: Option<rust_decimal::Decimal>,
-    /// Payment
-    pub ra1: Option<rust_decimal::Decimal>,
-    /// Rate in $/MWh
-    pub rate2: Option<rust_decimal::Decimal>,
-    /// Payment
-    pub ra2: Option<rust_decimal::Decimal>,
-    /// Tabulated Energy
-    pub te: Option<rust_decimal::Decimal>,
-    /// Victorian Demand as defined by Code Chapter 9 definitions
-    pub pcsd: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for BillingSmelterreduction5 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("SMELTERREDUCTION".into()),
-            version: 5,
+
+    fn primary_key(&self) -> BillingRuntrk5PrimaryKey {
+        BillingRuntrk5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            weekno: self.weekno.clone(),
         }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_runtrk_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingRuntrk5 {
+    type Row = BillingRuntrk5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRuntrk5 {
+    type PrimaryKey = BillingRuntrk5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingRuntrk5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingRuntrk5PrimaryKey {
+    type Row = BillingRuntrk5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingRuntrk5PrimaryKey {
+    type PrimaryKey = BillingRuntrk5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingRuntrk5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingRuntrk5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("status", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "adj_cleared",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("postby", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "receiptpostdate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "receiptpostby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "paymentpostdate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "paymentpostby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "shortfall",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "makeup",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut status_array = Vec::new();
+        let mut adj_cleared_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut postdate_array = Vec::new();
+        let mut postby_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut receiptpostdate_array = Vec::new();
+        let mut receiptpostby_array = Vec::new();
+        let mut paymentpostdate_array = Vec::new();
+        let mut paymentpostby_array = Vec::new();
+        let mut shortfall_array = Vec::new();
+        let mut makeup_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            status_array.push(row.status);
+            adj_cleared_array.push(row.adj_cleared);
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            authorisedby_array.push(row.authorisedby);
+            postdate_array.push(row.postdate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            postby_array.push(row.postby);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            receiptpostdate_array.push(row.receiptpostdate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            receiptpostby_array.push(row.receiptpostby);
+            paymentpostdate_array.push(row.paymentpostdate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            paymentpostby_array.push(row.paymentpostby);
+            shortfall_array.push({
+                row.shortfall.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            makeup_array.push({
+                row.makeup.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(adj_cleared_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(postdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(receiptpostdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(receiptpostby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(paymentpostdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(paymentpostby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(shortfall_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(makeup_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1513,12 +8008,185 @@ pub struct BillingApcCompensation2 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingApcCompensation2 {
+    type PrimaryKey = BillingApcCompensation2PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("APC_COMPENSATION".into()),
             version: 2,
         }
+    }
+
+    fn primary_key(&self) -> BillingApcCompensation2PrimaryKey {
+        BillingApcCompensation2PrimaryKey {
+            apeventid: self.apeventid.clone(),
+            billrunno: self.billrunno.clone(),
+            claimid: self.claimid.clone(),
+            contractyear: self.contractyear.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_apc_compensation_v2".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingApcCompensation2 {
+    type Row = BillingApcCompensation2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.apeventid == row.apeventid
+            && self.billrunno == row.billrunno
+            && self.claimid == row.claimid
+            && self.contractyear == row.contractyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingApcCompensation2 {
+    type PrimaryKey = BillingApcCompensation2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.apeventid == key.apeventid
+            && self.billrunno == key.billrunno
+            && self.claimid == key.claimid
+            && self.contractyear == key.contractyear
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingApcCompensation2PrimaryKey {
+    pub apeventid: i64,
+    pub billrunno: i64,
+    pub claimid: i64,
+    pub contractyear: i64,
+    pub weekno: i64,
+}
+impl crate::CompareWithRow for BillingApcCompensation2PrimaryKey {
+    type Row = BillingApcCompensation2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.apeventid == row.apeventid
+            && self.billrunno == row.billrunno
+            && self.claimid == row.claimid
+            && self.contractyear == row.contractyear
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingApcCompensation2PrimaryKey {
+    type PrimaryKey = BillingApcCompensation2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.apeventid == key.apeventid
+            && self.billrunno == key.billrunno
+            && self.claimid == key.claimid
+            && self.contractyear == key.contractyear
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingApcCompensation2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingApcCompensation2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Int64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("apeventid", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("claimid", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "compensation_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "event_type",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "compensation_type",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut apeventid_array = Vec::new();
+        let mut claimid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut compensation_amount_array = Vec::new();
+        let mut event_type_array = Vec::new();
+        let mut compensation_type_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push(row.contractyear);
+            weekno_array.push(row.weekno);
+            billrunno_array.push(row.billrunno);
+            apeventid_array.push(row.apeventid);
+            claimid_array.push(row.claimid);
+            participantid_array.push(row.participantid);
+            compensation_amount_array.push({
+                row.compensation_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            event_type_array.push(row.event_type);
+            compensation_type_array.push(row.compensation_type);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
+                    contractyear_array,
+                )),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(apeventid_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(claimid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(compensation_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(event_type_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    compensation_type_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1575,12 +8243,249 @@ pub struct BillingApcRecovery2 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingApcRecovery2 {
+    type PrimaryKey = BillingApcRecovery2PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("APC_RECOVERY".into()),
             version: 2,
         }
+    }
+
+    fn primary_key(&self) -> BillingApcRecovery2PrimaryKey {
+        BillingApcRecovery2PrimaryKey {
+            apeventid: self.apeventid.clone(),
+            billrunno: self.billrunno.clone(),
+            claimid: self.claimid.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_apc_recovery_v2".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingApcRecovery2 {
+    type Row = BillingApcRecovery2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.apeventid == row.apeventid
+            && self.billrunno == row.billrunno
+            && self.claimid == row.claimid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingApcRecovery2 {
+    type PrimaryKey = BillingApcRecovery2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.apeventid == key.apeventid
+            && self.billrunno == key.billrunno
+            && self.claimid == key.claimid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingApcRecovery2PrimaryKey {
+    pub apeventid: i64,
+    pub billrunno: i64,
+    pub claimid: i64,
+    pub contractyear: i64,
+    pub participantid: String,
+    pub regionid: String,
+    pub weekno: i64,
+}
+impl crate::CompareWithRow for BillingApcRecovery2PrimaryKey {
+    type Row = BillingApcRecovery2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.apeventid == row.apeventid
+            && self.billrunno == row.billrunno
+            && self.claimid == row.claimid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingApcRecovery2PrimaryKey {
+    type PrimaryKey = BillingApcRecovery2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.apeventid == key.apeventid
+            && self.billrunno == key.billrunno
+            && self.claimid == key.claimid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingApcRecovery2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingApcRecovery2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Int64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("apeventid", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("claimid", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "eligibility_start_interval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "eligibility_end_interval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "participant_demand",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "region_demand",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut apeventid_array = Vec::new();
+        let mut claimid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut recovery_amount_array = Vec::new();
+        let mut eligibility_start_interval_array = Vec::new();
+        let mut eligibility_end_interval_array = Vec::new();
+        let mut participant_demand_array = Vec::new();
+        let mut region_demand_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push(row.contractyear);
+            weekno_array.push(row.weekno);
+            billrunno_array.push(row.billrunno);
+            apeventid_array.push(row.apeventid);
+            claimid_array.push(row.claimid);
+            participantid_array.push(row.participantid);
+            regionid_array.push(row.regionid);
+            recovery_amount_array.push({
+                row.recovery_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            eligibility_start_interval_array.push(row.eligibility_start_interval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            eligibility_end_interval_array.push(row.eligibility_end_interval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            participant_demand_array.push({
+                row.participant_demand.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            region_demand_array.push({
+                row.region_demand.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
+                    contractyear_array,
+                )),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(apeventid_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(claimid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recovery_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(eligibility_start_interval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(eligibility_end_interval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(participant_demand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(region_demand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1623,12 +8528,200 @@ pub struct BillingBillingCo2ePublication1 {
     pub intensityindex: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingBillingCo2ePublication1 {
+    type PrimaryKey = BillingBillingCo2ePublication1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("BILLING_CO2E_PUBLICATION".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingBillingCo2ePublication1PrimaryKey {
+        BillingBillingCo2ePublication1PrimaryKey {
+            contractyear: self.contractyear.clone(),
+            regionid: self.regionid.clone(),
+            settlementdate: self.settlementdate.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "billing_billing_co2e_publication_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for BillingBillingCo2ePublication1 {
+    type Row = BillingBillingCo2ePublication1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.contractyear == row.contractyear
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingBillingCo2ePublication1 {
+    type PrimaryKey = BillingBillingCo2ePublication1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contractyear == key.contractyear
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingBillingCo2ePublication1PrimaryKey {
+    pub contractyear: i64,
+    pub regionid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub weekno: i64,
+}
+impl crate::CompareWithRow for BillingBillingCo2ePublication1PrimaryKey {
+    type Row = BillingBillingCo2ePublication1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.contractyear == row.contractyear
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingBillingCo2ePublication1PrimaryKey {
+    type PrimaryKey = BillingBillingCo2ePublication1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contractyear == key.contractyear
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingBillingCo2ePublication1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingBillingCo2ePublication1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Int64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "sentoutenergy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "generatoremissions",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "intensityindex",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut settlementdate_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut sentoutenergy_array = Vec::new();
+        let mut generatoremissions_array = Vec::new();
+        let mut intensityindex_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push(row.contractyear);
+            weekno_array.push(row.weekno);
+            billrunno_array.push(row.billrunno);
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            regionid_array.push(row.regionid);
+            sentoutenergy_array.push({
+                row.sentoutenergy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            generatoremissions_array.push({
+                row.generatoremissions.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            intensityindex_array.push({
+                row.intensityindex.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
+                    contractyear_array,
+                )),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(sentoutenergy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(generatoremissions_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(intensityindex_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1661,12 +8754,113 @@ pub struct BillingBillingCo2ePublicationTrk1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingBillingCo2ePublicationTrk1 {
+    type PrimaryKey = BillingBillingCo2ePublicationTrk1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("BILLING_CO2E_PUBLICATION_TRK".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingBillingCo2ePublicationTrk1PrimaryKey {
+        BillingBillingCo2ePublicationTrk1PrimaryKey {
+            contractyear: self.contractyear.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_billing_co2e_publication_trk_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingBillingCo2ePublicationTrk1 {
+    type Row = BillingBillingCo2ePublicationTrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.contractyear == row.contractyear && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingBillingCo2ePublicationTrk1 {
+    type PrimaryKey = BillingBillingCo2ePublicationTrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contractyear == key.contractyear && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingBillingCo2ePublicationTrk1PrimaryKey {
+    pub contractyear: i64,
+    pub weekno: i64,
+}
+impl crate::CompareWithRow for BillingBillingCo2ePublicationTrk1PrimaryKey {
+    type Row = BillingBillingCo2ePublicationTrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.contractyear == row.contractyear && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingBillingCo2ePublicationTrk1PrimaryKey {
+    type PrimaryKey = BillingBillingCo2ePublicationTrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contractyear == key.contractyear && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingBillingCo2ePublicationTrk1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingBillingCo2ePublicationTrk1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Int64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push(row.contractyear);
+            weekno_array.push(row.weekno);
+            billrunno_array.push(row.billrunno);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
+                    contractyear_array,
+                )),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(billrunno_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1714,12 +8908,249 @@ pub struct BillingDailyEnergySummary1 {
     pub generator_energy_purchased: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingDailyEnergySummary1 {
+    type PrimaryKey = BillingDailyEnergySummary1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("DAILY_ENERGY_SUMMARY".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingDailyEnergySummary1PrimaryKey {
+        BillingDailyEnergySummary1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            settlementdate: self.settlementdate.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "billing_daily_energy_summary_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for BillingDailyEnergySummary1 {
+    type Row = BillingDailyEnergySummary1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingDailyEnergySummary1 {
+    type PrimaryKey = BillingDailyEnergySummary1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingDailyEnergySummary1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub regionid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingDailyEnergySummary1PrimaryKey {
+    type Row = BillingDailyEnergySummary1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingDailyEnergySummary1PrimaryKey {
+    type PrimaryKey = BillingDailyEnergySummary1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingDailyEnergySummary1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingDailyEnergySummary1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "customer_energy_purchased",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "generator_energy_sold",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "generator_energy_purchased",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut settlementdate_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut customer_energy_purchased_array = Vec::new();
+        let mut generator_energy_sold_array = Vec::new();
+        let mut generator_energy_purchased_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            participantid_array.push(row.participantid);
+            regionid_array.push(row.regionid);
+            customer_energy_purchased_array.push({
+                row.customer_energy_purchased.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            generator_energy_sold_array.push({
+                row.generator_energy_sold.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            generator_energy_purchased_array.push({
+                row.generator_energy_purchased.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(customer_energy_purchased_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(generator_energy_sold_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(generator_energy_purchased_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1779,12 +9210,291 @@ pub struct BillingDirectionReconciliatn1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingDirectionReconciliatn1 {
+    type PrimaryKey = BillingDirectionReconciliatn1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("DIRECTION_RECONCILIATN".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingDirectionReconciliatn1PrimaryKey {
+        BillingDirectionReconciliatn1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            direction_id: self.direction_id.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_direction_reconciliatn_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingDirectionReconciliatn1 {
+    type Row = BillingDirectionReconciliatn1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingDirectionReconciliatn1 {
+    type PrimaryKey = BillingDirectionReconciliatn1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingDirectionReconciliatn1PrimaryKey {
+    pub billrunno: i64,
+    pub contractyear: i64,
+    pub direction_id: String,
+    pub weekno: i64,
+}
+impl crate::CompareWithRow for BillingDirectionReconciliatn1PrimaryKey {
+    type Row = BillingDirectionReconciliatn1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingDirectionReconciliatn1PrimaryKey {
+    type PrimaryKey = BillingDirectionReconciliatn1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingDirectionReconciliatn1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingDirectionReconciliatn1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Int64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "direction_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_desc",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_start_date",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_end_date",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "compensation_amount",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "independent_expert_fee",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_amount",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("cra", arrow2::datatypes::DataType::Decimal(16, 6), true),
+            arrow2::datatypes::Field::new(
+                "nem_fee_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "nem_fixed_fee_amount",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "mkt_customer_perc",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "generator_perc",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut direction_desc_array = Vec::new();
+        let mut direction_start_date_array = Vec::new();
+        let mut direction_end_date_array = Vec::new();
+        let mut compensation_amount_array = Vec::new();
+        let mut independent_expert_fee_array = Vec::new();
+        let mut interest_amount_array = Vec::new();
+        let mut cra_array = Vec::new();
+        let mut nem_fee_id_array = Vec::new();
+        let mut nem_fixed_fee_amount_array = Vec::new();
+        let mut mkt_customer_perc_array = Vec::new();
+        let mut generator_perc_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push(row.contractyear);
+            weekno_array.push(row.weekno);
+            billrunno_array.push(row.billrunno);
+            direction_id_array.push(row.direction_id);
+            direction_desc_array.push(row.direction_desc);
+            direction_start_date_array.push(row.direction_start_date.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            direction_end_date_array.push(row.direction_end_date.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            compensation_amount_array.push({
+                row.compensation_amount.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            independent_expert_fee_array.push({
+                row.independent_expert_fee.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            interest_amount_array.push({
+                row.interest_amount.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            cra_array.push({
+                row.cra.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            nem_fee_id_array.push(row.nem_fee_id);
+            nem_fixed_fee_amount_array.push({
+                row.nem_fixed_fee_amount.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            mkt_customer_perc_array.push({
+                row.mkt_customer_perc.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            generator_perc_array.push({
+                row.generator_perc.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
+                    contractyear_array,
+                )),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    direction_id_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(direction_desc_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(direction_start_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(direction_end_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(compensation_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(independent_expert_fee_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(interest_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(cra_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(nem_fee_id_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(nem_fixed_fee_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mkt_customer_perc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(generator_perc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1848,12 +9558,325 @@ pub struct BillingBillingDirectionReconOther1 {
     pub regional_benefit_factor: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingBillingDirectionReconOther1 {
+    type PrimaryKey = BillingBillingDirectionReconOther1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("BILLING_DIRECTION_RECON_OTHER".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingBillingDirectionReconOther1PrimaryKey {
+        BillingBillingDirectionReconOther1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            direction_id: self.direction_id.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_billing_direction_recon_other_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingBillingDirectionReconOther1 {
+    type Row = BillingBillingDirectionReconOther1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingBillingDirectionReconOther1 {
+    type PrimaryKey = BillingBillingDirectionReconOther1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingBillingDirectionReconOther1PrimaryKey {
+    pub billrunno: i64,
+    pub contractyear: i64,
+    pub direction_id: String,
+    pub regionid: String,
+    pub weekno: i64,
+}
+impl crate::CompareWithRow for BillingBillingDirectionReconOther1PrimaryKey {
+    type Row = BillingBillingDirectionReconOther1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingBillingDirectionReconOther1PrimaryKey {
+    type PrimaryKey = BillingBillingDirectionReconOther1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingBillingDirectionReconOther1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingBillingDirectionReconOther1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Int64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
+            arrow2::datatypes::Field::new(
+                "direction_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_desc",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_type_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_start_date",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_end_date",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_start_interval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "direction_end_interval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "compensation_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "independent_expert_fee",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("cra", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new(
+                "regional_customer_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regional_generator_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regional_benefit_factor",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut direction_desc_array = Vec::new();
+        let mut direction_type_id_array = Vec::new();
+        let mut direction_start_date_array = Vec::new();
+        let mut direction_end_date_array = Vec::new();
+        let mut direction_start_interval_array = Vec::new();
+        let mut direction_end_interval_array = Vec::new();
+        let mut compensation_amount_array = Vec::new();
+        let mut interest_amount_array = Vec::new();
+        let mut independent_expert_fee_array = Vec::new();
+        let mut cra_array = Vec::new();
+        let mut regional_customer_energy_array = Vec::new();
+        let mut regional_generator_energy_array = Vec::new();
+        let mut regional_benefit_factor_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push(row.contractyear);
+            weekno_array.push(row.weekno);
+            billrunno_array.push(row.billrunno);
+            direction_id_array.push(row.direction_id);
+            regionid_array.push(row.regionid);
+            direction_desc_array.push(row.direction_desc);
+            direction_type_id_array.push(row.direction_type_id);
+            direction_start_date_array.push(row.direction_start_date.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            direction_end_date_array.push(row.direction_end_date.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            direction_start_interval_array.push(row.direction_start_interval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            direction_end_interval_array.push(row.direction_end_interval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            compensation_amount_array.push({
+                row.compensation_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            interest_amount_array.push({
+                row.interest_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            independent_expert_fee_array.push({
+                row.independent_expert_fee.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            cra_array.push({
+                row.cra.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regional_customer_energy_array.push({
+                row.regional_customer_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regional_generator_energy_array.push({
+                row.regional_generator_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regional_benefit_factor_array.push({
+                row.regional_benefit_factor.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
+                    contractyear_array,
+                )),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    direction_id_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(direction_desc_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    direction_type_id_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(direction_start_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(direction_end_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(direction_start_interval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(direction_end_interval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(compensation_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(interest_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(independent_expert_fee_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(cra_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regional_customer_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regional_generator_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regional_benefit_factor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1901,12 +9924,246 @@ pub struct BillingEftshortfallAmount1 {
     pub company_net_energy: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingEftshortfallAmount1 {
+    type PrimaryKey = BillingEftshortfallAmount1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("EFTSHORTFALL_AMOUNT".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingEftshortfallAmount1PrimaryKey {
+        BillingEftshortfallAmount1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_eftshortfall_amount_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingEftshortfallAmount1 {
+    type Row = BillingEftshortfallAmount1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingEftshortfallAmount1 {
+    type PrimaryKey = BillingEftshortfallAmount1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingEftshortfallAmount1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingEftshortfallAmount1PrimaryKey {
+    type Row = BillingEftshortfallAmount1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingEftshortfallAmount1PrimaryKey {
+    type PrimaryKey = BillingEftshortfallAmount1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingEftshortfallAmount1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingEftshortfallAmount1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "shortfall_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "shortfall",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "shortfall_company_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "company_shortfall_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "participant_net_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "company_net_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut shortfall_amount_array = Vec::new();
+        let mut shortfall_array = Vec::new();
+        let mut shortfall_company_id_array = Vec::new();
+        let mut company_shortfall_amount_array = Vec::new();
+        let mut participant_net_energy_array = Vec::new();
+        let mut company_net_energy_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            shortfall_amount_array.push({
+                row.shortfall_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            shortfall_array.push({
+                row.shortfall.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            shortfall_company_id_array.push(row.shortfall_company_id);
+            company_shortfall_amount_array.push({
+                row.company_shortfall_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            participant_net_energy_array.push({
+                row.participant_net_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            company_net_energy_array.push({
+                row.company_net_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(shortfall_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(shortfall_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    shortfall_company_id_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(company_shortfall_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(participant_net_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(company_net_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1947,12 +10204,188 @@ pub struct BillingEftshortfallDetail1 {
     pub amount: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingEftshortfallDetail1 {
+    type PrimaryKey = BillingEftshortfallDetail1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("EFTSHORTFALL_DETAIL".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingEftshortfallDetail1PrimaryKey {
+        BillingEftshortfallDetail1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            transaction_type: self.transaction_type.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_eftshortfall_detail_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingEftshortfallDetail1 {
+    type Row = BillingEftshortfallDetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.transaction_type == row.transaction_type
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingEftshortfallDetail1 {
+    type PrimaryKey = BillingEftshortfallDetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.transaction_type == key.transaction_type
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingEftshortfallDetail1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub transaction_type: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingEftshortfallDetail1PrimaryKey {
+    type Row = BillingEftshortfallDetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.transaction_type == row.transaction_type
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingEftshortfallDetail1PrimaryKey {
+    type PrimaryKey = BillingEftshortfallDetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.transaction_type == key.transaction_type
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingEftshortfallDetail1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingEftshortfallDetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "transaction_type",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut transaction_type_array = Vec::new();
+        let mut amount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            transaction_type_array.push(row.transaction_type);
+            amount_array.push({
+                row.amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    transaction_type_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2000,12 +10433,228 @@ pub struct BillingGstDetail5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingGstDetail5 {
+    type PrimaryKey = BillingGstDetail5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("GST_DETAIL".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingGstDetail5PrimaryKey {
+        BillingGstDetail5PrimaryKey {
+            bas_class: self.bas_class.clone(),
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            transaction_type: self.transaction_type.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_gst_detail_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingGstDetail5 {
+    type Row = BillingGstDetail5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bas_class == row.bas_class
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.transaction_type == row.transaction_type
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingGstDetail5 {
+    type PrimaryKey = BillingGstDetail5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bas_class == key.bas_class
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.transaction_type == key.transaction_type
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingGstDetail5PrimaryKey {
+    pub bas_class: String,
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub transaction_type: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingGstDetail5PrimaryKey {
+    type Row = BillingGstDetail5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bas_class == row.bas_class
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.transaction_type == row.transaction_type
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingGstDetail5PrimaryKey {
+    type PrimaryKey = BillingGstDetail5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bas_class == key.bas_class
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.transaction_type == key.transaction_type
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingGstDetail5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingGstDetail5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "bas_class",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "transaction_type",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "gst_exclusive_amount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "gst_amount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut bas_class_array = Vec::new();
+        let mut transaction_type_array = Vec::new();
+        let mut gst_exclusive_amount_array = Vec::new();
+        let mut gst_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            bas_class_array.push(row.bas_class);
+            transaction_type_array.push(row.transaction_type);
+            gst_exclusive_amount_array.push({
+                row.gst_exclusive_amount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            gst_amount_array.push({
+                row.gst_amount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bas_class_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    transaction_type_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(gst_exclusive_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(gst_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2050,6 +10699,9 @@ pub struct BillingGstSummary5 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingGstSummary5 {
+    type PrimaryKey = BillingGstSummary5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
@@ -2057,218 +10709,202 @@ impl crate::GetTable for BillingGstSummary5 {
             version: 5,
         }
     }
-}
-/// # Summary
-///
-/// ## BILLING_MR_PAYMENT
-///  _BILLING_MR_PAYMENT shows aggregate payments on a dispatchable unit/MR Event basis for accepted MR capacity_
-///
-/// * Data Set Name: Billing
-/// * File Name: Mr Payment
-/// * Data Version: 5
-///
-/// # Description
-///  BILLING_MR_PAYMENT data is confidential, and is available only to the relevant participant. Source Ad hoc - MR events only. Volume 3500 rows per year
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * DUID
-/// * MR_DATE
-/// * REGIONID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingMrPayment5 {
-    /// Billing Contract Year
-    pub contractyear: rust_decimal::Decimal,
-    /// Billing Week number
-    pub weekno: rust_decimal::Decimal,
-    /// Billing Run number
-    pub billrunno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime")]
-    pub mr_date: chrono::NaiveDateTime,
-    /// Unique Region Identifier
-    pub regionid: String,
-    /// Unique Participant identifier
-    pub participantid: Option<String>,
-    /// Unique identifier for DUID / MNSP LinkID
-    pub duid: String,
-    /// Payment amount by AEMO
-    pub mr_amount: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for BillingMrPayment5 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("MR_PAYMENT".into()),
-            version: 5,
+
+    fn primary_key(&self) -> BillingGstSummary5PrimaryKey {
+        BillingGstSummary5PrimaryKey {
+            bas_class: self.bas_class.clone(),
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
         }
     }
-}
-/// # Summary
-///
-/// ## BILLING_MR_RECOVERY
-///  _BILLING_MR_RECOVERY shows aggregate recovery charges on a dispatchable unit / MR Event basis for spot market income from dispatch of MR capacity._
-///
-/// * Data Set Name: Billing
-/// * File Name: Mr Recovery
-/// * Data Version: 5
-///
-/// # Description
-///  BILLING_MR_RECOVERY data is confidential, and is available only to the relevant participant. Source Ad hoc - MR events only. Volume 3500 rows per year
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * DUID
-/// * MR_DATE
-/// * REGIONID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingMrRecovery5 {
-    /// Billing Contract Year
-    pub contractyear: rust_decimal::Decimal,
-    /// Billing Week number
-    pub weekno: rust_decimal::Decimal,
-    /// Billing Run number
-    pub billrunno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime")]
-    pub mr_date: chrono::NaiveDateTime,
-    /// Unique Region Identifier
-    pub regionid: String,
-    /// Unique Participant identifier
-    pub participantid: Option<String>,
-    /// Unique identifier for DUID / MNSP LinkID
-    pub duid: String,
-    /// Payment amount to AEMO
-    pub mr_amount: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for BillingMrRecovery5 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("MR_RECOVERY".into()),
-            version: 5,
-        }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_gst_summary_v5".to_string()
     }
 }
-/// # Summary
-///
-/// ## BILLING_MR_SHORTFALL
-///  _BILLING_MR_SHORTFALL shows aggregate MR shortfall payments (or recovery charges) to each participant in the region for the MR event._
-///
-/// * Data Set Name: Billing
-/// * File Name: Mr Shortfall
-/// * Data Version: 5
-///
-/// # Description
-///  BILLING_MR_SHORTFALL data is confidential, and is available only to the relevant participant. Source Ad hoc - MR events only. Volume 400 rows per year.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * MR_DATE
-/// * PARTICIPANTID
-/// * REGIONID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingMrShortfall5 {
-    /// Billing Contract Year
-    pub contractyear: rust_decimal::Decimal,
-    /// Billing Week number
-    pub weekno: rust_decimal::Decimal,
-    /// Billing Run number
+impl crate::CompareWithRow for BillingGstSummary5 {
+    type Row = BillingGstSummary5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bas_class == row.bas_class
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingGstSummary5 {
+    type PrimaryKey = BillingGstSummary5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bas_class == key.bas_class
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingGstSummary5PrimaryKey {
+    pub bas_class: String,
     pub billrunno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime")]
-    pub mr_date: chrono::NaiveDateTime,
-    /// Unique Region Identifier
-    pub regionid: String,
-    /// Unique Participant Identifier
+    pub contractyear: rust_decimal::Decimal,
     pub participantid: String,
-    /// The adjusted gross energy for the market customer in the restricted region for the duration of the mandatory restriction event (MWh)
-    pub age: Option<rust_decimal::Decimal>,
-    /// Restriction Shortfall amount payable to AEMO for a mandatory restriction period
-    pub rsa: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
+    pub weekno: rust_decimal::Decimal,
 }
-impl crate::GetTable for BillingMrShortfall5 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("MR_SHORTFALL".into()),
-            version: 5,
-        }
+impl crate::CompareWithRow for BillingGstSummary5PrimaryKey {
+    type Row = BillingGstSummary5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bas_class == row.bas_class
+            && self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
     }
 }
-/// # Summary
-///
-/// ## BILLING_MR_SUMMARY
-///  _BILLING_MR_SUMMARY shows aggregate payment/recovery and shortfall figures for an MR Event._
-///
-/// * Data Set Name: Billing
-/// * File Name: Mr Summary
-/// * Data Version: 5
-///
-/// # Description
-///  BILLING_MR_SUMMARY data is public to all participants. Source Ad hoc - MR events only. Volume 200 rows per year.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * MR_DATE
-/// * REGIONID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingMrSummary5 {
-    /// Billing Contract Year
-    pub contractyear: rust_decimal::Decimal,
-    /// Billing Week number
-    pub weekno: rust_decimal::Decimal,
-    /// Billing Run number
-    pub billrunno: rust_decimal::Decimal,
-    #[serde(with = "crate::mms_datetime")]
-    pub mr_date: chrono::NaiveDateTime,
-    /// Unique Region Identifier
-    pub regionid: String,
-    /// Total payments by AEMO
-    pub total_payments: Option<rust_decimal::Decimal>,
-    /// Total payments to AEMO
-    pub total_recovery: Option<rust_decimal::Decimal>,
-    /// Total Restriction Shortfall Amount
-    pub total_rsa: Option<rust_decimal::Decimal>,
-    /// The aggregate of then adjusted gross energy of all the market customer in the restricted region for the duration of the mandatory restriction period (MWh)
-    pub aage: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
+impl crate::CompareWithPrimaryKey for BillingGstSummary5PrimaryKey {
+    type PrimaryKey = BillingGstSummary5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bas_class == key.bas_class
+            && self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
 }
-impl crate::GetTable for BillingMrSummary5 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("MR_SUMMARY".into()),
-            version: 5,
+impl crate::PrimaryKey for BillingGstSummary5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingGstSummary5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "bas_class",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "gst_exclusive_amount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "gst_amount",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut bas_class_array = Vec::new();
+        let mut gst_exclusive_amount_array = Vec::new();
+        let mut gst_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            bas_class_array.push(row.bas_class);
+            gst_exclusive_amount_array.push({
+                row.gst_exclusive_amount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            gst_amount_array.push({
+                row.gst_amount.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
         }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bas_class_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(gst_exclusive_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(gst_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2311,12 +10947,198 @@ pub struct BillingNmasTstPayments1 {
     pub payment_amount: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingNmasTstPayments1 {
+    type PrimaryKey = BillingNmasTstPayments1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("NMAS_TST_PAYMENTS".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingNmasTstPayments1PrimaryKey {
+        BillingNmasTstPayments1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            service: self.service.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_nmas_tst_payments_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingNmasTstPayments1 {
+    type Row = BillingNmasTstPayments1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.service == row.service
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstPayments1 {
+    type PrimaryKey = BillingNmasTstPayments1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.service == key.service
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingNmasTstPayments1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub service: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingNmasTstPayments1PrimaryKey {
+    type Row = BillingNmasTstPayments1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.service == row.service
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstPayments1PrimaryKey {
+    type PrimaryKey = BillingNmasTstPayments1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.service == key.service
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingNmasTstPayments1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingNmasTstPayments1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("service", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "payment_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut service_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut payment_amount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            service_array.push(row.service);
+            contractid_array.push(row.contractid);
+            payment_amount_array.push({
+                row.payment_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(service_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(payment_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2386,12 +11208,390 @@ pub struct BillingNmasTstRecovery1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingNmasTstRecovery1 {
+    type PrimaryKey = BillingNmasTstRecovery1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("NMAS_TST_RECOVERY".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingNmasTstRecovery1PrimaryKey {
+        BillingNmasTstRecovery1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            service: self.service.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_nmas_tst_recovery_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingNmasTstRecovery1 {
+    type Row = BillingNmasTstRecovery1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.service == row.service
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstRecovery1 {
+    type PrimaryKey = BillingNmasTstRecovery1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.service == key.service
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingNmasTstRecovery1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub regionid: String,
+    pub service: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingNmasTstRecovery1PrimaryKey {
+    type Row = BillingNmasTstRecovery1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.service == row.service
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstRecovery1PrimaryKey {
+    type PrimaryKey = BillingNmasTstRecovery1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.service == key.service
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingNmasTstRecovery1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingNmasTstRecovery1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("service", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("rbf", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new(
+                "test_payment",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_start_date",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_end_date",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "participant_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "region_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "nem_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "customer_proportion",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "generator_proportion",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "participant_generation",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "nem_generation",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut service_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut rbf_array = Vec::new();
+        let mut test_payment_array = Vec::new();
+        let mut recovery_start_date_array = Vec::new();
+        let mut recovery_end_date_array = Vec::new();
+        let mut participant_energy_array = Vec::new();
+        let mut region_energy_array = Vec::new();
+        let mut nem_energy_array = Vec::new();
+        let mut customer_proportion_array = Vec::new();
+        let mut generator_proportion_array = Vec::new();
+        let mut participant_generation_array = Vec::new();
+        let mut nem_generation_array = Vec::new();
+        let mut recovery_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            service_array.push(row.service);
+            contractid_array.push(row.contractid);
+            regionid_array.push(row.regionid);
+            rbf_array.push({
+                row.rbf.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            test_payment_array.push({
+                row.test_payment.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            recovery_start_date_array.push(row.recovery_start_date.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            recovery_end_date_array.push(row.recovery_end_date.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            participant_energy_array.push({
+                row.participant_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            region_energy_array.push({
+                row.region_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            nem_energy_array.push({
+                row.nem_energy.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            customer_proportion_array.push({
+                row.customer_proportion.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            generator_proportion_array.push({
+                row.generator_proportion.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            participant_generation_array.push({
+                row.participant_generation.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            nem_generation_array.push({
+                row.nem_generation.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            recovery_amount_array.push({
+                row.recovery_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(service_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rbf_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(test_payment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recovery_start_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recovery_end_date_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(participant_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(region_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(nem_energy_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(customer_proportion_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(generator_proportion_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(participant_generation_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(nem_generation_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recovery_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2440,12 +11640,234 @@ pub struct BillingNmasTstRecvryRbf1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for BillingNmasTstRecvryRbf1 {
+    type PrimaryKey = BillingNmasTstRecvryRbf1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("NMAS_TST_RECVRY_RBF".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingNmasTstRecvryRbf1PrimaryKey {
+        BillingNmasTstRecvryRbf1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            regionid: self.regionid.clone(),
+            service: self.service.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_nmas_tst_recvry_rbf_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingNmasTstRecvryRbf1 {
+    type Row = BillingNmasTstRecvryRbf1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.regionid == row.regionid
+            && self.service == row.service
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstRecvryRbf1 {
+    type PrimaryKey = BillingNmasTstRecvryRbf1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.regionid == key.regionid
+            && self.service == key.service
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingNmasTstRecvryRbf1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub regionid: String,
+    pub service: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingNmasTstRecvryRbf1PrimaryKey {
+    type Row = BillingNmasTstRecvryRbf1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.regionid == row.regionid
+            && self.service == row.service
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstRecvryRbf1PrimaryKey {
+    type PrimaryKey = BillingNmasTstRecvryRbf1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.regionid == key.regionid
+            && self.service == key.service
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingNmasTstRecvryRbf1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingNmasTstRecvryRbf1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("service", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("rbf", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new(
+                "payment_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut service_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut rbf_array = Vec::new();
+        let mut payment_amount_array = Vec::new();
+        let mut recovery_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            service_array.push(row.service);
+            contractid_array.push(row.contractid);
+            regionid_array.push(row.regionid);
+            rbf_array.push({
+                row.rbf.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            payment_amount_array.push({
+                row.payment_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            recovery_amount_array.push({
+                row.recovery_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(service_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rbf_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(payment_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recovery_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2486,12 +11908,203 @@ pub struct BillingNmasTstRecvryTrk1 {
     pub recovery_billrunno: rust_decimal::Decimal,
 }
 impl crate::GetTable for BillingNmasTstRecvryTrk1 {
+    type PrimaryKey = BillingNmasTstRecvryTrk1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("NMAS_TST_RECVRY_TRK".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingNmasTstRecvryTrk1PrimaryKey {
+        BillingNmasTstRecvryTrk1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            recovery_billrunno: self.recovery_billrunno.clone(),
+            recovery_contractyear: self.recovery_contractyear.clone(),
+            recovery_weekno: self.recovery_weekno.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_nmas_tst_recvry_trk_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingNmasTstRecvryTrk1 {
+    type Row = BillingNmasTstRecvryTrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.recovery_billrunno == row.recovery_billrunno
+            && self.recovery_contractyear == row.recovery_contractyear
+            && self.recovery_weekno == row.recovery_weekno
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstRecvryTrk1 {
+    type PrimaryKey = BillingNmasTstRecvryTrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.recovery_billrunno == key.recovery_billrunno
+            && self.recovery_contractyear == key.recovery_contractyear
+            && self.recovery_weekno == key.recovery_weekno
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingNmasTstRecvryTrk1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub recovery_billrunno: rust_decimal::Decimal,
+    pub recovery_contractyear: rust_decimal::Decimal,
+    pub recovery_weekno: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingNmasTstRecvryTrk1PrimaryKey {
+    type Row = BillingNmasTstRecvryTrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.recovery_billrunno == row.recovery_billrunno
+            && self.recovery_contractyear == row.recovery_contractyear
+            && self.recovery_weekno == row.recovery_weekno
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingNmasTstRecvryTrk1PrimaryKey {
+    type PrimaryKey = BillingNmasTstRecvryTrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.recovery_billrunno == key.recovery_billrunno
+            && self.recovery_contractyear == key.recovery_contractyear
+            && self.recovery_weekno == key.recovery_weekno
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingNmasTstRecvryTrk1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingNmasTstRecvryTrk1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut recovery_contractyear_array = Vec::new();
+        let mut recovery_weekno_array = Vec::new();
+        let mut recovery_billrunno_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            recovery_contractyear_array.push({
+                let mut val = row.recovery_contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            recovery_weekno_array.push({
+                let mut val = row.recovery_weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            recovery_billrunno_array.push({
+                let mut val = row.recovery_billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(recovery_contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(recovery_weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(recovery_billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2529,12 +12142,172 @@ pub struct BillingSecdepositApplication1 {
     pub application_amount: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingSecdepositApplication1 {
+    type PrimaryKey = BillingSecdepositApplication1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("SECDEPOSIT_APPLICATION".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingSecdepositApplication1PrimaryKey {
+        BillingSecdepositApplication1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_secdeposit_application_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingSecdepositApplication1 {
+    type Row = BillingSecdepositApplication1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSecdepositApplication1 {
+    type PrimaryKey = BillingSecdepositApplication1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingSecdepositApplication1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingSecdepositApplication1PrimaryKey {
+    type Row = BillingSecdepositApplication1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSecdepositApplication1PrimaryKey {
+    type PrimaryKey = BillingSecdepositApplication1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingSecdepositApplication1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingSecdepositApplication1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "application_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut application_amount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            application_amount_array.push({
+                row.application_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(application_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2581,12 +12354,224 @@ pub struct BillingSecdepInterestPay1 {
     pub interest_rate: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingSecdepInterestPay1 {
+    type PrimaryKey = BillingSecdepInterestPay1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("SECDEP_INTEREST_PAY".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingSecdepInterestPay1PrimaryKey {
+        BillingSecdepInterestPay1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            security_deposit_id: self.security_deposit_id.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_secdep_interest_pay_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingSecdepInterestPay1 {
+    type Row = BillingSecdepInterestPay1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.security_deposit_id == row.security_deposit_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSecdepInterestPay1 {
+    type PrimaryKey = BillingSecdepInterestPay1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.security_deposit_id == key.security_deposit_id
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingSecdepInterestPay1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub security_deposit_id: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingSecdepInterestPay1PrimaryKey {
+    type Row = BillingSecdepInterestPay1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.security_deposit_id == row.security_deposit_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSecdepInterestPay1PrimaryKey {
+    type PrimaryKey = BillingSecdepInterestPay1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.security_deposit_id == key.security_deposit_id
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingSecdepInterestPay1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingSecdepInterestPay1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "security_deposit_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_calc_type",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_acct_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_rate",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut security_deposit_id_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut interest_amount_array = Vec::new();
+        let mut interest_calc_type_array = Vec::new();
+        let mut interest_acct_id_array = Vec::new();
+        let mut interest_rate_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            security_deposit_id_array.push(row.security_deposit_id);
+            participantid_array.push(row.participantid);
+            interest_amount_array.push({
+                row.interest_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            interest_calc_type_array.push(row.interest_calc_type);
+            interest_acct_id_array.push(row.interest_acct_id);
+            interest_rate_array.push({
+                row.interest_rate.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    security_deposit_id_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(interest_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    interest_calc_type_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    interest_acct_id_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(interest_rate_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2626,12 +12611,194 @@ pub struct BillingSecdepInterestRate1 {
     pub interest_rate: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingSecdepInterestRate1 {
+    type PrimaryKey = BillingSecdepInterestRate1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("SECDEP_INTEREST_RATE".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingSecdepInterestRate1PrimaryKey {
+        BillingSecdepInterestRate1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            effectivedate: self.effectivedate.clone(),
+            interest_acct_id: self.interest_acct_id.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_secdep_interest_rate_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingSecdepInterestRate1 {
+    type Row = BillingSecdepInterestRate1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.effectivedate == row.effectivedate
+            && self.interest_acct_id == row.interest_acct_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSecdepInterestRate1 {
+    type PrimaryKey = BillingSecdepInterestRate1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.effectivedate == key.effectivedate
+            && self.interest_acct_id == key.interest_acct_id
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingSecdepInterestRate1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub interest_acct_id: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingSecdepInterestRate1PrimaryKey {
+    type Row = BillingSecdepInterestRate1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.effectivedate == row.effectivedate
+            && self.interest_acct_id == row.interest_acct_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSecdepInterestRate1PrimaryKey {
+    type PrimaryKey = BillingSecdepInterestRate1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.effectivedate == key.effectivedate
+            && self.interest_acct_id == key.interest_acct_id
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingSecdepInterestRate1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingSecdepInterestRate1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_acct_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interest_rate",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut interest_acct_id_array = Vec::new();
+        let mut effectivedate_array = Vec::new();
+        let mut interest_rate_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interest_acct_id_array.push(row.interest_acct_id);
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            interest_rate_array.push({
+                row.interest_rate.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interest_acct_id_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(interest_rate_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2675,12 +12842,209 @@ pub struct BillingReservetraderpayment1 {
     pub payment_amount: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingReservetraderpayment1 {
+    type PrimaryKey = BillingReservetraderpayment1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("RESERVETRADERPAYMENT".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingReservetraderpayment1PrimaryKey {
+        BillingReservetraderpayment1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractid: self.contractid.clone(),
+            contractyear: self.contractyear.clone(),
+            payment_id: self.payment_id.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_reservetraderpayment_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingReservetraderpayment1 {
+    type Row = BillingReservetraderpayment1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.payment_id == row.payment_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingReservetraderpayment1 {
+    type PrimaryKey = BillingReservetraderpayment1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.payment_id == key.payment_id
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingReservetraderpayment1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub payment_id: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingReservetraderpayment1PrimaryKey {
+    type Row = BillingReservetraderpayment1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractid == row.contractid
+            && self.contractyear == row.contractyear
+            && self.payment_id == row.payment_id
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingReservetraderpayment1PrimaryKey {
+    type PrimaryKey = BillingReservetraderpayment1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.payment_id == key.payment_id
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingReservetraderpayment1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingReservetraderpayment1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "contractid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "payment_id",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "payment_type",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "payment_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut contractid_array = Vec::new();
+        let mut payment_id_array = Vec::new();
+        let mut payment_type_array = Vec::new();
+        let mut payment_amount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            contractid_array.push(row.contractid);
+            payment_id_array.push({
+                let mut val = row.payment_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+            payment_type_array.push(row.payment_type);
+            payment_amount_array.push({
+                row.payment_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    contractid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(payment_id_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(payment_type_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(payment_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2736,12 +13100,299 @@ pub struct BillingReservetraderrecovery1 {
     pub recovery_amount: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for BillingReservetraderrecovery1 {
+    type PrimaryKey = BillingReservetraderrecovery1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("RESERVETRADERRECOVERY".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> BillingReservetraderrecovery1PrimaryKey {
+        BillingReservetraderrecovery1PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            participantid: self.participantid.clone(),
+            payment_id: self.payment_id.clone(),
+            publication_id: self.publication_id.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_reservetraderrecovery_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingReservetraderrecovery1 {
+    type Row = BillingReservetraderrecovery1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.payment_id == row.payment_id
+            && self.publication_id == row.publication_id
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingReservetraderrecovery1 {
+    type PrimaryKey = BillingReservetraderrecovery1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.payment_id == key.payment_id
+            && self.publication_id == key.publication_id
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingReservetraderrecovery1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub payment_id: rust_decimal::Decimal,
+    pub publication_id: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingReservetraderrecovery1PrimaryKey {
+    type Row = BillingReservetraderrecovery1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.payment_id == row.payment_id
+            && self.publication_id == row.publication_id
+            && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingReservetraderrecovery1PrimaryKey {
+    type PrimaryKey = BillingReservetraderrecovery1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.payment_id == key.payment_id
+            && self.publication_id == key.publication_id
+            && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingReservetraderrecovery1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingReservetraderrecovery1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "publication_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "payment_id",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "payment_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participant_demand",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "region_demand",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "eligibility_start_interval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "eligibility_end_interval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut publication_id_array = Vec::new();
+        let mut payment_id_array = Vec::new();
+        let mut payment_amount_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut participant_demand_array = Vec::new();
+        let mut region_demand_array = Vec::new();
+        let mut eligibility_start_interval_array = Vec::new();
+        let mut eligibility_end_interval_array = Vec::new();
+        let mut recovery_amount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            publication_id_array.push(row.publication_id);
+            payment_id_array.push({
+                let mut val = row.payment_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+            payment_amount_array.push({
+                row.payment_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            participantid_array.push(row.participantid);
+            regionid_array.push(row.regionid);
+            participant_demand_array.push({
+                row.participant_demand.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            region_demand_array.push({
+                row.region_demand.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            eligibility_start_interval_array.push(row.eligibility_start_interval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            eligibility_end_interval_array.push(row.eligibility_end_interval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            recovery_amount_array.push({
+                row.recovery_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    publication_id_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(payment_id_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(payment_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(participant_demand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(region_demand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(eligibility_start_interval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(eligibility_end_interval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recovery_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2790,11 +13441,241 @@ pub struct BillingWhitehole5 {
     pub interconnectorid: String,
 }
 impl crate::GetTable for BillingWhitehole5 {
+    type PrimaryKey = BillingWhitehole5PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("WHITEHOLE".into()),
             version: 5,
         }
+    }
+
+    fn primary_key(&self) -> BillingWhitehole5PrimaryKey {
+        BillingWhitehole5PrimaryKey {
+            billrunno: self.billrunno.clone(),
+            contractyear: self.contractyear.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "billing_whitehole_v5".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingWhitehole5 {
+    type Row = BillingWhitehole5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingWhitehole5 {
+    type PrimaryKey = BillingWhitehole5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingWhitehole5PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingWhitehole5PrimaryKey {
+    type Row = BillingWhitehole5;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingWhitehole5PrimaryKey {
+    type PrimaryKey = BillingWhitehole5PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingWhitehole5PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingWhitehole5 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("nl", arrow2::datatypes::DataType::Decimal(15, 6), true),
+            arrow2::datatypes::Field::new(
+                "participantdemand",
+                arrow2::datatypes::DataType::Decimal(15, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regiondemand",
+                arrow2::datatypes::DataType::Decimal(15, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "whiteholepayment",
+                arrow2::datatypes::DataType::Decimal(15, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut nl_array = Vec::new();
+        let mut participantdemand_array = Vec::new();
+        let mut regiondemand_array = Vec::new();
+        let mut whiteholepayment_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            nl_array.push({
+                row.nl.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            participantdemand_array.push({
+                row.participantdemand.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            regiondemand_array.push({
+                row.regiondemand.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            whiteholepayment_array.push({
+                row.whiteholepayment.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            interconnectorid_array.push(row.interconnectorid);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(nl_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(participantdemand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regiondemand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(whiteholepayment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+            ],
+        )
+        .map_err(Into::into)
     }
 }

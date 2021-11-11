@@ -40,12 +40,192 @@ pub struct MarketConfigBidtypes1 {
     pub spdalias: Option<String>,
 }
 impl crate::GetTable for MarketConfigBidtypes1 {
+    type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("BIDTYPES".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigBidtypes1PrimaryKey {
+        MarketConfigBidtypes1PrimaryKey {
+            bidtype: self.bidtype.clone(),
+            effectivedate: self.effectivedate.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_bidtypes_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigBidtypes1 {
+    type Row = MarketConfigBidtypes1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype
+            && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigBidtypes1 {
+    type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype
+            && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigBidtypes1PrimaryKey {
+    pub bidtype: String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigBidtypes1PrimaryKey {
+    type Row = MarketConfigBidtypes1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype
+            && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigBidtypes1PrimaryKey {
+    type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype
+            && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigBidtypes1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigBidtypes1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "numberofbands",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "numdaysaheadpricelocked",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "validationrule",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("spdalias", arrow2::datatypes::DataType::LargeUtf8, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut bidtype_array = Vec::new();
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut numberofbands_array = Vec::new();
+        let mut numdaysaheadpricelocked_array = Vec::new();
+        let mut validationrule_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut spdalias_array = Vec::new();
+        for (_, row) in partition {
+            bidtype_array.push(row.bidtype);
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            description_array.push(row.description);
+            numberofbands_array.push({
+                row.numberofbands.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            numdaysaheadpricelocked_array.push({
+                row.numdaysaheadpricelocked.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            validationrule_array.push(row.validationrule);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            spdalias_array.push(row.spdalias);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(numberofbands_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(numdaysaheadpricelocked_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(validationrule_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(spdalias_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -81,12 +261,148 @@ pub struct MarketConfigBidtypestrk1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigBidtypestrk1 {
+    type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("BIDTYPESTRK".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigBidtypestrk1PrimaryKey {
+        MarketConfigBidtypestrk1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_bidtypestrk_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigBidtypestrk1 {
+    type Row = MarketConfigBidtypestrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigBidtypestrk1 {
+    type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigBidtypestrk1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigBidtypestrk1PrimaryKey {
+    type Row = MarketConfigBidtypestrk1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigBidtypestrk1PrimaryKey {
+    type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigBidtypestrk1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigBidtypestrk1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            authorisedby_array.push(row.authorisedby);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -123,12 +439,127 @@ pub struct MarketConfigInterconnector1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigInterconnector1 {
+    type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("INTERCONNECTOR".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigInterconnector1PrimaryKey {
+        MarketConfigInterconnector1PrimaryKey {
+            interconnectorid: self.interconnectorid.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_interconnector_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigInterconnector1 {
+    type Row = MarketConfigInterconnector1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.interconnectorid == row.interconnectorid
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigInterconnector1 {
+    type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interconnectorid == key.interconnectorid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigInterconnector1PrimaryKey {
+    pub interconnectorid: String,
+}
+impl crate::CompareWithRow for MarketConfigInterconnector1PrimaryKey {
+    type Row = MarketConfigInterconnector1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.interconnectorid == row.interconnectorid
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigInterconnector1PrimaryKey {
+    type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interconnectorid == key.interconnectorid
+    }
+}
+impl crate::PrimaryKey for MarketConfigInterconnector1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigInterconnector1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionfrom",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("rsoid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("regionto", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut interconnectorid_array = Vec::new();
+        let mut regionfrom_array = Vec::new();
+        let mut rsoid_array = Vec::new();
+        let mut regionto_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            interconnectorid_array.push(row.interconnectorid);
+            regionfrom_array.push(row.regionfrom);
+            rsoid_array.push(row.rsoid);
+            regionto_array.push(row.regionto);
+            description_array.push(row.description);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionfrom_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(rsoid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionto_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -171,12 +602,192 @@ pub struct MarketConfigInterconnectoralloc1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigInterconnectoralloc1 {
+    type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("INTERCONNECTORALLOC".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigInterconnectoralloc1PrimaryKey {
+        MarketConfigInterconnectoralloc1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_interconnectoralloc_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigInterconnectoralloc1 {
+    type Row = MarketConfigInterconnectoralloc1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1 {
+    type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigInterconnectoralloc1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub interconnectorid: String,
+    pub participantid: String,
+    pub regionid: String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigInterconnectoralloc1PrimaryKey {
+    type Row = MarketConfigInterconnectoralloc1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1PrimaryKey {
+    type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigInterconnectoralloc1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigInterconnectoralloc1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(5, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "allocation",
+                arrow2::datatypes::DataType::Decimal(12, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut allocation_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            regionid_array.push(row.regionid);
+            participantid_array.push(row.participantid);
+            allocation_array.push({
+                row.allocation.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(5, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(allocation_array)
+                        .to(arrow2::datatypes::DataType::Decimal(12, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -247,12 +858,396 @@ pub struct MarketConfigInterconnectorconstraint1 {
     pub ictype: Option<String>,
 }
 impl crate::GetTable for MarketConfigInterconnectorconstraint1 {
+    type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("INTERCONNECTORCONSTRAINT".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigInterconnectorconstraint1PrimaryKey {
+        MarketConfigInterconnectorconstraint1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_interconnectorconstraint_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigInterconnectorconstraint1 {
+    type Row = MarketConfigInterconnectorconstraint1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1 {
+    type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigInterconnectorconstraint1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub interconnectorid: String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigInterconnectorconstraint1PrimaryKey {
+    type Row = MarketConfigInterconnectorconstraint1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1PrimaryKey {
+    type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigInterconnectorconstraint1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigInterconnectorconstraint1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "reserveoverallloadfactor",
+                arrow2::datatypes::DataType::Decimal(5, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "fromregionlossshare",
+                arrow2::datatypes::DataType::Decimal(5, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "maxmwin",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "maxmwout",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lossconstant",
+                arrow2::datatypes::DataType::Decimal(15, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lossflowcoefficient",
+                arrow2::datatypes::DataType::Decimal(27, 17),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "emsmeasurand",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "dynamicrhs",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "importlimit",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "exportlimit",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "outagederationfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "nonphysicallossfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "overloadfactor60sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "overloadfactor6sec",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "fcassupportunavailable",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("ictype", arrow2::datatypes::DataType::LargeUtf8, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut reserveoverallloadfactor_array = Vec::new();
+        let mut fromregionlossshare_array = Vec::new();
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut maxmwin_array = Vec::new();
+        let mut maxmwout_array = Vec::new();
+        let mut lossconstant_array = Vec::new();
+        let mut lossflowcoefficient_array = Vec::new();
+        let mut emsmeasurand_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut dynamicrhs_array = Vec::new();
+        let mut importlimit_array = Vec::new();
+        let mut exportlimit_array = Vec::new();
+        let mut outagederationfactor_array = Vec::new();
+        let mut nonphysicallossfactor_array = Vec::new();
+        let mut overloadfactor60sec_array = Vec::new();
+        let mut overloadfactor6sec_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut fcassupportunavailable_array = Vec::new();
+        let mut ictype_array = Vec::new();
+        for (_, row) in partition {
+            reserveoverallloadfactor_array.push({
+                row.reserveoverallloadfactor.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            fromregionlossshare_array.push({
+                row.fromregionlossshare.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            maxmwin_array.push({
+                row.maxmwin.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            maxmwout_array.push({
+                row.maxmwout.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lossconstant_array.push({
+                row.lossconstant.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lossflowcoefficient_array.push({
+                row.lossflowcoefficient.map(|mut val| {
+                    val.rescale(17);
+                    val.mantissa()
+                })
+            });
+            emsmeasurand_array.push(row.emsmeasurand);
+            authorisedby_array.push(row.authorisedby);
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            dynamicrhs_array.push(row.dynamicrhs);
+            importlimit_array.push({
+                row.importlimit.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            exportlimit_array.push({
+                row.exportlimit.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            outagederationfactor_array.push({
+                row.outagederationfactor.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            nonphysicallossfactor_array.push({
+                row.nonphysicallossfactor.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            overloadfactor60sec_array.push({
+                row.overloadfactor60sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            overloadfactor6sec_array.push({
+                row.overloadfactor6sec.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            fcassupportunavailable_array.push({
+                row.fcassupportunavailable.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            ictype_array.push(row.ictype);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(reserveoverallloadfactor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(5, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(fromregionlossshare_array)
+                        .to(arrow2::datatypes::DataType::Decimal(5, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(maxmwin_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(maxmwout_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lossconstant_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lossflowcoefficient_array)
+                        .to(arrow2::datatypes::DataType::Decimal(27, 17)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(emsmeasurand_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dynamicrhs_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(importlimit_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(exportlimit_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(outagederationfactor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(nonphysicallossfactor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(overloadfactor60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(overloadfactor6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(fcassupportunavailable_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(ictype_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -292,12 +1287,176 @@ pub struct MarketConfigIntraregionalloc1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigIntraregionalloc1 {
+    type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("INTRAREGIONALLOC".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigIntraregionalloc1PrimaryKey {
+        MarketConfigIntraregionalloc1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_intraregionalloc_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigIntraregionalloc1 {
+    type Row = MarketConfigIntraregionalloc1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigIntraregionalloc1 {
+    type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigIntraregionalloc1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub participantid: String,
+    pub regionid: String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigIntraregionalloc1PrimaryKey {
+    type Row = MarketConfigIntraregionalloc1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.participantid == row.participantid
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigIntraregionalloc1PrimaryKey {
+    type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.participantid == key.participantid
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigIntraregionalloc1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigIntraregionalloc1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(5, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "allocation",
+                arrow2::datatypes::DataType::Decimal(12, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut allocation_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            participantid_array.push(row.participantid);
+            allocation_array.push({
+                row.allocation.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(5, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(allocation_array)
+                        .to(arrow2::datatypes::DataType::Decimal(12, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -337,12 +1496,176 @@ pub struct MarketConfigLossfactormodel1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigLossfactormodel1 {
+    type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("LOSSFACTORMODEL".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigLossfactormodel1PrimaryKey {
+        MarketConfigLossfactormodel1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            regionid: self.regionid.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_lossfactormodel_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigLossfactormodel1 {
+    type Row = MarketConfigLossfactormodel1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigLossfactormodel1 {
+    type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigLossfactormodel1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub interconnectorid: String,
+    pub regionid: String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigLossfactormodel1PrimaryKey {
+    type Row = MarketConfigLossfactormodel1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigLossfactormodel1PrimaryKey {
+    type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigLossfactormodel1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigLossfactormodel1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "demandcoefficient",
+                arrow2::datatypes::DataType::Decimal(27, 17),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut demandcoefficient_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            regionid_array.push(row.regionid);
+            demandcoefficient_array.push({
+                row.demandcoefficient.map(|mut val| {
+                    val.rescale(17);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(demandcoefficient_array)
+                        .to(arrow2::datatypes::DataType::Decimal(27, 17)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -386,12 +1709,203 @@ pub struct MarketConfigLossmodel1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigLossmodel1 {
+    type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("LOSSMODEL".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigLossmodel1PrimaryKey {
+        MarketConfigLossmodel1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            interconnectorid: self.interconnectorid.clone(),
+            losssegment: self.losssegment.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_lossmodel_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigLossmodel1 {
+    type Row = MarketConfigLossmodel1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.losssegment == row.losssegment
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigLossmodel1 {
+    type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.losssegment == key.losssegment
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigLossmodel1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub interconnectorid: String,
+    pub losssegment: rust_decimal::Decimal,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigLossmodel1PrimaryKey {
+    type Row = MarketConfigLossmodel1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interconnectorid == row.interconnectorid
+            && self.losssegment == row.losssegment
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigLossmodel1PrimaryKey {
+    type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interconnectorid == key.interconnectorid
+            && self.losssegment == key.losssegment
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigLossmodel1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigLossmodel1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("periodid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "losssegment",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "mwbreakpoint",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lossfactor",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut losssegment_array = Vec::new();
+        let mut mwbreakpoint_array = Vec::new();
+        let mut lossfactor_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            periodid_array.push(row.periodid);
+            losssegment_array.push({
+                let mut val = row.losssegment;
+                val.rescale(0);
+                val.mantissa()
+            });
+            mwbreakpoint_array.push({
+                row.mwbreakpoint.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lossfactor_array.push({
+                row.lossfactor.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(losssegment_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mwbreakpoint_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lossfactor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -433,12 +1947,196 @@ pub struct MarketConfigMarketPriceThresholds1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigMarketPriceThresholds1 {
+    type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("MARKET_PRICE_THRESHOLDS".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigMarketPriceThresholds1PrimaryKey {
+        MarketConfigMarketPriceThresholds1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_market_price_thresholds_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigMarketPriceThresholds1 {
+    type Row = MarketConfigMarketPriceThresholds1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1 {
+    type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigMarketPriceThresholds1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigMarketPriceThresholds1PrimaryKey {
+    type Row = MarketConfigMarketPriceThresholds1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1PrimaryKey {
+    type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigMarketPriceThresholds1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigMarketPriceThresholds1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "voll",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "marketpricefloor",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "administered_price_threshold",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut voll_array = Vec::new();
+        let mut marketpricefloor_array = Vec::new();
+        let mut administered_price_threshold_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            voll_array.push({
+                row.voll.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            marketpricefloor_array.push({
+                row.marketpricefloor.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            administered_price_threshold_array.push({
+                row.administered_price_threshold.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            authorisedby_array.push(row.authorisedby);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(voll_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(marketpricefloor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(administered_price_threshold_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -471,12 +2169,117 @@ pub struct MarketConfigRegion1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigRegion1 {
+    type PrimaryKey = MarketConfigRegion1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("REGION".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigRegion1PrimaryKey {
+        MarketConfigRegion1PrimaryKey {
+            regionid: self.regionid.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_region_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigRegion1 {
+    type Row = MarketConfigRegion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.regionid == row.regionid
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigRegion1 {
+    type PrimaryKey = MarketConfigRegion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.regionid == key.regionid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigRegion1PrimaryKey {
+    pub regionid: String,
+}
+impl crate::CompareWithRow for MarketConfigRegion1PrimaryKey {
+    type Row = MarketConfigRegion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.regionid == row.regionid
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigRegion1PrimaryKey {
+    type PrimaryKey = MarketConfigRegion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.regionid == key.regionid
+    }
+}
+impl crate::PrimaryKey for MarketConfigRegion1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigRegion1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionstatus",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut regionid_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut regionstatus_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            regionid_array.push(row.regionid);
+            description_array.push(row.description);
+            regionstatus_array.push(row.regionstatus);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionstatus_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -523,12 +2326,212 @@ pub struct MarketConfigRegionstandingdata1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MarketConfigRegionstandingdata1 {
+    type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("REGIONSTANDINGDATA".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigRegionstandingdata1PrimaryKey {
+        MarketConfigRegionstandingdata1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            regionid: self.regionid.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_regionstandingdata_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigRegionstandingdata1 {
+    type Row = MarketConfigRegionstandingdata1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigRegionstandingdata1 {
+    type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigRegionstandingdata1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub regionid: String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigRegionstandingdata1PrimaryKey {
+    type Row = MarketConfigRegionstandingdata1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.regionid == row.regionid
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigRegionstandingdata1PrimaryKey {
+    type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigRegionstandingdata1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigRegionstandingdata1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("rsoid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "regionalreferencepointid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "peaktradingperiod",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "scalingfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut rsoid_array = Vec::new();
+        let mut regionalreferencepointid_array = Vec::new();
+        let mut peaktradingperiod_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut scalingfactor_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            rsoid_array.push(row.rsoid);
+            regionalreferencepointid_array.push(row.regionalreferencepointid);
+            peaktradingperiod_array.push({
+                row.peaktradingperiod.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            authorisedby_array.push(row.authorisedby);
+            scalingfactor_array.push({
+                row.scalingfactor.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(rsoid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    regionalreferencepointid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(peaktradingperiod_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(scalingfactor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -569,11 +2572,180 @@ pub struct MarketConfigTransmissionlossfactor2 {
     pub secondary_tlf: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for MarketConfigTransmissionlossfactor2 {
+    type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
             table_name: Some("TRANSMISSIONLOSSFACTOR".into()),
             version: 2,
         }
+    }
+
+    fn primary_key(&self) -> MarketConfigTransmissionlossfactor2PrimaryKey {
+        MarketConfigTransmissionlossfactor2PrimaryKey {
+            connectionpointid: self.connectionpointid.clone(),
+            effectivedate: self.effectivedate.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "market_config_transmissionlossfactor_v2".to_string()
+    }
+}
+impl crate::CompareWithRow for MarketConfigTransmissionlossfactor2 {
+    type Row = MarketConfigTransmissionlossfactor2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.connectionpointid == row.connectionpointid
+            && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigTransmissionlossfactor2 {
+    type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.connectionpointid == key.connectionpointid
+            && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigTransmissionlossfactor2PrimaryKey {
+    pub connectionpointid: String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for MarketConfigTransmissionlossfactor2PrimaryKey {
+    type Row = MarketConfigTransmissionlossfactor2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.connectionpointid == row.connectionpointid
+            && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for MarketConfigTransmissionlossfactor2PrimaryKey {
+    type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.connectionpointid == key.connectionpointid
+            && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for MarketConfigTransmissionlossfactor2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MarketConfigTransmissionlossfactor2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "transmissionlossfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "connectionpointid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "secondary_tlf",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut transmissionlossfactor_array = Vec::new();
+        let mut effectivedate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut connectionpointid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut secondary_tlf_array = Vec::new();
+        for (_, row) in partition {
+            transmissionlossfactor_array.push({
+                let mut val = row.transmissionlossfactor;
+                val.rescale(5);
+                val.mantissa()
+            });
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            connectionpointid_array.push(row.connectionpointid);
+            regionid_array.push(row.regionid);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            secondary_tlf_array.push({
+                row.secondary_tlf.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(transmissionlossfactor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    connectionpointid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(secondary_tlf_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }

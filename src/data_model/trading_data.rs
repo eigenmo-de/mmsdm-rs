@@ -32,12 +32,152 @@ pub struct TradingAverageprice301 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for TradingAverageprice301 {
+    type PrimaryKey = TradingAverageprice301PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "TRADING".into(),
             table_name: Some("AVERAGEPRICE30".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> TradingAverageprice301PrimaryKey {
+        TradingAverageprice301PrimaryKey {
+            perioddate: self.perioddate.clone(),
+            regionid: self.regionid.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "trading_averageprice30_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for TradingAverageprice301 {
+    type Row = TradingAverageprice301;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.perioddate == row.perioddate && self.regionid == row.regionid
+    }
+}
+impl crate::CompareWithPrimaryKey for TradingAverageprice301 {
+    type PrimaryKey = TradingAverageprice301PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.perioddate == key.perioddate && self.regionid == key.regionid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TradingAverageprice301PrimaryKey {
+    pub perioddate: chrono::NaiveDateTime,
+    pub regionid: String,
+}
+impl crate::CompareWithRow for TradingAverageprice301PrimaryKey {
+    type Row = TradingAverageprice301;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.perioddate == row.perioddate && self.regionid == row.regionid
+    }
+}
+impl crate::CompareWithPrimaryKey for TradingAverageprice301PrimaryKey {
+    type PrimaryKey = TradingAverageprice301PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.perioddate == key.perioddate && self.regionid == key.regionid
+    }
+}
+impl crate::PrimaryKey for TradingAverageprice301PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for TradingAverageprice301 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new("perioddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("rrp", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new(
+                "price_confidence",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut perioddate_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut rrp_array = Vec::new();
+        let mut price_confidence_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            perioddate_array.push(
+                i32::try_from(
+                    (row.perioddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            regionid_array.push(row.regionid);
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            rrp_array.push({
+                row.rrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            price_confidence_array.push(row.price_confidence);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(perioddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    price_confidence_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -81,6 +221,9 @@ pub struct TradingInterconnectorres2 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for TradingInterconnectorres2 {
+    type PrimaryKey = TradingInterconnectorres2PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "TRADING".into(),
@@ -88,79 +231,214 @@ impl crate::GetTable for TradingInterconnectorres2 {
             version: 2,
         }
     }
-}
-/// # Summary
-///
-/// ## TRADINGLOAD
-///  _TRADINGLOAD shows half-hourly average dispatch levels, including fields to handle the Ancillary Services functionality._
-///
-/// * Data Set Name: Trading
-/// * File Name: Unit Solution
-/// * Data Version: 2
-///
-/// # Description
-///  Source Own (confidential) TRADINGLOAD data updates half hourly, with public availability of all data on next day.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
-///
-/// # Primary Key Columns
-///
-/// * DUID
-/// * PERIODID
-/// * RUNNO
-/// * SETTLEMENTDATE
-/// * TRADETYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingUnitSolution2 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Dispatch run no.
-    pub runno: rust_decimal::Decimal,
-    /// Dispatchable Unit Identifier
-    pub duid: String,
-    /// Not used
-    pub tradetype: rust_decimal::Decimal,
-    /// Period Identifier
-    pub periodid: rust_decimal::Decimal,
-    /// Average Initial MW at start of each period
-    pub initialmw: Option<rust_decimal::Decimal>,
-    /// Average total MW dispatched over period
-    pub totalcleared: Option<rust_decimal::Decimal>,
-    /// Average ramp down rate
-    pub rampdownrate: Option<rust_decimal::Decimal>,
-    /// Average ramp up rate
-    pub rampuprate: Option<rust_decimal::Decimal>,
-    /// Average 5 min lower dispatch
-    pub lower5min: Option<rust_decimal::Decimal>,
-    /// Average 60 sec lower dispatch
-    pub lower60sec: Option<rust_decimal::Decimal>,
-    /// Average60 sec lower dispatch
-    pub lower6sec: Option<rust_decimal::Decimal>,
-    /// Average 5 min raise dispatch
-    pub raise5min: Option<rust_decimal::Decimal>,
-    /// Average 60 sec raise dispatch
-    pub raise60sec: Option<rust_decimal::Decimal>,
-    /// Average 6 sec raise dispatch
-    pub raise6sec: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Lower Regulation reserve target
-    pub lowerreg: Option<rust_decimal::Decimal>,
-    /// Raise Regulation reserve target
-    pub raisereg: Option<rust_decimal::Decimal>,
-    /// Bid energy availability
-    pub availability: Option<rust_decimal::Decimal>,
-    /// Boolean representation flagging if the Target is Capped
-    pub semidispatchcap: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for TradingUnitSolution2 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "TRADING".into(),
-            table_name: Some("UNIT_SOLUTION".into()),
-            version: 2,
+
+    fn primary_key(&self) -> TradingInterconnectorres2PrimaryKey {
+        TradingInterconnectorres2PrimaryKey {
+            interconnectorid: self.interconnectorid.clone(),
+            periodid: self.periodid.clone(),
+            runno: self.runno.clone(),
+            settlementdate: self.settlementdate.clone(),
         }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "trading_interconnectorres_v2_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for TradingInterconnectorres2 {
+    type Row = TradingInterconnectorres2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.interconnectorid == row.interconnectorid
+            && self.periodid == row.periodid
+            && self.runno == row.runno
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for TradingInterconnectorres2 {
+    type PrimaryKey = TradingInterconnectorres2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interconnectorid == key.interconnectorid
+            && self.periodid == key.periodid
+            && self.runno == key.runno
+            && self.settlementdate == key.settlementdate
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TradingInterconnectorres2PrimaryKey {
+    pub interconnectorid: String,
+    pub periodid: rust_decimal::Decimal,
+    pub runno: rust_decimal::Decimal,
+    pub settlementdate: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for TradingInterconnectorres2PrimaryKey {
+    type Row = TradingInterconnectorres2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.interconnectorid == row.interconnectorid
+            && self.periodid == row.periodid
+            && self.runno == row.runno
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for TradingInterconnectorres2PrimaryKey {
+    type PrimaryKey = TradingInterconnectorres2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interconnectorid == key.interconnectorid
+            && self.periodid == key.periodid
+            && self.runno == key.runno
+            && self.settlementdate == key.settlementdate
+    }
+}
+impl crate::PrimaryKey for TradingInterconnectorres2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for TradingInterconnectorres2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "runno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "meteredmwflow",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "mwflow",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "mwlosses",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut runno_array = Vec::new();
+        let mut interconnectorid_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut meteredmwflow_array = Vec::new();
+        let mut mwflow_array = Vec::new();
+        let mut mwlosses_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            runno_array.push({
+                let mut val = row.runno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            interconnectorid_array.push(row.interconnectorid);
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            meteredmwflow_array.push({
+                row.meteredmwflow.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            mwflow_array.push({
+                row.mwflow.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            mwlosses_array.push({
+                row.mwlosses.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(runno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    interconnectorid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(meteredmwflow_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mwflow_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mwlosses_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -240,6 +518,9 @@ pub struct TradingPrice2 {
     pub price_status: Option<String>,
 }
 impl crate::GetTable for TradingPrice2 {
+    type PrimaryKey = TradingPrice2PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "TRADING".into(),
@@ -247,217 +528,471 @@ impl crate::GetTable for TradingPrice2 {
             version: 2,
         }
     }
-}
-/// # Summary
-///
-/// ## TRADINGREGIONSUM
-///  _TRADINGREGIONSUM sets out the half-hourly average regional demand and frequency control services. TRADINGREGIONSUM includes fields for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations._
-///
-/// * Data Set Name: Trading
-/// * File Name: Regionsum
-/// * Data Version: 4
-///
-/// # Description
-///  TRADINGREGIONSUM is public data, and is available to all participants. Source TRADINGREGIONSUM is updated every 30 minutes.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * PERIODID
-/// * REGIONID
-/// * RUNNO
-/// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingRegionsum4 {
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Dispatch run no.
-    pub runno: rust_decimal::Decimal,
-    /// Region Identifier
-    pub regionid: String,
-    /// Trading interval identifier within settlement day.
-    pub periodid: rust_decimal::Decimal,
-    /// Total demand for region
-    pub totaldemand: Option<rust_decimal::Decimal>,
-    /// The available generation in the Region for the interval
-    pub availablegeneration: Option<rust_decimal::Decimal>,
-    /// Not used
-    pub availableload: Option<rust_decimal::Decimal>,
-    /// Forecast demand for region
-    pub demandforecast: Option<rust_decimal::Decimal>,
-    /// Averaged generation dispatched in region
-    pub dispatchablegeneration: Option<rust_decimal::Decimal>,
-    /// Averaged load dispatched in region
-    pub dispatchableload: Option<rust_decimal::Decimal>,
-    /// Average energy transferred over interconnector
-    pub netinterchange: Option<rust_decimal::Decimal>,
-    /// Average excess generation in region
-    pub excessgeneration: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 5 min MW dispatch
-    pub lower5mindispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 5 min MW imported
-    pub lower5minimport: Option<rust_decimal::Decimal>,
-    /// Lower 5 min local dispatch
-    pub lower5minlocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Local price of lower 5 min
-    pub lower5minlocalprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 5 min local requirement
-    pub lower5minlocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Regional price of lower 5 min
-    pub lower5minprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 5 min total requirement
-    pub lower5minreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Supply price of lower 5 min
-    pub lower5minsupplyprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 60 sec MW dispatch
-    pub lower60secdispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 60 sec MW imported
-    pub lower60secimport: Option<rust_decimal::Decimal>,
-    /// Lower 60 sec local dispatch
-    pub lower60seclocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Local price of lower 60 sec
-    pub lower60seclocalprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 60 sec local requirement
-    pub lower60seclocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Regional price of lower 60 sec
-    pub lower60secprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 60 sec total requirement
-    pub lower60secreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Supply price of lower 60 sec
-    pub lower60secsupplyprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 6 sec MW dispatch
-    pub lower6secdispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 6 sec MW imported
-    pub lower6secimport: Option<rust_decimal::Decimal>,
-    /// Lower 6 sec local dispatch
-    pub lower6seclocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Local price of lower 6 sec
-    pub lower6seclocalprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 6 sec local requirement
-    pub lower6seclocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Regional price of lower 6 sec
-    pub lower6secprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower 6 sec total requirement
-    pub lower6secreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Supply price of lower 6 sec
-    pub lower6secsupplyprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 5 min MW dispatch
-    pub raise5mindispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 5 min MW imported
-    pub raise5minimport: Option<rust_decimal::Decimal>,
-    /// Raise 5 min local dispatch
-    pub raise5minlocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Local price of raise 5 min
-    pub raise5minlocalprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 5 min local requirement
-    pub raise5minlocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Regional price of raise 5 min
-    pub raise5minprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 5 min total requirement
-    pub raise5minreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Supply price of raise 5 min
-    pub raise5minsupplyprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 60 sec MW dispatch
-    pub raise60secdispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 60 sec MW imported
-    pub raise60secimport: Option<rust_decimal::Decimal>,
-    /// Raise 60 sec local dispatch
-    pub raise60seclocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Local price of raise 60 sec
-    pub raise60seclocalprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 60 sec local requirement
-    pub raise60seclocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Regional price of raise 60 sec
-    pub raise60secprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 60 sec total requirement
-    pub raise60secreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Supply price of raise 60 sec
-    pub raise60secsupplyprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 6 sec MW dispatch
-    pub raise6secdispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 6 sec MW imported
-    pub raise6secimport: Option<rust_decimal::Decimal>,
-    /// Raise 6 sec local dispatch
-    pub raise6seclocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Local price of raise 6 sec
-    pub raise6seclocalprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 6 sec local requirement
-    pub raise6seclocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Regional price of raise 6 sec
-    pub raise6secprice: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise 6 sec total requirement
-    pub raise6secreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Supply price of raise 6 sec
-    pub raise6secsupplyprice: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of initial generation and import for region
-    pub initialsupply: Option<rust_decimal::Decimal>,
-    /// Sum of cleared generation and import for region
-    pub clearedsupply: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower Regulation MW imported
-    pub lowerregimport: Option<rust_decimal::Decimal>,
-    /// Lower Regulation local dispatch
-    pub lowerreglocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower Regulation local requirement
-    pub lowerreglocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Lower Regulation total requirement
-    pub lowerregreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise Regulation MW imported
-    pub raiseregimport: Option<rust_decimal::Decimal>,
-    /// Raise Regulation local dispatch
-    pub raisereglocaldispatch: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise Regulation local requirement
-    pub raisereglocalreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Raise Regulation total requirement
-    pub raiseregreq: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise 5 min local requirement
-    pub raise5minlocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise Reg local requirement
-    pub raisereglocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise 60 sec local requirement
-    pub raise60seclocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise 6 sec local requirement
-    pub raise6seclocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower 5 min local requirement
-    pub lower5minlocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower Reg local requirement
-    pub lowerreglocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower 60 sec local requirement
-    pub lower60seclocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower 6 sec local requirement
-    pub lower6seclocalviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise 5 min requirement
-    pub raise5minviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise Reg requirement
-    pub raiseregviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise 60 seconds requirement
-    pub raise60secviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Raise 6 seconds requirement
-    pub raise6secviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower 5 min requirement
-    pub lower5minviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower Reg requirement
-    pub lowerregviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower 60 seconds requirement
-    pub lower60secviolation: Option<rust_decimal::Decimal>,
-    /// Not used since Dec 2003. Violation (MW) of Lower 6 seconds requirement
-    pub lower6secviolation: Option<rust_decimal::Decimal>,
-    /// Allowance made for non-scheduled generation in the demand forecast (MW).
-    pub totalintermittentgeneration: Option<rust_decimal::Decimal>,
-    /// Sum of Cleared Scheduled generation, imported generation (at the region boundary) and allowances made for non-scheduled generation (MW).
-    pub demand_and_nonschedgen: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW).
-    pub uigf: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for TradingRegionsum4 {
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "TRADING".into(),
-            table_name: Some("REGIONSUM".into()),
-            version: 4,
+
+    fn primary_key(&self) -> TradingPrice2PrimaryKey {
+        TradingPrice2PrimaryKey {
+            periodid: self.periodid.clone(),
+            regionid: self.regionid.clone(),
+            runno: self.runno.clone(),
+            settlementdate: self.settlementdate.clone(),
         }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "trading_price_v2_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for TradingPrice2 {
+    type Row = TradingPrice2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.runno == row.runno
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for TradingPrice2 {
+    type PrimaryKey = TradingPrice2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.runno == key.runno
+            && self.settlementdate == key.settlementdate
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TradingPrice2PrimaryKey {
+    pub periodid: rust_decimal::Decimal,
+    pub regionid: String,
+    pub runno: rust_decimal::Decimal,
+    pub settlementdate: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for TradingPrice2PrimaryKey {
+    type Row = TradingPrice2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.runno == row.runno
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for TradingPrice2PrimaryKey {
+    type PrimaryKey = TradingPrice2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.runno == key.runno
+            && self.settlementdate == key.settlementdate
+    }
+}
+impl crate::PrimaryKey for TradingPrice2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for TradingPrice2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "runno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("rrp", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new("eep", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new(
+                "invalidflag",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("rop", arrow2::datatypes::DataType::Decimal(15, 5), true),
+            arrow2::datatypes::Field::new(
+                "raise6secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise6secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise60secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise60secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise5minrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise5minrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raiseregrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raiseregrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower6secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower6secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower60secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower60secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower5minrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower5minrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowerregrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowerregrop",
+                arrow2::datatypes::DataType::Decimal(15, 5),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "price_status",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut runno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut rrp_array = Vec::new();
+        let mut eep_array = Vec::new();
+        let mut invalidflag_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut rop_array = Vec::new();
+        let mut raise6secrrp_array = Vec::new();
+        let mut raise6secrop_array = Vec::new();
+        let mut raise60secrrp_array = Vec::new();
+        let mut raise60secrop_array = Vec::new();
+        let mut raise5minrrp_array = Vec::new();
+        let mut raise5minrop_array = Vec::new();
+        let mut raiseregrrp_array = Vec::new();
+        let mut raiseregrop_array = Vec::new();
+        let mut lower6secrrp_array = Vec::new();
+        let mut lower6secrop_array = Vec::new();
+        let mut lower60secrrp_array = Vec::new();
+        let mut lower60secrop_array = Vec::new();
+        let mut lower5minrrp_array = Vec::new();
+        let mut lower5minrop_array = Vec::new();
+        let mut lowerregrrp_array = Vec::new();
+        let mut lowerregrop_array = Vec::new();
+        let mut price_status_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            runno_array.push({
+                let mut val = row.runno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            rrp_array.push({
+                row.rrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            eep_array.push({
+                row.eep.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            invalidflag_array.push(row.invalidflag);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            rop_array.push({
+                row.rop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise6secrrp_array.push({
+                row.raise6secrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise6secrop_array.push({
+                row.raise6secrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise60secrrp_array.push({
+                row.raise60secrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise60secrop_array.push({
+                row.raise60secrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise5minrrp_array.push({
+                row.raise5minrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raise5minrop_array.push({
+                row.raise5minrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raiseregrrp_array.push({
+                row.raiseregrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            raiseregrop_array.push({
+                row.raiseregrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower6secrrp_array.push({
+                row.lower6secrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower6secrop_array.push({
+                row.lower6secrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower60secrrp_array.push({
+                row.lower60secrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower60secrop_array.push({
+                row.lower60secrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower5minrrp_array.push({
+                row.lower5minrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lower5minrop_array.push({
+                row.lower5minrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lowerregrrp_array.push({
+                row.lowerregrrp.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            lowerregrop_array.push({
+                row.lowerregrop.map(|mut val| {
+                    val.rescale(5);
+                    val.mantissa()
+                })
+            });
+            price_status_array.push(row.price_status);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(runno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(eep_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(invalidflag_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise6secrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise6secrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise60secrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise60secrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise5minrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise5minrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raiseregrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raiseregrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower6secrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower6secrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower60secrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower60secrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower5minrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower5minrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowerregrrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowerregrop_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(price_status_array)),
+            ],
+        )
+        .map_err(Into::into)
     }
 }

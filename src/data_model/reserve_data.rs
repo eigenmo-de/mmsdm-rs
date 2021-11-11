@@ -34,12 +34,168 @@ pub struct MtpasaReservelimit1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MtpasaReservelimit1 {
+    type PrimaryKey = MtpasaReservelimit1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MTPASA".into(),
             table_name: Some("RESERVELIMIT".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MtpasaReservelimit1PrimaryKey {
+        MtpasaReservelimit1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            reservelimitid: self.reservelimitid.clone(),
+            version_datetime: self.version_datetime.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "mtpasa_reservelimit_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MtpasaReservelimit1 {
+    type Row = MtpasaReservelimit1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.reservelimitid == row.reservelimitid
+            && self.version_datetime == row.version_datetime
+    }
+}
+impl crate::CompareWithPrimaryKey for MtpasaReservelimit1 {
+    type PrimaryKey = MtpasaReservelimit1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.reservelimitid == key.reservelimitid
+            && self.version_datetime == key.version_datetime
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MtpasaReservelimit1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub reservelimitid: String,
+    pub version_datetime: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for MtpasaReservelimit1PrimaryKey {
+    type Row = MtpasaReservelimit1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.reservelimitid == row.reservelimitid
+            && self.version_datetime == row.version_datetime
+    }
+}
+impl crate::CompareWithPrimaryKey for MtpasaReservelimit1PrimaryKey {
+    type PrimaryKey = MtpasaReservelimit1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.reservelimitid == key.reservelimitid
+            && self.version_datetime == key.version_datetime
+    }
+}
+impl crate::PrimaryKey for MtpasaReservelimit1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MtpasaReservelimit1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "version_datetime",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "reservelimitid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("rhs", arrow2::datatypes::DataType::Decimal(16, 6), true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut version_datetime_array = Vec::new();
+        let mut reservelimitid_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut rhs_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            version_datetime_array.push(
+                i32::try_from(
+                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            reservelimitid_array.push(row.reservelimitid);
+            description_array.push(row.description);
+            rhs_array.push({
+                row.rhs.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    reservelimitid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rhs_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -79,12 +235,178 @@ pub struct MtpasaReservelimitRegion1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MtpasaReservelimitRegion1 {
+    type PrimaryKey = MtpasaReservelimitRegion1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MTPASA".into(),
             table_name: Some("RESERVELIMIT_REGION".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MtpasaReservelimitRegion1PrimaryKey {
+        MtpasaReservelimitRegion1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            regionid: self.regionid.clone(),
+            reservelimitid: self.reservelimitid.clone(),
+            version_datetime: self.version_datetime.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "mtpasa_reservelimit_region_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MtpasaReservelimitRegion1 {
+    type Row = MtpasaReservelimitRegion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.regionid == row.regionid
+            && self.reservelimitid == row.reservelimitid
+            && self.version_datetime == row.version_datetime
+    }
+}
+impl crate::CompareWithPrimaryKey for MtpasaReservelimitRegion1 {
+    type PrimaryKey = MtpasaReservelimitRegion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.regionid == key.regionid
+            && self.reservelimitid == key.reservelimitid
+            && self.version_datetime == key.version_datetime
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MtpasaReservelimitRegion1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub regionid: String,
+    pub reservelimitid: String,
+    pub version_datetime: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for MtpasaReservelimitRegion1PrimaryKey {
+    type Row = MtpasaReservelimitRegion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.regionid == row.regionid
+            && self.reservelimitid == row.reservelimitid
+            && self.version_datetime == row.version_datetime
+    }
+}
+impl crate::CompareWithPrimaryKey for MtpasaReservelimitRegion1PrimaryKey {
+    type PrimaryKey = MtpasaReservelimitRegion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.regionid == key.regionid
+            && self.reservelimitid == key.reservelimitid
+            && self.version_datetime == key.version_datetime
+    }
+}
+impl crate::PrimaryKey for MtpasaReservelimitRegion1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "version_datetime",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "reservelimitid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "coef",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut version_datetime_array = Vec::new();
+        let mut reservelimitid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut coef_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            version_datetime_array.push(
+                i32::try_from(
+                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            reservelimitid_array.push(row.reservelimitid);
+            regionid_array.push(row.regionid);
+            coef_array.push({
+                row.coef.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    reservelimitid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(coef_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -124,12 +446,168 @@ pub struct MtpasaReservelimitSet1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for MtpasaReservelimitSet1 {
+    type PrimaryKey = MtpasaReservelimitSet1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "MTPASA".into(),
             table_name: Some("RESERVELIMIT_SET".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> MtpasaReservelimitSet1PrimaryKey {
+        MtpasaReservelimitSet1PrimaryKey {
+            effectivedate: self.effectivedate.clone(),
+            version_datetime: self.version_datetime.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "mtpasa_reservelimit_set_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for MtpasaReservelimitSet1 {
+    type Row = MtpasaReservelimitSet1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate && self.version_datetime == row.version_datetime
+    }
+}
+impl crate::CompareWithPrimaryKey for MtpasaReservelimitSet1 {
+    type PrimaryKey = MtpasaReservelimitSet1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.version_datetime == key.version_datetime
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MtpasaReservelimitSet1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub version_datetime: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for MtpasaReservelimitSet1PrimaryKey {
+    type Row = MtpasaReservelimitSet1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.effectivedate == row.effectivedate && self.version_datetime == row.version_datetime
+    }
+}
+impl crate::CompareWithPrimaryKey for MtpasaReservelimitSet1PrimaryKey {
+    type PrimaryKey = MtpasaReservelimitSet1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.version_datetime == key.version_datetime
+    }
+}
+impl crate::PrimaryKey for MtpasaReservelimitSet1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for MtpasaReservelimitSet1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "effectivedate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "version_datetime",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "reservelimit_set_id",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authoriseddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut effectivedate_array = Vec::new();
+        let mut version_datetime_array = Vec::new();
+        let mut reservelimit_set_id_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            effectivedate_array.push(
+                i32::try_from(
+                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            version_datetime_array.push(
+                i32::try_from(
+                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            reservelimit_set_id_array.push(row.reservelimit_set_id);
+            description_array.push(row.description);
+            authoriseddate_array.push(row.authoriseddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            authorisedby_array.push(row.authorisedby);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    reservelimit_set_id_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -191,11 +669,365 @@ pub struct ReserveDataReserve1 {
     pub lor2level: Option<rust_decimal::Decimal>,
 }
 impl crate::GetTable for ReserveDataReserve1 {
+    type PrimaryKey = ReserveDataReserve1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "RESERVE_DATA".into(),
             table_name: Some("RESERVE".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> ReserveDataReserve1PrimaryKey {
+        ReserveDataReserve1PrimaryKey {
+            periodid: self.periodid.clone(),
+            regionid: self.regionid.clone(),
+            settlementdate: self.settlementdate.clone(),
+            versionno: self.versionno.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "reserve_data_reserve_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for ReserveDataReserve1 {
+    type Row = ReserveDataReserve1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for ReserveDataReserve1 {
+    type PrimaryKey = ReserveDataReserve1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.versionno == key.versionno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ReserveDataReserve1PrimaryKey {
+    pub periodid: rust_decimal::Decimal,
+    pub regionid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for ReserveDataReserve1PrimaryKey {
+    type Row = ReserveDataReserve1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.versionno == row.versionno
+    }
+}
+impl crate::CompareWithPrimaryKey for ReserveDataReserve1PrimaryKey {
+    type PrimaryKey = ReserveDataReserve1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.versionno == key.versionno
+    }
+}
+impl crate::PrimaryKey for ReserveDataReserve1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for ReserveDataReserve1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(2, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower5min",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower60sec",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lower6sec",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise5min",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise60sec",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raise6sec",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "pasareserve",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "loadrejectionreservereq",
+                arrow2::datatypes::DataType::Decimal(10, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "raisereg",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowerreg",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lor1level",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lor2level",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut lower5min_array = Vec::new();
+        let mut lower60sec_array = Vec::new();
+        let mut lower6sec_array = Vec::new();
+        let mut raise5min_array = Vec::new();
+        let mut raise60sec_array = Vec::new();
+        let mut raise6sec_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut pasareserve_array = Vec::new();
+        let mut loadrejectionreservereq_array = Vec::new();
+        let mut raisereg_array = Vec::new();
+        let mut lowerreg_array = Vec::new();
+        let mut lor1level_array = Vec::new();
+        let mut lor2level_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            versionno_array.push({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            lower5min_array.push({
+                row.lower5min.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lower60sec_array.push({
+                row.lower60sec.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lower6sec_array.push({
+                row.lower6sec.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            raise5min_array.push({
+                row.raise5min.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            raise60sec_array.push({
+                row.raise60sec.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            raise6sec_array.push({
+                row.raise6sec.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            pasareserve_array.push({
+                row.pasareserve.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            loadrejectionreservereq_array.push({
+                row.loadrejectionreservereq.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            raisereg_array.push({
+                row.raisereg.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lowerreg_array.push({
+                row.lowerreg.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lor1level_array.push({
+                row.lor1level.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lor2level_array.push({
+                row.lor2level.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower5min_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lower6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise5min_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise60sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raise6sec_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(pasareserve_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(loadrejectionreservereq_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(raisereg_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowerreg_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lor1level_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lor2level_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }

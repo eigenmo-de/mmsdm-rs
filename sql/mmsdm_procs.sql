@@ -704,7 +704,8 @@ file_log_id,
 [transaction_id],
 [reference_id],
 [submission_timestamp],
-[comments]
+[comments],
+[submission_method]
 )
 select 
 @file_log_id,
@@ -718,7 +719,8 @@ d.[authoriseddate],
 d.[transaction_id],
 d.[reference_id],
 d.[submission_timestamp],
-d.[comments]
+d.[comments],
+d.[submission_method]
 from openjson(@data) with (
 [participantid] varchar(10),
 [offerdate] datetime2,
@@ -730,7 +732,8 @@ from openjson(@data) with (
 [transaction_id] varchar(100),
 [reference_id] varchar(100),
 [submission_timestamp] datetime2,
-[comments] varchar(1000)
+[comments] varchar(1000),
+[submission_method] varchar(20)
 ) d
 end
 go
@@ -816,100 +819,6 @@ from openjson(@data) with (
 [bandavail9] decimal(8,3),
 [bandavail10] decimal(8,3),
 [pasaavailability] decimal(8,3)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertOfferBidperoffer1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.OfferBidperoffer1(
-file_log_id,
-[duid],
-[bidtype],
-[settlementdate],
-[offerdate],
-[periodid],
-[versionno],
-[maxavail],
-[fixedload],
-[rocup],
-[rocdown],
-[enablementmin],
-[enablementmax],
-[lowbreakpoint],
-[highbreakpoint],
-[bandavail1],
-[bandavail2],
-[bandavail3],
-[bandavail4],
-[bandavail5],
-[bandavail6],
-[bandavail7],
-[bandavail8],
-[bandavail9],
-[bandavail10],
-[lastchanged],
-[pasaavailability],
-[mr_capacity]
-)
-select 
-@file_log_id,
-d.[duid],
-d.[bidtype],
-d.[settlementdate],
-d.[offerdate],
-d.[periodid],
-d.[versionno],
-d.[maxavail],
-d.[fixedload],
-d.[rocup],
-d.[rocdown],
-d.[enablementmin],
-d.[enablementmax],
-d.[lowbreakpoint],
-d.[highbreakpoint],
-d.[bandavail1],
-d.[bandavail2],
-d.[bandavail3],
-d.[bandavail4],
-d.[bandavail5],
-d.[bandavail6],
-d.[bandavail7],
-d.[bandavail8],
-d.[bandavail9],
-d.[bandavail10],
-d.[lastchanged],
-d.[pasaavailability],
-d.[mr_capacity]
-from openjson(@data) with (
-[duid] varchar(10),
-[bidtype] varchar(10),
-[settlementdate] datetime2,
-[offerdate] datetime2,
-[periodid] decimal(22,0),
-[versionno] decimal(22,0),
-[maxavail] decimal(12,6),
-[fixedload] decimal(12,6),
-[rocup] decimal(6,0),
-[rocdown] decimal(6,0),
-[enablementmin] decimal(6,0),
-[enablementmax] decimal(6,0),
-[lowbreakpoint] decimal(6,0),
-[highbreakpoint] decimal(6,0),
-[bandavail1] decimal(22,0),
-[bandavail2] decimal(22,0),
-[bandavail3] decimal(22,0),
-[bandavail4] decimal(22,0),
-[bandavail5] decimal(22,0),
-[bandavail6] decimal(22,0),
-[bandavail7] decimal(22,0),
-[bandavail8] decimal(22,0),
-[bandavail9] decimal(22,0),
-[bandavail10] decimal(22,0),
-[lastchanged] datetime2,
-[pasaavailability] decimal(12,0),
-[mr_capacity] decimal(6,0)
 ) d
 end
 go
@@ -1062,156 +971,6 @@ from openjson(@data) with (
 [rebid_decision_time] varchar(20),
 [rebid_category] varchar(1),
 [reference_id] varchar(100)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBidMnspFiletrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BidMnspFiletrk1(
-file_log_id,
-[settlementdate],
-[offerdate],
-[participantid],
-[filename],
-[status],
-[ackfilename],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[offerdate],
-d.[participantid],
-d.[filename],
-d.[status],
-d.[ackfilename],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[offerdate] datetime2,
-[participantid] varchar(10),
-[filename] varchar(40),
-[status] varchar(10),
-[ackfilename] varchar(40),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBidMnspOffertrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BidMnspOffertrk1(
-file_log_id,
-[settlementdate],
-[offerdate],
-[versionno],
-[participantid],
-[filename],
-[authoriseddate],
-[authorisedby],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[offerdate],
-d.[versionno],
-d.[participantid],
-d.[filename],
-d.[authoriseddate],
-d.[authorisedby],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[offerdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[filename] varchar(40),
-[authoriseddate] datetime2,
-[authorisedby] varchar(15),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBidMnspPeroffer1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BidMnspPeroffer1(
-file_log_id,
-[settlementdate],
-[offerdate],
-[versionno],
-[participantid],
-[linkid],
-[periodid],
-[maxavail],
-[bandavail1],
-[bandavail2],
-[bandavail3],
-[bandavail4],
-[bandavail5],
-[bandavail6],
-[bandavail7],
-[bandavail8],
-[bandavail9],
-[bandavail10],
-[lastchanged],
-[fixedload],
-[rampuprate],
-[pasaavailability],
-[mr_capacity]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[offerdate],
-d.[versionno],
-d.[participantid],
-d.[linkid],
-d.[periodid],
-d.[maxavail],
-d.[bandavail1],
-d.[bandavail2],
-d.[bandavail3],
-d.[bandavail4],
-d.[bandavail5],
-d.[bandavail6],
-d.[bandavail7],
-d.[bandavail8],
-d.[bandavail9],
-d.[bandavail10],
-d.[lastchanged],
-d.[fixedload],
-d.[rampuprate],
-d.[pasaavailability],
-d.[mr_capacity]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[offerdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[linkid] varchar(10),
-[periodid] decimal(22,0),
-[maxavail] decimal(6,0),
-[bandavail1] decimal(6,0),
-[bandavail2] decimal(6,0),
-[bandavail3] decimal(6,0),
-[bandavail4] decimal(6,0),
-[bandavail5] decimal(6,0),
-[bandavail6] decimal(6,0),
-[bandavail7] decimal(6,0),
-[bandavail8] decimal(6,0),
-[bandavail9] decimal(6,0),
-[bandavail10] decimal(6,0),
-[lastchanged] datetime2,
-[fixedload] decimal(12,6),
-[rampuprate] decimal(6,0),
-[pasaavailability] decimal(12,0),
-[mr_capacity] decimal(6,0)
 ) d
 end
 go
@@ -2582,7 +2341,9 @@ file_log_id,
 [settsurplus],
 [aspayment],
 [poolfees],
-[lastchanged]
+[lastchanged],
+[wdrsq],
+[wdrta]
 )
 select 
 @file_log_id,
@@ -2601,7 +2362,9 @@ d.[adminpricecompo],
 d.[settsurplus],
 d.[aspayment],
 d.[poolfees],
-d.[lastchanged]
+d.[lastchanged],
+d.[wdrsq],
+d.[wdrta]
 from openjson(@data) with (
 [contractyear] decimal(4,0),
 [weekno] decimal(3,0),
@@ -2618,7 +2381,9 @@ from openjson(@data) with (
 [settsurplus] decimal(16,6),
 [aspayment] decimal(16,6),
 [poolfees] decimal(16,6),
-[lastchanged] datetime2
+[lastchanged] datetime2,
+[wdrsq] decimal(18,8),
+[wdrta] decimal(18,8)
 ) d
 end
 go
@@ -2723,52 +2488,6 @@ from openjson(@data) with (
 [paymentpostby] varchar(10),
 [shortfall] decimal(16,6),
 [makeup] decimal(15,5)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingSmelterreduction5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingSmelterreduction5(
-file_log_id,
-[contractyear],
-[weekno],
-[billrunno],
-[participantid],
-[rate1],
-[ra1],
-[rate2],
-[ra2],
-[te],
-[pcsd],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[contractyear],
-d.[weekno],
-d.[billrunno],
-d.[participantid],
-d.[rate1],
-d.[ra1],
-d.[rate2],
-d.[ra2],
-d.[te],
-d.[pcsd],
-d.[lastchanged]
-from openjson(@data) with (
-[contractyear] decimal(22,0),
-[weekno] decimal(22,0),
-[billrunno] decimal(22,0),
-[participantid] varchar(10),
-[rate1] decimal(15,6),
-[ra1] decimal(15,6),
-[rate2] decimal(15,6),
-[ra2] decimal(15,6),
-[te] decimal(15,6),
-[pcsd] decimal(15,6),
-[lastchanged] datetime2
 ) d
 end
 go
@@ -3248,169 +2967,6 @@ from openjson(@data) with (
 ) d
 end
 go
-create or alter procedure mmsdm_proc.InsertBillingMrPayment5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingMrPayment5(
-file_log_id,
-[contractyear],
-[weekno],
-[billrunno],
-[mr_date],
-[regionid],
-[participantid],
-[duid],
-[mr_amount],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[contractyear],
-d.[weekno],
-d.[billrunno],
-d.[mr_date],
-d.[regionid],
-d.[participantid],
-d.[duid],
-d.[mr_amount],
-d.[lastchanged]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-[weekno] decimal(3,0),
-[billrunno] decimal(3,0),
-[mr_date] datetime2,
-[regionid] varchar(10),
-[participantid] varchar(10),
-[duid] varchar(10),
-[mr_amount] decimal(16,6),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingMrRecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingMrRecovery5(
-file_log_id,
-[contractyear],
-[weekno],
-[billrunno],
-[mr_date],
-[regionid],
-[participantid],
-[duid],
-[mr_amount],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[contractyear],
-d.[weekno],
-d.[billrunno],
-d.[mr_date],
-d.[regionid],
-d.[participantid],
-d.[duid],
-d.[mr_amount],
-d.[lastchanged]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-[weekno] decimal(3,0),
-[billrunno] decimal(3,0),
-[mr_date] datetime2,
-[regionid] varchar(10),
-[participantid] varchar(10),
-[duid] varchar(10),
-[mr_amount] decimal(16,6),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingMrShortfall5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingMrShortfall5(
-file_log_id,
-[contractyear],
-[weekno],
-[billrunno],
-[mr_date],
-[regionid],
-[participantid],
-[age],
-[rsa],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[contractyear],
-d.[weekno],
-d.[billrunno],
-d.[mr_date],
-d.[regionid],
-d.[participantid],
-d.[age],
-d.[rsa],
-d.[lastchanged]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-[weekno] decimal(3,0),
-[billrunno] decimal(3,0),
-[mr_date] datetime2,
-[regionid] varchar(10),
-[participantid] varchar(10),
-[age] decimal(16,6),
-[rsa] decimal(16,6),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingMrSummary5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingMrSummary5(
-file_log_id,
-[contractyear],
-[weekno],
-[billrunno],
-[mr_date],
-[regionid],
-[total_payments],
-[total_recovery],
-[total_rsa],
-[aage],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[contractyear],
-d.[weekno],
-d.[billrunno],
-d.[mr_date],
-d.[regionid],
-d.[total_payments],
-d.[total_recovery],
-d.[total_rsa],
-d.[aage],
-d.[lastchanged]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-[weekno] decimal(3,0),
-[billrunno] decimal(3,0),
-[mr_date] datetime2,
-[regionid] varchar(10),
-[total_payments] decimal(16,6),
-[total_recovery] decimal(16,6),
-[total_rsa] decimal(16,6),
-[aage] decimal(16,6),
-[lastchanged] datetime2
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertBillingNmasTstPayments1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -3833,7 +3389,8 @@ file_log_id,
 [regionid],
 [operational_demand],
 [lastchanged],
-[operational_demand_adjustment]
+[operational_demand_adjustment],
+[wdr_estimate]
 )
 select 
 @file_log_id,
@@ -3841,13 +3398,15 @@ d.[interval_datetime],
 d.[regionid],
 d.[operational_demand],
 d.[lastchanged],
-d.[operational_demand_adjustment]
+d.[operational_demand_adjustment],
+d.[wdr_estimate]
 from openjson(@data) with (
 [interval_datetime] datetime2,
 [regionid] varchar(20),
 [operational_demand] decimal(10,0),
 [lastchanged] datetime2,
-[operational_demand_adjustment] decimal(10,0)
+[operational_demand_adjustment] decimal(10,0),
+[wdr_estimate] decimal(10,0)
 ) d
 end
 go
@@ -3896,7 +3455,8 @@ file_log_id,
 [offerdatetime],
 [clusterid],
 [periodid],
-[elements_unavailable]
+[elements_unavailable],
+[elements_available]
 )
 select 
 @file_log_id,
@@ -3905,14 +3465,16 @@ d.[duid],
 d.[offerdatetime],
 d.[clusterid],
 d.[periodid],
-d.[elements_unavailable]
+d.[elements_unavailable],
+d.[elements_available]
 from openjson(@data) with (
 [tradingdate] datetime2,
 [duid] varchar(20),
 [offerdatetime] datetime2,
 [clusterid] varchar(20),
 [periodid] decimal(3,0),
-[elements_unavailable] decimal(3,0)
+[elements_unavailable] decimal(5,0),
+[elements_available] decimal(5,0)
 ) d
 end
 go
@@ -4177,7 +3739,8 @@ file_log_id,
 [offerdatetime],
 [clusterid],
 [lastchanged],
-[elements_unavailable]
+[elements_unavailable],
+[elements_available]
 )
 select 
 @file_log_id,
@@ -4186,14 +3749,16 @@ d.[duid],
 d.[offerdatetime],
 d.[clusterid],
 d.[lastchanged],
-d.[elements_unavailable]
+d.[elements_unavailable],
+d.[elements_available]
 from openjson(@data) with (
 [tradingdate] datetime2,
 [duid] varchar(20),
 [offerdatetime] datetime2,
 [clusterid] varchar(20),
 [lastchanged] datetime2,
-[elements_unavailable] decimal(3,0)
+[elements_unavailable] decimal(5,0),
+[elements_available] decimal(5,0)
 ) d
 end
 go
@@ -4712,7 +4277,8 @@ file_log_id,
 [lower60secactualavailability],
 [lower5minactualavailability],
 [lowerregactualavailability],
-[semidispatchcap]
+[semidispatchcap],
+[dispatchmodetime]
 )
 select 
 @file_log_id,
@@ -4771,7 +4337,8 @@ d.[lower6secactualavailability],
 d.[lower60secactualavailability],
 d.[lower5minactualavailability],
 d.[lowerregactualavailability],
-d.[semidispatchcap]
+d.[semidispatchcap],
+d.[dispatchmodetime]
 from openjson(@data) with (
 [settlementdate] datetime2,
 [runno] decimal(3,0),
@@ -4828,7 +4395,8 @@ from openjson(@data) with (
 [lower60secactualavailability] decimal(16,6),
 [lower5minactualavailability] decimal(16,6),
 [lowerregactualavailability] decimal(16,6),
-[semidispatchcap] decimal(3,0)
+[semidispatchcap] decimal(3,0),
+[dispatchmodetime] decimal(4,0)
 ) d
 end
 go
@@ -5160,7 +4728,10 @@ file_log_id,
 [ss_solar_clearedmw],
 [ss_wind_clearedmw],
 [ss_solar_compliancemw],
-[ss_wind_compliancemw]
+[ss_wind_compliancemw],
+[wdr_initialmw],
+[wdr_available],
+[wdr_dispatched]
 )
 select 
 @file_log_id,
@@ -5274,7 +4845,10 @@ d.[ss_wind_uigf],
 d.[ss_solar_clearedmw],
 d.[ss_wind_clearedmw],
 d.[ss_solar_compliancemw],
-d.[ss_wind_compliancemw]
+d.[ss_wind_compliancemw],
+d.[wdr_initialmw],
+d.[wdr_available],
+d.[wdr_dispatched]
 from openjson(@data) with (
 [settlementdate] datetime2,
 [runno] decimal(3,0),
@@ -5386,7 +4960,10 @@ from openjson(@data) with (
 [ss_solar_clearedmw] decimal(15,5),
 [ss_wind_clearedmw] decimal(15,5),
 [ss_solar_compliancemw] decimal(15,5),
-[ss_wind_compliancemw] decimal(15,5)
+[ss_wind_compliancemw] decimal(15,5),
+[wdr_initialmw] decimal(15,5),
+[wdr_available] decimal(15,5),
+[wdr_dispatched] decimal(15,5)
 ) d
 end
 go
@@ -8893,203 +8470,6 @@ from openjson(@data) with (
 ) d
 end
 go
-create or alter procedure mmsdm_proc.InsertMeterdataTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MeterdataTrk1(
-file_log_id,
-[case_id],
-[aggregate_reads_load_datetime],
-[individual_reads_load_datetime],
-[startdate],
-[enddate],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[case_id],
-d.[aggregate_reads_load_datetime],
-d.[individual_reads_load_datetime],
-d.[startdate],
-d.[enddate],
-d.[lastchanged]
-from openjson(@data) with (
-[case_id] decimal(15,0),
-[aggregate_reads_load_datetime] datetime2,
-[individual_reads_load_datetime] datetime2,
-[startdate] datetime2,
-[enddate] datetime2,
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertMrDayofferStack1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MrDayofferStack1(
-file_log_id,
-[mr_date],
-[regionid],
-[version_datetime],
-[stack_position],
-[duid],
-[authorised],
-[offer_settlementdate],
-[offer_offerdate],
-[offer_versionno],
-[offer_type],
-[laof],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[mr_date],
-d.[regionid],
-d.[version_datetime],
-d.[stack_position],
-d.[duid],
-d.[authorised],
-d.[offer_settlementdate],
-d.[offer_offerdate],
-d.[offer_versionno],
-d.[offer_type],
-d.[laof],
-d.[lastchanged]
-from openjson(@data) with (
-[mr_date] datetime2,
-[regionid] varchar(10),
-[version_datetime] datetime2,
-[stack_position] decimal(3,0),
-[duid] varchar(10),
-[authorised] decimal(1,0),
-[offer_settlementdate] datetime2,
-[offer_offerdate] datetime2,
-[offer_versionno] decimal(3,0),
-[offer_type] varchar(20),
-[laof] decimal(16,6),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertMrEvent1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MrEvent1(
-file_log_id,
-[mr_date],
-[regionid],
-[description],
-[authoriseddate],
-[authorisedby],
-[offer_cut_off_time],
-[settlement_complete],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[mr_date],
-d.[regionid],
-d.[description],
-d.[authoriseddate],
-d.[authorisedby],
-d.[offer_cut_off_time],
-d.[settlement_complete],
-d.[lastchanged]
-from openjson(@data) with (
-[mr_date] datetime2,
-[regionid] varchar(10),
-[description] varchar(200),
-[authoriseddate] datetime2,
-[authorisedby] varchar(20),
-[offer_cut_off_time] datetime2,
-[settlement_complete] decimal(1,0),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertMrEventSchedule1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MrEventSchedule1(
-file_log_id,
-[mr_date],
-[regionid],
-[version_datetime],
-[demand_effectivedate],
-[demand_offerdate],
-[demand_versionno],
-[authorisedby],
-[authoriseddate],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[mr_date],
-d.[regionid],
-d.[version_datetime],
-d.[demand_effectivedate],
-d.[demand_offerdate],
-d.[demand_versionno],
-d.[authorisedby],
-d.[authoriseddate],
-d.[lastchanged]
-from openjson(@data) with (
-[mr_date] datetime2,
-[regionid] varchar(10),
-[version_datetime] datetime2,
-[demand_effectivedate] datetime2,
-[demand_offerdate] datetime2,
-[demand_versionno] decimal(3,0),
-[authorisedby] varchar(20),
-[authoriseddate] datetime2,
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertMrPerofferStack1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MrPerofferStack1(
-file_log_id,
-[mr_date],
-[regionid],
-[version_datetime],
-[stack_position],
-[periodid],
-[duid],
-[accepted_capacity],
-[deducted_capacity],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[mr_date],
-d.[regionid],
-d.[version_datetime],
-d.[stack_position],
-d.[periodid],
-d.[duid],
-d.[accepted_capacity],
-d.[deducted_capacity],
-d.[lastchanged]
-from openjson(@data) with (
-[mr_date] datetime2,
-[regionid] varchar(10),
-[version_datetime] datetime2,
-[stack_position] decimal(3,0),
-[periodid] decimal(3,0),
-[duid] varchar(10),
-[accepted_capacity] decimal(6,0),
-[deducted_capacity] decimal(6,0),
-[lastchanged] datetime2
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertMtpasaCaseresult1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -9231,7 +8611,8 @@ file_log_id,
 [duid],
 [pasaavailability],
 [latest_offer_datetime],
-[lastchanged]
+[lastchanged],
+[carryoverstatus]
 )
 select 
 @file_log_id,
@@ -9241,7 +8622,8 @@ d.[regionid],
 d.[duid],
 d.[pasaavailability],
 d.[latest_offer_datetime],
-d.[lastchanged]
+d.[lastchanged],
+d.[carryoverstatus]
 from openjson(@data) with (
 [publish_datetime] datetime2,
 [day] datetime2,
@@ -9249,7 +8631,8 @@ from openjson(@data) with (
 [duid] varchar(20),
 [pasaavailability] decimal(12,0),
 [latest_offer_datetime] datetime2,
-[lastchanged] datetime2
+[lastchanged] datetime2,
+[carryoverstatus] decimal(1,0)
 ) d
 end
 go
@@ -9382,7 +8765,8 @@ file_log_id,
 [demand10min],
 [demand10max],
 [demand50min],
-[demand50max]
+[demand50max],
+[carryovercapacity]
 )
 select 
 @file_log_id,
@@ -9402,7 +8786,8 @@ d.[lastchanged],
 d.[demand10min],
 d.[demand10max],
 d.[demand50min],
-d.[demand50max]
+d.[demand50max],
+d.[carryovercapacity]
 from openjson(@data) with (
 [publish_datetime] datetime2,
 [day] datetime2,
@@ -9420,7 +8805,8 @@ from openjson(@data) with (
 [demand10min] decimal(12,2),
 [demand10max] decimal(12,2),
 [demand50min] decimal(12,2),
-[demand50max] decimal(12,2)
+[demand50max] decimal(12,2),
+[carryovercapacity] decimal(12,0)
 ) d
 end
 go
@@ -9732,7 +9118,8 @@ file_log_id,
 [validto],
 [voltage],
 [description],
-[lastchanged]
+[lastchanged],
+[elementid]
 )
 select 
 @file_log_id,
@@ -9743,7 +9130,8 @@ d.[validfrom],
 d.[validto],
 d.[voltage],
 d.[description],
-d.[lastchanged]
+d.[lastchanged],
+d.[elementid]
 from openjson(@data) with (
 [substationid] varchar(30),
 [equipmenttype] varchar(10),
@@ -9752,7 +9140,8 @@ from openjson(@data) with (
 [validto] datetime2,
 [voltage] varchar(20),
 [description] varchar(100),
-[lastchanged] datetime2
+[lastchanged] datetime2,
+[elementid] decimal(15,0)
 ) d
 end
 go
@@ -9804,7 +9193,8 @@ file_log_id,
 [issecondary],
 [actual_starttime],
 [actual_endtime],
-[companyrefcode]
+[companyrefcode],
+[elementid]
 )
 select 
 @file_log_id,
@@ -9825,7 +9215,8 @@ d.[reason],
 d.[issecondary],
 d.[actual_starttime],
 d.[actual_endtime],
-d.[companyrefcode]
+d.[companyrefcode],
+d.[elementid]
 from openjson(@data) with (
 [outageid] decimal(15,0),
 [substationid] varchar(30),
@@ -9844,7 +9235,8 @@ from openjson(@data) with (
 [issecondary] decimal(1,0),
 [actual_starttime] datetime2,
 [actual_endtime] datetime2,
-[companyrefcode] varchar(20)
+[companyrefcode] varchar(20),
+[elementid] decimal(15,0)
 ) d
 end
 go
@@ -10680,7 +10072,10 @@ file_log_id,
 [ss_solar_clearedmw],
 [ss_wind_clearedmw],
 [ss_solar_compliancemw],
-[ss_wind_compliancemw]
+[ss_wind_compliancemw],
+[wdr_initialmw],
+[wdr_available],
+[wdr_dispatched]
 )
 select 
 @file_log_id,
@@ -10784,7 +10179,10 @@ d.[ss_wind_uigf],
 d.[ss_solar_clearedmw],
 d.[ss_wind_clearedmw],
 d.[ss_solar_compliancemw],
-d.[ss_wind_compliancemw]
+d.[ss_wind_compliancemw],
+d.[wdr_initialmw],
+d.[wdr_available],
+d.[wdr_dispatched]
 from openjson(@data) with (
 [run_datetime] datetime2,
 [interval_datetime] datetime2,
@@ -10886,7 +10284,10 @@ from openjson(@data) with (
 [ss_solar_clearedmw] decimal(15,5),
 [ss_wind_clearedmw] decimal(15,5),
 [ss_solar_compliancemw] decimal(15,5),
-[ss_wind_compliancemw] decimal(15,5)
+[ss_wind_compliancemw] decimal(15,5),
+[wdr_initialmw] decimal(15,5),
+[wdr_available] decimal(15,5),
+[wdr_dispatched] decimal(15,5)
 ) d
 end
 go
@@ -10978,7 +10379,8 @@ file_log_id,
 [lowerregflags],
 [lastchanged],
 [semidispatchcap],
-[intervention]
+[intervention],
+[dispatchmodetime]
 )
 select 
 @file_log_id,
@@ -11011,7 +10413,8 @@ d.[lower5minflags],
 d.[lowerregflags],
 d.[lastchanged],
 d.[semidispatchcap],
-d.[intervention]
+d.[intervention],
+d.[dispatchmodetime]
 from openjson(@data) with (
 [run_datetime] datetime2,
 [interval_datetime] datetime2,
@@ -11042,7 +10445,8 @@ from openjson(@data) with (
 [lowerregflags] decimal(3,0),
 [lastchanged] datetime2,
 [semidispatchcap] decimal(3,0),
-[intervention] decimal(2,0)
+[intervention] decimal(2,0),
+[dispatchmodetime] decimal(4,0)
 ) d
 end
 go
@@ -11198,7 +10602,8 @@ file_log_id,
 [intermittentflag],
 [semi_schedule_flag],
 [maxrateofchangeup],
-[maxrateofchangedown]
+[maxrateofchangedown],
+[dispatchsubtype]
 )
 select 
 @file_log_id,
@@ -11221,7 +10626,8 @@ d.[lastchanged],
 d.[intermittentflag],
 d.[semi_schedule_flag],
 d.[maxrateofchangeup],
-d.[maxrateofchangedown]
+d.[maxrateofchangedown],
+d.[dispatchsubtype]
 from openjson(@data) with (
 [effectivedate] datetime2,
 [duid] varchar(10),
@@ -11230,7 +10636,7 @@ from openjson(@data) with (
 [voltlevel] varchar(10),
 [registeredcapacity] decimal(6,0),
 [agccapability] varchar(1),
-[dispatchtype] varchar(10),
+[dispatchtype] varchar(20),
 [maxcapacity] decimal(6,0),
 [starttype] varchar(20),
 [normallyonflag] varchar(1),
@@ -11242,7 +10648,8 @@ from openjson(@data) with (
 [intermittentflag] varchar(1),
 [semi_schedule_flag] varchar(1),
 [maxrateofchangeup] decimal(6,0),
-[maxrateofchangedown] decimal(6,0)
+[maxrateofchangedown] decimal(6,0),
+[dispatchsubtype] varchar(20)
 ) d
 end
 go
@@ -11271,7 +10678,8 @@ file_log_id,
 [min_ramp_rate_down],
 [max_ramp_rate_up],
 [max_ramp_rate_down],
-[is_aggregated]
+[is_aggregated],
+[dispatchsubtype]
 )
 select 
 @file_log_id,
@@ -11294,12 +10702,13 @@ d.[min_ramp_rate_up],
 d.[min_ramp_rate_down],
 d.[max_ramp_rate_up],
 d.[max_ramp_rate_down],
-d.[is_aggregated]
+d.[is_aggregated],
+d.[dispatchsubtype]
 from openjson(@data) with (
 [duid] varchar(10),
 [start_date] datetime2,
 [end_date] datetime2,
-[dispatchtype] varchar(10),
+[dispatchtype] varchar(20),
 [connectionpointid] varchar(10),
 [regionid] varchar(10),
 [stationid] varchar(10),
@@ -11315,7 +10724,8 @@ from openjson(@data) with (
 [min_ramp_rate_down] decimal(6,0),
 [max_ramp_rate_up] decimal(6,0),
 [max_ramp_rate_down] decimal(6,0),
-[is_aggregated] decimal(1,0)
+[is_aggregated] decimal(1,0),
+[dispatchsubtype] varchar(20)
 ) d
 end
 go
@@ -11436,7 +10846,7 @@ from openjson(@data) with (
 [spinningflag] varchar(2),
 [voltlevel] decimal(6,0),
 [registeredcapacity] decimal(6,0),
-[dispatchtype] varchar(10),
+[dispatchtype] varchar(20),
 [starttype] varchar(20),
 [mktgeneratorind] varchar(10),
 [normalstatus] varchar(10),
@@ -11482,7 +10892,7 @@ from openjson(@data) with (
 [effectivedate] datetime2,
 [versionno] decimal(6,0),
 [unit_grouping_label] varchar(20),
-[unit_count] decimal(3,0),
+[unit_count] decimal(10,0),
 [unit_size] decimal(8,3),
 [unit_max_size] decimal(8,3),
 [aggregation_flag] decimal(1,0),
@@ -12141,7 +11551,10 @@ file_log_id,
 [ss_solar_capacity],
 [ss_wind_capacity],
 [ss_solar_cleared],
-[ss_wind_cleared]
+[ss_wind_cleared],
+[wdr_available],
+[wdr_pasaavailable],
+[wdr_capacity]
 )
 select 
 @file_log_id,
@@ -12186,7 +11599,10 @@ d.[ss_wind_uigf],
 d.[ss_solar_capacity],
 d.[ss_wind_capacity],
 d.[ss_solar_cleared],
-d.[ss_wind_cleared]
+d.[ss_wind_cleared],
+d.[wdr_available],
+d.[wdr_pasaavailable],
+d.[wdr_capacity]
 from openjson(@data) with (
 [run_datetime] datetime2,
 [interval_datetime] datetime2,
@@ -12229,7 +11645,10 @@ from openjson(@data) with (
 [ss_solar_capacity] decimal(12,2),
 [ss_wind_capacity] decimal(12,2),
 [ss_solar_cleared] decimal(12,2),
-[ss_wind_cleared] decimal(12,2)
+[ss_wind_cleared] decimal(12,2),
+[wdr_available] decimal(12,2),
+[wdr_pasaavailable] decimal(12,2),
+[wdr_capacity] decimal(12,2)
 ) d
 end
 go
@@ -13225,7 +12644,10 @@ file_log_id,
 [ss_solar_clearedmw],
 [ss_wind_clearedmw],
 [ss_solar_compliancemw],
-[ss_wind_compliancemw]
+[ss_wind_compliancemw],
+[wdr_initialmw],
+[wdr_available],
+[wdr_dispatched]
 )
 select 
 @file_log_id,
@@ -13339,7 +12761,10 @@ d.[ss_wind_uigf],
 d.[ss_solar_clearedmw],
 d.[ss_wind_clearedmw],
 d.[ss_solar_compliancemw],
-d.[ss_wind_compliancemw]
+d.[ss_wind_compliancemw],
+d.[wdr_initialmw],
+d.[wdr_available],
+d.[wdr_dispatched]
 from openjson(@data) with (
 [predispatchseqno] varchar(20),
 [runno] decimal(3,0),
@@ -13451,7 +12876,10 @@ from openjson(@data) with (
 [ss_solar_clearedmw] decimal(15,5),
 [ss_wind_clearedmw] decimal(15,5),
 [ss_solar_compliancemw] decimal(15,5),
-[ss_wind_compliancemw] decimal(15,5)
+[ss_wind_compliancemw] decimal(15,5),
+[wdr_initialmw] decimal(15,5),
+[wdr_available] decimal(15,5),
+[wdr_dispatched] decimal(15,5)
 ) d
 end
 go
@@ -14365,125 +13793,6 @@ from openjson(@data) with (
 ) d
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementsAgcpayment5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsAgcpayment5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[contractid],
-[periodid],
-[duid],
-[regionid],
-[tlf],
-[ebp],
-[rrp],
-[clearedmw],
-[initialmw],
-[enablingpayment],
-[contractversionno],
-[offerdate],
-[offerversionno],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[contractid],
-d.[periodid],
-d.[duid],
-d.[regionid],
-d.[tlf],
-d.[ebp],
-d.[rrp],
-d.[clearedmw],
-d.[initialmw],
-d.[enablingpayment],
-d.[contractversionno],
-d.[offerdate],
-d.[offerversionno],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[contractid] varchar(10),
-[periodid] decimal(3,0),
-[duid] varchar(10),
-[regionid] varchar(10),
-[tlf] decimal(7,5),
-[ebp] decimal(15,5),
-[rrp] decimal(15,5),
-[clearedmw] decimal(15,5),
-[initialmw] decimal(15,5),
-[enablingpayment] decimal(15,5),
-[contractversionno] decimal(3,0),
-[offerdate] datetime2,
-[offerversionno] decimal(3,0),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsAgcrecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsAgcrecovery5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[contractid],
-[periodid],
-[regionid],
-[enablingpayment],
-[participantdemand],
-[regiondemand],
-[enablingrecovery],
-[lastchanged],
-[enablingrecovery_gen],
-[participantdemand_gen],
-[regiondemand_gen]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[contractid],
-d.[periodid],
-d.[regionid],
-d.[enablingpayment],
-d.[participantdemand],
-d.[regiondemand],
-d.[enablingrecovery],
-d.[lastchanged],
-d.[enablingrecovery_gen],
-d.[participantdemand_gen],
-d.[regiondemand_gen]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[contractid] varchar(10),
-[periodid] decimal(3,0),
-[regionid] varchar(10),
-[enablingpayment] decimal(15,5),
-[participantdemand] decimal(15,5),
-[regiondemand] decimal(15,5),
-[enablingrecovery] decimal(15,5),
-[lastchanged] datetime2,
-[enablingrecovery_gen] decimal(15,5),
-[participantdemand_gen] decimal(15,5),
-[regiondemand_gen] decimal(15,5)
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertSettlementsCpdata6
     @file_log_id bigint,
     @data nvarchar(max)
@@ -14633,64 +13942,6 @@ from openjson(@data) with (
 [sumxpower] decimal(22,0),
 [lastchanged] datetime2,
 [sumep] decimal(15,5)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsFcascomp5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsFcascomp5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[duid],
-[regionid],
-[periodid],
-[ccprice],
-[clearedmw],
-[unconstrainedmw],
-[ebp],
-[tlf],
-[rrp],
-[excessgen],
-[fcascomp],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[duid],
-d.[regionid],
-d.[periodid],
-d.[ccprice],
-d.[clearedmw],
-d.[unconstrainedmw],
-d.[ebp],
-d.[tlf],
-d.[rrp],
-d.[excessgen],
-d.[fcascomp],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[duid] varchar(10),
-[regionid] varchar(10),
-[periodid] decimal(3,0),
-[ccprice] decimal(15,5),
-[clearedmw] decimal(15,5),
-[unconstrainedmw] decimal(15,5),
-[ebp] decimal(15,5),
-[tlf] decimal(7,5),
-[rrp] decimal(15,5),
-[excessgen] decimal(15,5),
-[fcascomp] decimal(15,5),
-[lastchanged] datetime2
 ) d
 end
 go
@@ -14889,101 +14140,6 @@ from openjson(@data) with (
 ) d
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementsIntervention5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsIntervention5(
-file_log_id,
-[settlementdate],
-[versionno],
-[periodid],
-[contractid],
-[contractversion],
-[participantid],
-[regionid],
-[duid],
-[rcf],
-[interventionpayment],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[periodid],
-d.[contractid],
-d.[contractversion],
-d.[participantid],
-d.[regionid],
-d.[duid],
-d.[rcf],
-d.[interventionpayment],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[periodid] decimal(3,0),
-[contractid] varchar(10),
-[contractversion] decimal(3,0),
-[participantid] varchar(10),
-[regionid] varchar(10),
-[duid] varchar(10),
-[rcf] char(1),
-[interventionpayment] decimal(12,5),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsInterventionrecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsInterventionrecovery5(
-file_log_id,
-[settlementdate],
-[versionno],
-[periodid],
-[contractid],
-[rcf],
-[participantid],
-[participantdemand],
-[totaldemand],
-[interventionpayment],
-[interventionamount],
-[lastchanged],
-[regionid]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[periodid],
-d.[contractid],
-d.[rcf],
-d.[participantid],
-d.[participantdemand],
-d.[totaldemand],
-d.[interventionpayment],
-d.[interventionamount],
-d.[lastchanged],
-d.[regionid]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[periodid] decimal(3,0),
-[contractid] varchar(10),
-[rcf] char(1),
-[participantid] varchar(10),
-[participantdemand] decimal(12,5),
-[totaldemand] decimal(12,5),
-[interventionpayment] decimal(12,5),
-[interventionamount] decimal(12,5),
-[lastchanged] datetime2,
-[regionid] varchar(10)
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertSettlementsIntraregionresidues5
     @file_log_id bigint,
     @data nvarchar(max)
@@ -15076,55 +14232,6 @@ from openjson(@data) with (
 [lastchanged] datetime2,
 [csp_derogation_amount] decimal(18,8),
 [unadjusted_irsr] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsIrfmrecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsIrfmrecovery5(
-file_log_id,
-[settlementdate],
-[versionno],
-[periodid],
-[irfmid],
-[irmfversion],
-[participantid],
-[participantdemand],
-[totaltcd],
-[totaltfd],
-[irfmamount],
-[irfmpayment],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[periodid],
-d.[irfmid],
-d.[irmfversion],
-d.[participantid],
-d.[participantdemand],
-d.[totaltcd],
-d.[totaltfd],
-d.[irfmamount],
-d.[irfmpayment],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[periodid] decimal(3,0),
-[irfmid] varchar(10),
-[irmfversion] decimal(3,0),
-[participantid] varchar(10),
-[participantdemand] decimal(12,5),
-[totaltcd] decimal(12,5),
-[totaltfd] decimal(12,5),
-[irfmamount] decimal(12,5),
-[irfmpayment] decimal(12,5),
-[lastchanged] datetime2
 ) d
 end
 go
@@ -15501,234 +14608,6 @@ from openjson(@data) with (
 [regiondemand_gen] decimal(15,5),
 [availabilityrecovery] decimal(16,6),
 [availabilityrecovery_gen] decimal(16,6)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsLuloadrecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsLuloadrecovery5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[contractid],
-[periodid],
-[regionid],
-[enablingpayment],
-[usagepayment],
-[compensationpayment],
-[participantdemand],
-[regiondemand],
-[enablingrecovery],
-[usagerecovery],
-[compensationrecovery],
-[lastchanged],
-[enablingrecovery_gen],
-[usagerecovery_gen],
-[compensationrecovery_gen],
-[participantdemand_gen],
-[regiondemand_gen]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[contractid],
-d.[periodid],
-d.[regionid],
-d.[enablingpayment],
-d.[usagepayment],
-d.[compensationpayment],
-d.[participantdemand],
-d.[regiondemand],
-d.[enablingrecovery],
-d.[usagerecovery],
-d.[compensationrecovery],
-d.[lastchanged],
-d.[enablingrecovery_gen],
-d.[usagerecovery_gen],
-d.[compensationrecovery_gen],
-d.[participantdemand_gen],
-d.[regiondemand_gen]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[contractid] varchar(10),
-[periodid] decimal(3,0),
-[regionid] varchar(10),
-[enablingpayment] decimal(15,5),
-[usagepayment] decimal(15,5),
-[compensationpayment] decimal(15,5),
-[participantdemand] decimal(15,5),
-[regiondemand] decimal(15,5),
-[enablingrecovery] decimal(15,5),
-[usagerecovery] decimal(15,5),
-[compensationrecovery] decimal(15,5),
-[lastchanged] datetime2,
-[enablingrecovery_gen] decimal(15,5),
-[usagerecovery_gen] decimal(15,5),
-[compensationrecovery_gen] decimal(15,5),
-[participantdemand_gen] decimal(15,5),
-[regiondemand_gen] decimal(15,5)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsLunloadpayment5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsLunloadpayment5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[contractid],
-[periodid],
-[duid],
-[regionid],
-[tlf],
-[ebp],
-[rrp],
-[enablingprice],
-[usageprice],
-[ccprice],
-[clearedmw],
-[unconstrainedmw],
-[controlrange],
-[enablingpayment],
-[usagepayment],
-[compensationpayment],
-[contractversionno],
-[offerdate],
-[offerversionno],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[contractid],
-d.[periodid],
-d.[duid],
-d.[regionid],
-d.[tlf],
-d.[ebp],
-d.[rrp],
-d.[enablingprice],
-d.[usageprice],
-d.[ccprice],
-d.[clearedmw],
-d.[unconstrainedmw],
-d.[controlrange],
-d.[enablingpayment],
-d.[usagepayment],
-d.[compensationpayment],
-d.[contractversionno],
-d.[offerdate],
-d.[offerversionno],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[contractid] varchar(10),
-[periodid] decimal(3,0),
-[duid] varchar(10),
-[regionid] varchar(10),
-[tlf] decimal(7,5),
-[ebp] decimal(15,5),
-[rrp] decimal(15,5),
-[enablingprice] decimal(15,5),
-[usageprice] decimal(15,5),
-[ccprice] decimal(15,5),
-[clearedmw] decimal(15,5),
-[unconstrainedmw] decimal(15,5),
-[controlrange] decimal(4,0),
-[enablingpayment] decimal(15,5),
-[usagepayment] decimal(15,5),
-[compensationpayment] decimal(15,5),
-[contractversionno] decimal(3,0),
-[offerdate] datetime2,
-[offerversionno] decimal(3,0),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsLunloadrecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsLunloadrecovery5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[contractid],
-[periodid],
-[regionid],
-[enablingpayment],
-[usagepayment],
-[compensationpayment],
-[participantdemand],
-[regiondemand],
-[enablingrecovery],
-[usagerecovery],
-[compensationrecovery],
-[lastchanged],
-[enablingrecovery_gen],
-[usagerecovery_gen],
-[compensationrecovery_gen],
-[participantdemand_gen],
-[regiondemand_gen]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[contractid],
-d.[periodid],
-d.[regionid],
-d.[enablingpayment],
-d.[usagepayment],
-d.[compensationpayment],
-d.[participantdemand],
-d.[regiondemand],
-d.[enablingrecovery],
-d.[usagerecovery],
-d.[compensationrecovery],
-d.[lastchanged],
-d.[enablingrecovery_gen],
-d.[usagerecovery_gen],
-d.[compensationrecovery_gen],
-d.[participantdemand_gen],
-d.[regiondemand_gen]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[contractid] varchar(10),
-[periodid] decimal(3,0),
-[regionid] varchar(10),
-[enablingpayment] decimal(15,5),
-[usagepayment] decimal(15,5),
-[compensationpayment] decimal(15,5),
-[participantdemand] decimal(15,5),
-[regiondemand] decimal(15,5),
-[enablingrecovery] decimal(15,5),
-[usagerecovery] decimal(15,5),
-[compensationrecovery] decimal(15,5),
-[lastchanged] datetime2,
-[enablingrecovery_gen] decimal(15,5),
-[usagerecovery_gen] decimal(15,5),
-[compensationrecovery_gen] decimal(15,5),
-[participantdemand_gen] decimal(15,5),
-[regiondemand_gen] decimal(15,5)
 ) d
 end
 go
@@ -16168,102 +15047,6 @@ from openjson(@data) with (
 ) d
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementsVicboundaryenergy5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsVicboundaryenergy5(
-file_log_id,
-[settlementdate],
-[versionno],
-[participantid],
-[periodid],
-[boundaryenergy],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[participantid],
-d.[periodid],
-d.[boundaryenergy],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[participantid] varchar(10),
-[periodid] decimal(3,0),
-[boundaryenergy] decimal(15,5),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsVicenergyfigures5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsVicenergyfigures5(
-file_log_id,
-[settlementdate],
-[versionno],
-[periodid],
-[totalgenoutput],
-[totalpcsd],
-[lastchanged],
-[tlr],
-[mlf]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[periodid],
-d.[totalgenoutput],
-d.[totalpcsd],
-d.[lastchanged],
-d.[tlr],
-d.[mlf]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[periodid] decimal(3,0),
-[totalgenoutput] decimal(15,5),
-[totalpcsd] decimal(15,5),
-[lastchanged] datetime2,
-[tlr] decimal(15,6),
-[mlf] decimal(15,6)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsVicenergyflow5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsVicenergyflow5(
-file_log_id,
-[settlementdate],
-[versionno],
-[periodid],
-[netflow],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[periodid],
-d.[netflow],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[periodid] decimal(3,0),
-[netflow] decimal(15,5),
-[lastchanged] datetime2
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertSettlementsAncillarySummary5
     @file_log_id bigint,
     @data nvarchar(max)
@@ -16526,7 +15309,9 @@ file_log_id,
 [crmpf],
 [recovery_factor_cmpf],
 [recovery_factor_crmpf],
-[lastchanged]
+[lastchanged],
+[usesubstitutedemand],
+[requirementdemand]
 )
 select 
 @file_log_id,
@@ -16538,7 +15323,9 @@ d.[cmpf],
 d.[crmpf],
 d.[recovery_factor_cmpf],
 d.[recovery_factor_crmpf],
-d.[lastchanged]
+d.[lastchanged],
+d.[usesubstitutedemand],
+d.[requirementdemand]
 from openjson(@data) with (
 [settlementdate] datetime2,
 [versionno] decimal(3,0),
@@ -16548,90 +15335,9 @@ from openjson(@data) with (
 [crmpf] decimal(18,8),
 [recovery_factor_cmpf] decimal(18,8),
 [recovery_factor_crmpf] decimal(18,8),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsMrPayment5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsMrPayment5(
-file_log_id,
-[settlementdate],
-[versionno],
-[regionid],
-[participantid],
-[duid],
-[periodid],
-[mr_capacity],
-[uncapped_payment],
-[capped_payment],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[regionid],
-d.[participantid],
-d.[duid],
-d.[periodid],
-d.[mr_capacity],
-d.[uncapped_payment],
-d.[capped_payment],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[regionid] varchar(10),
-[participantid] varchar(10),
-[duid] varchar(10),
-[periodid] decimal(3,0),
-[mr_capacity] decimal(16,6),
-[uncapped_payment] decimal(16,6),
-[capped_payment] decimal(16,6),
-[lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsMrRecovery5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsMrRecovery5(
-file_log_id,
-[settlementdate],
-[versionno],
-[regionid],
-[participantid],
-[duid],
-[periodid],
-[arodef],
-[nta],
-[lastchanged]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[versionno],
-d.[regionid],
-d.[participantid],
-d.[duid],
-d.[periodid],
-d.[arodef],
-d.[nta],
-d.[lastchanged]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[versionno] decimal(3,0),
-[regionid] varchar(10),
-[participantid] varchar(10),
-[duid] varchar(10),
-[periodid] decimal(3,0),
-[arodef] decimal(16,6),
-[nta] decimal(16,6),
-[lastchanged] datetime2
+[lastchanged] datetime2,
+[usesubstitutedemand] decimal(1,0),
+[requirementdemand] decimal(18,8)
 ) d
 end
 go
@@ -16985,7 +15691,10 @@ file_log_id,
 [ss_solar_capacity],
 [ss_wind_capacity],
 [ss_solar_cleared],
-[ss_wind_cleared]
+[ss_wind_cleared],
+[wdr_available],
+[wdr_pasaavailable],
+[wdr_capacity]
 )
 select 
 @file_log_id,
@@ -17030,7 +15739,10 @@ d.[ss_wind_uigf],
 d.[ss_solar_capacity],
 d.[ss_wind_capacity],
 d.[ss_solar_cleared],
-d.[ss_wind_cleared]
+d.[ss_wind_cleared],
+d.[wdr_available],
+d.[wdr_pasaavailable],
+d.[wdr_capacity]
 from openjson(@data) with (
 [run_datetime] datetime2,
 [interval_datetime] datetime2,
@@ -17073,7 +15785,10 @@ from openjson(@data) with (
 [ss_solar_capacity] decimal(12,2),
 [ss_wind_capacity] decimal(12,2),
 [ss_solar_cleared] decimal(12,2),
-[ss_wind_cleared] decimal(12,2)
+[ss_wind_cleared] decimal(12,2),
+[wdr_available] decimal(12,2),
+[wdr_pasaavailable] decimal(12,2),
+[wdr_capacity] decimal(12,2)
 ) d
 end
 go
@@ -17142,79 +15857,6 @@ from openjson(@data) with (
 [mwflow] decimal(15,5),
 [mwlosses] decimal(15,5),
 [lastchanged] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertTradingUnitSolution2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.TradingUnitSolution2(
-file_log_id,
-[settlementdate],
-[runno],
-[duid],
-[tradetype],
-[periodid],
-[initialmw],
-[totalcleared],
-[rampdownrate],
-[rampuprate],
-[lower5min],
-[lower60sec],
-[lower6sec],
-[raise5min],
-[raise60sec],
-[raise6sec],
-[lastchanged],
-[lowerreg],
-[raisereg],
-[availability],
-[semidispatchcap]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[runno],
-d.[duid],
-d.[tradetype],
-d.[periodid],
-d.[initialmw],
-d.[totalcleared],
-d.[rampdownrate],
-d.[rampuprate],
-d.[lower5min],
-d.[lower60sec],
-d.[lower6sec],
-d.[raise5min],
-d.[raise60sec],
-d.[raise6sec],
-d.[lastchanged],
-d.[lowerreg],
-d.[raisereg],
-d.[availability],
-d.[semidispatchcap]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[runno] decimal(3,0),
-[duid] varchar(10),
-[tradetype] decimal(2,0),
-[periodid] decimal(3,0),
-[initialmw] decimal(15,5),
-[totalcleared] decimal(15,5),
-[rampdownrate] decimal(15,5),
-[rampuprate] decimal(15,5),
-[lower5min] decimal(15,5),
-[lower60sec] decimal(15,5),
-[lower6sec] decimal(15,5),
-[raise5min] decimal(15,5),
-[raise60sec] decimal(15,5),
-[raise6sec] decimal(15,5),
-[lastchanged] datetime2,
-[lowerreg] decimal(15,5),
-[raisereg] decimal(15,5),
-[availability] decimal(15,5),
-[semidispatchcap] decimal(3,0)
 ) d
 end
 go
@@ -17306,289 +15948,6 @@ from openjson(@data) with (
 [lowerregrrp] decimal(15,5),
 [lowerregrop] decimal(15,5),
 [price_status] varchar(20)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertTradingRegionsum4
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.TradingRegionsum4(
-file_log_id,
-[settlementdate],
-[runno],
-[regionid],
-[periodid],
-[totaldemand],
-[availablegeneration],
-[availableload],
-[demandforecast],
-[dispatchablegeneration],
-[dispatchableload],
-[netinterchange],
-[excessgeneration],
-[lower5mindispatch],
-[lower5minimport],
-[lower5minlocaldispatch],
-[lower5minlocalprice],
-[lower5minlocalreq],
-[lower5minprice],
-[lower5minreq],
-[lower5minsupplyprice],
-[lower60secdispatch],
-[lower60secimport],
-[lower60seclocaldispatch],
-[lower60seclocalprice],
-[lower60seclocalreq],
-[lower60secprice],
-[lower60secreq],
-[lower60secsupplyprice],
-[lower6secdispatch],
-[lower6secimport],
-[lower6seclocaldispatch],
-[lower6seclocalprice],
-[lower6seclocalreq],
-[lower6secprice],
-[lower6secreq],
-[lower6secsupplyprice],
-[raise5mindispatch],
-[raise5minimport],
-[raise5minlocaldispatch],
-[raise5minlocalprice],
-[raise5minlocalreq],
-[raise5minprice],
-[raise5minreq],
-[raise5minsupplyprice],
-[raise60secdispatch],
-[raise60secimport],
-[raise60seclocaldispatch],
-[raise60seclocalprice],
-[raise60seclocalreq],
-[raise60secprice],
-[raise60secreq],
-[raise60secsupplyprice],
-[raise6secdispatch],
-[raise6secimport],
-[raise6seclocaldispatch],
-[raise6seclocalprice],
-[raise6seclocalreq],
-[raise6secprice],
-[raise6secreq],
-[raise6secsupplyprice],
-[lastchanged],
-[initialsupply],
-[clearedsupply],
-[lowerregimport],
-[lowerreglocaldispatch],
-[lowerreglocalreq],
-[lowerregreq],
-[raiseregimport],
-[raisereglocaldispatch],
-[raisereglocalreq],
-[raiseregreq],
-[raise5minlocalviolation],
-[raisereglocalviolation],
-[raise60seclocalviolation],
-[raise6seclocalviolation],
-[lower5minlocalviolation],
-[lowerreglocalviolation],
-[lower60seclocalviolation],
-[lower6seclocalviolation],
-[raise5minviolation],
-[raiseregviolation],
-[raise60secviolation],
-[raise6secviolation],
-[lower5minviolation],
-[lowerregviolation],
-[lower60secviolation],
-[lower6secviolation],
-[totalintermittentgeneration],
-[demand_and_nonschedgen],
-[uigf]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-d.[runno],
-d.[regionid],
-d.[periodid],
-d.[totaldemand],
-d.[availablegeneration],
-d.[availableload],
-d.[demandforecast],
-d.[dispatchablegeneration],
-d.[dispatchableload],
-d.[netinterchange],
-d.[excessgeneration],
-d.[lower5mindispatch],
-d.[lower5minimport],
-d.[lower5minlocaldispatch],
-d.[lower5minlocalprice],
-d.[lower5minlocalreq],
-d.[lower5minprice],
-d.[lower5minreq],
-d.[lower5minsupplyprice],
-d.[lower60secdispatch],
-d.[lower60secimport],
-d.[lower60seclocaldispatch],
-d.[lower60seclocalprice],
-d.[lower60seclocalreq],
-d.[lower60secprice],
-d.[lower60secreq],
-d.[lower60secsupplyprice],
-d.[lower6secdispatch],
-d.[lower6secimport],
-d.[lower6seclocaldispatch],
-d.[lower6seclocalprice],
-d.[lower6seclocalreq],
-d.[lower6secprice],
-d.[lower6secreq],
-d.[lower6secsupplyprice],
-d.[raise5mindispatch],
-d.[raise5minimport],
-d.[raise5minlocaldispatch],
-d.[raise5minlocalprice],
-d.[raise5minlocalreq],
-d.[raise5minprice],
-d.[raise5minreq],
-d.[raise5minsupplyprice],
-d.[raise60secdispatch],
-d.[raise60secimport],
-d.[raise60seclocaldispatch],
-d.[raise60seclocalprice],
-d.[raise60seclocalreq],
-d.[raise60secprice],
-d.[raise60secreq],
-d.[raise60secsupplyprice],
-d.[raise6secdispatch],
-d.[raise6secimport],
-d.[raise6seclocaldispatch],
-d.[raise6seclocalprice],
-d.[raise6seclocalreq],
-d.[raise6secprice],
-d.[raise6secreq],
-d.[raise6secsupplyprice],
-d.[lastchanged],
-d.[initialsupply],
-d.[clearedsupply],
-d.[lowerregimport],
-d.[lowerreglocaldispatch],
-d.[lowerreglocalreq],
-d.[lowerregreq],
-d.[raiseregimport],
-d.[raisereglocaldispatch],
-d.[raisereglocalreq],
-d.[raiseregreq],
-d.[raise5minlocalviolation],
-d.[raisereglocalviolation],
-d.[raise60seclocalviolation],
-d.[raise6seclocalviolation],
-d.[lower5minlocalviolation],
-d.[lowerreglocalviolation],
-d.[lower60seclocalviolation],
-d.[lower6seclocalviolation],
-d.[raise5minviolation],
-d.[raiseregviolation],
-d.[raise60secviolation],
-d.[raise6secviolation],
-d.[lower5minviolation],
-d.[lowerregviolation],
-d.[lower60secviolation],
-d.[lower6secviolation],
-d.[totalintermittentgeneration],
-d.[demand_and_nonschedgen],
-d.[uigf]
-from openjson(@data) with (
-[settlementdate] datetime2,
-[runno] decimal(3,0),
-[regionid] varchar(10),
-[periodid] decimal(3,0),
-[totaldemand] decimal(15,5),
-[availablegeneration] decimal(15,5),
-[availableload] decimal(15,5),
-[demandforecast] decimal(15,5),
-[dispatchablegeneration] decimal(15,5),
-[dispatchableload] decimal(15,5),
-[netinterchange] decimal(15,5),
-[excessgeneration] decimal(15,5),
-[lower5mindispatch] decimal(15,5),
-[lower5minimport] decimal(15,5),
-[lower5minlocaldispatch] decimal(15,5),
-[lower5minlocalprice] decimal(15,5),
-[lower5minlocalreq] decimal(15,5),
-[lower5minprice] decimal(15,5),
-[lower5minreq] decimal(15,5),
-[lower5minsupplyprice] decimal(15,5),
-[lower60secdispatch] decimal(15,5),
-[lower60secimport] decimal(15,5),
-[lower60seclocaldispatch] decimal(15,5),
-[lower60seclocalprice] decimal(15,5),
-[lower60seclocalreq] decimal(15,5),
-[lower60secprice] decimal(15,5),
-[lower60secreq] decimal(15,5),
-[lower60secsupplyprice] decimal(15,5),
-[lower6secdispatch] decimal(15,5),
-[lower6secimport] decimal(15,5),
-[lower6seclocaldispatch] decimal(15,5),
-[lower6seclocalprice] decimal(15,5),
-[lower6seclocalreq] decimal(15,5),
-[lower6secprice] decimal(15,5),
-[lower6secreq] decimal(15,5),
-[lower6secsupplyprice] decimal(15,5),
-[raise5mindispatch] decimal(15,5),
-[raise5minimport] decimal(15,5),
-[raise5minlocaldispatch] decimal(15,5),
-[raise5minlocalprice] decimal(15,5),
-[raise5minlocalreq] decimal(15,5),
-[raise5minprice] decimal(15,5),
-[raise5minreq] decimal(15,5),
-[raise5minsupplyprice] decimal(15,5),
-[raise60secdispatch] decimal(15,5),
-[raise60secimport] decimal(15,5),
-[raise60seclocaldispatch] decimal(15,5),
-[raise60seclocalprice] decimal(15,5),
-[raise60seclocalreq] decimal(15,5),
-[raise60secprice] decimal(15,5),
-[raise60secreq] decimal(15,5),
-[raise60secsupplyprice] decimal(15,5),
-[raise6secdispatch] decimal(15,5),
-[raise6secimport] decimal(15,5),
-[raise6seclocaldispatch] decimal(15,5),
-[raise6seclocalprice] decimal(15,5),
-[raise6seclocalreq] decimal(15,5),
-[raise6secprice] decimal(15,5),
-[raise6secreq] decimal(15,5),
-[raise6secsupplyprice] decimal(15,5),
-[lastchanged] datetime2,
-[initialsupply] decimal(15,5),
-[clearedsupply] decimal(15,5),
-[lowerregimport] decimal(15,5),
-[lowerreglocaldispatch] decimal(15,5),
-[lowerreglocalreq] decimal(15,5),
-[lowerregreq] decimal(15,5),
-[raiseregimport] decimal(15,5),
-[raisereglocaldispatch] decimal(15,5),
-[raisereglocalreq] decimal(15,5),
-[raiseregreq] decimal(15,5),
-[raise5minlocalviolation] decimal(15,5),
-[raisereglocalviolation] decimal(15,5),
-[raise60seclocalviolation] decimal(15,5),
-[raise6seclocalviolation] decimal(15,5),
-[lower5minlocalviolation] decimal(15,5),
-[lowerreglocalviolation] decimal(15,5),
-[lower60seclocalviolation] decimal(15,5),
-[lower6seclocalviolation] decimal(15,5),
-[raise5minviolation] decimal(15,5),
-[raiseregviolation] decimal(15,5),
-[raise60secviolation] decimal(15,5),
-[raise6secviolation] decimal(15,5),
-[lower5minviolation] decimal(15,5),
-[lowerregviolation] decimal(15,5),
-[lower60secviolation] decimal(15,5),
-[lower6secviolation] decimal(15,5),
-[totalintermittentgeneration] decimal(15,5),
-[demand_and_nonschedgen] decimal(15,5),
-[uigf] decimal(15,5)
 ) d
 end
 go

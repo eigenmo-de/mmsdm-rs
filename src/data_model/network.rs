@@ -14,6 +14,7 @@
 ///
 /// # Primary Key Columns
 ///
+/// * ELEMENTID
 /// * EQUIPMENTID
 /// * EQUIPMENTTYPE
 /// * SUBSTATIONID
@@ -26,24 +27,199 @@ pub struct NetworkEquipmentdetail1 {
     pub equipmenttype: String,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: String,
-    #[serde(with = "crate::mms_datetime")]
+    /// The date that this record is applies from (inclusive)
     pub validfrom: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
+    /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
     /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
     pub voltage: Option<String>,
     /// A short description for this equipment.
     pub description: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
+    /// The time that this record was last changed.
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Equipment element id
+    pub elementid: rust_decimal::Decimal,
 }
 impl crate::GetTable for NetworkEquipmentdetail1 {
+    type PrimaryKey = NetworkEquipmentdetail1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("EQUIPMENTDETAIL".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkEquipmentdetail1PrimaryKey {
+        NetworkEquipmentdetail1PrimaryKey {
+            elementid: self.elementid.clone(),
+            equipmentid: self.equipmentid.clone(),
+            equipmenttype: self.equipmenttype.clone(),
+            substationid: self.substationid.clone(),
+            validfrom: self.validfrom.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_equipmentdetail_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkEquipmentdetail1 {
+    type Row = NetworkEquipmentdetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.elementid == row.elementid
+            && self.equipmentid == row.equipmentid
+            && self.equipmenttype == row.equipmenttype
+            && self.substationid == row.substationid
+            && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail1 {
+    type PrimaryKey = NetworkEquipmentdetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.elementid == key.elementid
+            && self.equipmentid == key.equipmentid
+            && self.equipmenttype == key.equipmenttype
+            && self.substationid == key.substationid
+            && self.validfrom == key.validfrom
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkEquipmentdetail1PrimaryKey {
+    pub elementid: rust_decimal::Decimal,
+    pub equipmentid: String,
+    pub equipmenttype: String,
+    pub substationid: String,
+    pub validfrom: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for NetworkEquipmentdetail1PrimaryKey {
+    type Row = NetworkEquipmentdetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.elementid == row.elementid
+            && self.equipmentid == row.equipmentid
+            && self.equipmenttype == row.equipmenttype
+            && self.substationid == row.substationid
+            && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail1PrimaryKey {
+    type PrimaryKey = NetworkEquipmentdetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.elementid == key.elementid
+            && self.equipmentid == key.equipmentid
+            && self.equipmenttype == key.equipmenttype
+            && self.substationid == key.substationid
+            && self.validfrom == key.validfrom
+    }
+}
+impl crate::PrimaryKey for NetworkEquipmentdetail1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkEquipmentdetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "substationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmenttype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmentid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("voltage", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new(
+                "elementid",
+                arrow2::datatypes::DataType::Decimal(15, 0),
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut substationid_array = Vec::new();
+        let mut equipmenttype_array = Vec::new();
+        let mut equipmentid_array = Vec::new();
+        let mut validfrom_array = Vec::new();
+        let mut validto_array = Vec::new();
+        let mut voltage_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut elementid_array = Vec::new();
+        for (_, row) in partition {
+            substationid_array.push(row.substationid);
+            equipmenttype_array.push(row.equipmenttype);
+            equipmentid_array.push(row.equipmentid);
+            validfrom_array.push(row.validfrom.timestamp_millis());
+            validto_array.push(row.validto.map(|val| val.timestamp_millis()));
+            voltage_array.push(row.voltage);
+            description_array.push(row.description);
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            elementid_array.push({
+                let mut val = row.elementid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    substationid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    equipmenttype_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    equipmentid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(validfrom_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(validto_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(voltage_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(elementid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -76,12 +252,134 @@ pub struct NetworkOutageconstraintset1 {
     pub endinterval: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for NetworkOutageconstraintset1 {
+    type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("OUTAGECONSTRAINTSET".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkOutageconstraintset1PrimaryKey {
+        NetworkOutageconstraintset1PrimaryKey {
+            genconsetid: self.genconsetid.clone(),
+            outageid: self.outageid.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_outageconstraintset_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkOutageconstraintset1 {
+    type Row = NetworkOutageconstraintset1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.genconsetid == row.genconsetid && self.outageid == row.outageid
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkOutageconstraintset1 {
+    type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.genconsetid == key.genconsetid && self.outageid == key.outageid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkOutageconstraintset1PrimaryKey {
+    pub genconsetid: String,
+    pub outageid: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for NetworkOutageconstraintset1PrimaryKey {
+    type Row = NetworkOutageconstraintset1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.genconsetid == row.genconsetid && self.outageid == row.outageid
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkOutageconstraintset1PrimaryKey {
+    type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.genconsetid == key.genconsetid && self.outageid == key.outageid
+    }
+}
+impl crate::PrimaryKey for NetworkOutageconstraintset1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkOutageconstraintset1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "outageid",
+                arrow2::datatypes::DataType::Decimal(15, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "genconsetid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "startinterval",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new("endinterval", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut outageid_array = Vec::new();
+        let mut genconsetid_array = Vec::new();
+        let mut startinterval_array = Vec::new();
+        let mut endinterval_array = Vec::new();
+        for (_, row) in partition {
+            outageid_array.push({
+                let mut val = row.outageid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            genconsetid_array.push(row.genconsetid);
+            startinterval_array.push(row.startinterval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            endinterval_array.push(row.endinterval.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(outageid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    genconsetid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(startinterval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(endinterval_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -100,6 +398,7 @@ impl crate::GetTable for NetworkOutageconstraintset1 {
 ///
 /// # Primary Key Columns
 ///
+/// * ELEMENTID
 /// * EQUIPMENTID
 /// * EQUIPMENTTYPE
 /// * OUTAGEID
@@ -131,7 +430,7 @@ pub struct NetworkOutagedetail3 {
     pub recalltimeday: Option<rust_decimal::Decimal>,
     /// The recall time in minutes during the night
     pub recalltimenight: Option<rust_decimal::Decimal>,
-    #[serde(with = "crate::mms_datetime_opt")]
+    /// The time that this record was last changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The reason provided by the asset owner for this outage
     pub reason: Option<String>,
@@ -143,14 +442,342 @@ pub struct NetworkOutagedetail3 {
     pub actual_endtime: Option<chrono::NaiveDateTime>,
     /// The asset owners reference code for this outage
     pub companyrefcode: Option<String>,
+    /// Equipment element id
+    pub elementid: rust_decimal::Decimal,
 }
 impl crate::GetTable for NetworkOutagedetail3 {
+    type PrimaryKey = NetworkOutagedetail3PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("OUTAGEDETAIL".into()),
             version: 3,
         }
+    }
+
+    fn primary_key(&self) -> NetworkOutagedetail3PrimaryKey {
+        NetworkOutagedetail3PrimaryKey {
+            elementid: self.elementid.clone(),
+            equipmentid: self.equipmentid.clone(),
+            equipmenttype: self.equipmenttype.clone(),
+            outageid: self.outageid.clone(),
+            starttime: self.starttime.clone(),
+            substationid: self.substationid.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_outagedetail_v3".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkOutagedetail3 {
+    type Row = NetworkOutagedetail3;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.elementid == row.elementid
+            && self.equipmentid == row.equipmentid
+            && self.equipmenttype == row.equipmenttype
+            && self.outageid == row.outageid
+            && self.starttime == row.starttime
+            && self.substationid == row.substationid
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkOutagedetail3 {
+    type PrimaryKey = NetworkOutagedetail3PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.elementid == key.elementid
+            && self.equipmentid == key.equipmentid
+            && self.equipmenttype == key.equipmenttype
+            && self.outageid == key.outageid
+            && self.starttime == key.starttime
+            && self.substationid == key.substationid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkOutagedetail3PrimaryKey {
+    pub elementid: rust_decimal::Decimal,
+    pub equipmentid: String,
+    pub equipmenttype: String,
+    pub outageid: rust_decimal::Decimal,
+    pub starttime: chrono::NaiveDateTime,
+    pub substationid: String,
+}
+impl crate::CompareWithRow for NetworkOutagedetail3PrimaryKey {
+    type Row = NetworkOutagedetail3;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.elementid == row.elementid
+            && self.equipmentid == row.equipmentid
+            && self.equipmenttype == row.equipmenttype
+            && self.outageid == row.outageid
+            && self.starttime == row.starttime
+            && self.substationid == row.substationid
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkOutagedetail3PrimaryKey {
+    type PrimaryKey = NetworkOutagedetail3PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.elementid == key.elementid
+            && self.equipmentid == key.equipmentid
+            && self.equipmenttype == key.equipmenttype
+            && self.outageid == key.outageid
+            && self.starttime == key.starttime
+            && self.substationid == key.substationid
+    }
+}
+impl crate::PrimaryKey for NetworkOutagedetail3PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkOutagedetail3 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "outageid",
+                arrow2::datatypes::DataType::Decimal(15, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "substationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmenttype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmentid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("starttime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("endtime", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "submitteddate",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "outagestatuscode",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "resubmitreason",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "resubmitoutageid",
+                arrow2::datatypes::DataType::Decimal(15, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recalltimeday",
+                arrow2::datatypes::DataType::Decimal(10, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "recalltimenight",
+                arrow2::datatypes::DataType::Decimal(10, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("reason", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "issecondary",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "actual_starttime",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "actual_endtime",
+                arrow2::datatypes::DataType::Date32,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "companyrefcode",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "elementid",
+                arrow2::datatypes::DataType::Decimal(15, 0),
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut outageid_array = Vec::new();
+        let mut substationid_array = Vec::new();
+        let mut equipmenttype_array = Vec::new();
+        let mut equipmentid_array = Vec::new();
+        let mut starttime_array = Vec::new();
+        let mut endtime_array = Vec::new();
+        let mut submitteddate_array = Vec::new();
+        let mut outagestatuscode_array = Vec::new();
+        let mut resubmitreason_array = Vec::new();
+        let mut resubmitoutageid_array = Vec::new();
+        let mut recalltimeday_array = Vec::new();
+        let mut recalltimenight_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut reason_array = Vec::new();
+        let mut issecondary_array = Vec::new();
+        let mut actual_starttime_array = Vec::new();
+        let mut actual_endtime_array = Vec::new();
+        let mut companyrefcode_array = Vec::new();
+        let mut elementid_array = Vec::new();
+        for (_, row) in partition {
+            outageid_array.push({
+                let mut val = row.outageid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            substationid_array.push(row.substationid);
+            equipmenttype_array.push(row.equipmenttype);
+            equipmentid_array.push(row.equipmentid);
+            starttime_array.push(
+                i32::try_from(
+                    (row.starttime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            endtime_array.push(row.endtime.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            submitteddate_array.push(row.submitteddate.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            outagestatuscode_array.push(row.outagestatuscode);
+            resubmitreason_array.push(row.resubmitreason);
+            resubmitoutageid_array.push({
+                row.resubmitoutageid.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            recalltimeday_array.push({
+                row.recalltimeday.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            recalltimenight_array.push({
+                row.recalltimenight.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            reason_array.push(row.reason);
+            issecondary_array.push({
+                row.issecondary.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            actual_starttime_array.push(row.actual_starttime.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            actual_endtime_array.push(row.actual_endtime.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            companyrefcode_array.push(row.companyrefcode);
+            elementid_array.push({
+                let mut val = row.elementid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(outageid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    substationid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    equipmenttype_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    equipmentid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(starttime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(endtime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(submitteddate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    outagestatuscode_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(resubmitreason_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(resubmitoutageid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recalltimeday_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(recalltimenight_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(reason_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(issecondary_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(actual_starttime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(actual_endtime_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(companyrefcode_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(elementid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(15, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -180,12 +807,111 @@ pub struct NetworkOutagestatuscode1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for NetworkOutagestatuscode1 {
+    type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("OUTAGESTATUSCODE".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkOutagestatuscode1PrimaryKey {
+        NetworkOutagestatuscode1PrimaryKey {
+            outagestatuscode: self.outagestatuscode.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_outagestatuscode_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkOutagestatuscode1 {
+    type Row = NetworkOutagestatuscode1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.outagestatuscode == row.outagestatuscode
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkOutagestatuscode1 {
+    type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.outagestatuscode == key.outagestatuscode
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkOutagestatuscode1PrimaryKey {
+    pub outagestatuscode: String,
+}
+impl crate::CompareWithRow for NetworkOutagestatuscode1PrimaryKey {
+    type Row = NetworkOutagestatuscode1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.outagestatuscode == row.outagestatuscode
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkOutagestatuscode1PrimaryKey {
+    type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.outagestatuscode == key.outagestatuscode
+    }
+}
+impl crate::PrimaryKey for NetworkOutagestatuscode1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkOutagestatuscode1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "outagestatuscode",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut outagestatuscode_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            outagestatuscode_array.push(row.outagestatuscode);
+            description_array.push(row.description);
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    outagestatuscode_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -230,12 +956,173 @@ pub struct NetworkRating1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for NetworkRating1 {
+    type PrimaryKey = NetworkRating1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("RATING".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkRating1PrimaryKey {
+        NetworkRating1PrimaryKey {
+            spd_id: self.spd_id.clone(),
+            validfrom: self.validfrom.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_rating_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkRating1 {
+    type Row = NetworkRating1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.spd_id == row.spd_id && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkRating1 {
+    type PrimaryKey = NetworkRating1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.spd_id == key.spd_id && self.validfrom == key.validfrom
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkRating1PrimaryKey {
+    pub spd_id: String,
+    pub validfrom: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for NetworkRating1PrimaryKey {
+    type Row = NetworkRating1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.spd_id == row.spd_id && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkRating1PrimaryKey {
+    type PrimaryKey = NetworkRating1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.spd_id == key.spd_id && self.validfrom == key.validfrom
+    }
+}
+impl crate::PrimaryKey for NetworkRating1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkRating1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new("spd_id", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "substationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmenttype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmentid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "ratinglevel",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "isdynamic",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut spd_id_array = Vec::new();
+        let mut validfrom_array = Vec::new();
+        let mut validto_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut substationid_array = Vec::new();
+        let mut equipmenttype_array = Vec::new();
+        let mut equipmentid_array = Vec::new();
+        let mut ratinglevel_array = Vec::new();
+        let mut isdynamic_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            spd_id_array.push(row.spd_id);
+            validfrom_array.push(
+                i32::try_from(
+                    (row.validfrom.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            validto_array.push(row.validto.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            regionid_array.push(row.regionid);
+            substationid_array.push(row.substationid);
+            equipmenttype_array.push(row.equipmenttype);
+            equipmentid_array.push(row.equipmentid);
+            ratinglevel_array.push(row.ratinglevel);
+            isdynamic_array.push({
+                row.isdynamic.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(spd_id_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(validfrom_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(validto_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(substationid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(equipmenttype_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(equipmentid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(ratinglevel_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(isdynamic_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -266,12 +1153,129 @@ pub struct NetworkRealtimerating1 {
     pub ratingvalue: rust_decimal::Decimal,
 }
 impl crate::GetTable for NetworkRealtimerating1 {
+    type PrimaryKey = NetworkRealtimerating1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("REALTIMERATING".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkRealtimerating1PrimaryKey {
+        NetworkRealtimerating1PrimaryKey {
+            settlementdate: self.settlementdate.clone(),
+            spd_id: self.spd_id.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "network_realtimerating_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for NetworkRealtimerating1 {
+    type Row = NetworkRealtimerating1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.settlementdate == row.settlementdate && self.spd_id == row.spd_id
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkRealtimerating1 {
+    type PrimaryKey = NetworkRealtimerating1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.settlementdate == key.settlementdate && self.spd_id == key.spd_id
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkRealtimerating1PrimaryKey {
+    pub settlementdate: chrono::NaiveDateTime,
+    pub spd_id: String,
+}
+impl crate::CompareWithRow for NetworkRealtimerating1PrimaryKey {
+    type Row = NetworkRealtimerating1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.settlementdate == row.settlementdate && self.spd_id == row.spd_id
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkRealtimerating1PrimaryKey {
+    type PrimaryKey = NetworkRealtimerating1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.settlementdate == key.settlementdate && self.spd_id == key.spd_id
+    }
+}
+impl crate::PrimaryKey for NetworkRealtimerating1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkRealtimerating1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date32,
+                false,
+            ),
+            arrow2::datatypes::Field::new("spd_id", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "ratingvalue",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut spd_id_array = Vec::new();
+        let mut ratingvalue_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(
+                i32::try_from(
+                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
+                        .num_days(),
+                )
+                .unwrap(),
+            );
+            spd_id_array.push(row.spd_id);
+            ratingvalue_array.push({
+                let mut val = row.ratingvalue;
+                val.rescale(6);
+                val.mantissa()
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(spd_id_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(ratingvalue_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -318,12 +1322,211 @@ pub struct NetworkStaticrating1 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for NetworkStaticrating1 {
+    type PrimaryKey = NetworkStaticrating1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("STATICRATING".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkStaticrating1PrimaryKey {
+        NetworkStaticrating1PrimaryKey {
+            applicationid: self.applicationid.clone(),
+            equipmentid: self.equipmentid.clone(),
+            equipmenttype: self.equipmenttype.clone(),
+            ratinglevel: self.ratinglevel.clone(),
+            substationid: self.substationid.clone(),
+            validfrom: self.validfrom.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_staticrating_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkStaticrating1 {
+    type Row = NetworkStaticrating1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.applicationid == row.applicationid
+            && self.equipmentid == row.equipmentid
+            && self.equipmenttype == row.equipmenttype
+            && self.ratinglevel == row.ratinglevel
+            && self.substationid == row.substationid
+            && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkStaticrating1 {
+    type PrimaryKey = NetworkStaticrating1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.applicationid == key.applicationid
+            && self.equipmentid == key.equipmentid
+            && self.equipmenttype == key.equipmenttype
+            && self.ratinglevel == key.ratinglevel
+            && self.substationid == key.substationid
+            && self.validfrom == key.validfrom
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkStaticrating1PrimaryKey {
+    pub applicationid: String,
+    pub equipmentid: String,
+    pub equipmenttype: String,
+    pub ratinglevel: String,
+    pub substationid: String,
+    pub validfrom: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for NetworkStaticrating1PrimaryKey {
+    type Row = NetworkStaticrating1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.applicationid == row.applicationid
+            && self.equipmentid == row.equipmentid
+            && self.equipmenttype == row.equipmenttype
+            && self.ratinglevel == row.ratinglevel
+            && self.substationid == row.substationid
+            && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkStaticrating1PrimaryKey {
+    type PrimaryKey = NetworkStaticrating1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.applicationid == key.applicationid
+            && self.equipmentid == key.equipmentid
+            && self.equipmenttype == key.equipmenttype
+            && self.ratinglevel == key.ratinglevel
+            && self.substationid == key.substationid
+            && self.validfrom == key.validfrom
+    }
+}
+impl crate::PrimaryKey for NetworkStaticrating1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkStaticrating1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "substationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmenttype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "equipmentid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "ratinglevel",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "applicationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new(
+                "ratingvalue",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut substationid_array = Vec::new();
+        let mut equipmenttype_array = Vec::new();
+        let mut equipmentid_array = Vec::new();
+        let mut ratinglevel_array = Vec::new();
+        let mut applicationid_array = Vec::new();
+        let mut validfrom_array = Vec::new();
+        let mut validto_array = Vec::new();
+        let mut ratingvalue_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            substationid_array.push(row.substationid);
+            equipmenttype_array.push(row.equipmenttype);
+            equipmentid_array.push(row.equipmentid);
+            ratinglevel_array.push(row.ratinglevel);
+            applicationid_array.push(row.applicationid);
+            validfrom_array.push(
+                i32::try_from(
+                    (row.validfrom.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
+                )
+                .unwrap(),
+            );
+            validto_array.push(row.validto.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+            ratingvalue_array.push({
+                row.ratingvalue.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| {
+                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
+                    .unwrap()
+            }));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    substationid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    equipmenttype_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    equipmentid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    ratinglevel_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    applicationid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(validfrom_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(validto_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(ratingvalue_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date32),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }
 /// # Summary
@@ -348,9 +1551,9 @@ impl crate::GetTable for NetworkStaticrating1 {
 pub struct NetworkSubstationdetail1 {
     /// ID uniquely identifying this substation
     pub substationid: String,
-    #[serde(with = "crate::mms_datetime")]
+    /// The record is valid from this date (inclusive)
     pub validfrom: chrono::NaiveDateTime,
-    #[serde(with = "crate::mms_datetime_opt")]
+    /// The record is valid up until this date (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
     /// Description of the substation
     pub description: Option<String>,
@@ -358,15 +1561,135 @@ pub struct NetworkSubstationdetail1 {
     pub regionid: Option<String>,
     /// The TNSP who is responsible for this substation
     pub ownerid: Option<String>,
-    #[serde(with = "crate::mms_datetime_opt")]
+    /// The time that this record was last changed.
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
 impl crate::GetTable for NetworkSubstationdetail1 {
+    type PrimaryKey = NetworkSubstationdetail1PrimaryKey;
+    type Partition = ();
+
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("SUBSTATIONDETAIL".into()),
             version: 1,
         }
+    }
+
+    fn primary_key(&self) -> NetworkSubstationdetail1PrimaryKey {
+        NetworkSubstationdetail1PrimaryKey {
+            substationid: self.substationid.clone(),
+            validfrom: self.validfrom.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        ()
+    }
+
+    fn partition_name(&self) -> String {
+        "network_substationdetail_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for NetworkSubstationdetail1 {
+    type Row = NetworkSubstationdetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.substationid == row.substationid && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkSubstationdetail1 {
+    type PrimaryKey = NetworkSubstationdetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.substationid == key.substationid && self.validfrom == key.validfrom
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct NetworkSubstationdetail1PrimaryKey {
+    pub substationid: String,
+    pub validfrom: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for NetworkSubstationdetail1PrimaryKey {
+    type Row = NetworkSubstationdetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.substationid == row.substationid && self.validfrom == row.validfrom
+    }
+}
+impl crate::CompareWithPrimaryKey for NetworkSubstationdetail1PrimaryKey {
+    type PrimaryKey = NetworkSubstationdetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.substationid == key.substationid && self.validfrom == key.validfrom
+    }
+}
+impl crate::PrimaryKey for NetworkSubstationdetail1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for NetworkSubstationdetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "substationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new(
+                "description",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("ownerid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut substationid_array = Vec::new();
+        let mut validfrom_array = Vec::new();
+        let mut validto_array = Vec::new();
+        let mut description_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut ownerid_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            substationid_array.push(row.substationid);
+            validfrom_array.push(row.validfrom.timestamp_millis());
+            validto_array.push(row.validto.map(|val| val.timestamp_millis()));
+            description_array.push(row.description);
+            regionid_array.push(row.regionid);
+            ownerid_array.push(row.ownerid);
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    substationid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(validfrom_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(validto_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(ownerid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+            ],
+        )
+        .map_err(Into::into)
     }
 }

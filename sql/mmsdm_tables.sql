@@ -25,8 +25,8 @@ create table mmsdm.FileLog (
 go
             
 create table mmsdm.AncilliaryServicesContractagc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
@@ -40,15 +40,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[versionno])
 )
-go
-create clustered columnstore index cci_AncilliaryServicesContractagc1 on mmsdm.AncilliaryServicesContractagc1;
 go
                         
 create table mmsdm.AncilliaryServicesContractloadshed2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
@@ -90,15 +88,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [default_testingpayment_amount] decimal(18,8) null,
 [service_start_date] datetime2 null,
-
+    primary key ([contractid],[versionno])
 )
-go
-create clustered columnstore index cci_AncilliaryServicesContractloadshed2 on mmsdm.AncilliaryServicesContractloadshed2;
 go
                         
 create table mmsdm.AncilliaryServicesContractreactivepower4 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
@@ -126,15 +122,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rebate_cap] decimal(18,8) null,
 [rebate_amount_per_mvar] decimal(18,8) null,
 [isrebateapplicable] decimal(1,0) null,
-
+    primary key ([contractid],[versionno])
 )
-go
-create clustered columnstore index cci_AncilliaryServicesContractreactivepower4 on mmsdm.AncilliaryServicesContractreactivepower4;
 go
                         
 create table mmsdm.AncilliaryServicesContractrestartservices2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
@@ -147,29 +141,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [default_testingpayment_amount] decimal(18,8) null,
 [service_start_date] datetime2 null,
-
+    primary key ([contractid],[versionno])
 )
-go
-create clustered columnstore index cci_AncilliaryServicesContractrestartservices2 on mmsdm.AncilliaryServicesContractrestartservices2;
 go
                         
 create table mmsdm.AncilliaryServicesContractrestartunits1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [duid] varchar(10) not null,
 [lastchanged] datetime2 null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
-
+    primary key ([contractid],[duid],[versionno])
 )
-go
-create clustered columnstore index cci_AncilliaryServicesContractrestartunits1 on mmsdm.AncilliaryServicesContractrestartunits1;
 go
                         
 create table mmsdm.AsofferOfferagcdata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [availability] decimal(4,0) null,
@@ -182,28 +172,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [periodid] decimal(3,0) not null,
 [agcup] decimal(3,0) null,
 [agcdown] decimal(3,0) null,
-
+    primary key ([contractid],[effectivedate],[periodid],[versionno])
 )
-go
-create clustered columnstore index cci_AsofferOfferagcdata1 on mmsdm.AsofferOfferagcdata1;
 go
                         
 create table mmsdm.AsofferOfferastrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [filename] varchar(40) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_AsofferOfferastrk1 on mmsdm.AsofferOfferastrk1;
 go
                         
 create table mmsdm.AsofferOfferlsheddata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [availableload] decimal(4,0) null,
@@ -212,15 +198,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [filename] varchar(40) null,
 [lastchanged] datetime2 null,
 [periodid] decimal(3,0) not null,
-
+    primary key ([contractid],[effectivedate],[periodid],[versionno])
 )
-go
-create clustered columnstore index cci_AsofferOfferlsheddata1 on mmsdm.AsofferOfferlsheddata1;
 go
                         
 create table mmsdm.AsofferOfferrestartdata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [offerdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [availability] varchar(3) null,
@@ -229,15 +213,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [filename] varchar(40) null,
 [lastchanged] datetime2 null,
 [periodid] decimal(3,0) not null,
-
+    primary key ([contractid],[offerdate],[periodid],[versionno])
 )
-go
-create clustered columnstore index cci_AsofferOfferrestartdata1 on mmsdm.AsofferOfferrestartdata1;
 go
                         
 create table mmsdm.AsofferOfferrpowerdata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(10) not null,
+file_log_id bigint not null,
+    [contractid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
@@ -248,20 +230,18 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authorisedby] varchar(15) null,
 [filename] varchar(40) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[effectivedate],[periodid],[versionno])
 )
-go
-create clustered columnstore index cci_AsofferOfferrpowerdata1 on mmsdm.AsofferOfferrpowerdata1;
 go
                         
 create table mmsdm.BidsBiddayoffer1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
+file_log_id bigint not null,
+    [duid] varchar(10) not null,
 [bidtype] varchar(10) not null,
 [settlementdate] datetime2 not null,
 [offerdate] datetime2 not null,
 [versionno] decimal(22,0) null,
-[participantid] varchar(10) null,
+[participantid] varchar(10) not null,
 [dailyenergyconstraint] decimal(12,6) null,
 [rebidexplanation] varchar(500) null,
 [priceband1] decimal(9,2) null,
@@ -288,15 +268,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rebid_decision_time] varchar(20) null,
 [rebid_category] varchar(1) null,
 [reference_id] varchar(100) null,
-
+    primary key ([bidtype],[duid],[offerdate],[settlementdate])
 )
-go
-create clustered columnstore index cci_BidsBiddayoffer1 on mmsdm.BidsBiddayoffer1;
 go
                         
 create table mmsdm.BidsBidofferfiletrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [offerdate] datetime2 not null,
 [filename] varchar(80) not null,
 [status] varchar(10) null,
@@ -307,15 +285,14 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [reference_id] varchar(100) null,
 [submission_timestamp] datetime2 null,
 [comments] varchar(1000) null,
-
+[submission_method] varchar(20) null,
+    primary key ([offerdate],[participantid])
 )
-go
-create clustered columnstore index cci_BidsBidofferfiletrk1 on mmsdm.BidsBidofferfiletrk1;
 go
                         
 create table mmsdm.BidsBidofferperiod1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(20) not null,
+file_log_id bigint not null,
+    [duid] varchar(20) not null,
 [bidtype] varchar(10) not null,
 [tradingdate] datetime2 not null,
 [offerdatetime] datetime2 not null,
@@ -339,50 +316,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [bandavail9] decimal(8,3) null,
 [bandavail10] decimal(8,3) null,
 [pasaavailability] decimal(8,3) null,
-
+    primary key ([bidtype],[duid],[offerdatetime],[periodid],[tradingdate])
 )
-go
-create clustered columnstore index cci_BidsBidofferperiod1 on mmsdm.BidsBidofferperiod1;
-go
-                        
-create table mmsdm.OfferBidperoffer1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
-[bidtype] varchar(10) not null,
-[settlementdate] datetime2 not null,
-[offerdate] datetime2 not null,
-[periodid] decimal(22,0) not null,
-[versionno] decimal(22,0) null,
-[maxavail] decimal(12,6) null,
-[fixedload] decimal(12,6) null,
-[rocup] decimal(6,0) null,
-[rocdown] decimal(6,0) null,
-[enablementmin] decimal(6,0) null,
-[enablementmax] decimal(6,0) null,
-[lowbreakpoint] decimal(6,0) null,
-[highbreakpoint] decimal(6,0) null,
-[bandavail1] decimal(22,0) null,
-[bandavail2] decimal(22,0) null,
-[bandavail3] decimal(22,0) null,
-[bandavail4] decimal(22,0) null,
-[bandavail5] decimal(22,0) null,
-[bandavail6] decimal(22,0) null,
-[bandavail7] decimal(22,0) null,
-[bandavail8] decimal(22,0) null,
-[bandavail9] decimal(22,0) null,
-[bandavail10] decimal(22,0) null,
-[lastchanged] datetime2 null,
-[pasaavailability] decimal(12,0) null,
-[mr_capacity] decimal(6,0) null,
-
-)
-go
-create clustered columnstore index cci_OfferBidperoffer1 on mmsdm.OfferBidperoffer1;
 go
                         
 create table mmsdm.BidsMnspBidofferperiod1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[linkid] varchar(20) not null,
+file_log_id bigint not null,
+    [linkid] varchar(20) not null,
 [tradingdate] datetime2 not null,
 [offerdatetime] datetime2 not null,
 [periodid] decimal(3,0) not null,
@@ -400,15 +340,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [bandavail9] decimal(8,3) null,
 [bandavail10] decimal(8,3) null,
 [pasaavailability] decimal(8,3) null,
-
+    primary key ([linkid],[offerdatetime],[periodid],[tradingdate])
 )
-go
-create clustered columnstore index cci_BidsMnspBidofferperiod1 on mmsdm.BidsMnspBidofferperiod1;
 go
                         
 create table mmsdm.BidsMnspDayoffer1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [offerdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -432,76 +370,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rebid_decision_time] varchar(20) null,
 [rebid_category] varchar(1) null,
 [reference_id] varchar(100) null,
-
+    primary key ([linkid],[offerdate],[participantid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_BidsMnspDayoffer1 on mmsdm.BidsMnspDayoffer1;
-go
-                        
-create table mmsdm.BidMnspFiletrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[offerdate] datetime2 not null,
-[participantid] varchar(10) not null,
-[filename] varchar(40) not null,
-[status] varchar(10) null,
-[ackfilename] varchar(40) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BidMnspFiletrk1 on mmsdm.BidMnspFiletrk1;
-go
-                        
-create table mmsdm.BidMnspOffertrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[offerdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[filename] varchar(40) not null,
-[authoriseddate] datetime2 null,
-[authorisedby] varchar(15) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BidMnspOffertrk1 on mmsdm.BidMnspOffertrk1;
-go
-                        
-create table mmsdm.BidMnspPeroffer1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[offerdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[linkid] varchar(10) not null,
-[periodid] decimal(22,0) not null,
-[maxavail] decimal(6,0) null,
-[bandavail1] decimal(6,0) null,
-[bandavail2] decimal(6,0) null,
-[bandavail3] decimal(6,0) null,
-[bandavail4] decimal(6,0) null,
-[bandavail5] decimal(6,0) null,
-[bandavail6] decimal(6,0) null,
-[bandavail7] decimal(6,0) null,
-[bandavail8] decimal(6,0) null,
-[bandavail9] decimal(6,0) null,
-[bandavail10] decimal(6,0) null,
-[lastchanged] datetime2 null,
-[fixedload] decimal(12,6) null,
-[rampuprate] decimal(6,0) null,
-[pasaavailability] decimal(12,0) null,
-[mr_capacity] decimal(6,0) null,
-
-)
-go
-create clustered columnstore index cci_BidMnspPeroffer1 on mmsdm.BidMnspPeroffer1;
 go
                         
 create table mmsdm.OfferMtpasaOfferdata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(20) not null,
+file_log_id bigint not null,
+    [participantid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [unitid] varchar(20) not null,
 [effectivedate] datetime2 not null,
@@ -514,26 +389,22 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [capacity6] decimal(9,0) null,
 [capacity7] decimal(9,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[offerdatetime],[participantid],[unitid])
 )
-go
-create clustered columnstore index cci_OfferMtpasaOfferdata1 on mmsdm.OfferMtpasaOfferdata1;
 go
                         
 create table mmsdm.OfferMtpasaOfferfiletrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(20) not null,
+file_log_id bigint not null,
+    [participantid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [filename] varchar(200) null,
-
+    primary key ([offerdatetime],[participantid])
 )
-go
-create clustered columnstore index cci_OfferMtpasaOfferfiletrk1 on mmsdm.OfferMtpasaOfferfiletrk1;
 go
                         
 create table mmsdm.BillingConfigBillingcalendar2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
@@ -543,77 +414,65 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [revision1_statementdate] datetime2 null,
 [revision2_statementdate] datetime2 null,
-
+    primary key ([contractyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingConfigBillingcalendar2 on mmsdm.BillingConfigBillingcalendar2;
 go
                         
 create table mmsdm.BillingConfigGstBasClass1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[bas_class] varchar(30) not null,
+file_log_id bigint not null,
+    [bas_class] varchar(30) not null,
 [description] varchar(100) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bas_class])
 )
-go
-create clustered columnstore index cci_BillingConfigGstBasClass1 on mmsdm.BillingConfigGstBasClass1;
 go
                         
 create table mmsdm.BillingConfigGstRate1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [bas_class] varchar(30) not null,
 [gst_rate] decimal(8,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bas_class],[effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_BillingConfigGstRate1 on mmsdm.BillingConfigGstRate1;
 go
                         
 create table mmsdm.BillingConfigGstTransactionClass1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [transaction_type] varchar(30) not null,
 [bas_class] varchar(30) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([bas_class],[effectivedate],[transaction_type],[versionno])
 )
-go
-create clustered columnstore index cci_BillingConfigGstTransactionClass1 on mmsdm.BillingConfigGstTransactionClass1;
 go
                         
 create table mmsdm.BillingConfigGstTransactionType1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[transaction_type] varchar(30) not null,
+file_log_id bigint not null,
+    [transaction_type] varchar(30) not null,
 [description] varchar(100) null,
 [gl_financialcode] varchar(10) null,
 [gl_tcode] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([transaction_type])
 )
-go
-create clustered columnstore index cci_BillingConfigGstTransactionType1 on mmsdm.BillingConfigGstTransactionType1;
 go
                         
 create table mmsdm.BillingConfigSecdepositInterestRate1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interest_acct_id] varchar(20) not null,
+file_log_id bigint not null,
+    [interest_acct_id] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [interest_rate] decimal(18,8) null,
-
+    primary key ([effectivedate],[interest_acct_id],[version_datetime])
 )
-go
-create clustered columnstore index cci_BillingConfigSecdepositInterestRate1 on mmsdm.BillingConfigSecdepositInterestRate1;
 go
                         
 create table mmsdm.BillingConfigSecdepositProvision1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[security_deposit_id] varchar(20) not null,
+file_log_id bigint not null,
+    [security_deposit_id] varchar(20) not null,
 [participantid] varchar(20) not null,
 [transaction_date] datetime2 null,
 [maturity_contractyear] decimal(4,0) null,
@@ -622,15 +481,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [interest_rate] decimal(18,8) null,
 [interest_calc_type] varchar(20) null,
 [interest_acct_id] varchar(20) null,
-
+    primary key ([participantid],[security_deposit_id])
 )
-go
-create clustered columnstore index cci_BillingConfigSecdepositProvision1 on mmsdm.BillingConfigSecdepositProvision1;
 go
                         
 create table mmsdm.BillingAspayments6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) null,
+file_log_id bigint not null,
+    [regionid] varchar(10) null,
 [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
@@ -654,15 +511,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [raisereg] decimal(15,5) null,
 [availability_reactive] decimal(18,8) null,
 [availability_reactive_rbt] decimal(18,8) null,
-
+    primary key ([billrunno],[connectionpointid],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingAspayments6 on mmsdm.BillingAspayments6;
 go
                         
 create table mmsdm.BillingAsrecovery7 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) not null,
+file_log_id bigint not null,
+    [regionid] varchar(10) not null,
 [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
@@ -702,15 +557,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [availability_reactive_rbt] decimal(18,8) null,
 [availability_reactive_gen] decimal(18,8) null,
 [availability_reactive_rbt_gen] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingAsrecovery7 on mmsdm.BillingAsrecovery7;
 go
                         
 create table mmsdm.BillingCpdata6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -723,29 +576,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [dme] decimal(18,8) null,
 [ufea] decimal(18,8) null,
 [age] decimal(18,8) null,
-
+    primary key ([billrunno],[connectionpointid],[contractyear],[mda],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingCpdata6 on mmsdm.BillingCpdata6;
 go
                         
 create table mmsdm.BillingDaytrk5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [settlementdate] datetime2 not null,
 [runno] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[settlementdate],[weekno])
 )
-go
-create clustered columnstore index cci_BillingDaytrk5 on mmsdm.BillingDaytrk5;
 go
                         
 create table mmsdm.BillingFees5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -755,15 +604,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [value] decimal(15,5) null,
 [lastchanged] datetime2 null,
 [participantcategoryid] varchar(10) not null,
-
+    primary key ([billrunno],[contractyear],[marketfeeid],[participantcategoryid],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingFees5 on mmsdm.BillingFees5;
 go
                         
 create table mmsdm.BillingFinancialadjustments5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -774,15 +621,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [financialcode] decimal(10,0) null,
 [bas_class] varchar(30) null,
-
+    primary key ([adjustmentitem],[billrunno],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingFinancialadjustments5 on mmsdm.BillingFinancialadjustments5;
 go
                         
 create table mmsdm.BillingGendata5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -795,15 +640,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [purchasedenergy] decimal(16,6) null,
 [mda] varchar(10) null,
-
+    primary key ([billrunno],[connectionpointid],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingGendata5 on mmsdm.BillingGendata5;
 go
                         
 create table mmsdm.BillingInterresidues5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[allocation] decimal(6,3) null,
+file_log_id bigint not null,
+    [allocation] decimal(6,3) null,
 [totalsurplus] decimal(15,5) null,
 [interconnectorid] varchar(10) not null,
 [contractyear] decimal(4,0) not null,
@@ -813,15 +656,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [surplusvalue] decimal(15,6) null,
 [lastchanged] datetime2 null,
 [regionid] varchar(10) not null,
-
+    primary key ([billrunno],[contractyear],[interconnectorid],[participantid],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingInterresidues5 on mmsdm.BillingInterresidues5;
 go
                         
 create table mmsdm.BillingIntraresidues5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[allocation] decimal(6,3) null,
+file_log_id bigint not null,
+    [allocation] decimal(6,3) null,
 [totalsurplus] decimal(15,5) null,
 [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
@@ -830,15 +671,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [surplusvalue] decimal(15,6) null,
 [lastchanged] datetime2 null,
 [regionid] varchar(10) not null,
-
+    primary key ([billrunno],[contractyear],[participantid],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIntraresidues5 on mmsdm.BillingIntraresidues5;
 go
                         
 create table mmsdm.BillingIraucsurplus5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(2,0) not null,
 [residueyear] decimal(4,0) null,
 [quarter] decimal(2,0) null,
@@ -850,15 +689,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [totalresidues] decimal(15,5) null,
 [adjustment] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractid],[contractyear],[fromregionid],[interconnectorid],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIraucsurplus5 on mmsdm.BillingIraucsurplus5;
 go
                         
 create table mmsdm.BillingIraucsurplussum7 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [residueyear] decimal(4,0) not null,
 [quarter] decimal(2,0) not null,
@@ -874,29 +711,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
 [negative_residues] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[fromregionid],[interconnectorid],[participantid],[quarter],[residueyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIraucsurplussum7 on mmsdm.BillingIraucsurplussum7;
 go
                         
 create table mmsdm.BillingIrfm5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [irfmpayment] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIrfm5 on mmsdm.BillingIrfm5;
 go
                         
 create table mmsdm.BillingIrnspsurplus5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(2,0) not null,
 [residueyear] decimal(4,0) null,
 [quarter] decimal(2,0) null,
@@ -908,15 +741,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [totalresidues] decimal(15,5) null,
 [adjustment] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractid],[contractyear],[fromregionid],[interconnectorid],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIrnspsurplus5 on mmsdm.BillingIrnspsurplus5;
 go
                         
 create table mmsdm.BillingIrnspsurplussum6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [residueyear] decimal(4,0) not null,
 [quarter] decimal(2,0) not null,
@@ -930,15 +761,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[fromregionid],[interconnectorid],[participantid],[quarter],[residueyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIrnspsurplussum6 on mmsdm.BillingIrnspsurplussum6;
 go
                         
 create table mmsdm.BillingIrpartsurplus5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(2,0) not null,
 [residueyear] decimal(4,0) null,
 [quarter] decimal(2,0) null,
@@ -951,15 +780,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [adjustment] decimal(15,5) null,
 [lastchanged] datetime2 null,
 [actualpayment] decimal(15,5) null,
-
+    primary key ([billrunno],[contractid],[contractyear],[fromregionid],[interconnectorid],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIrpartsurplus5 on mmsdm.BillingIrpartsurplus5;
 go
                         
 create table mmsdm.BillingIrpartsurplussum7 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [residueyear] decimal(4,0) not null,
 [quarter] decimal(2,0) not null,
@@ -975,15 +802,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
 [auctionfees_totalgross_adj] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[fromregionid],[interconnectorid],[participantid],[quarter],[residueyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingIrpartsurplussum7 on mmsdm.BillingIrpartsurplussum7;
 go
                         
 create table mmsdm.BillingPrioradjustments5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [adjcontractyear] decimal(4,0) not null,
@@ -999,30 +824,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [irsr_prevamount] decimal(15,5) null,
 [irsr_adjamount] decimal(15,5) null,
 [irsr_interestamount] decimal(15,5) null,
-
+    primary key ([adjbillrunno],[adjcontractyear],[adjweekno],[billrunno],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingPrioradjustments5 on mmsdm.BillingPrioradjustments5;
 go
                         
 create table mmsdm.BillingRealloc5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [counterparty] varchar(10) not null,
 [value] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[counterparty],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingRealloc5 on mmsdm.BillingRealloc5;
 go
                         
 create table mmsdm.BillingReallocDetail5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -1030,15 +851,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [reallocationid] varchar(20) not null,
 [value] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[counterparty],[participantid],[reallocationid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingReallocDetail5 on mmsdm.BillingReallocDetail5;
 go
                         
 create table mmsdm.BillingRegionexports5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
@@ -1048,15 +867,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [surplusenergy] decimal(16,6) null,
 [surplusvalue] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[exportto],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingRegionexports5 on mmsdm.BillingRegionexports5;
 go
                         
 create table mmsdm.BillingRegionfigures5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
@@ -1072,15 +889,15 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [aspayment] decimal(16,6) null,
 [poolfees] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+[wdrsq] decimal(18,8) null,
+[wdrta] decimal(18,8) null,
+    primary key ([billrunno],[contractyear],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingRegionfigures5 on mmsdm.BillingRegionfigures5;
 go
                         
 create table mmsdm.BillingRegionimports5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
@@ -1090,15 +907,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [surplusenergy] decimal(16,6) null,
 [surplusvalue] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[importfrom],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingRegionimports5 on mmsdm.BillingRegionimports5;
 go
                         
 create table mmsdm.BillingRuntrk5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [status] varchar(6) null,
@@ -1114,34 +929,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [paymentpostby] varchar(10) null,
 [shortfall] decimal(16,6) null,
 [makeup] decimal(15,5) null,
-
+    primary key ([billrunno],[contractyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingRuntrk5 on mmsdm.BillingRuntrk5;
-go
-                        
-create table mmsdm.BillingSmelterreduction5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(22,0) not null,
-[weekno] decimal(22,0) not null,
-[billrunno] decimal(22,0) not null,
-[participantid] varchar(10) not null,
-[rate1] decimal(15,6) null,
-[ra1] decimal(15,6) null,
-[rate2] decimal(15,6) null,
-[ra2] decimal(15,6) null,
-[te] decimal(15,6) null,
-[pcsd] decimal(15,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BillingSmelterreduction5 on mmsdm.BillingSmelterreduction5;
 go
                         
 create table mmsdm.BillingApcCompensation2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [apeventid] decimal(6,0) not null,
@@ -1151,15 +945,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [event_type] varchar(20) null,
 [compensation_type] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([apeventid],[billrunno],[claimid],[contractyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingApcCompensation2 on mmsdm.BillingApcCompensation2;
 go
                         
 create table mmsdm.BillingApcRecovery2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [apeventid] decimal(6,0) not null,
@@ -1172,15 +964,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [participant_demand] decimal(18,8) null,
 [region_demand] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([apeventid],[billrunno],[claimid],[contractyear],[participantid],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingApcRecovery2 on mmsdm.BillingApcRecovery2;
 go
                         
 create table mmsdm.BillingBillingCo2ePublication1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [settlementdate] datetime2 not null,
@@ -1188,27 +978,23 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [sentoutenergy] decimal(18,8) null,
 [generatoremissions] decimal(18,8) null,
 [intensityindex] decimal(18,8) null,
-
+    primary key ([contractyear],[regionid],[settlementdate],[weekno])
 )
-go
-create clustered columnstore index cci_BillingBillingCo2ePublication1 on mmsdm.BillingBillingCo2ePublication1;
 go
                         
 create table mmsdm.BillingBillingCo2ePublicationTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractyear],[weekno])
 )
-go
-create clustered columnstore index cci_BillingBillingCo2ePublicationTrk1 on mmsdm.BillingBillingCo2ePublicationTrk1;
 go
                         
 create table mmsdm.BillingDailyEnergySummary1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [settlementdate] datetime2 not null,
@@ -1217,15 +1003,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [customer_energy_purchased] decimal(18,8) null,
 [generator_energy_sold] decimal(18,8) null,
 [generator_energy_purchased] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[regionid],[settlementdate],[weekno])
 )
-go
-create clustered columnstore index cci_BillingDailyEnergySummary1 on mmsdm.BillingDailyEnergySummary1;
 go
                         
 create table mmsdm.BillingDirectionReconciliatn1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [direction_id] varchar(20) not null,
@@ -1241,15 +1025,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [mkt_customer_perc] decimal(16,6) null,
 [generator_perc] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractyear],[direction_id],[weekno])
 )
-go
-create clustered columnstore index cci_BillingDirectionReconciliatn1 on mmsdm.BillingDirectionReconciliatn1;
 go
                         
 create table mmsdm.BillingBillingDirectionReconOther1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [direction_id] varchar(20) not null,
@@ -1267,15 +1049,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [regional_customer_energy] decimal(18,8) null,
 [regional_generator_energy] decimal(18,8) null,
 [regional_benefit_factor] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[direction_id],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingBillingDirectionReconOther1 on mmsdm.BillingBillingDirectionReconOther1;
 go
                         
 create table mmsdm.BillingEftshortfallAmount1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(20) not null,
@@ -1285,29 +1065,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [company_shortfall_amount] decimal(18,8) null,
 [participant_net_energy] decimal(18,8) null,
 [company_net_energy] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingEftshortfallAmount1 on mmsdm.BillingEftshortfallAmount1;
 go
                         
 create table mmsdm.BillingEftshortfallDetail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(20) not null,
 [transaction_type] varchar(40) not null,
 [amount] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[transaction_type],[weekno])
 )
-go
-create clustered columnstore index cci_BillingEftshortfallDetail1 on mmsdm.BillingEftshortfallDetail1;
 go
                         
 create table mmsdm.BillingGstDetail5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -1316,15 +1092,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [gst_exclusive_amount] decimal(15,5) null,
 [gst_amount] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bas_class],[billrunno],[contractyear],[participantid],[transaction_type],[weekno])
 )
-go
-create clustered columnstore index cci_BillingGstDetail5 on mmsdm.BillingGstDetail5;
 go
                         
 create table mmsdm.BillingGstSummary5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -1332,99 +1106,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [gst_exclusive_amount] decimal(15,5) null,
 [gst_amount] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bas_class],[billrunno],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingGstSummary5 on mmsdm.BillingGstSummary5;
-go
-                        
-create table mmsdm.BillingMrPayment5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
-[weekno] decimal(3,0) not null,
-[billrunno] decimal(3,0) not null,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[participantid] varchar(10) null,
-[duid] varchar(10) not null,
-[mr_amount] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BillingMrPayment5 on mmsdm.BillingMrPayment5;
-go
-                        
-create table mmsdm.BillingMrRecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
-[weekno] decimal(3,0) not null,
-[billrunno] decimal(3,0) not null,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[participantid] varchar(10) null,
-[duid] varchar(10) not null,
-[mr_amount] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BillingMrRecovery5 on mmsdm.BillingMrRecovery5;
-go
-                        
-create table mmsdm.BillingMrShortfall5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
-[weekno] decimal(3,0) not null,
-[billrunno] decimal(3,0) not null,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[participantid] varchar(10) not null,
-[age] decimal(16,6) null,
-[rsa] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BillingMrShortfall5 on mmsdm.BillingMrShortfall5;
-go
-                        
-create table mmsdm.BillingMrSummary5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
-[weekno] decimal(3,0) not null,
-[billrunno] decimal(3,0) not null,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[total_payments] decimal(16,6) null,
-[total_recovery] decimal(16,6) null,
-[total_rsa] decimal(16,6) null,
-[aage] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_BillingMrSummary5 on mmsdm.BillingMrSummary5;
 go
                         
 create table mmsdm.BillingNmasTstPayments1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(20) not null,
 [service] varchar(10) not null,
 [contractid] varchar(10) not null,
 [payment_amount] decimal(18,8) null,
-
+    primary key ([billrunno],[contractid],[contractyear],[participantid],[service],[weekno])
 )
-go
-create clustered columnstore index cci_BillingNmasTstPayments1 on mmsdm.BillingNmasTstPayments1;
 go
                         
 create table mmsdm.BillingNmasTstRecovery1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(20) not null,
@@ -1444,15 +1145,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [nem_generation] decimal(18,8) null,
 [recovery_amount] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractid],[contractyear],[participantid],[regionid],[service],[weekno])
 )
-go
-create clustered columnstore index cci_BillingNmasTstRecovery1 on mmsdm.BillingNmasTstRecovery1;
 go
                         
 create table mmsdm.BillingNmasTstRecvryRbf1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [service] varchar(10) not null,
@@ -1462,42 +1161,36 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [payment_amount] decimal(18,8) null,
 [recovery_amount] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([billrunno],[contractid],[contractyear],[regionid],[service],[weekno])
 )
-go
-create clustered columnstore index cci_BillingNmasTstRecvryRbf1 on mmsdm.BillingNmasTstRecvryRbf1;
 go
                         
 create table mmsdm.BillingNmasTstRecvryTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [recovery_contractyear] decimal(4,0) not null,
 [recovery_weekno] decimal(3,0) not null,
 [recovery_billrunno] decimal(3,0) not null,
-
+    primary key ([billrunno],[contractyear],[recovery_billrunno],[recovery_contractyear],[recovery_weekno],[weekno])
 )
-go
-create clustered columnstore index cci_BillingNmasTstRecvryTrk1 on mmsdm.BillingNmasTstRecvryTrk1;
 go
                         
 create table mmsdm.BillingSecdepositApplication1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(20) not null,
 [application_amount] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingSecdepositApplication1 on mmsdm.BillingSecdepositApplication1;
 go
                         
 create table mmsdm.BillingSecdepInterestPay1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [security_deposit_id] varchar(20) not null,
@@ -1506,29 +1199,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [interest_calc_type] varchar(20) null,
 [interest_acct_id] varchar(20) null,
 [interest_rate] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[security_deposit_id],[weekno])
 )
-go
-create clustered columnstore index cci_BillingSecdepInterestPay1 on mmsdm.BillingSecdepInterestPay1;
 go
                         
 create table mmsdm.BillingSecdepInterestRate1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [interest_acct_id] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [interest_rate] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[effectivedate],[interest_acct_id],[weekno])
 )
-go
-create clustered columnstore index cci_BillingSecdepInterestRate1 on mmsdm.BillingSecdepInterestRate1;
 go
                         
 create table mmsdm.BillingReservetraderpayment1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [participantid] varchar(20) null,
@@ -1536,15 +1225,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [payment_id] decimal(3,0) not null,
 [payment_type] varchar(40) null,
 [payment_amount] decimal(18,8) null,
-
+    primary key ([billrunno],[contractid],[contractyear],[payment_id],[weekno])
 )
-go
-create clustered columnstore index cci_BillingReservetraderpayment1 on mmsdm.BillingReservetraderpayment1;
 go
                         
 create table mmsdm.BillingReservetraderrecovery1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
 [billrunno] decimal(3,0) not null,
 [publication_id] varchar(40) not null,
@@ -1557,15 +1244,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [eligibility_start_interval] datetime2 null,
 [eligibility_end_interval] datetime2 null,
 [recovery_amount] decimal(18,8) null,
-
+    primary key ([billrunno],[contractyear],[participantid],[payment_id],[publication_id],[regionid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingReservetraderrecovery1 on mmsdm.BillingReservetraderrecovery1;
 go
                         
 create table mmsdm.BillingWhitehole5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(22,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(22,0) not null,
 [weekno] decimal(22,0) not null,
 [billrunno] decimal(22,0) not null,
 [participantid] varchar(10) not null,
@@ -1575,69 +1260,61 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [whiteholepayment] decimal(15,6) null,
 [lastchanged] datetime2 null,
 [interconnectorid] varchar(10) not null,
-
+    primary key ([billrunno],[contractyear],[interconnectorid],[participantid],[weekno])
 )
-go
-create clustered columnstore index cci_BillingWhitehole5 on mmsdm.BillingWhitehole5;
 go
                         
 create table mmsdm.OperationalDemandActual2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interval_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [interval_datetime] datetime2 not null,
 [regionid] varchar(20) not null,
 [operational_demand] decimal(10,0) null,
 [lastchanged] datetime2 null,
 [operational_demand_adjustment] decimal(10,0) null,
-
+[wdr_estimate] decimal(10,0) null,
+    primary key ([interval_datetime],[regionid])
 )
-go
-create clustered columnstore index cci_OperationalDemandActual2 on mmsdm.OperationalDemandActual2;
 go
                         
 create table mmsdm.OperationalDemandForecast1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interval_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [interval_datetime] datetime2 not null,
 [regionid] varchar(20) not null,
 [load_date] datetime2 null,
 [operational_demand_poe10] decimal(15,2) null,
 [operational_demand_poe50] decimal(15,2) null,
 [operational_demand_poe90] decimal(15,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interval_datetime],[regionid])
 )
-go
-create clustered columnstore index cci_OperationalDemandForecast1 on mmsdm.OperationalDemandForecast1;
 go
                         
 create table mmsdm.DemandIntermittentClusterAvail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[tradingdate] datetime2 not null,
+file_log_id bigint not null,
+    [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [clusterid] varchar(20) not null,
 [periodid] decimal(3,0) not null,
-[elements_unavailable] decimal(3,0) null,
-
+[elements_unavailable] decimal(5,0) null,
+[elements_available] decimal(5,0) null,
+    primary key ([clusterid],[duid],[offerdatetime],[periodid],[tradingdate])
 )
-go
-create clustered columnstore index cci_DemandIntermittentClusterAvail1 on mmsdm.DemandIntermittentClusterAvail1;
 go
                         
 create table mmsdm.DemandIntermittentClusterAvailDay1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[tradingdate] datetime2 not null,
+file_log_id bigint not null,
+    [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [clusterid] varchar(20) not null,
-
+    primary key ([clusterid],[duid],[offerdatetime],[tradingdate])
 )
-go
-create clustered columnstore index cci_DemandIntermittentClusterAvailDay1 on mmsdm.DemandIntermittentClusterAvailDay1;
 go
                         
 create table mmsdm.DemandIntermittentDsPred1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
@@ -1647,15 +1324,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [forecast_poe10] decimal(18,8) null,
 [forecast_poe50] decimal(18,8) null,
 [forecast_poe90] decimal(18,8) null,
-
+    primary key ([duid],[forecast_priority],[interval_datetime],[offerdatetime],[origin],[run_datetime])
 )
-go
-create clustered columnstore index cci_DemandIntermittentDsPred1 on mmsdm.DemandIntermittentDsPred1;
 go
                         
 create table mmsdm.DemandIntermittentDsRun1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [origin] varchar(20) not null,
@@ -1668,29 +1343,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [suppressed_aemo] decimal(1,0) null,
 [suppressed_participant] decimal(1,0) null,
 [transaction_id] varchar(100) null,
-
+    primary key ([duid],[forecast_priority],[offerdatetime],[origin],[run_datetime])
 )
-go
-create clustered columnstore index cci_DemandIntermittentDsRun1 on mmsdm.DemandIntermittentDsRun1;
 go
                         
 create table mmsdm.ForecastIntermittentGen1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [start_interval_datetime] datetime2 not null,
 [end_interval_datetime] datetime2 not null,
 [versionno] decimal(10,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[run_datetime])
 )
-go
-create clustered columnstore index cci_ForecastIntermittentGen1 on mmsdm.ForecastIntermittentGen1;
 go
                         
 create table mmsdm.ForecastIntermittentGenData1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [interval_datetime] datetime2 not null,
 [powermean] decimal(9,3) null,
@@ -1698,72 +1369,63 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [powerpoelow] decimal(9,3) null,
 [powerpoehigh] decimal(9,3) null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[interval_datetime],[run_datetime])
 )
-go
-create clustered columnstore index cci_ForecastIntermittentGenData1 on mmsdm.ForecastIntermittentGenData1;
 go
                         
 create table mmsdm.DemandIntermittentGenLimit1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[tradingdate] datetime2 not null,
+file_log_id bigint not null,
+    [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [periodid] decimal(3,0) not null,
 [uppermwlimit] decimal(6,0) null,
-
+    primary key ([duid],[offerdatetime],[periodid],[tradingdate])
 )
-go
-create clustered columnstore index cci_DemandIntermittentGenLimit1 on mmsdm.DemandIntermittentGenLimit1;
 go
                         
 create table mmsdm.DemandIntermittentGenLimitDay1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[tradingdate] datetime2 not null,
+file_log_id bigint not null,
+    [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [participantid] varchar(20) null,
 [lastchanged] datetime2 null,
 [authorisedbyuser] varchar(20) null,
 [authorisedbyparticipantid] varchar(20) null,
-
+    primary key ([duid],[offerdatetime],[tradingdate])
 )
-go
-create clustered columnstore index cci_DemandIntermittentGenLimitDay1 on mmsdm.DemandIntermittentGenLimitDay1;
 go
                         
 create table mmsdm.DemandMtpasaIntermittentAvail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[tradingdate] datetime2 not null,
+file_log_id bigint not null,
+    [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [clusterid] varchar(20) not null,
 [lastchanged] datetime2 null,
-[elements_unavailable] decimal(3,0) null,
-
+[elements_unavailable] decimal(5,0) null,
+[elements_available] decimal(5,0) null,
+    primary key ([clusterid],[duid],[offerdatetime],[tradingdate])
 )
-go
-create clustered columnstore index cci_DemandMtpasaIntermittentAvail1 on mmsdm.DemandMtpasaIntermittentAvail1;
 go
                         
 create table mmsdm.DemandMtpasaIntermittentLimit1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[tradingdate] datetime2 not null,
+file_log_id bigint not null,
+    [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
 [offerdatetime] datetime2 not null,
 [lastchanged] datetime2 null,
 [uppermwlimit] decimal(6,0) null,
 [authorisedbyuser] varchar(20) null,
 [authorisedbyparticipantid] varchar(20) null,
-
+    primary key ([duid],[offerdatetime],[tradingdate])
 )
-go
-create clustered columnstore index cci_DemandMtpasaIntermittentLimit1 on mmsdm.DemandMtpasaIntermittentLimit1;
 go
                         
 create table mmsdm.DemandPeriod1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 null,
 [settlementdate] datetime2 not null,
 [regionid] varchar(10) not null,
 [offerdate] datetime2 not null,
@@ -1774,15 +1436,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [demand10probability] decimal(10,0) null,
 [lastchanged] datetime2 null,
 [mr_schedule] decimal(6,0) null,
-
+    primary key ([offerdate],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_DemandPeriod1 on mmsdm.DemandPeriod1;
 go
                         
 create table mmsdm.DemandTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [regionid] varchar(10) not null,
 [offerdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
@@ -1790,29 +1450,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(10) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[offerdate],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_DemandTrk1 on mmsdm.DemandTrk1;
 go
                         
 create table mmsdm.RooftopActual2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interval_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [interval_datetime] datetime2 not null,
 [type] varchar(20) not null,
 [regionid] varchar(20) not null,
 [power] decimal(12,3) null,
 [qi] decimal(2,1) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interval_datetime],[regionid],[type])
 )
-go
-create clustered columnstore index cci_RooftopActual2 on mmsdm.RooftopActual2;
 go
                         
 create table mmsdm.RooftopForecast1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[version_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [version_datetime] datetime2 not null,
 [regionid] varchar(20) not null,
 [interval_datetime] datetime2 not null,
 [powermean] decimal(12,3) null,
@@ -1820,40 +1476,34 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [powerpoelow] decimal(12,3) null,
 [powerpoehigh] decimal(12,3) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interval_datetime],[regionid],[version_datetime])
 )
-go
-create clustered columnstore index cci_RooftopForecast1 on mmsdm.RooftopForecast1;
 go
                         
 create table mmsdm.PriceloadConstraintrelaxation1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [constraintid] varchar(20) not null,
 [rhs] decimal(16,6) null,
 [lastchanged] datetime2 null,
 [versionno] decimal(3,0) not null,
-
+    primary key ([constraintid],[runno],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_PriceloadConstraintrelaxation1 on mmsdm.PriceloadConstraintrelaxation1;
 go
                         
 create table mmsdm.DispatchBlockedConstraints1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [constraintid] varchar(20) not null,
-
+    primary key ([constraintid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchBlockedConstraints1 on mmsdm.DispatchBlockedConstraints1;
 go
                         
 create table mmsdm.DispatchCaseSolution2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [intervention] decimal(2,0) not null,
 [casesubtype] varchar(3) null,
@@ -1877,15 +1527,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [switchruninitialstatus] decimal(1,0) null,
 [switchrunbeststatus] decimal(1,0) null,
 [switchrunbeststatus_int] decimal(1,0) null,
-
+    primary key ([runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchCaseSolution2 on mmsdm.DispatchCaseSolution2;
 go
                         
 create table mmsdm.DispatchConstraint5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [constraintid] varchar(20) not null,
 [dispatchinterval] decimal(22,0) not null,
@@ -1898,15 +1546,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [genconid_effectivedate] datetime2 null,
 [genconid_versionno] decimal(22,0) null,
 [lhs] decimal(15,5) null,
-
+    primary key ([constraintid],[dispatchinterval],[intervention],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchConstraint5 on mmsdm.DispatchConstraint5;
 go
                         
 create table mmsdm.DispatchInterconnectorres3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
 [dispatchinterval] decimal(22,0) not null,
@@ -1928,15 +1574,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [locally_constrained_export] decimal(1,0) null,
 [local_price_adjustment_import] decimal(10,2) null,
 [locally_constrained_import] decimal(1,0) null,
-
+    primary key ([dispatchinterval],[interconnectorid],[intervention],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchInterconnectorres3 on mmsdm.DispatchInterconnectorres3;
 go
                         
 create table mmsdm.DispatchUnitSolution2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [duid] varchar(10) not null,
 [tradetype] decimal(2,0) null,
@@ -1992,29 +1636,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lower5minactualavailability] decimal(16,6) null,
 [lowerregactualavailability] decimal(16,6) null,
 [semidispatchcap] decimal(3,0) null,
-
+[dispatchmodetime] decimal(4,0) null,
+    primary key ([duid],[intervention],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchUnitSolution2 on mmsdm.DispatchUnitSolution2;
 go
                         
 create table mmsdm.DispatchOffertrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [duid] varchar(10) not null,
 [bidtype] varchar(10) not null,
 [bidsettlementdate] datetime2 null,
 [bidofferdate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([bidtype],[duid],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchOffertrk1 on mmsdm.DispatchOffertrk1;
 go
                         
 create table mmsdm.DispatchPrice4 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
 [dispatchinterval] varchar(22) not null,
@@ -2070,15 +1711,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [cumul_pre_ap_lowerreg_price] decimal(15,5) null,
 [ocd_status] varchar(14) null,
 [mii_status] varchar(21) null,
-
+    primary key ([dispatchinterval],[intervention],[regionid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchPrice4 on mmsdm.DispatchPrice4;
 go
                         
 create table mmsdm.DispatchRegionsum5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
 [dispatchinterval] decimal(22,0) not null,
@@ -2189,15 +1828,16 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ss_wind_clearedmw] decimal(15,5) null,
 [ss_solar_compliancemw] decimal(15,5) null,
 [ss_wind_compliancemw] decimal(15,5) null,
-
+[wdr_initialmw] decimal(15,5) null,
+[wdr_available] decimal(15,5) null,
+[wdr_dispatched] decimal(15,5) null,
+    primary key ([dispatchinterval],[intervention],[regionid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchRegionsum5 on mmsdm.DispatchRegionsum5;
 go
                         
 create table mmsdm.PriceloadConstraintFcasOcd1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [intervention] decimal(2,0) not null,
 [constraintid] varchar(20) not null,
@@ -2206,15 +1846,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rhs] decimal(15,5) null,
 [marginalvalue] decimal(15,5) null,
 [violationdegree] decimal(15,5) null,
-
+    primary key ([constraintid],[intervention],[runno],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_PriceloadConstraintFcasOcd1 on mmsdm.PriceloadConstraintFcasOcd1;
 go
                         
 create table mmsdm.DispatchFcasReq2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [intervention] decimal(2,0) not null,
 [genconid] varchar(20) not null,
@@ -2230,15 +1868,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [estimated_crmpf] decimal(18,8) null,
 [recovery_factor_cmpf] decimal(18,8) null,
 [recovery_factor_crmpf] decimal(18,8) null,
-
+    primary key ([bidtype],[genconid],[intervention],[regionid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchFcasReq2 on mmsdm.DispatchFcasReq2;
 go
                         
 create table mmsdm.DispatchInterconnection1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [intervention] decimal(2,0) not null,
 [from_regionid] varchar(20) not null,
@@ -2250,27 +1886,23 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [from_region_mw_losses] decimal(16,6) null,
 [to_region_mw_losses] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([from_regionid],[intervention],[runno],[settlementdate],[to_regionid])
 )
-go
-create clustered columnstore index cci_DispatchInterconnection1 on mmsdm.DispatchInterconnection1;
 go
                         
 create table mmsdm.DispatchLocalPrice1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [duid] varchar(20) not null,
 [local_price_adjustment] decimal(10,2) null,
 [locally_constrained] decimal(1,0) null,
-
+    primary key ([duid],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchLocalPrice1 on mmsdm.DispatchLocalPrice1;
 go
                         
 create table mmsdm.DispatchMnspbidtrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [linkid] varchar(10) not null,
@@ -2278,28 +1910,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [offereffectivedate] datetime2 null,
 [offerversionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([linkid],[participantid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchMnspbidtrk1 on mmsdm.DispatchMnspbidtrk1;
 go
                         
 create table mmsdm.DispatchMrScheduleTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [regionid] varchar(10) not null,
 [mr_date] datetime2 null,
 [version_datetime] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([regionid],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchMrScheduleTrk1 on mmsdm.DispatchMrScheduleTrk1;
 go
                         
 create table mmsdm.PriceloadPriceRevision1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [intervention] decimal(2,0) not null,
 [regionid] varchar(10) not null,
@@ -2308,15 +1936,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rrp_new] decimal(15,5) null,
 [rrp_old] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bidtype],[intervention],[regionid],[runno],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_PriceloadPriceRevision1 on mmsdm.PriceloadPriceRevision1;
 go
                         
 create table mmsdm.DispatchUnitConformance1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interval_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [interval_datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [totalcleared] decimal(16,6) null,
 [actualmw] decimal(16,6) null,
@@ -2334,39 +1960,33 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [participant_status_action] varchar(100) null,
 [operating_mode] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[interval_datetime])
 )
-go
-create clustered columnstore index cci_DispatchUnitConformance1 on mmsdm.DispatchUnitConformance1;
 go
                         
 create table mmsdm.DispatchUnitScada1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [duid] varchar(20) not null,
 [scadavalue] decimal(16,6) null,
-
+    primary key ([duid],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchUnitScada1 on mmsdm.DispatchUnitScada1;
 go
                         
 create table mmsdm.DispatchIntermittentForecastTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [duid] varchar(20) not null,
 [origin] varchar(20) null,
 [forecast_priority] decimal(10,0) null,
 [offerdatetime] datetime2 null,
-
+    primary key ([duid],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchIntermittentForecastTrk1 on mmsdm.DispatchIntermittentForecastTrk1;
 go
                         
 create table mmsdm.DispatchNegativeResidue1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [nrm_datetime] datetime2 not null,
 [directional_interconnectorid] varchar(30) not null,
 [nrm_activated_flag] decimal(1,0) null,
@@ -2381,15 +2001,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [di_notbinding_count] decimal(2,0) null,
 [di_violated_count] decimal(2,0) null,
 [nrmconstraint_blocked_flag] decimal(1,0) null,
-
+    primary key ([directional_interconnectorid],[nrm_datetime],[settlementdate])
 )
-go
-create clustered columnstore index cci_DispatchNegativeResidue1 on mmsdm.DispatchNegativeResidue1;
 go
                         
 create table mmsdm.ApApevent1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[apeventid] decimal(22,0) not null,
+file_log_id bigint not null,
+    [apeventid] decimal(22,0) not null,
 [effectivefrominterval] datetime2 null,
 [effectivetointerval] datetime2 null,
 [reason] varchar(2000) null,
@@ -2398,15 +2016,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [endauthorisedby] varchar(15) null,
 [endauthoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([apeventid])
 )
-go
-create clustered columnstore index cci_ApApevent1 on mmsdm.ApApevent1;
 go
                         
 create table mmsdm.ApApeventregion1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[apeventid] decimal(22,0) not null,
+file_log_id bigint not null,
+    [apeventid] decimal(22,0) not null,
 [regionid] varchar(10) not null,
 [lastchanged] datetime2 null,
 [energyapflag] decimal(1,0) null,
@@ -2418,15 +2034,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lower60secapflag] decimal(1,0) null,
 [lower5minapflag] decimal(1,0) null,
 [lowerregapflag] decimal(1,0) null,
-
+    primary key ([apeventid],[regionid])
 )
-go
-create clustered columnstore index cci_ApApeventregion1 on mmsdm.ApApeventregion1;
 go
                         
 create table mmsdm.ForceMajeureIrfmamount1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[irfmid] varchar(10) not null,
+file_log_id bigint not null,
+    [irfmid] varchar(10) not null,
 [effectivedate] datetime2 null,
 [versionno] decimal(3,0) not null,
 [periodid] decimal(4,0) not null,
@@ -2434,57 +2048,49 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([irfmid],[periodid],[versionno])
 )
-go
-create clustered columnstore index cci_ForceMajeureIrfmamount1 on mmsdm.ForceMajeureIrfmamount1;
 go
                         
 create table mmsdm.ForceMajeureIrfmevents1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[irfmid] varchar(10) not null,
+file_log_id bigint not null,
+    [irfmid] varchar(10) not null,
 [startdate] datetime2 null,
 [startperiod] decimal(3,0) null,
 [enddate] datetime2 null,
 [endperiod] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([irfmid])
 )
-go
-create clustered columnstore index cci_ForceMajeureIrfmevents1 on mmsdm.ForceMajeureIrfmevents1;
 go
                         
 create table mmsdm.ForceMajeureMarketSuspendRegimeSum1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[suspension_id] varchar(20) not null,
+file_log_id bigint not null,
+    [suspension_id] varchar(20) not null,
 [regionid] varchar(20) not null,
 [start_interval] datetime2 not null,
 [end_interval] datetime2 null,
 [pricing_regime] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([regionid],[start_interval],[suspension_id])
 )
-go
-create clustered columnstore index cci_ForceMajeureMarketSuspendRegimeSum1 on mmsdm.ForceMajeureMarketSuspendRegimeSum1;
 go
                         
 create table mmsdm.ForceMajeureMarketSuspendRegionSum1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[suspension_id] varchar(20) not null,
+file_log_id bigint not null,
+    [suspension_id] varchar(20) not null,
 [regionid] varchar(20) not null,
 [initial_interval] datetime2 null,
 [end_region_interval] datetime2 null,
 [end_suspension_interval] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([regionid],[suspension_id])
 )
-go
-create clustered columnstore index cci_ForceMajeureMarketSuspendRegionSum1 on mmsdm.ForceMajeureMarketSuspendRegionSum1;
 go
                         
 create table mmsdm.ForceMajeureMarketSuspendSchedule1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [day_type] varchar(20) not null,
 [regionid] varchar(20) not null,
 [periodid] decimal(3,0) not null,
@@ -2498,29 +2104,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [l5_rrp] decimal(15,5) null,
 [lreg_rrp] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([day_type],[effectivedate],[periodid],[regionid])
 )
-go
-create clustered columnstore index cci_ForceMajeureMarketSuspendSchedule1 on mmsdm.ForceMajeureMarketSuspendSchedule1;
 go
                         
 create table mmsdm.ForceMajeureMarketSuspendScheduleTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [source_start_date] datetime2 null,
 [source_end_date] datetime2 null,
 [comments] varchar(1000) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate])
 )
-go
-create clustered columnstore index cci_ForceMajeureMarketSuspendScheduleTrk1 on mmsdm.ForceMajeureMarketSuspendScheduleTrk1;
 go
                         
 create table mmsdm.ForceMajeureOverriderrp1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) not null,
+file_log_id bigint not null,
+    [regionid] varchar(10) not null,
 [startdate] datetime2 not null,
 [startperiod] decimal(3,0) not null,
 [enddate] datetime2 null,
@@ -2530,29 +2132,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authorisestart] varchar(15) null,
 [authoriseend] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([regionid],[startdate],[startperiod])
 )
-go
-create clustered columnstore index cci_ForceMajeureOverriderrp1 on mmsdm.ForceMajeureOverriderrp1;
 go
                         
 create table mmsdm.ApRegionapc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) not null,
+file_log_id bigint not null,
+    [regionid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(10) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_ApRegionapc1 on mmsdm.ApRegionapc1;
 go
                         
 create table mmsdm.ApRegionapcintervals1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) not null,
+file_log_id bigint not null,
+    [regionid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
@@ -2561,15 +2159,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [apctype] decimal(3,0) null,
 [fcasapcvalue] decimal(16,6) null,
 [apfvalue] decimal(16,6) null,
-
+    primary key ([effectivedate],[periodid],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_ApRegionapcintervals1 on mmsdm.ApRegionapcintervals1;
 go
                         
 create table mmsdm.GdInstructGdinstruct1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) null,
+file_log_id bigint not null,
+    [duid] varchar(10) null,
 [stationid] varchar(10) null,
 [regionid] varchar(10) null,
 [id] decimal(22,0) not null,
@@ -2584,52 +2180,44 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [issuedtime] datetime2 null,
 [targettime] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([id])
 )
-go
-create clustered columnstore index cci_GdInstructGdinstruct1 on mmsdm.GdInstructGdinstruct1;
 go
                         
 create table mmsdm.GdInstructInstructionsubtype1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[instructiontypeid] varchar(10) not null,
+file_log_id bigint not null,
+    [instructiontypeid] varchar(10) not null,
 [instructionsubtypeid] varchar(10) not null,
 [description] varchar(64) null,
 [lastchanged] datetime2 null,
-
+    primary key ([instructionsubtypeid],[instructiontypeid])
 )
-go
-create clustered columnstore index cci_GdInstructInstructionsubtype1 on mmsdm.GdInstructInstructionsubtype1;
 go
                         
 create table mmsdm.GdInstructInstructiontype1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[instructiontypeid] varchar(10) not null,
+file_log_id bigint not null,
+    [instructiontypeid] varchar(10) not null,
 [description] varchar(64) null,
 [regionid] varchar(10) null,
 [lastchanged] datetime2 null,
-
+    primary key ([instructiontypeid])
 )
-go
-create clustered columnstore index cci_GdInstructInstructiontype1 on mmsdm.GdInstructInstructiontype1;
 go
                         
 create table mmsdm.GenericConstraintEmsmaster1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[spd_id] varchar(21) not null,
+file_log_id bigint not null,
+    [spd_id] varchar(21) not null,
 [spd_type] varchar(1) not null,
 [description] varchar(255) null,
 [grouping_id] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([spd_id],[spd_type])
 )
-go
-create clustered columnstore index cci_GenericConstraintEmsmaster1 on mmsdm.GenericConstraintEmsmaster1;
 go
                         
 create table mmsdm.GencondataNull6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [genconid] varchar(20) not null,
 [constrainttype] varchar(2) null,
@@ -2655,30 +2243,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lrc] varchar(1) null,
 [lor] varchar(1) null,
 [force_scada] decimal(1,0) null,
-
+    primary key ([effectivedate],[genconid],[versionno])
 )
-go
-create clustered columnstore index cci_GencondataNull6 on mmsdm.GencondataNull6;
 go
                         
 create table mmsdm.GenconsetNull1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[genconsetid] varchar(20) not null,
+file_log_id bigint not null,
+    [genconsetid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [genconid] varchar(20) not null,
 [genconeffdate] datetime2 null,
 [genconversionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[genconid],[genconsetid],[versionno])
 )
-go
-create clustered columnstore index cci_GenconsetNull1 on mmsdm.GenconsetNull1;
 go
                         
 create table mmsdm.GenericConstraintGenconsetinvoke2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[invocation_id] decimal(9,0) not null,
+file_log_id bigint not null,
+    [invocation_id] decimal(9,0) not null,
 [startdate] datetime2 not null,
 [startperiod] decimal(3,0) not null,
 [genconsetid] varchar(20) not null,
@@ -2692,15 +2276,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [startintervaldatetime] datetime2 null,
 [endintervaldatetime] datetime2 null,
 [systemnormal] varchar(1) null,
-
+    primary key ([invocation_id])
 )
-go
-create clustered columnstore index cci_GenericConstraintGenconsetinvoke2 on mmsdm.GenericConstraintGenconsetinvoke2;
 go
                         
 create table mmsdm.GenconsettrkNull2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[genconsetid] varchar(20) not null,
+file_log_id bigint not null,
+    [genconsetid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [description] varchar(256) null,
@@ -2711,15 +2293,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [modifications] varchar(256) null,
 [systemnormal] varchar(1) null,
 [outage] varchar(256) null,
-
+    primary key ([effectivedate],[genconsetid],[versionno])
 )
-go
-create clustered columnstore index cci_GenconsettrkNull2 on mmsdm.GenconsettrkNull2;
 go
                         
 create table mmsdm.GcrhsNull1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[genconid] varchar(20) not null,
+file_log_id bigint not null,
+    [genconid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(22,0) not null,
 [scope] varchar(2) not null,
@@ -2734,15 +2314,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [parameterterm2] varchar(12) null,
 [parameterterm3] varchar(12) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[genconid],[scope],[termid],[versionno])
 )
-go
-create clustered columnstore index cci_GcrhsNull1 on mmsdm.GcrhsNull1;
 go
                         
 create table mmsdm.GeqdescNull2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[equationid] varchar(20) not null,
+file_log_id bigint not null,
+    [equationid] varchar(20) not null,
 [description] varchar(256) null,
 [lastchanged] datetime2 null,
 [impact] varchar(64) null,
@@ -2751,15 +2329,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [reason] varchar(256) null,
 [modifications] varchar(256) null,
 [additionalnotes] varchar(256) null,
-
+    primary key ([equationid])
 )
-go
-create clustered columnstore index cci_GeqdescNull2 on mmsdm.GeqdescNull2;
 go
                         
 create table mmsdm.GeqrhsNull1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[equationid] varchar(20) not null,
+file_log_id bigint not null,
+    [equationid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [termid] decimal(3,0) not null,
@@ -2773,59 +2349,51 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [parameterterm2] varchar(12) null,
 [parameterterm3] varchar(12) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[equationid],[termid],[versionno])
 )
-go
-create clustered columnstore index cci_GeqrhsNull1 on mmsdm.GeqrhsNull1;
 go
                         
 create table mmsdm.SpdcpcNull2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[connectionpointid] varchar(12) not null,
+file_log_id bigint not null,
+    [connectionpointid] varchar(12) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [genconid] varchar(20) not null,
 [factor] decimal(16,6) null,
 [lastchanged] datetime2 null,
 [bidtype] varchar(12) not null,
-
+    primary key ([bidtype],[connectionpointid],[effectivedate],[genconid],[versionno])
 )
-go
-create clustered columnstore index cci_SpdcpcNull2 on mmsdm.SpdcpcNull2;
 go
                         
 create table mmsdm.SpdiccNull1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interconnectorid] varchar(10) not null,
+file_log_id bigint not null,
+    [interconnectorid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [genconid] varchar(20) not null,
 [factor] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[genconid],[interconnectorid],[versionno])
 )
-go
-create clustered columnstore index cci_SpdiccNull1 on mmsdm.SpdiccNull1;
 go
                         
 create table mmsdm.SpdrcNull2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) not null,
+file_log_id bigint not null,
+    [regionid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [genconid] varchar(20) not null,
 [factor] decimal(16,6) null,
 [lastchanged] datetime2 null,
 [bidtype] varchar(10) not null,
-
+    primary key ([bidtype],[effectivedate],[genconid],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_SpdrcNull2 on mmsdm.SpdrcNull2;
 go
                         
 create table mmsdm.IrauctionConfigAuction1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[auctionid] varchar(30) not null,
+file_log_id bigint not null,
+    [auctionid] varchar(30) not null,
 [auctiondate] datetime2 null,
 [notifydate] datetime2 null,
 [startdate] datetime2 null,
@@ -2834,15 +2402,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(30) null,
 [lastchanged] datetime2 null,
-
+    primary key ([auctionid])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuction1 on mmsdm.IrauctionConfigAuction1;
 go
                         
 create table mmsdm.IrauctionConfigAuctionCalendar2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
@@ -2854,15 +2420,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [prelimproceedsstmtdate] datetime2 null,
 [finalpurchasestmtdate] datetime2 null,
 [finalproceedsstmtdate] datetime2 null,
-
+    primary key ([contractyear],[quarter])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuctionCalendar2 on mmsdm.IrauctionConfigAuctionCalendar2;
 go
                         
 create table mmsdm.IrauctionConfigAuctionIcAllocations2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [versionno] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
@@ -2874,15 +2438,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [changedby] varchar(15) null,
 [lastchanged] datetime2 null,
 [auctionfee_sales] decimal(18,8) null,
-
+    primary key ([contractyear],[fromregionid],[interconnectorid],[quarter],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuctionIcAllocations2 on mmsdm.IrauctionConfigAuctionIcAllocations2;
 go
                         
 create table mmsdm.IrauctionConfigAuctionRevenueEstimate1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [valuationid] varchar(15) not null,
 [versionno] decimal(3,0) not null,
@@ -2893,15 +2455,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [enddate] datetime2 null,
 [revenue] decimal(17,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractyear],[fromregionid],[interconnectorid],[monthno],[quarter],[valuationid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuctionRevenueEstimate1 on mmsdm.IrauctionConfigAuctionRevenueEstimate1;
 go
                         
 create table mmsdm.IrauctionConfigAuctionRevenueTrack1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [valuationid] varchar(15) not null,
 [versionno] decimal(3,0) not null,
@@ -2911,15 +2471,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractyear],[quarter],[valuationid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuctionRevenueTrack1 on mmsdm.IrauctionConfigAuctionRevenueTrack1;
 go
                         
 create table mmsdm.IrauctionConfigAuctionRpEstimate1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [valuationid] varchar(15) not null,
 [versionno] decimal(3,0) not null,
@@ -2927,15 +2485,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [fromregionid] varchar(10) not null,
 [rpestimate] decimal(17,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractyear],[fromregionid],[interconnectorid],[quarter],[valuationid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuctionRpEstimate1 on mmsdm.IrauctionConfigAuctionRpEstimate1;
 go
                         
 create table mmsdm.IrauctionConfigAuctionTranche1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [versionno] decimal(3,0) not null,
 [tranche] decimal(2,0) not null,
@@ -2945,26 +2501,22 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [changedate] datetime2 null,
 [changedby] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractyear],[quarter],[tranche],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionConfigAuctionTranche1 on mmsdm.IrauctionConfigAuctionTranche1;
 go
                         
 create table mmsdm.SettlementConfigResiduecontractpayments1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [participantid] varchar(10) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[participantid])
 )
-go
-create clustered columnstore index cci_SettlementConfigResiduecontractpayments1 on mmsdm.SettlementConfigResiduecontractpayments1;
 go
                         
 create table mmsdm.IrauctionBidsFileTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) null,
+file_log_id bigint not null,
+    [contractid] varchar(30) null,
 [participantid] varchar(10) not null,
 [loaddate] datetime2 not null,
 [filename] varchar(40) null,
@@ -2972,29 +2524,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [status] varchar(10) null,
 [lastchanged] datetime2 null,
 [auctionid] varchar(30) not null,
-
+    primary key ([auctionid],[loaddate],[participantid])
 )
-go
-create clustered columnstore index cci_IrauctionBidsFileTrk1 on mmsdm.IrauctionBidsFileTrk1;
 go
                         
 create table mmsdm.IrauctionResidueBidTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) null,
+file_log_id bigint not null,
+    [contractid] varchar(30) null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [bidloaddate] datetime2 null,
 [lastchanged] datetime2 null,
 [auctionid] varchar(30) not null,
-
+    primary key ([auctionid],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionResidueBidTrk1 on mmsdm.IrauctionResidueBidTrk1;
 go
                         
 create table mmsdm.IrauctionResidueContracts1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractyear] decimal(4,0) not null,
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [tranche] decimal(2,0) not null,
 [contractid] varchar(30) null,
@@ -3012,15 +2560,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [description] varchar(80) null,
 [auctionid] varchar(30) null,
-
+    primary key ([contractyear],[quarter],[tranche])
 )
-go
-create clustered columnstore index cci_IrauctionResidueContracts1 on mmsdm.IrauctionResidueContracts1;
 go
                         
 create table mmsdm.IrauctionResidueConData2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [interconnectorid] varchar(10) not null,
@@ -3029,29 +2575,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [linkpayment] decimal(17,5) null,
 [lastchanged] datetime2 null,
 [secondary_units_sold] decimal(18,8) null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionResidueConData2 on mmsdm.IrauctionResidueConData2;
 go
                         
 create table mmsdm.IrauctionResidueConEstimatesTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [contractyear] decimal(4,0) not null,
 [quarter] decimal(1,0) not null,
 [valuationid] varchar(15) not null,
 [versionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[contractyear],[quarter],[valuationid])
 )
-go
-create clustered columnstore index cci_IrauctionResidueConEstimatesTrk1 on mmsdm.IrauctionResidueConEstimatesTrk1;
 go
                         
 create table mmsdm.IrauctionResidueConFunds1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [interconnectorid] varchar(10) not null,
 [fromregionid] varchar(10) not null,
 [defaultunits] decimal(5,0) null,
@@ -3062,15 +2604,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [scalefactor] decimal(8,5) null,
 [actualreserveprice] decimal(9,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid])
 )
-go
-create clustered columnstore index cci_IrauctionResidueConFunds1 on mmsdm.IrauctionResidueConFunds1;
 go
                         
 create table mmsdm.IrauctionBidsFundsBid1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [participantid] varchar(10) not null,
 [loaddate] datetime2 not null,
 [optionid] decimal(3,0) not null,
@@ -3078,30 +2618,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [fromregionid] varchar(10) not null,
 [units] decimal(5,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[loaddate],[optionid],[participantid])
 )
-go
-create clustered columnstore index cci_IrauctionBidsFundsBid1 on mmsdm.IrauctionBidsFundsBid1;
 go
                         
 create table mmsdm.IrauctionBidsPriceBid1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) null,
+file_log_id bigint not null,
+    [contractid] varchar(30) null,
 [participantid] varchar(10) not null,
 [loaddate] datetime2 not null,
 [optionid] decimal(3,0) not null,
 [bidprice] decimal(17,5) null,
 [lastchanged] datetime2 null,
 [auctionid] varchar(30) not null,
-
+    primary key ([auctionid],[loaddate],[optionid],[participantid])
 )
-go
-create clustered columnstore index cci_IrauctionBidsPriceBid1 on mmsdm.IrauctionBidsPriceBid1;
 go
                         
 create table mmsdm.IrauctionResiduePriceFundsBid1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [interconnectorid] varchar(10) not null,
 [fromregionid] varchar(10) not null,
 [units] decimal(5,0) null,
@@ -3109,15 +2645,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [linkedbidflag] decimal(6,0) not null,
 [auctionid] varchar(30) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([auctionid],[contractid],[fromregionid],[interconnectorid],[linkedbidflag])
 )
-go
-create clustered columnstore index cci_IrauctionResiduePriceFundsBid1 on mmsdm.IrauctionResiduePriceFundsBid1;
 go
                         
 create table mmsdm.IrauctionResiduePublicData1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) not null,
+file_log_id bigint not null,
+    [contractid] varchar(30) not null,
 [versionno] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
 [fromregionid] varchar(10) not null,
@@ -3126,15 +2660,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [clearingprice] decimal(17,5) null,
 [reserveprice] decimal(17,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionResiduePublicData1 on mmsdm.IrauctionResiduePublicData1;
 go
                         
 create table mmsdm.IrauctionResidueTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[contractid] varchar(30) null,
+file_log_id bigint not null,
+    [contractid] varchar(30) null,
 [versionno] decimal(3,0) not null,
 [rundate] datetime2 null,
 [authoriseddate] datetime2 null,
@@ -3144,15 +2676,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [status] varchar(15) null,
 [auctionid] varchar(30) not null,
-
+    primary key ([auctionid],[versionno])
 )
-go
-create clustered columnstore index cci_IrauctionResidueTrk1 on mmsdm.IrauctionResidueTrk1;
 go
                         
 create table mmsdm.IrauctionSraCashSecurity1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[cash_security_id] varchar(36) not null,
+file_log_id bigint not null,
+    [cash_security_id] varchar(36) not null,
 [participantid] varchar(10) null,
 [provision_date] datetime2 null,
 [cash_amount] decimal(18,8) null,
@@ -3162,15 +2692,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [cash_security_returned] decimal(18,8) null,
 [deletiondate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([cash_security_id])
 )
-go
-create clustered columnstore index cci_IrauctionSraCashSecurity1 on mmsdm.IrauctionSraCashSecurity1;
 go
                         
 create table mmsdm.IrauctionSraFinancialAucpayDetail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[sra_year] decimal(4,0) not null,
+file_log_id bigint not null,
+    [sra_year] decimal(4,0) not null,
 [sra_quarter] decimal(3,0) not null,
 [sra_runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -3187,15 +2715,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [allocation] decimal(18,8) null,
 [net_payment_amount] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[participantid],[sra_quarter],[sra_runno],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraFinancialAucpayDetail1 on mmsdm.IrauctionSraFinancialAucpayDetail1;
 go
                         
 create table mmsdm.IrauctionSraFinancialAucpaySum1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[sra_year] decimal(4,0) not null,
+file_log_id bigint not null,
+    [sra_year] decimal(4,0) not null,
 [sra_quarter] decimal(3,0) not null,
 [sra_runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -3205,30 +2731,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [total_shortfall_amount] decimal(18,8) null,
 [net_payment_amount] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([participantid],[sra_quarter],[sra_runno],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraFinancialAucpaySum1 on mmsdm.IrauctionSraFinancialAucpaySum1;
 go
                         
 create table mmsdm.IrauctionSraFinancialAucMardetail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[sra_year] decimal(4,0) not null,
+file_log_id bigint not null,
+    [sra_year] decimal(4,0) not null,
 [sra_quarter] decimal(3,0) not null,
 [sra_runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [cash_security_id] varchar(36) not null,
 [returned_amount] decimal(18,8) null,
 [returned_interest] decimal(18,8) null,
-
+    primary key ([cash_security_id],[participantid],[sra_quarter],[sra_runno],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraFinancialAucMardetail1 on mmsdm.IrauctionSraFinancialAucMardetail1;
 go
                         
 create table mmsdm.IrauctionSraFinancialAucMargin1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[sra_year] decimal(4,0) not null,
+file_log_id bigint not null,
+    [sra_year] decimal(4,0) not null,
 [sra_quarter] decimal(3,0) not null,
 [sra_runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -3236,15 +2758,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [required_margin] decimal(18,8) null,
 [returned_margin] decimal(18,8) null,
 [returned_margin_interest] decimal(18,8) null,
-
+    primary key ([participantid],[sra_quarter],[sra_runno],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraFinancialAucMargin1 on mmsdm.IrauctionSraFinancialAucMargin1;
 go
                         
 create table mmsdm.IrauctionSraFinancialAucReceipts1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[sra_year] decimal(4,0) not null,
+file_log_id bigint not null,
+    [sra_year] decimal(4,0) not null,
 [sra_quarter] decimal(3,0) not null,
 [sra_runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -3257,15 +2777,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [proceeds_amount] decimal(18,8) null,
 [units_sold] decimal(18,8) null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[participantid],[sra_quarter],[sra_runno],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraFinancialAucReceipts1 on mmsdm.IrauctionSraFinancialAucReceipts1;
 go
                         
 create table mmsdm.IrauctionSraFinancialRuntrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[sra_year] decimal(4,0) not null,
+file_log_id bigint not null,
+    [sra_year] decimal(4,0) not null,
 [sra_quarter] decimal(3,0) not null,
 [sra_runno] decimal(3,0) not null,
 [runtype] varchar(20) null,
@@ -3274,15 +2792,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [interest_versionno] decimal(3,0) null,
 [makeup_versionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([sra_quarter],[sra_runno],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraFinancialRuntrk1 on mmsdm.IrauctionSraFinancialRuntrk1;
 go
                         
 create table mmsdm.IrauctionSraOfferProduct1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[auctionid] varchar(30) not null,
+file_log_id bigint not null,
+    [auctionid] varchar(30) not null,
 [participantid] varchar(10) not null,
 [loaddate] datetime2 not null,
 [optionid] decimal(4,0) not null,
@@ -3292,57 +2808,49 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [offer_price] decimal(18,8) null,
 [trancheid] varchar(30) null,
 [lastchanged] datetime2 null,
-
+    primary key ([auctionid],[loaddate],[optionid],[participantid])
 )
-go
-create clustered columnstore index cci_IrauctionSraOfferProduct1 on mmsdm.IrauctionSraOfferProduct1;
 go
                         
 create table mmsdm.IrauctionSraOfferProfile1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[auctionid] varchar(30) not null,
+file_log_id bigint not null,
+    [auctionid] varchar(30) not null,
 [participantid] varchar(10) not null,
 [loaddate] datetime2 not null,
 [filename] varchar(40) null,
 [ackfilename] varchar(40) null,
 [transactionid] varchar(100) null,
 [lastchanged] datetime2 null,
-
+    primary key ([auctionid],[loaddate],[participantid])
 )
-go
-create clustered columnstore index cci_IrauctionSraOfferProfile1 on mmsdm.IrauctionSraOfferProfile1;
 go
                         
 create table mmsdm.IrauctionSraPrudentialCashSecurity1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[prudential_date] datetime2 not null,
+file_log_id bigint not null,
+    [prudential_date] datetime2 not null,
 [prudential_runno] decimal(8,0) not null,
 [participantid] varchar(10) not null,
 [cash_security_id] varchar(36) not null,
 [cash_security_amount] decimal(18,8) null,
-
+    primary key ([cash_security_id],[participantid],[prudential_date],[prudential_runno])
 )
-go
-create clustered columnstore index cci_IrauctionSraPrudentialCashSecurity1 on mmsdm.IrauctionSraPrudentialCashSecurity1;
 go
                         
 create table mmsdm.IrauctionSraPrudentialCompPosition1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[prudential_date] datetime2 not null,
+file_log_id bigint not null,
+    [prudential_date] datetime2 not null,
 [prudential_runno] decimal(8,0) not null,
 [participantid] varchar(10) not null,
 [trading_limit] decimal(18,8) null,
 [prudential_exposure_amount] decimal(18,8) null,
 [trading_margin] decimal(18,8) null,
-
+    primary key ([participantid],[prudential_date],[prudential_runno])
 )
-go
-create clustered columnstore index cci_IrauctionSraPrudentialCompPosition1 on mmsdm.IrauctionSraPrudentialCompPosition1;
 go
                         
 create table mmsdm.IrauctionSraPrudentialExposure1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[prudential_date] datetime2 not null,
+file_log_id bigint not null,
+    [prudential_date] datetime2 not null,
 [prudential_runno] decimal(8,0) not null,
 [participantid] varchar(10) not null,
 [sra_year] decimal(4,0) not null,
@@ -3356,36 +2864,30 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [average_cancellation_price] decimal(18,8) null,
 [cancellation_volume] decimal(18,8) null,
 [trading_position] decimal(18,8) null,
-
+    primary key ([fromregionid],[interconnectorid],[participantid],[prudential_date],[prudential_runno],[sra_quarter],[sra_year])
 )
-go
-create clustered columnstore index cci_IrauctionSraPrudentialExposure1 on mmsdm.IrauctionSraPrudentialExposure1;
 go
                         
 create table mmsdm.IrauctionSraPrudentialRun1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[prudential_date] datetime2 not null,
+file_log_id bigint not null,
+    [prudential_date] datetime2 not null,
 [prudential_runno] decimal(8,0) not null,
-
+    primary key ([prudential_date],[prudential_runno])
 )
-go
-create clustered columnstore index cci_IrauctionSraPrudentialRun1 on mmsdm.IrauctionSraPrudentialRun1;
 go
                         
 create table mmsdm.IrauctionValuationid1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[valuationid] varchar(15) not null,
+file_log_id bigint not null,
+    [valuationid] varchar(15) not null,
 [description] varchar(80) null,
 [lastchanged] datetime2 null,
-
+    primary key ([valuationid])
 )
-go
-create clustered columnstore index cci_IrauctionValuationid1 on mmsdm.IrauctionValuationid1;
 go
                         
 create table mmsdm.MarketConfigBidtypes1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[bidtype] varchar(10) not null,
+file_log_id bigint not null,
+    [bidtype] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [description] varchar(64) null,
@@ -3394,57 +2896,49 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [validationrule] varchar(10) null,
 [lastchanged] datetime2 null,
 [spdalias] varchar(10) null,
-
+    primary key ([bidtype],[effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigBidtypes1 on mmsdm.MarketConfigBidtypes1;
 go
                         
 create table mmsdm.MarketConfigBidtypestrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigBidtypestrk1 on mmsdm.MarketConfigBidtypestrk1;
 go
                         
 create table mmsdm.MarketConfigInterconnector1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interconnectorid] varchar(10) not null,
+file_log_id bigint not null,
+    [interconnectorid] varchar(10) not null,
 [regionfrom] varchar(10) null,
 [rsoid] varchar(10) null,
 [regionto] varchar(10) null,
 [description] varchar(64) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interconnectorid])
 )
-go
-create clustered columnstore index cci_MarketConfigInterconnector1 on mmsdm.MarketConfigInterconnector1;
 go
                         
 create table mmsdm.MarketConfigInterconnectoralloc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(5,0) not null,
 [interconnectorid] varchar(10) not null,
 [regionid] varchar(10) not null,
 [participantid] varchar(10) not null,
 [allocation] decimal(12,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[interconnectorid],[participantid],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigInterconnectoralloc1 on mmsdm.MarketConfigInterconnectoralloc1;
 go
                         
 create table mmsdm.MarketConfigInterconnectorconstraint1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[reserveoverallloadfactor] decimal(5,2) null,
+file_log_id bigint not null,
+    [reserveoverallloadfactor] decimal(5,2) null,
 [fromregionlossshare] decimal(5,2) null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
@@ -3466,43 +2960,37 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [fcassupportunavailable] decimal(1,0) null,
 [ictype] varchar(10) null,
-
+    primary key ([effectivedate],[interconnectorid],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigInterconnectorconstraint1 on mmsdm.MarketConfigInterconnectorconstraint1;
 go
                         
 create table mmsdm.MarketConfigIntraregionalloc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(5,0) not null,
 [regionid] varchar(10) not null,
 [participantid] varchar(10) not null,
 [allocation] decimal(12,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigIntraregionalloc1 on mmsdm.MarketConfigIntraregionalloc1;
 go
                         
 create table mmsdm.MarketConfigLossfactormodel1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
 [regionid] varchar(10) not null,
 [demandcoefficient] decimal(27,17) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[interconnectorid],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigLossfactormodel1 on mmsdm.MarketConfigLossfactormodel1;
 go
                         
 create table mmsdm.MarketConfigLossmodel1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
 [periodid] varchar(20) null,
@@ -3510,15 +2998,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [mwbreakpoint] decimal(6,0) null,
 [lossfactor] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[interconnectorid],[losssegment],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigLossmodel1 on mmsdm.MarketConfigLossmodel1;
 go
                         
 create table mmsdm.MarketConfigMarketPriceThresholds1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(4,0) not null,
 [voll] decimal(15,5) null,
 [marketpricefloor] decimal(15,5) null,
@@ -3526,27 +3012,23 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigMarketPriceThresholds1 on mmsdm.MarketConfigMarketPriceThresholds1;
 go
                         
 create table mmsdm.MarketConfigRegion1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[regionid] varchar(10) not null,
+file_log_id bigint not null,
+    [regionid] varchar(10) not null,
 [description] varchar(64) null,
 [regionstatus] varchar(8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([regionid])
 )
-go
-create clustered columnstore index cci_MarketConfigRegion1 on mmsdm.MarketConfigRegion1;
 go
                         
 create table mmsdm.MarketConfigRegionstandingdata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
 [rsoid] varchar(10) null,
@@ -3556,89 +3038,75 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [authorisedby] varchar(15) null,
 [scalingfactor] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[regionid],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigRegionstandingdata1 on mmsdm.MarketConfigRegionstandingdata1;
 go
                         
 create table mmsdm.MarketConfigTransmissionlossfactor2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[transmissionlossfactor] decimal(15,5) not null,
+file_log_id bigint not null,
+    [transmissionlossfactor] decimal(15,5) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(22,0) not null,
 [connectionpointid] varchar(10) not null,
 [regionid] varchar(10) null,
 [lastchanged] datetime2 null,
 [secondary_tlf] decimal(18,8) null,
-
+    primary key ([connectionpointid],[effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_MarketConfigTransmissionlossfactor2 on mmsdm.MarketConfigTransmissionlossfactor2;
 go
                         
 create table mmsdm.MarketNoticeMarketnoticedata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[noticeid] decimal(10,0) not null,
+file_log_id bigint not null,
+    [noticeid] decimal(10,0) not null,
 [effectivedate] datetime2 null,
 [typeid] varchar(25) null,
 [noticetype] varchar(25) null,
 [lastchanged] datetime2 null,
 [reason] varchar(2000) null,
 [externalreference] varchar(255) null,
-
+    primary key ([noticeid])
 )
-go
-create clustered columnstore index cci_MarketNoticeMarketnoticedata1 on mmsdm.MarketNoticeMarketnoticedata1;
 go
                         
 create table mmsdm.MarketNoticeMarketnoticetype1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[typeid] varchar(25) not null,
+file_log_id bigint not null,
+    [typeid] varchar(25) not null,
 [description] varchar(64) null,
 [raisedby] varchar(10) null,
 [lastchanged] datetime2 null,
-
+    primary key ([typeid])
 )
-go
-create clustered columnstore index cci_MarketNoticeMarketnoticetype1 on mmsdm.MarketNoticeMarketnoticetype1;
 go
                         
 create table mmsdm.MarketNoticeParticipantnoticetrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [noticeid] decimal(10,0) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([noticeid],[participantid])
 )
-go
-create clustered columnstore index cci_MarketNoticeParticipantnoticetrk1 on mmsdm.MarketNoticeParticipantnoticetrk1;
 go
                         
 create table mmsdm.MccCasesolution1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
-
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
+    primary key ([run_datetime])
 )
-go
-create clustered columnstore index cci_MccCasesolution1 on mmsdm.MccCasesolution1;
 go
                         
 create table mmsdm.MccConstraintsolution1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [constraintid] varchar(20) not null,
 [rhs] decimal(15,5) null,
 [marginalvalue] decimal(15,5) null,
-
+    primary key ([constraintid],[run_datetime])
 )
-go
-create clustered columnstore index cci_MccConstraintsolution1 on mmsdm.MccConstraintsolution1;
 go
                         
 create table mmsdm.MeterdataAggregateReads1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[case_id] decimal(15,0) not null,
+file_log_id bigint not null,
+    [case_id] decimal(15,0) not null,
 [settlementdate] datetime2 not null,
 [connectionpointid] varchar(20) not null,
 [meter_type] varchar(20) not null,
@@ -3648,15 +3116,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [importvalue] decimal(18,8) not null,
 [exportvalue] decimal(18,8) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([case_id],[connectionpointid],[frmp],[lr],[meter_type],[periodid],[settlementdate])
 )
-go
-create clustered columnstore index cci_MeterdataAggregateReads1 on mmsdm.MeterdataAggregateReads1;
 go
                         
 create table mmsdm.MeterdataIndividualReads1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[case_id] decimal(15,0) not null,
+file_log_id bigint not null,
+    [case_id] decimal(15,0) not null,
 [settlementdate] datetime2 not null,
 [meter_id] varchar(20) not null,
 [meter_id_suffix] varchar(20) not null,
@@ -3668,126 +3134,36 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [importvalue] decimal(18,8) not null,
 [exportvalue] decimal(18,8) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([case_id],[meter_id],[meter_id_suffix],[periodid],[settlementdate])
 )
-go
-create clustered columnstore index cci_MeterdataIndividualReads1 on mmsdm.MeterdataIndividualReads1;
 go
                         
 create table mmsdm.MeterdataInterconnector1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[case_id] decimal(15,0) not null,
+file_log_id bigint not null,
+    [case_id] decimal(15,0) not null,
 [settlementdate] datetime2 not null,
 [interconnectorid] varchar(20) not null,
 [periodid] decimal(3,0) not null,
 [importvalue] decimal(18,8) null,
 [exportvalue] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([case_id],[interconnectorid],[periodid],[settlementdate])
 )
-go
-create clustered columnstore index cci_MeterdataInterconnector1 on mmsdm.MeterdataInterconnector1;
-go
-                        
-create table mmsdm.MeterdataTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[case_id] decimal(15,0) not null,
-[aggregate_reads_load_datetime] datetime2 null,
-[individual_reads_load_datetime] datetime2 null,
-[startdate] datetime2 null,
-[enddate] datetime2 null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_MeterdataTrk1 on mmsdm.MeterdataTrk1;
-go
-                        
-create table mmsdm.MrDayofferStack1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[version_datetime] datetime2 not null,
-[stack_position] decimal(3,0) not null,
-[duid] varchar(10) null,
-[authorised] decimal(1,0) null,
-[offer_settlementdate] datetime2 null,
-[offer_offerdate] datetime2 null,
-[offer_versionno] decimal(3,0) null,
-[offer_type] varchar(20) null,
-[laof] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_MrDayofferStack1 on mmsdm.MrDayofferStack1;
-go
-                        
-create table mmsdm.MrEvent1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[description] varchar(200) null,
-[authoriseddate] datetime2 null,
-[authorisedby] varchar(20) null,
-[offer_cut_off_time] datetime2 null,
-[settlement_complete] decimal(1,0) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_MrEvent1 on mmsdm.MrEvent1;
-go
-                        
-create table mmsdm.MrEventSchedule1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[version_datetime] datetime2 not null,
-[demand_effectivedate] datetime2 null,
-[demand_offerdate] datetime2 null,
-[demand_versionno] decimal(3,0) null,
-[authorisedby] varchar(20) null,
-[authoriseddate] datetime2 null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_MrEventSchedule1 on mmsdm.MrEventSchedule1;
-go
-                        
-create table mmsdm.MrPerofferStack1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[mr_date] datetime2 not null,
-[regionid] varchar(10) not null,
-[version_datetime] datetime2 not null,
-[stack_position] decimal(3,0) not null,
-[periodid] decimal(3,0) not null,
-[duid] varchar(10) null,
-[accepted_capacity] decimal(6,0) null,
-[deducted_capacity] decimal(6,0) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_MrPerofferStack1 on mmsdm.MrPerofferStack1;
 go
                         
 create table mmsdm.MtpasaCaseresult1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [plexos_version] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([run_datetime],[run_no])
 )
-go
-create clustered columnstore index cci_MtpasaCaseresult1 on mmsdm.MtpasaCaseresult1;
 go
                         
 create table mmsdm.MtpasaConstraintresult1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [demand_poe_type] varchar(20) not null,
@@ -3802,15 +3178,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [constraintviolation50] decimal(12,2) null,
 [constraintviolation10] decimal(12,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([constraintid],[day],[demand_poe_type],[run_datetime],[run_no],[runtype])
 )
-go
-create clustered columnstore index cci_MtpasaConstraintresult1 on mmsdm.MtpasaConstraintresult1;
 go
                         
 create table mmsdm.MtpasaConstraintsummary1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [demand_poe_type] varchar(20) not null,
@@ -3821,30 +3195,27 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [aggregation_period] varchar(20) not null,
 [constrainthoursbinding] decimal(12,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([aggregation_period],[constraintid],[day],[demand_poe_type],[run_datetime],[run_no],[runtype])
 )
-go
-create clustered columnstore index cci_MtpasaConstraintsummary1 on mmsdm.MtpasaConstraintsummary1;
 go
                         
 create table mmsdm.MtpasaDuidavailability1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[publish_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [publish_datetime] datetime2 not null,
 [day] datetime2 not null,
 [regionid] varchar(20) not null,
 [duid] varchar(20) not null,
 [pasaavailability] decimal(12,0) null,
 [latest_offer_datetime] datetime2 null,
 [lastchanged] datetime2 null,
-
+[carryoverstatus] decimal(1,0) null,
+    primary key ([day],[duid],[publish_datetime],[regionid])
 )
-go
-create clustered columnstore index cci_MtpasaDuidavailability1 on mmsdm.MtpasaDuidavailability1;
 go
                         
 create table mmsdm.MtpasaInterconnectorresult1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [demand_poe_type] varchar(20) not null,
@@ -3859,15 +3230,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [calculatedexportlimit] decimal(12,2) null,
 [calculatedimportlimit] decimal(12,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([day],[demand_poe_type],[interconnectorid],[run_datetime],[run_no],[runtype])
 )
-go
-create clustered columnstore index cci_MtpasaInterconnectorresult1 on mmsdm.MtpasaInterconnectorresult1;
 go
                         
 create table mmsdm.MtpasaLolpresult1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [day] datetime2 not null,
@@ -3879,15 +3248,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lossofloadprobability] decimal(8,5) null,
 [lossofloadmagnitude] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([day],[regionid],[run_datetime],[run_no],[runtype])
 )
-go
-create clustered columnstore index cci_MtpasaLolpresult1 on mmsdm.MtpasaLolpresult1;
 go
                         
 create table mmsdm.MtpasaRegionavailability3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[publish_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [publish_datetime] datetime2 not null,
 [day] datetime2 not null,
 [regionid] varchar(20) not null,
 [pasaavailability_scheduled] decimal(12,0) null,
@@ -3904,27 +3271,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [demand10max] decimal(12,2) null,
 [demand50min] decimal(12,2) null,
 [demand50max] decimal(12,2) null,
-
+[carryovercapacity] decimal(12,0) null,
+    primary key ([day],[publish_datetime],[regionid])
 )
-go
-create clustered columnstore index cci_MtpasaRegionavailability3 on mmsdm.MtpasaRegionavailability3;
 go
                         
 create table mmsdm.MtpasaRegionavailtrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[publish_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [publish_datetime] datetime2 not null,
 [startdate] datetime2 null,
 [enddate] datetime2 null,
 [latest_offer_datetime] datetime2 null,
-
+    primary key ([publish_datetime])
 )
-go
-create clustered columnstore index cci_MtpasaRegionavailtrk1 on mmsdm.MtpasaRegionavailtrk1;
 go
                         
 create table mmsdm.MtpasaRegioniteration1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [demand_poe_type] varchar(20) not null,
@@ -3935,15 +3299,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [use_iteration_event_number] decimal(12,2) null,
 [use_iteration_event_average] decimal(12,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([aggregation_period],[demand_poe_type],[period_ending],[regionid],[run_datetime],[run_no],[runtype],[use_iteration_id])
 )
-go
-create clustered columnstore index cci_MtpasaRegioniteration1 on mmsdm.MtpasaRegioniteration1;
 go
                         
 create table mmsdm.MtpasaRegionresult2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [demand_poe_type] varchar(20) not null,
@@ -3979,15 +3341,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [totalavailablegen50] decimal(12,2) null,
 [totalavailablegen90] decimal(12,2) null,
 [totalavailablegenmax] decimal(12,2) null,
-
+    primary key ([day],[demand_poe_type],[regionid],[run_datetime],[run_no],[runtype])
 )
-go
-create clustered columnstore index cci_MtpasaRegionresult2 on mmsdm.MtpasaRegionresult2;
 go
                         
 create table mmsdm.MtpasaRegionsummary1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [run_no] decimal(4,0) not null,
 [runtype] varchar(20) not null,
 [demand_poe_type] varchar(20) not null,
@@ -4017,15 +3377,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [use_weighted_avg] decimal(16,6) null,
 [lrc] decimal(12,2) null,
 [lastchanged] datetime2 null,
-
+    primary key ([aggregation_period],[demand_poe_type],[period_ending],[regionid],[run_datetime],[run_no],[runtype])
 )
-go
-create clustered columnstore index cci_MtpasaRegionsummary1 on mmsdm.MtpasaRegionsummary1;
 go
                         
 create table mmsdm.NetworkEquipmentdetail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[substationid] varchar(30) not null,
+file_log_id bigint not null,
+    [substationid] varchar(30) not null,
 [equipmenttype] varchar(10) not null,
 [equipmentid] varchar(30) not null,
 [validfrom] datetime2 not null,
@@ -4033,27 +3391,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [voltage] varchar(20) null,
 [description] varchar(100) null,
 [lastchanged] datetime2 null,
-
+[elementid] decimal(15,0) not null,
+    primary key ([elementid],[equipmentid],[equipmenttype],[substationid],[validfrom])
 )
-go
-create clustered columnstore index cci_NetworkEquipmentdetail1 on mmsdm.NetworkEquipmentdetail1;
 go
                         
 create table mmsdm.NetworkOutageconstraintset1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[outageid] decimal(15,0) not null,
+file_log_id bigint not null,
+    [outageid] decimal(15,0) not null,
 [genconsetid] varchar(50) not null,
 [startinterval] datetime2 null,
 [endinterval] datetime2 null,
-
+    primary key ([genconsetid],[outageid])
 )
-go
-create clustered columnstore index cci_NetworkOutageconstraintset1 on mmsdm.NetworkOutageconstraintset1;
 go
                         
 create table mmsdm.NetworkOutagedetail3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[outageid] decimal(15,0) not null,
+file_log_id bigint not null,
+    [outageid] decimal(15,0) not null,
 [substationid] varchar(30) not null,
 [equipmenttype] varchar(10) not null,
 [equipmentid] varchar(30) not null,
@@ -4071,26 +3426,23 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [actual_starttime] datetime2 null,
 [actual_endtime] datetime2 null,
 [companyrefcode] varchar(20) null,
-
+[elementid] decimal(15,0) not null,
+    primary key ([elementid],[equipmentid],[equipmenttype],[outageid],[starttime],[substationid])
 )
-go
-create clustered columnstore index cci_NetworkOutagedetail3 on mmsdm.NetworkOutagedetail3;
 go
                         
 create table mmsdm.NetworkOutagestatuscode1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[outagestatuscode] varchar(10) not null,
+file_log_id bigint not null,
+    [outagestatuscode] varchar(10) not null,
 [description] varchar(100) null,
 [lastchanged] datetime2 null,
-
+    primary key ([outagestatuscode])
 )
-go
-create clustered columnstore index cci_NetworkOutagestatuscode1 on mmsdm.NetworkOutagestatuscode1;
 go
                         
 create table mmsdm.NetworkRating1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[spd_id] varchar(21) not null,
+file_log_id bigint not null,
+    [spd_id] varchar(21) not null,
 [validfrom] datetime2 not null,
 [validto] datetime2 null,
 [regionid] varchar(10) null,
@@ -4100,26 +3452,22 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ratinglevel] varchar(10) null,
 [isdynamic] decimal(1,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([spd_id],[validfrom])
 )
-go
-create clustered columnstore index cci_NetworkRating1 on mmsdm.NetworkRating1;
 go
                         
 create table mmsdm.NetworkRealtimerating1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [spd_id] varchar(21) not null,
 [ratingvalue] decimal(16,6) not null,
-
+    primary key ([settlementdate],[spd_id])
 )
-go
-create clustered columnstore index cci_NetworkRealtimerating1 on mmsdm.NetworkRealtimerating1;
 go
                         
 create table mmsdm.NetworkStaticrating1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[substationid] varchar(30) not null,
+file_log_id bigint not null,
+    [substationid] varchar(30) not null,
 [equipmenttype] varchar(10) not null,
 [equipmentid] varchar(30) not null,
 [ratinglevel] varchar(10) not null,
@@ -4128,40 +3476,34 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [validto] datetime2 null,
 [ratingvalue] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([applicationid],[equipmentid],[equipmenttype],[ratinglevel],[substationid],[validfrom])
 )
-go
-create clustered columnstore index cci_NetworkStaticrating1 on mmsdm.NetworkStaticrating1;
 go
                         
 create table mmsdm.NetworkSubstationdetail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[substationid] varchar(30) not null,
+file_log_id bigint not null,
+    [substationid] varchar(30) not null,
 [validfrom] datetime2 not null,
 [validto] datetime2 null,
 [description] varchar(100) null,
 [regionid] varchar(10) null,
 [ownerid] varchar(30) null,
 [lastchanged] datetime2 null,
-
+    primary key ([substationid],[validfrom])
 )
-go
-create clustered columnstore index cci_NetworkSubstationdetail1 on mmsdm.NetworkSubstationdetail1;
 go
                         
 create table mmsdm.P5minBlockedConstraints1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [constraintid] varchar(20) not null,
-
+    primary key ([constraintid],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minBlockedConstraints1 on mmsdm.P5minBlockedConstraints1;
 go
                         
 create table mmsdm.P5minCasesolution2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [startinterval_datetime] varchar(20) null,
 [totalobjective] decimal(27,10) null,
 [nonphysicallosses] decimal(1,0) null,
@@ -4180,15 +3522,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [totalfaststartviolation] decimal(15,5) null,
 [lastchanged] datetime2 null,
 [intervention] decimal(2,0) null,
-
+    primary key ([run_datetime])
 )
-go
-create clustered columnstore index cci_P5minCasesolution2 on mmsdm.P5minCasesolution2;
 go
                         
 create table mmsdm.P5minConstraintsolution6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [constraintid] varchar(20) not null,
 [rhs] decimal(15,5) null,
@@ -4200,15 +3540,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [genconid_versionno] decimal(22,0) null,
 [lhs] decimal(15,5) null,
 [intervention] decimal(2,0) null,
-
+    primary key ([constraintid],[interval_datetime],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minConstraintsolution6 on mmsdm.P5minConstraintsolution6;
 go
                         
 create table mmsdm.P5minInterconnectorsoln4 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interconnectorid] varchar(10) not null,
 [interval_datetime] datetime2 not null,
 [meteredmwflow] decimal(15,5) null,
@@ -4230,15 +3568,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [local_price_adjustment_import] decimal(10,2) null,
 [locally_constrained_import] decimal(1,0) null,
 [intervention] decimal(2,0) null,
-
+    primary key ([interconnectorid],[interval_datetime],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minInterconnectorsoln4 on mmsdm.P5minInterconnectorsoln4;
 go
                         
 create table mmsdm.P5minIntersensitivities1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interconnectorid] varchar(20) not null,
 [interval_datetime] datetime2 not null,
 [intervention] decimal(1,0) not null,
@@ -4287,28 +3623,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [mwflow42] decimal(15,5) null,
 [mwflow43] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interconnectorid],[interval_datetime],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minIntersensitivities1 on mmsdm.P5minIntersensitivities1;
 go
                         
 create table mmsdm.P5minLocalPrice1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [local_price_adjustment] decimal(10,2) null,
 [locally_constrained] decimal(1,0) null,
-
+    primary key ([duid],[interval_datetime],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minLocalPrice1 on mmsdm.P5minLocalPrice1;
 go
                         
 create table mmsdm.P5minPricesensitivities1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [regionid] varchar(20) not null,
 [interval_datetime] datetime2 not null,
 [intervention] decimal(1,0) not null,
@@ -4357,15 +3689,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rrp42] decimal(15,5) null,
 [rrp43] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interval_datetime],[regionid],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minPricesensitivities1 on mmsdm.P5minPricesensitivities1;
 go
                         
 create table mmsdm.P5minRegionsolution6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [regionid] varchar(10) not null,
 [rrp] decimal(15,5) null,
@@ -4466,40 +3796,37 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ss_wind_clearedmw] decimal(15,5) null,
 [ss_solar_compliancemw] decimal(15,5) null,
 [ss_wind_compliancemw] decimal(15,5) null,
-
+[wdr_initialmw] decimal(15,5) null,
+[wdr_available] decimal(15,5) null,
+[wdr_dispatched] decimal(15,5) null,
+    primary key ([interval_datetime],[regionid],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minRegionsolution6 on mmsdm.P5minRegionsolution6;
 go
                         
 create table mmsdm.P5minScenariodemand1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [scenario] decimal(2,0) not null,
 [regionid] varchar(20) not null,
 [deltamw] decimal(4,0) null,
-
+    primary key ([effectivedate],[regionid],[scenario],[version_datetime])
 )
-go
-create clustered columnstore index cci_P5minScenariodemand1 on mmsdm.P5minScenariodemand1;
 go
                         
 create table mmsdm.P5minScenariodemandtrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[version_datetime])
 )
-go
-create clustered columnstore index cci_P5minScenariodemandtrk1 on mmsdm.P5minScenariodemandtrk1;
 go
                         
 create table mmsdm.P5minUnitsolution3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [duid] varchar(10) not null,
 [connectionpointid] varchar(12) null,
@@ -4529,15 +3856,14 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [semidispatchcap] decimal(3,0) null,
 [intervention] decimal(2,0) null,
-
+[dispatchmodetime] decimal(4,0) null,
+    primary key ([duid],[interval_datetime],[run_datetime])
 )
-go
-create clustered columnstore index cci_P5minUnitsolution3 on mmsdm.P5minUnitsolution3;
 go
                         
 create table mmsdm.ParticipantRegistrationBidduiddetails1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
+file_log_id bigint not null,
+    [duid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [bidtype] varchar(10) not null,
@@ -4547,61 +3873,53 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [maxlowerangle] decimal(3,0) null,
 [maxupperangle] decimal(3,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bidtype],[duid],[effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationBidduiddetails1 on mmsdm.ParticipantRegistrationBidduiddetails1;
 go
                         
 create table mmsdm.ParticipantRegistrationBidduiddetailstrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
+file_log_id bigint not null,
+    [duid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(15) null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationBidduiddetailstrk1 on mmsdm.ParticipantRegistrationBidduiddetailstrk1;
 go
                         
 create table mmsdm.ParticipantRegistrationDispatchableunit1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
+file_log_id bigint not null,
+    [duid] varchar(10) not null,
 [duname] varchar(20) null,
 [unittype] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationDispatchableunit1 on mmsdm.ParticipantRegistrationDispatchableunit1;
 go
                         
 create table mmsdm.ParticipantRegistrationDualloc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [duid] varchar(10) not null,
 [gensetid] varchar(20) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[effectivedate],[gensetid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationDualloc1 on mmsdm.ParticipantRegistrationDualloc1;
 go
                         
 create table mmsdm.ParticipantRegistrationDudetail3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [duid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [connectionpointid] varchar(10) null,
 [voltlevel] varchar(10) null,
 [registeredcapacity] decimal(6,0) null,
 [agccapability] varchar(1) null,
-[dispatchtype] varchar(10) null,
+[dispatchtype] varchar(20) null,
 [maxcapacity] decimal(6,0) null,
 [starttype] varchar(20) null,
 [normallyonflag] varchar(1) null,
@@ -4614,18 +3932,17 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [semi_schedule_flag] varchar(1) null,
 [maxrateofchangeup] decimal(6,0) null,
 [maxrateofchangedown] decimal(6,0) null,
-
+[dispatchsubtype] varchar(20) null,
+    primary key ([duid],[effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationDudetail3 on mmsdm.ParticipantRegistrationDudetail3;
 go
                         
 create table mmsdm.ParticipantRegistrationDudetailsummary4 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
+file_log_id bigint not null,
+    [duid] varchar(10) not null,
 [start_date] datetime2 not null,
 [end_date] datetime2 not null,
-[dispatchtype] varchar(10) null,
+[dispatchtype] varchar(20) null,
 [connectionpointid] varchar(10) null,
 [regionid] varchar(10) null,
 [stationid] varchar(10) null,
@@ -4642,15 +3959,14 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [max_ramp_rate_up] decimal(6,0) null,
 [max_ramp_rate_down] decimal(6,0) null,
 [is_aggregated] decimal(1,0) null,
-
+[dispatchsubtype] varchar(20) null,
+    primary key ([duid],[start_date])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationDudetailsummary4 on mmsdm.ParticipantRegistrationDudetailsummary4;
 go
                         
 create table mmsdm.ParticipantRegistrationGenmeter1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[meterid] varchar(12) not null,
+file_log_id bigint not null,
+    [meterid] varchar(12) not null,
 [gensetid] varchar(20) null,
 [connectionpointid] varchar(10) null,
 [stationid] varchar(10) null,
@@ -4666,15 +3982,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [enddate] datetime2 null,
 [startdate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([applydate],[meterid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationGenmeter1 on mmsdm.ParticipantRegistrationGenmeter1;
 go
                         
 create table mmsdm.ParticipantRegistrationGenunits2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[gensetid] varchar(20) not null,
+file_log_id bigint not null,
+    [gensetid] varchar(20) not null,
 [stationid] varchar(10) null,
 [setlossfactor] decimal(16,6) null,
 [cdindicator] varchar(10) null,
@@ -4682,7 +3996,7 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [spinningflag] varchar(2) null,
 [voltlevel] decimal(6,0) null,
 [registeredcapacity] decimal(6,0) null,
-[dispatchtype] varchar(10) null,
+[dispatchtype] varchar(20) null,
 [starttype] varchar(20) null,
 [mktgeneratorind] varchar(10) null,
 [normalstatus] varchar(10) null,
@@ -4693,32 +4007,28 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [co2e_emissions_factor] decimal(18,8) null,
 [co2e_energy_source] varchar(100) null,
 [co2e_data_source] varchar(20) null,
-
+    primary key ([gensetid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationGenunits2 on mmsdm.ParticipantRegistrationGenunits2;
 go
                         
 create table mmsdm.ParticipantRegistrationGenunitsUnit1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[gensetid] varchar(20) not null,
+file_log_id bigint not null,
+    [gensetid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(6,0) not null,
 [unit_grouping_label] varchar(20) not null,
-[unit_count] decimal(3,0) null,
+[unit_count] decimal(10,0) null,
 [unit_size] decimal(8,3) null,
 [unit_max_size] decimal(8,3) null,
 [aggregation_flag] decimal(1,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[gensetid],[unit_grouping_label],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationGenunitsUnit1 on mmsdm.ParticipantRegistrationGenunitsUnit1;
 go
                         
 create table mmsdm.ParticipantRegistrationMnspInterconnector2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[linkid] varchar(10) not null,
+file_log_id bigint not null,
+    [linkid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [interconnectorid] varchar(10) null,
@@ -4733,43 +4043,37 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [from_region_tlf] decimal(12,7) null,
 [to_region_tlf] decimal(12,7) null,
-
+    primary key ([effectivedate],[linkid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationMnspInterconnector2 on mmsdm.ParticipantRegistrationMnspInterconnector2;
 go
                         
 create table mmsdm.ParticipantRegistrationMnspParticipant1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[interconnectorid] varchar(10) not null,
+file_log_id bigint not null,
+    [interconnectorid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[interconnectorid],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationMnspParticipant1 on mmsdm.ParticipantRegistrationMnspParticipant1;
 go
                         
 create table mmsdm.ParticipantRegistrationParticipant1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [participantclassid] varchar(20) null,
 [name] varchar(80) null,
 [description] varchar(64) null,
 [acn] varchar(9) null,
 [primarybusiness] varchar(40) null,
 [lastchanged] datetime2 null,
-
+    primary key ([participantid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationParticipant1 on mmsdm.ParticipantRegistrationParticipant1;
 go
                         
 create table mmsdm.ParticipantRegistrationParticipantaccount1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[accountname] varchar(80) null,
+file_log_id bigint not null,
+    [accountname] varchar(80) null,
 [participantid] varchar(10) not null,
 [accountnumber] varchar(16) null,
 [bankname] varchar(16) null,
@@ -4784,75 +4088,63 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [effectivedate] datetime2 null,
 [lastchanged] datetime2 null,
 [abn] varchar(20) null,
-
+    primary key ([participantid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationParticipantaccount1 on mmsdm.ParticipantRegistrationParticipantaccount1;
 go
                         
 create table mmsdm.ParticipantRegistrationParticipantcategory1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantcategoryid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantcategoryid] varchar(10) not null,
 [description] varchar(64) null,
 [lastchanged] datetime2 null,
-
+    primary key ([participantcategoryid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationParticipantcategory1 on mmsdm.ParticipantRegistrationParticipantcategory1;
 go
                         
 create table mmsdm.ParticipantRegistrationParticipantcategoryalloc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantcategoryid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantcategoryid] varchar(10) not null,
 [participantid] varchar(10) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([participantcategoryid],[participantid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationParticipantcategoryalloc1 on mmsdm.ParticipantRegistrationParticipantcategoryalloc1;
 go
                         
 create table mmsdm.ParticipantRegistrationParticipantclass1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantclassid] varchar(20) not null,
+file_log_id bigint not null,
+    [participantclassid] varchar(20) not null,
 [description] varchar(64) null,
 [lastchanged] datetime2 null,
-
+    primary key ([participantclassid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationParticipantclass1 on mmsdm.ParticipantRegistrationParticipantclass1;
 go
                         
 create table mmsdm.ParticipantRegistrationParticipantcreditdetail1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [participantid] varchar(10) not null,
 [creditlimit] decimal(10,0) null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationParticipantcreditdetail1 on mmsdm.ParticipantRegistrationParticipantcreditdetail1;
 go
                         
 create table mmsdm.ParticipantRegistrationStadualloc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[duid] varchar(10) not null,
+file_log_id bigint not null,
+    [duid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [stationid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[effectivedate],[stationid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationStadualloc1 on mmsdm.ParticipantRegistrationStadualloc1;
 go
                         
 create table mmsdm.ParticipantRegistrationStation1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[stationid] varchar(10) not null,
+file_log_id bigint not null,
+    [stationid] varchar(10) not null,
 [stationname] varchar(80) null,
 [address1] varchar(80) null,
 [address2] varchar(80) null,
@@ -4863,57 +4155,49 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [postcode] varchar(10) null,
 [lastchanged] datetime2 null,
 [connectionpointid] varchar(10) null,
-
+    primary key ([stationid])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationStation1 on mmsdm.ParticipantRegistrationStation1;
 go
                         
 create table mmsdm.ParticipantRegistrationStationoperatingstatus1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [stationid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [status] varchar(20) null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[stationid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationStationoperatingstatus1 on mmsdm.ParticipantRegistrationStationoperatingstatus1;
 go
                         
 create table mmsdm.ParticipantRegistrationStationowner1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [participantid] varchar(10) not null,
 [stationid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid],[stationid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationStationowner1 on mmsdm.ParticipantRegistrationStationowner1;
 go
                         
 create table mmsdm.ParticipantRegistrationStationownertrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [participantid] varchar(10) not null,
 [versionno] decimal(3,0) not null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_ParticipantRegistrationStationownertrk1 on mmsdm.ParticipantRegistrationStationownertrk1;
 go
                         
 create table mmsdm.PdpasaCasesolution3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [pasaversion] varchar(10) null,
 [reservecondition] decimal(1,0) null,
 [lorcondition] decimal(1,0) null,
@@ -4932,15 +4216,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [loruigf_option] decimal(3,0) null,
 [reliability_lrcuigf_option] decimal(3,0) null,
 [outage_lrcuigf_option] decimal(3,0) null,
-
+    primary key ([run_datetime])
 )
-go
-create clustered columnstore index cci_PdpasaCasesolution3 on mmsdm.PdpasaCasesolution3;
 go
                         
 create table mmsdm.PdpasaConstraintsolution1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [constraintid] varchar(20) not null,
 [capacityrhs] decimal(12,2) null,
@@ -4949,15 +4231,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [runtype] varchar(20) not null,
 [studyregionid] varchar(20) not null,
-
+    primary key ([constraintid],[interval_datetime],[run_datetime],[runtype],[studyregionid])
 )
-go
-create clustered columnstore index cci_PdpasaConstraintsolution1 on mmsdm.PdpasaConstraintsolution1;
 go
                         
 create table mmsdm.PdpasaInterconnectorsoln1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [interconnectorid] varchar(10) not null,
 [capacitymwflow] decimal(12,2) null,
@@ -4970,15 +4250,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [exportlimitconstraintid] varchar(20) null,
 [importlimitconstraintid] varchar(20) null,
 [studyregionid] varchar(20) not null,
-
+    primary key ([interconnectorid],[interval_datetime],[run_datetime],[runtype],[studyregionid])
 )
-go
-create clustered columnstore index cci_PdpasaInterconnectorsoln1 on mmsdm.PdpasaInterconnectorsoln1;
 go
                         
 create table mmsdm.PdpasaRegionsolution6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [regionid] varchar(10) not null,
 [demand10] decimal(12,2) null,
@@ -5020,25 +4298,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ss_wind_capacity] decimal(12,2) null,
 [ss_solar_cleared] decimal(12,2) null,
 [ss_wind_cleared] decimal(12,2) null,
-
+[wdr_available] decimal(12,2) null,
+[wdr_pasaavailable] decimal(12,2) null,
+[wdr_capacity] decimal(12,2) null,
+    primary key ([interval_datetime],[regionid],[run_datetime],[runtype])
 )
-go
-create clustered columnstore index cci_PdpasaRegionsolution6 on mmsdm.PdpasaRegionsolution6;
 go
                         
 create table mmsdm.PredispatchBlockedConstraints1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) not null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) not null,
 [constraintid] varchar(20) not null,
-
+    primary key ([constraintid],[predispatchseqno])
 )
-go
-create clustered columnstore index cci_PredispatchBlockedConstraints1 on mmsdm.PredispatchBlockedConstraints1;
 go
                         
 create table mmsdm.PredispatchCaseSolution1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) not null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) not null,
 [runno] decimal(3,0) not null,
 [solutionstatus] decimal(2,0) null,
 [spdversion] varchar(20) null,
@@ -5058,15 +4335,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [totalenergyofferviolation] decimal(15,5) null,
 [lastchanged] datetime2 null,
 [intervention] decimal(2,0) null,
-
+    primary key ([predispatchseqno],[runno])
 )
-go
-create clustered columnstore index cci_PredispatchCaseSolution1 on mmsdm.PredispatchCaseSolution1;
 go
                         
 create table mmsdm.PredispatchConstraintSolution5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [constraintid] varchar(20) not null,
 [periodid] varchar(20) null,
@@ -5080,15 +4355,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [genconid_effectivedate] datetime2 null,
 [genconid_versionno] decimal(22,0) null,
 [lhs] decimal(15,5) null,
-
+    primary key ([constraintid],[datetime])
 )
-go
-create clustered columnstore index cci_PredispatchConstraintSolution5 on mmsdm.PredispatchConstraintSolution5;
 go
                         
 create table mmsdm.PredispatchInterconnectorSoln3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [interconnectorid] varchar(10) not null,
 [periodid] varchar(20) null,
@@ -5111,15 +4384,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [locally_constrained_export] decimal(1,0) null,
 [local_price_adjustment_import] decimal(10,2) null,
 [locally_constrained_import] decimal(1,0) null,
-
+    primary key ([datetime],[interconnectorid])
 )
-go
-create clustered columnstore index cci_PredispatchInterconnectorSoln3 on mmsdm.PredispatchInterconnectorSoln3;
 go
                         
 create table mmsdm.PredispatchInterconnectrSens1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [interconnectorid] varchar(10) not null,
 [periodid] varchar(20) null,
@@ -5170,15 +4441,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [mwflow42] decimal(15,5) null,
 [mwflow43] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([datetime],[interconnectorid])
 )
-go
-create clustered columnstore index cci_PredispatchInterconnectrSens1 on mmsdm.PredispatchInterconnectrSens1;
 go
                         
 create table mmsdm.PredispatchUnitSolution2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [duid] varchar(10) not null,
 [tradetype] decimal(2,0) null,
@@ -5229,15 +4498,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lower5minactualavailability] decimal(16,6) null,
 [lowerregactualavailability] decimal(16,6) null,
 [semidispatchcap] decimal(3,0) null,
-
+    primary key ([datetime],[duid])
 )
-go
-create clustered columnstore index cci_PredispatchUnitSolution2 on mmsdm.PredispatchUnitSolution2;
 go
                         
 create table mmsdm.PredispatchOffertrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) not null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) not null,
 [duid] varchar(10) not null,
 [bidtype] varchar(20) not null,
 [periodid] varchar(20) not null,
@@ -5245,15 +4512,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [bidofferdate] datetime2 null,
 [datetime] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([bidtype],[duid],[periodid],[predispatchseqno])
 )
-go
-create clustered columnstore index cci_PredispatchOffertrk1 on mmsdm.PredispatchOffertrk1;
 go
                         
 create table mmsdm.PredispatchRegionPrices1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [regionid] varchar(10) not null,
 [periodid] varchar(20) null,
@@ -5286,15 +4551,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lower60secrrp] decimal(15,5) null,
 [lower5minrrp] decimal(15,5) null,
 [lowerregrrp] decimal(15,5) null,
-
+    primary key ([datetime],[regionid])
 )
-go
-create clustered columnstore index cci_PredispatchRegionPrices1 on mmsdm.PredispatchRegionPrices1;
 go
                         
 create table mmsdm.PredispatchPricesensitivities1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [regionid] varchar(10) not null,
 [periodid] varchar(20) null,
@@ -5345,15 +4608,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [rrpeep41] decimal(15,5) null,
 [rrpeep42] decimal(15,5) null,
 [rrpeep43] decimal(15,5) null,
-
+    primary key ([datetime],[regionid])
 )
-go
-create clustered columnstore index cci_PredispatchPricesensitivities1 on mmsdm.PredispatchPricesensitivities1;
 go
                         
 create table mmsdm.PredispatchRegionSolution5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [regionid] varchar(10) not null,
 [periodid] varchar(20) null,
@@ -5464,41 +4725,38 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ss_wind_clearedmw] decimal(15,5) null,
 [ss_solar_compliancemw] decimal(15,5) null,
 [ss_wind_compliancemw] decimal(15,5) null,
-
+[wdr_initialmw] decimal(15,5) null,
+[wdr_available] decimal(15,5) null,
+[wdr_dispatched] decimal(15,5) null,
+    primary key ([datetime],[regionid])
 )
-go
-create clustered columnstore index cci_PredispatchRegionSolution5 on mmsdm.PredispatchRegionSolution5;
 go
                         
 create table mmsdm.PredispatchScenarioDemand1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [scenario] decimal(2,0) not null,
 [regionid] varchar(20) not null,
 [deltamw] decimal(4,0) null,
-
+    primary key ([effectivedate],[regionid],[scenario],[versionno])
 )
-go
-create clustered columnstore index cci_PredispatchScenarioDemand1 on mmsdm.PredispatchScenarioDemand1;
 go
                         
 create table mmsdm.PredispatchScenarioDemandTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[versionno])
 )
-go
-create clustered columnstore index cci_PredispatchScenarioDemandTrk1 on mmsdm.PredispatchScenarioDemandTrk1;
 go
                         
 create table mmsdm.PredispatchRegionfcasrequirement2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
 [intervention] decimal(2,0) null,
 [periodid] varchar(20) null,
@@ -5516,30 +4774,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [estimated_crmpf] decimal(18,8) null,
 [recovery_factor_cmpf] decimal(18,8) null,
 [recovery_factor_crmpf] decimal(18,8) null,
-
+    primary key ([bidtype],[datetime],[genconid],[regionid])
 )
-go
-create clustered columnstore index cci_PredispatchRegionfcasrequirement2 on mmsdm.PredispatchRegionfcasrequirement2;
 go
                         
 create table mmsdm.PredispatchLocalPrice1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) not null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) not null,
 [datetime] datetime2 not null,
 [duid] varchar(20) not null,
 [periodid] varchar(20) null,
 [local_price_adjustment] decimal(10,2) null,
 [locally_constrained] decimal(1,0) null,
 [lastchanged] datetime2 null,
-
+    primary key ([datetime],[duid])
 )
-go
-create clustered columnstore index cci_PredispatchLocalPrice1 on mmsdm.PredispatchLocalPrice1;
 go
                         
 create table mmsdm.PredispatchMnspbidtrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[predispatchseqno] varchar(20) not null,
+file_log_id bigint not null,
+    [predispatchseqno] varchar(20) not null,
 [linkid] varchar(10) not null,
 [periodid] varchar(20) not null,
 [participantid] varchar(10) null,
@@ -5548,15 +4802,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [versionno] decimal(3,0) null,
 [datetime] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([linkid],[periodid],[predispatchseqno])
 )
-go
-create clustered columnstore index cci_PredispatchMnspbidtrk1 on mmsdm.PredispatchMnspbidtrk1;
 go
                         
 create table mmsdm.PrudentialCompanyPosition1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[prudential_date] datetime2 not null,
+file_log_id bigint not null,
+    [prudential_date] datetime2 not null,
 [runno] decimal(3,0) not null,
 [company_id] varchar(20) not null,
 [mcl] decimal(16,6) null,
@@ -5575,71 +4827,61 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [early_payment_amount] decimal(18,8) null,
 [percentage_outstandings] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([company_id],[prudential_date],[runno])
 )
-go
-create clustered columnstore index cci_PrudentialCompanyPosition1 on mmsdm.PrudentialCompanyPosition1;
 go
                         
 create table mmsdm.PrudentialRuntrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[prudential_date] datetime2 not null,
+file_log_id bigint not null,
+    [prudential_date] datetime2 not null,
 [runno] decimal(3,0) not null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([prudential_date],[runno])
 )
-go
-create clustered columnstore index cci_PrudentialRuntrk1 on mmsdm.PrudentialRuntrk1;
 go
                         
 create table mmsdm.MtpasaReservelimit1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [reservelimitid] varchar(20) not null,
 [description] varchar(200) null,
 [rhs] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[reservelimitid],[version_datetime])
 )
-go
-create clustered columnstore index cci_MtpasaReservelimit1 on mmsdm.MtpasaReservelimit1;
 go
                         
 create table mmsdm.MtpasaReservelimitRegion1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [reservelimitid] varchar(20) not null,
 [regionid] varchar(20) not null,
 [coef] decimal(16,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[regionid],[reservelimitid],[version_datetime])
 )
-go
-create clustered columnstore index cci_MtpasaReservelimitRegion1 on mmsdm.MtpasaReservelimitRegion1;
 go
                         
 create table mmsdm.MtpasaReservelimitSet1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [reservelimit_set_id] varchar(20) null,
 [description] varchar(200) null,
 [authoriseddate] datetime2 null,
 [authorisedby] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[version_datetime])
 )
-go
-create clustered columnstore index cci_MtpasaReservelimitSet1 on mmsdm.MtpasaReservelimitSet1;
 go
                         
 create table mmsdm.ReserveDataReserve1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [regionid] varchar(12) not null,
 [periodid] decimal(2,0) not null,
@@ -5656,29 +4898,25 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lowerreg] decimal(6,0) null,
 [lor1level] decimal(6,0) null,
 [lor2level] decimal(6,0) null,
-
+    primary key ([periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_ReserveDataReserve1 on mmsdm.ReserveDataReserve1;
 go
                         
 create table mmsdm.SettlementConfigAncillaryRecoverySplit1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[effectivedate] datetime2 not null,
+file_log_id bigint not null,
+    [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [service] varchar(10) not null,
 [paymenttype] varchar(20) not null,
 [customer_portion] decimal(8,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[paymenttype],[service],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigAncillaryRecoverySplit1 on mmsdm.SettlementConfigAncillaryRecoverySplit1;
 go
                         
 create table mmsdm.SettlementConfigMarketfee1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[marketfeeid] varchar(10) not null,
+file_log_id bigint not null,
+    [marketfeeid] varchar(10) not null,
 [marketfeeperiod] varchar(20) null,
 [marketfeetype] varchar(12) null,
 [description] varchar(64) null,
@@ -5686,107 +4924,91 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [gl_tcode] varchar(15) null,
 [gl_financialcode] varchar(10) null,
 [fee_class] varchar(40) null,
-
+    primary key ([marketfeeid])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketfee1 on mmsdm.SettlementConfigMarketfee1;
 go
                         
 create table mmsdm.SettlementConfigMarketfeedata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[marketfeeid] varchar(10) not null,
+file_log_id bigint not null,
+    [marketfeeid] varchar(10) not null,
 [marketfeeversionno] decimal(3,0) not null,
 [effectivedate] datetime2 not null,
 [marketfeevalue] decimal(22,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[marketfeeid],[marketfeeversionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketfeedata1 on mmsdm.SettlementConfigMarketfeedata1;
 go
                         
 create table mmsdm.SettlementConfigMarketfeetrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[marketfeeversionno] decimal(3,0) not null,
+file_log_id bigint not null,
+    [marketfeeversionno] decimal(3,0) not null,
 [effectivedate] datetime2 not null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[marketfeeversionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketfeetrk1 on mmsdm.SettlementConfigMarketfeetrk1;
 go
                         
 create table mmsdm.SettlementConfigMarketFeeCatExcl1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[marketfeeid] varchar(20) not null,
+file_log_id bigint not null,
+    [marketfeeid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [participant_categoryid] varchar(20) not null,
-
+    primary key ([effectivedate],[marketfeeid],[participant_categoryid],[version_datetime])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketFeeCatExcl1 on mmsdm.SettlementConfigMarketFeeCatExcl1;
 go
                         
 create table mmsdm.SettlementConfigMarketFeeCatExclTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[marketfeeid] varchar(20) not null,
+file_log_id bigint not null,
+    [marketfeeid] varchar(20) not null,
 [effectivedate] datetime2 not null,
 [version_datetime] datetime2 not null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[marketfeeid],[version_datetime])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketFeeCatExclTrk1 on mmsdm.SettlementConfigMarketFeeCatExclTrk1;
 go
                         
 create table mmsdm.SettlementConfigMarketFeeExclusion1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [marketfeeid] varchar(10) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[marketfeeid],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketFeeExclusion1 on mmsdm.SettlementConfigMarketFeeExclusion1;
 go
                         
 create table mmsdm.SettlementConfigMarketFeeExclusionTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigMarketFeeExclusionTrk1 on mmsdm.SettlementConfigMarketFeeExclusionTrk1;
 go
                         
 create table mmsdm.SettlementConfigParticipantBandfeeAlloc1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [marketfeeid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantcategoryid] varchar(10) not null,
 [marketfeevalue] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[marketfeeid],[participantcategoryid],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigParticipantBandfeeAlloc1 on mmsdm.SettlementConfigParticipantBandfeeAlloc1;
 go
                         
 create table mmsdm.SetcfgReallocation2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[reallocationid] varchar(20) not null,
+file_log_id bigint not null,
+    [reallocationid] varchar(20) not null,
 [creditparticipantid] varchar(10) null,
 [debitparticipantid] varchar(10) null,
 [regionid] varchar(10) null,
@@ -5801,57 +5023,49 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [reallocation_type] varchar(1) null,
 [calendarid] varchar(30) null,
 [intervallength] decimal(3,0) null,
-
+    primary key ([reallocationid])
 )
-go
-create clustered columnstore index cci_SetcfgReallocation2 on mmsdm.SetcfgReallocation2;
 go
                         
 create table mmsdm.SetcfgReallocationinterval1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[reallocationid] varchar(20) not null,
+file_log_id bigint not null,
+    [reallocationid] varchar(20) not null,
 [periodid] decimal(3,0) not null,
 [value] decimal(15,5) null,
 [lastchanged] datetime2 null,
 [nrp] decimal(15,5) null,
-
+    primary key ([periodid],[reallocationid])
 )
-go
-create clustered columnstore index cci_SetcfgReallocationinterval1 on mmsdm.SetcfgReallocationinterval1;
 go
                         
 create table mmsdm.SettlementConfigSetcfgParticipantMpf1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantcategoryid] varchar(10) not null,
 [connectionpointid] varchar(10) not null,
 [mpf] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([connectionpointid],[effectivedate],[participantcategoryid],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigSetcfgParticipantMpf1 on mmsdm.SettlementConfigSetcfgParticipantMpf1;
 go
                         
 create table mmsdm.SettlementConfigSetcfgParticipantMpftrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[participantid] varchar(10) not null,
+file_log_id bigint not null,
+    [participantid] varchar(10) not null,
 [effectivedate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [authorisedby] varchar(15) null,
 [authoriseddate] datetime2 null,
 [lastchanged] datetime2 null,
-
+    primary key ([effectivedate],[participantid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementConfigSetcfgParticipantMpftrk1 on mmsdm.SettlementConfigSetcfgParticipantMpftrk1;
 go
                         
 create table mmsdm.SettlementsDaytrack6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [regionid] varchar(10) null,
 [exanterunstatus] varchar(15) null,
 [exanterunno] decimal(3,0) null,
@@ -5859,62 +5073,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [expostrunno] decimal(3,0) not null,
 [lastchanged] datetime2 null,
 [settlementintervallength] decimal(3,0) null,
-
+    primary key ([expostrunno],[settlementdate])
 )
-go
-create clustered columnstore index cci_SettlementsDaytrack6 on mmsdm.SettlementsDaytrack6;
-go
-                        
-create table mmsdm.SettlementsAgcpayment5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) not null,
-[periodid] decimal(3,0) not null,
-[duid] varchar(10) null,
-[regionid] varchar(10) null,
-[tlf] decimal(7,5) null,
-[ebp] decimal(15,5) null,
-[rrp] decimal(15,5) null,
-[clearedmw] decimal(15,5) null,
-[initialmw] decimal(15,5) null,
-[enablingpayment] decimal(15,5) null,
-[contractversionno] decimal(3,0) null,
-[offerdate] datetime2 null,
-[offerversionno] decimal(3,0) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsAgcpayment5 on mmsdm.SettlementsAgcpayment5;
-go
-                        
-create table mmsdm.SettlementsAgcrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) null,
-[periodid] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[enablingpayment] decimal(15,5) null,
-[participantdemand] decimal(15,5) null,
-[regiondemand] decimal(15,5) null,
-[enablingrecovery] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[enablingrecovery_gen] decimal(15,5) null,
-[participantdemand_gen] decimal(15,5) null,
-[regiondemand_gen] decimal(15,5) null,
-
-)
-go
-create clustered columnstore index cci_SettlementsAgcrecovery5 on mmsdm.SettlementsAgcrecovery5;
 go
                         
 create table mmsdm.SettlementsCpdata6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(10,0) not null,
 [periodid] decimal(10,0) not null,
 [participantid] varchar(10) not null,
@@ -5944,15 +5109,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [dme] decimal(18,8) null,
 [ufea] decimal(18,8) null,
 [age] decimal(18,8) null,
-
+    primary key ([mda],[participantid],[periodid],[settlementdate],[tcpid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsCpdata6 on mmsdm.SettlementsCpdata6;
 go
                         
 create table mmsdm.SettlementsCpdataregion5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(22,10) not null,
 [periodid] decimal(22,10) not null,
 [regionid] varchar(10) not null,
@@ -5964,38 +5127,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [sumxpower] decimal(22,0) null,
 [lastchanged] datetime2 null,
 [sumep] decimal(15,5) null,
-
+    primary key ([periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsCpdataregion5 on mmsdm.SettlementsCpdataregion5;
-go
-                        
-create table mmsdm.SettlementsFcascomp5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[duid] varchar(10) not null,
-[regionid] varchar(10) null,
-[periodid] decimal(3,0) not null,
-[ccprice] decimal(15,5) null,
-[clearedmw] decimal(15,5) null,
-[unconstrainedmw] decimal(15,5) null,
-[ebp] decimal(15,5) null,
-[tlf] decimal(7,5) null,
-[rrp] decimal(15,5) null,
-[excessgen] decimal(15,5) null,
-[fcascomp] decimal(15,5) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsFcascomp5 on mmsdm.SettlementsFcascomp5;
 go
                         
 create table mmsdm.SettlementsFcasregionrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [bidtype] varchar(10) not null,
 [regionid] varchar(10) not null,
@@ -6004,15 +5142,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [customerregionenergy] decimal(16,6) null,
 [regionrecovery] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([bidtype],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsFcasregionrecovery5 on mmsdm.SettlementsFcasregionrecovery5;
 go
                         
 create table mmsdm.SettlementsGendata6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(10,0) not null,
 [periodid] decimal(10,0) not null,
 [participantid] varchar(10) null,
@@ -6041,15 +5177,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [meterrunno] decimal(6,0) null,
 [mda] varchar(10) null,
 [secondary_tlf] decimal(7,5) null,
-
+    primary key ([duid],[gensetid],[periodid],[regionid],[settlementdate],[stationid],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsGendata6 on mmsdm.SettlementsGendata6;
 go
                         
 create table mmsdm.SettlementsGendataregion5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(22,10) not null,
 [periodid] decimal(22,10) not null,
 [regionid] varchar(10) not null,
@@ -6063,54 +5197,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [expenergy] decimal(27,6) null,
 [expenergycost] decimal(27,6) null,
 [lastchanged] datetime2 null,
-
+    primary key ([periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsGendataregion5 on mmsdm.SettlementsGendataregion5;
-go
-                        
-create table mmsdm.SettlementsIntervention5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[periodid] decimal(3,0) not null,
-[contractid] varchar(10) null,
-[contractversion] decimal(3,0) null,
-[participantid] varchar(10) null,
-[regionid] varchar(10) null,
-[duid] varchar(10) not null,
-[rcf] char(1) null,
-[interventionpayment] decimal(12,5) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsIntervention5 on mmsdm.SettlementsIntervention5;
-go
-                        
-create table mmsdm.SettlementsInterventionrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[periodid] decimal(3,0) not null,
-[contractid] varchar(10) not null,
-[rcf] char(1) null,
-[participantid] varchar(10) not null,
-[participantdemand] decimal(12,5) null,
-[totaldemand] decimal(12,5) null,
-[interventionpayment] decimal(12,5) null,
-[interventionamount] decimal(12,5) null,
-[lastchanged] datetime2 null,
-[regionid] varchar(10) null,
-
-)
-go
-create clustered columnstore index cci_SettlementsInterventionrecovery5 on mmsdm.SettlementsInterventionrecovery5;
 go
                         
 create table mmsdm.SettlementsIntraregionresidues5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
 [regionid] varchar(10) not null,
@@ -6120,15 +5213,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [exp] decimal(15,5) null,
 [irss] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([periodid],[regionid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_SettlementsIntraregionresidues5 on mmsdm.SettlementsIntraregionresidues5;
 go
                         
 create table mmsdm.SettlementsIraucsurplus6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [settlementrunno] decimal(3,0) not null,
 [contractid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
@@ -6141,35 +5232,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[participantid],[periodid],[settlementdate],[settlementrunno])
 )
-go
-create clustered columnstore index cci_SettlementsIraucsurplus6 on mmsdm.SettlementsIraucsurplus6;
-go
-                        
-create table mmsdm.SettlementsIrfmrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[periodid] decimal(3,0) not null,
-[irfmid] varchar(10) not null,
-[irmfversion] decimal(3,0) null,
-[participantid] varchar(10) not null,
-[participantdemand] decimal(12,5) null,
-[totaltcd] decimal(12,5) null,
-[totaltfd] decimal(12,5) null,
-[irfmamount] decimal(12,5) null,
-[irfmpayment] decimal(12,5) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsIrfmrecovery5 on mmsdm.SettlementsIrfmrecovery5;
 go
                         
 create table mmsdm.SettlementsIrnspsurplus6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [settlementrunno] decimal(3,0) not null,
 [contractid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
@@ -6182,15 +5251,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[participantid],[periodid],[settlementdate],[settlementrunno])
 )
-go
-create clustered columnstore index cci_SettlementsIrnspsurplus6 on mmsdm.SettlementsIrnspsurplus6;
 go
                         
 create table mmsdm.SettlementsIrpartsurplus6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [settlementrunno] decimal(3,0) not null,
 [contractid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
@@ -6203,15 +5270,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
-
+    primary key ([contractid],[fromregionid],[interconnectorid],[participantid],[periodid],[settlementdate],[settlementrunno])
 )
-go
-create clustered columnstore index cci_SettlementsIrpartsurplus6 on mmsdm.SettlementsIrpartsurplus6;
 go
                         
 create table mmsdm.SettlementsIrsurplus6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [settlementrunno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
@@ -6222,15 +5287,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [csp_derogation_amount] decimal(18,8) null,
 [unadjusted_irsr] decimal(18,8) null,
-
+    primary key ([interconnectorid],[periodid],[regionid],[settlementdate],[settlementrunno])
 )
-go
-create clustered columnstore index cci_SettlementsIrsurplus6 on mmsdm.SettlementsIrsurplus6;
 go
                         
 create table mmsdm.SettlementsLocalareaenergy1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [settlementrunno] decimal(3,0) not null,
 [localareaid] varchar(30) not null,
 [periodid] decimal(3,0) not null,
@@ -6240,28 +5303,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [adme] decimal(18,8) null,
 [admela] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([localareaid],[periodid],[settlementdate],[settlementrunno])
 )
-go
-create clustered columnstore index cci_SettlementsLocalareaenergy1 on mmsdm.SettlementsLocalareaenergy1;
 go
                         
 create table mmsdm.SettlementsLocalareatni1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [settlementrunno] decimal(3,0) not null,
 [localareaid] varchar(30) not null,
 [tni] varchar(30) not null,
 [lastchanged] datetime2 null,
-
+    primary key ([localareaid],[settlementdate],[settlementrunno],[tni])
 )
-go
-create clustered columnstore index cci_SettlementsLocalareatni1 on mmsdm.SettlementsLocalareatni1;
 go
                         
 create table mmsdm.SettlementsLshedpayment5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [contractid] varchar(10) not null,
@@ -6285,15 +5344,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [offerversionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
 [availabilitypayment] decimal(16,6) null,
-
+    primary key ([contractid],[participantid],[periodid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsLshedpayment5 on mmsdm.SettlementsLshedpayment5;
 go
                         
 create table mmsdm.SettlementsLshedrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [contractid] varchar(10) null,
@@ -6312,102 +5369,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [regiondemand_gen] decimal(15,5) null,
 [availabilityrecovery] decimal(16,6) null,
 [availabilityrecovery_gen] decimal(16,6) null,
-
+    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsLshedrecovery5 on mmsdm.SettlementsLshedrecovery5;
-go
-                        
-create table mmsdm.SettlementsLuloadrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) null,
-[periodid] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[enablingpayment] decimal(15,5) null,
-[usagepayment] decimal(15,5) null,
-[compensationpayment] decimal(15,5) null,
-[participantdemand] decimal(15,5) null,
-[regiondemand] decimal(15,5) null,
-[enablingrecovery] decimal(15,5) null,
-[usagerecovery] decimal(15,5) null,
-[compensationrecovery] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[enablingrecovery_gen] decimal(15,5) null,
-[usagerecovery_gen] decimal(15,5) null,
-[compensationrecovery_gen] decimal(15,5) null,
-[participantdemand_gen] decimal(15,5) null,
-[regiondemand_gen] decimal(15,5) null,
-
-)
-go
-create clustered columnstore index cci_SettlementsLuloadrecovery5 on mmsdm.SettlementsLuloadrecovery5;
-go
-                        
-create table mmsdm.SettlementsLunloadpayment5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) not null,
-[periodid] decimal(3,0) not null,
-[duid] varchar(10) null,
-[regionid] varchar(10) null,
-[tlf] decimal(7,5) null,
-[ebp] decimal(15,5) null,
-[rrp] decimal(15,5) null,
-[enablingprice] decimal(15,5) null,
-[usageprice] decimal(15,5) null,
-[ccprice] decimal(15,5) null,
-[clearedmw] decimal(15,5) null,
-[unconstrainedmw] decimal(15,5) null,
-[controlrange] decimal(4,0) null,
-[enablingpayment] decimal(15,5) null,
-[usagepayment] decimal(15,5) null,
-[compensationpayment] decimal(15,5) null,
-[contractversionno] decimal(3,0) null,
-[offerdate] datetime2 null,
-[offerversionno] decimal(3,0) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsLunloadpayment5 on mmsdm.SettlementsLunloadpayment5;
-go
-                        
-create table mmsdm.SettlementsLunloadrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) null,
-[periodid] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[enablingpayment] decimal(15,5) null,
-[usagepayment] decimal(15,5) null,
-[compensationpayment] decimal(15,5) null,
-[participantdemand] decimal(15,5) null,
-[regiondemand] decimal(15,5) null,
-[enablingrecovery] decimal(15,5) null,
-[usagerecovery] decimal(15,5) null,
-[compensationrecovery] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[enablingrecovery_gen] decimal(15,5) null,
-[usagerecovery_gen] decimal(15,5) null,
-[compensationrecovery_gen] decimal(15,5) null,
-[participantdemand_gen] decimal(15,5) null,
-[regiondemand_gen] decimal(15,5) null,
-
-)
-go
-create clustered columnstore index cci_SettlementsLunloadrecovery5 on mmsdm.SettlementsLunloadrecovery5;
 go
                         
 create table mmsdm.SettlementsMarketfees6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
@@ -6418,15 +5386,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [participantcategoryid] varchar(10) not null,
 [feerate] decimal(18,8) null,
 [feeunits] decimal(18,8) null,
-
+    primary key ([marketfeeid],[participantcategoryid],[participantid],[periodid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_SettlementsMarketfees6 on mmsdm.SettlementsMarketfees6;
 go
                         
 create table mmsdm.SettlementsReallocations5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
 [participantid] varchar(10) not null,
@@ -6435,15 +5401,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [energy] decimal(15,5) null,
 [rrp] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([participantid],[periodid],[reallocationid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_SettlementsReallocations5 on mmsdm.SettlementsReallocations5;
 go
                         
 create table mmsdm.SettlementsRestartpayment6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [contractid] varchar(10) not null,
@@ -6459,15 +5423,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [offerversionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
 [enablingpayment] decimal(18,8) null,
-
+    primary key ([contractid],[participantid],[periodid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsRestartpayment6 on mmsdm.SettlementsRestartpayment6;
 go
                         
 create table mmsdm.SettlementsRestartrecovery6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [contractid] varchar(10) null,
@@ -6484,15 +5446,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [enablingpayment] decimal(18,8) null,
 [enablingrecovery] decimal(18,8) null,
 [enablingrecovery_gen] decimal(18,8) null,
-
+    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsRestartrecovery6 on mmsdm.SettlementsRestartrecovery6;
 go
                         
 create table mmsdm.SettlementsRpowerpayment6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [contractid] varchar(10) not null,
@@ -6521,15 +5481,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [offerversionno] decimal(3,0) null,
 [lastchanged] datetime2 null,
 [availabilitypayment_rebate] decimal(18,8) null,
-
+    primary key ([contractid],[participantid],[periodid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsRpowerpayment6 on mmsdm.SettlementsRpowerpayment6;
 go
                         
 create table mmsdm.SettlementsRpowerrecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) not null,
 [contractid] varchar(10) null,
@@ -6549,15 +5507,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ccrecovery_gen] decimal(15,5) null,
 [participantdemand_gen] decimal(15,5) null,
 [regiondemand_gen] decimal(15,5) null,
-
+    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsRpowerrecovery5 on mmsdm.SettlementsRpowerrecovery5;
 go
                         
 create table mmsdm.SettlementsSmallgendata1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [connectionpointid] varchar(20) not null,
 [periodid] decimal(3,0) not null,
@@ -6570,58 +5526,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [impenergycost] decimal(18,8) null,
 [expenergycost] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([connectionpointid],[participantid],[periodid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsSmallgendata1 on mmsdm.SettlementsSmallgendata1;
-go
-                        
-create table mmsdm.SettlementsVicboundaryenergy5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[periodid] decimal(3,0) not null,
-[boundaryenergy] decimal(15,5) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsVicboundaryenergy5 on mmsdm.SettlementsVicboundaryenergy5;
-go
-                        
-create table mmsdm.SettlementsVicenergyfigures5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[periodid] decimal(3,0) not null,
-[totalgenoutput] decimal(15,5) null,
-[totalpcsd] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[tlr] decimal(15,6) null,
-[mlf] decimal(15,6) null,
-
-)
-go
-create clustered columnstore index cci_SettlementsVicenergyfigures5 on mmsdm.SettlementsVicenergyfigures5;
-go
-                        
-create table mmsdm.SettlementsVicenergyflow5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[periodid] decimal(3,0) not null,
-[netflow] decimal(15,5) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsVicenergyflow5 on mmsdm.SettlementsVicenergyflow5;
 go
                         
 create table mmsdm.SettlementsAncillarySummary5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [service] varchar(20) not null,
 [paymenttype] varchar(20) not null,
@@ -6629,30 +5540,26 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [periodid] decimal(3,0) not null,
 [paymentamount] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([paymenttype],[periodid],[regionid],[service],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsAncillarySummary5 on mmsdm.SettlementsAncillarySummary5;
 go
                         
 create table mmsdm.SettlementsApcCompensation1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [apeventid] decimal(6,0) not null,
 [claimid] decimal(6,0) not null,
 [participantid] varchar(20) not null,
 [periodid] decimal(3,0) not null,
 [compensation_amount] decimal(18,8) null,
-
+    primary key ([apeventid],[claimid],[participantid],[periodid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsApcCompensation1 on mmsdm.SettlementsApcCompensation1;
 go
                         
 create table mmsdm.SettlementsApcRecovery1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [apeventid] decimal(6,0) not null,
 [claimid] decimal(6,0) not null,
@@ -6661,15 +5568,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [regionid] varchar(20) not null,
 [recovery_amount] decimal(18,8) null,
 [region_recovery_br_amount] decimal(18,8) null,
-
+    primary key ([apeventid],[claimid],[participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsApcRecovery1 on mmsdm.SettlementsApcRecovery1;
 go
                         
 create table mmsdm.SettlementsFcasPayment5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [participantid] varchar(10) null,
 [duid] varchar(10) not null,
@@ -6684,15 +5589,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lowerreg_payment] decimal(18,8) null,
 [raisereg_payment] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([duid],[periodid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsFcasPayment5 on mmsdm.SettlementsFcasPayment5;
 go
                         
 create table mmsdm.SettlementsFcasRecovery6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] varchar(3) not null,
 [participantid] varchar(10) not null,
 [regionid] varchar(10) not null,
@@ -6714,15 +5617,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [raise5min_recovery_gen] decimal(18,8) null,
 [lowerreg_recovery_gen] decimal(18,8) null,
 [raisereg_recovery_gen] decimal(18,8) null,
-
+    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsFcasRecovery6 on mmsdm.SettlementsFcasRecovery6;
 go
                         
 create table mmsdm.SettlementsSetFcasRegulationTrk1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [interval_datetime] datetime2 not null,
 [constraintid] varchar(20) not null,
@@ -6731,50 +5632,15 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [recovery_factor_cmpf] decimal(18,8) null,
 [recovery_factor_crmpf] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+[usesubstitutedemand] decimal(1,0) null,
+[requirementdemand] decimal(18,8) null,
+    primary key ([constraintid],[interval_datetime],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsSetFcasRegulationTrk1 on mmsdm.SettlementsSetFcasRegulationTrk1;
-go
-                        
-create table mmsdm.SettlementsMrPayment5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[participantid] varchar(10) null,
-[duid] varchar(10) not null,
-[periodid] decimal(3,0) not null,
-[mr_capacity] decimal(16,6) null,
-[uncapped_payment] decimal(16,6) null,
-[capped_payment] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsMrPayment5 on mmsdm.SettlementsMrPayment5;
-go
-                        
-create table mmsdm.SettlementsMrRecovery5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[participantid] varchar(10) null,
-[duid] varchar(10) not null,
-[periodid] decimal(3,0) not null,
-[arodef] decimal(16,6) null,
-[nta] decimal(16,6) null,
-[lastchanged] datetime2 null,
-
-)
-go
-create clustered columnstore index cci_SettlementsMrRecovery5 on mmsdm.SettlementsMrRecovery5;
 go
                         
 create table mmsdm.SettlementsNmasRecovery2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
 [participantid] varchar(20) not null,
@@ -6792,15 +5658,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [region_generation] decimal(18,8) null,
 [recovery_amount_customer] decimal(18,8) null,
 [recovery_amount_generator] decimal(18,8) null,
-
+    primary key ([contractid],[participantid],[paymenttype],[periodid],[regionid],[service],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsNmasRecovery2 on mmsdm.SettlementsNmasRecovery2;
 go
                         
 create table mmsdm.SettlementsNmasRecoveryRbf1 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [periodid] decimal(3,0) not null,
 [service] varchar(10) not null,
@@ -6811,28 +5675,24 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [payment_amount] decimal(18,8) null,
 [recovery_amount] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([contractid],[paymenttype],[periodid],[regionid],[service],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsNmasRecoveryRbf1 on mmsdm.SettlementsNmasRecoveryRbf1;
 go
                         
 create table mmsdm.SettlementsRunParameter5 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
 [parameterid] varchar(20) not null,
 [numvalue] decimal(18,8) null,
 [lastchanged] datetime2 null,
-
+    primary key ([parameterid],[settlementdate],[versionno])
 )
-go
-create clustered columnstore index cci_SettlementsRunParameter5 on mmsdm.SettlementsRunParameter5;
 go
                         
 create table mmsdm.StpasaCasesolution3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [pasaversion] varchar(10) null,
 [reservecondition] decimal(1,0) null,
 [lorcondition] decimal(1,0) null,
@@ -6851,15 +5711,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [loruigf_option] decimal(3,0) null,
 [reliability_lrcuigf_option] decimal(3,0) null,
 [outage_lrcuigf_option] decimal(3,0) null,
-
+    primary key ([run_datetime])
 )
-go
-create clustered columnstore index cci_StpasaCasesolution3 on mmsdm.StpasaCasesolution3;
 go
                         
 create table mmsdm.StpasaConstraintsolution3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [constraintid] varchar(20) not null,
 [capacityrhs] decimal(12,2) null,
@@ -6868,15 +5726,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lastchanged] datetime2 null,
 [runtype] varchar(20) not null,
 [studyregionid] varchar(20) not null,
-
+    primary key ([constraintid],[interval_datetime],[run_datetime],[runtype],[studyregionid])
 )
-go
-create clustered columnstore index cci_StpasaConstraintsolution3 on mmsdm.StpasaConstraintsolution3;
 go
                         
 create table mmsdm.StpasaInterconnectorsoln3 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [interconnectorid] varchar(10) not null,
 [capacitymwflow] decimal(12,2) null,
@@ -6889,15 +5745,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [exportlimitconstraintid] varchar(20) null,
 [importlimitconstraintid] varchar(20) null,
 [studyregionid] varchar(20) not null,
-
+    primary key ([interconnectorid],[interval_datetime],[run_datetime],[runtype],[studyregionid])
 )
-go
-create clustered columnstore index cci_StpasaInterconnectorsoln3 on mmsdm.StpasaInterconnectorsoln3;
 go
                         
 create table mmsdm.StpasaRegionsolution6 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
 [regionid] varchar(10) not null,
 [demand10] decimal(12,2) null,
@@ -6939,29 +5793,28 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [ss_wind_capacity] decimal(12,2) null,
 [ss_solar_cleared] decimal(12,2) null,
 [ss_wind_cleared] decimal(12,2) null,
-
+[wdr_available] decimal(12,2) null,
+[wdr_pasaavailable] decimal(12,2) null,
+[wdr_capacity] decimal(12,2) null,
+    primary key ([interval_datetime],[regionid],[run_datetime],[runtype])
 )
-go
-create clustered columnstore index cci_StpasaRegionsolution6 on mmsdm.StpasaRegionsolution6;
 go
                         
 create table mmsdm.TradingAverageprice301 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[perioddate] datetime2 not null,
+file_log_id bigint not null,
+    [perioddate] datetime2 not null,
 [regionid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
 [rrp] decimal(15,5) null,
 [price_confidence] varchar(20) null,
 [lastchanged] datetime2 null,
-
+    primary key ([perioddate],[regionid])
 )
-go
-create clustered columnstore index cci_TradingAverageprice301 on mmsdm.TradingAverageprice301;
 go
                         
 create table mmsdm.TradingInterconnectorres2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [interconnectorid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
@@ -6969,43 +5822,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [mwflow] decimal(15,5) null,
 [mwlosses] decimal(15,5) null,
 [lastchanged] datetime2 null,
-
+    primary key ([interconnectorid],[periodid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_TradingInterconnectorres2 on mmsdm.TradingInterconnectorres2;
-go
-                        
-create table mmsdm.TradingUnitSolution2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[runno] decimal(3,0) not null,
-[duid] varchar(10) not null,
-[tradetype] decimal(2,0) not null,
-[periodid] decimal(3,0) not null,
-[initialmw] decimal(15,5) null,
-[totalcleared] decimal(15,5) null,
-[rampdownrate] decimal(15,5) null,
-[rampuprate] decimal(15,5) null,
-[lower5min] decimal(15,5) null,
-[lower60sec] decimal(15,5) null,
-[lower6sec] decimal(15,5) null,
-[raise5min] decimal(15,5) null,
-[raise60sec] decimal(15,5) null,
-[raise6sec] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[lowerreg] decimal(15,5) null,
-[raisereg] decimal(15,5) null,
-[availability] decimal(15,5) null,
-[semidispatchcap] decimal(3,0) null,
-
-)
-go
-create clustered columnstore index cci_TradingUnitSolution2 on mmsdm.TradingUnitSolution2;
 go
                         
 create table mmsdm.TradingPrice2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
 [regionid] varchar(10) not null,
 [periodid] decimal(3,0) not null,
@@ -7031,113 +5854,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [lowerregrrp] decimal(15,5) null,
 [lowerregrop] decimal(15,5) null,
 [price_status] varchar(20) null,
-
+    primary key ([periodid],[regionid],[runno],[settlementdate])
 )
-go
-create clustered columnstore index cci_TradingPrice2 on mmsdm.TradingPrice2;
-go
-                        
-create table mmsdm.TradingRegionsum4 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[settlementdate] datetime2 not null,
-[runno] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[periodid] decimal(3,0) not null,
-[totaldemand] decimal(15,5) null,
-[availablegeneration] decimal(15,5) null,
-[availableload] decimal(15,5) null,
-[demandforecast] decimal(15,5) null,
-[dispatchablegeneration] decimal(15,5) null,
-[dispatchableload] decimal(15,5) null,
-[netinterchange] decimal(15,5) null,
-[excessgeneration] decimal(15,5) null,
-[lower5mindispatch] decimal(15,5) null,
-[lower5minimport] decimal(15,5) null,
-[lower5minlocaldispatch] decimal(15,5) null,
-[lower5minlocalprice] decimal(15,5) null,
-[lower5minlocalreq] decimal(15,5) null,
-[lower5minprice] decimal(15,5) null,
-[lower5minreq] decimal(15,5) null,
-[lower5minsupplyprice] decimal(15,5) null,
-[lower60secdispatch] decimal(15,5) null,
-[lower60secimport] decimal(15,5) null,
-[lower60seclocaldispatch] decimal(15,5) null,
-[lower60seclocalprice] decimal(15,5) null,
-[lower60seclocalreq] decimal(15,5) null,
-[lower60secprice] decimal(15,5) null,
-[lower60secreq] decimal(15,5) null,
-[lower60secsupplyprice] decimal(15,5) null,
-[lower6secdispatch] decimal(15,5) null,
-[lower6secimport] decimal(15,5) null,
-[lower6seclocaldispatch] decimal(15,5) null,
-[lower6seclocalprice] decimal(15,5) null,
-[lower6seclocalreq] decimal(15,5) null,
-[lower6secprice] decimal(15,5) null,
-[lower6secreq] decimal(15,5) null,
-[lower6secsupplyprice] decimal(15,5) null,
-[raise5mindispatch] decimal(15,5) null,
-[raise5minimport] decimal(15,5) null,
-[raise5minlocaldispatch] decimal(15,5) null,
-[raise5minlocalprice] decimal(15,5) null,
-[raise5minlocalreq] decimal(15,5) null,
-[raise5minprice] decimal(15,5) null,
-[raise5minreq] decimal(15,5) null,
-[raise5minsupplyprice] decimal(15,5) null,
-[raise60secdispatch] decimal(15,5) null,
-[raise60secimport] decimal(15,5) null,
-[raise60seclocaldispatch] decimal(15,5) null,
-[raise60seclocalprice] decimal(15,5) null,
-[raise60seclocalreq] decimal(15,5) null,
-[raise60secprice] decimal(15,5) null,
-[raise60secreq] decimal(15,5) null,
-[raise60secsupplyprice] decimal(15,5) null,
-[raise6secdispatch] decimal(15,5) null,
-[raise6secimport] decimal(15,5) null,
-[raise6seclocaldispatch] decimal(15,5) null,
-[raise6seclocalprice] decimal(15,5) null,
-[raise6seclocalreq] decimal(15,5) null,
-[raise6secprice] decimal(15,5) null,
-[raise6secreq] decimal(15,5) null,
-[raise6secsupplyprice] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[initialsupply] decimal(15,5) null,
-[clearedsupply] decimal(15,5) null,
-[lowerregimport] decimal(15,5) null,
-[lowerreglocaldispatch] decimal(15,5) null,
-[lowerreglocalreq] decimal(15,5) null,
-[lowerregreq] decimal(15,5) null,
-[raiseregimport] decimal(15,5) null,
-[raisereglocaldispatch] decimal(15,5) null,
-[raisereglocalreq] decimal(15,5) null,
-[raiseregreq] decimal(15,5) null,
-[raise5minlocalviolation] decimal(15,5) null,
-[raisereglocalviolation] decimal(15,5) null,
-[raise60seclocalviolation] decimal(15,5) null,
-[raise6seclocalviolation] decimal(15,5) null,
-[lower5minlocalviolation] decimal(15,5) null,
-[lowerreglocalviolation] decimal(15,5) null,
-[lower60seclocalviolation] decimal(15,5) null,
-[lower6seclocalviolation] decimal(15,5) null,
-[raise5minviolation] decimal(15,5) null,
-[raiseregviolation] decimal(15,5) null,
-[raise60secviolation] decimal(15,5) null,
-[raise6secviolation] decimal(15,5) null,
-[lower5minviolation] decimal(15,5) null,
-[lowerregviolation] decimal(15,5) null,
-[lower60secviolation] decimal(15,5) null,
-[lower6secviolation] decimal(15,5) null,
-[totalintermittentgeneration] decimal(15,5) null,
-[demand_and_nonschedgen] decimal(15,5) null,
-[uigf] decimal(15,5) null,
-
-)
-go
-create clustered columnstore index cci_TradingRegionsum4 on mmsdm.TradingRegionsum4;
 go
                         
 create table mmsdm.VoltageInstructionInstruction2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [ems_id] varchar(60) not null,
 [participantid] varchar(20) null,
 [station_id] varchar(60) null,
@@ -7150,15 +5873,13 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [version_datetime] datetime2 not null,
 [instruction_sequence] decimal(4,0) null,
 [additional_notes] varchar(60) null,
-
+    primary key ([ems_id],[run_datetime],[version_datetime])
 )
-go
-create clustered columnstore index cci_VoltageInstructionInstruction2 on mmsdm.VoltageInstructionInstruction2;
 go
                         
 create table mmsdm.VoltageInstructionTrack2 (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-[run_datetime] datetime2 not null,
+file_log_id bigint not null,
+    [run_datetime] datetime2 not null,
 [file_type] varchar(20) null,
 [version_datetime] datetime2 not null,
 [se_datetime] datetime2 null,
@@ -7168,9 +5889,7 @@ file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on
 [operating_status] varchar(100) null,
 [est_expiry] datetime2 null,
 [est_next_instruction] datetime2 null,
-
+    primary key ([run_datetime],[version_datetime])
 )
-go
-create clustered columnstore index cci_VoltageInstructionTrack2 on mmsdm.VoltageInstructionTrack2;
 go
                         
