@@ -1,7 +1,7 @@
 //#![deny(clippy::all)]
 //#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, fs, io, iter, num, path, result, str};
+use std::{collections, fmt, io, iter, num, str};
 
 use chrono::TimeZone;
 
@@ -9,9 +9,6 @@ pub mod data_model;
 
 #[cfg(feature = "sql_server")]
 pub mod sql_server;
-
-// #[cfg(feature = "clickhouse")]
-// pub mod clickhouse;
 
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::Date<chrono_tz::Tz> {
@@ -291,7 +288,7 @@ pub trait ArrowSchema: GetTable {
     ) -> crate::Result<arrow2::record_batch::RecordBatch>;
 }
 
-fn data_partition_to_csv<T, W>(
+pub fn data_partition_to_csv<T, W>(
     partition: collections::BTreeMap<T::PrimaryKey, T>,
     writer: &mut W,
 ) -> crate::Result<()>
@@ -312,7 +309,7 @@ where
     Ok(())
 }
 
-fn data_partition_from_csv<T, R>(
+pub fn data_partition_from_csv<T, R>(
     reader: R,
 ) -> crate::Result<collections::BTreeMap<T::PrimaryKey, T>>
 where
@@ -330,7 +327,7 @@ where
     Ok(output)
 }
 
-fn required_partitions<T>(data: &[T]) -> collections::HashSet<T::Partition>
+pub fn required_partitions<T>(data: &[T]) -> collections::HashSet<T::Partition>
 where
     T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row = T>,
 {
@@ -467,7 +464,7 @@ impl AemoFile {
 
 // Represents a given dispatch period (5 min period)
 // Parsed from YYYYMMDDPPP
-#[derive(Debug, Clone, Ord, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, Clone, Copy, Ord, PartialEq, Eq, PartialOrd)]
 pub struct DispatchPeriod {
     date: chrono::NaiveDate,
     period: u16,
@@ -552,7 +549,7 @@ mod dispatch_period {
 
 // Represents a given trading period (30 min period)
 // Parsed from YYYYMMDDPP
-#[derive(Debug, Clone, Ord, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, Clone, Copy, Ord, PartialEq, Eq, PartialOrd)]
 pub struct TradingPeriod {
     date: chrono::NaiveDate,
     period: u8,

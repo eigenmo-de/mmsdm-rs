@@ -31,6 +31,17 @@ impl mms::DataType {
 }
 
 impl mms::TableColumn {
+    fn clone_or_nothing(&self) -> String {
+        if self.comment.contains("YYYYMMDDPPP")
+            || self.comment.contains("YYYYMMDDPP")
+            || !matches!(self.data_type, mms::DataType::Varchar { .. })
+        {
+            ""
+        } else {
+            ".clone()"
+        }
+        .to_string()
+    }
     fn to_rust_type(&self) -> String {
         let formatted_type = if self.comment.contains("YYYYMMDDPPP") {
             "crate::DispatchPeriod".to_string()
@@ -257,19 +268,19 @@ impl mms::TablePage {
 
 {primary_key}
 "#,
-            summary = self.summary.get_rust_doc(),
-            pdr_report = report.get_rust_doc(),
+            summary = self.summary.get_rust_doc().replace('\t', ""),
+            pdr_report = report.get_rust_doc().replace('\t', ""),
             description_opt = self
                 .description
                 .as_ref()
-                .map(|d| d.get_rust_doc())
+                .map(|d| d.get_rust_doc().replace('\t', ""))
                 .unwrap_or_else(|| "".into()),
             notes_opt = self
                 .notes
                 .as_ref()
-                .map(|n| n.get_rust_doc())
+                .map(|n| n.get_rust_doc().replace('\t', ""))
                 .unwrap_or_else(|| "".into()),
-            primary_key = self.primary_key_columns.get_rust_doc(),
+            primary_key = self.primary_key_columns.get_rust_doc().replace('\t', ""),
         )
     }
 }
@@ -391,6 +402,7 @@ pub fn run() -> anyhow::Result<()> {
                     if &col.field_name() == "type" {
                         let mut field = codegen::Field::new("pub r#type", &col.to_rust_type());
                         field.annotation(vec!["#[serde(rename = \"type\")]"]);
+                        field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     } else if col.comment.contains("YYYYMMDDPPP") {
                         // parse as DispatchPeriod
@@ -399,6 +411,7 @@ pub fn run() -> anyhow::Result<()> {
                             "crate::DispatchPeriod",
                         );
                         field.annotation(vec!["#[serde(with = \"crate::dispatch_period\")]"]);
+                        field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     } else if col.comment.contains("YYYYMMDDPP") {
                         // parse as TradingPeriod
@@ -407,6 +420,7 @@ pub fn run() -> anyhow::Result<()> {
                             "crate::TradingPeriod",
                         );
                         field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
+                        field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     } else if col.data_type == mms::DataType::Date {
                         let mut field = codegen::Field::new(
@@ -418,13 +432,14 @@ pub fn run() -> anyhow::Result<()> {
                         } else {
                             field.annotation(vec!["#[serde(with = \"crate::mms_datetime_opt\")]"]);
                         };
+                        field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     } else {
                         let mut field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
                             &col.to_rust_type(),
                         );
-                        field.doc(vec![&col.comment]);
+                        field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     };
                 }
@@ -453,8 +468,15 @@ pub fn run() -> anyhow::Result<()> {
                         .cols
                         .iter()
                         .map(|name| format!(
-                            "    {0}: self.{0}.clone()",
-                            lowercase_and_escape(name)
+                            "    {0}: self.{0}{1}",
+                            lowercase_and_escape(name),
+                            table
+                                .columns
+                                .columns
+                                .iter()
+                                .find(|col| &col.name == name)
+                                .unwrap()
+                                .clone_or_nothing()
                         ))
                         .collect::<Vec<String>>()
                         .join(",\n"),
@@ -478,7 +500,7 @@ pub fn run() -> anyhow::Result<()> {
                     partition_suffix.line(r#"(chrono::Datelike::year(&self.settlementdate), num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate)).unwrap())"#);
                 } else {
                     current_impl.associate_type("Partition", "()");
-                    partition_suffix.line("()");
+                    // partition_suffix.line("()");
                 }
                 current_impl.push_fn(partition_suffix);
 

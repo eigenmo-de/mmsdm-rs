@@ -68,6 +68,7 @@ flate2 = "1"
 reqwest = { version = "0.11", features = ["blocking"] }
 scraper = "0.12"
 futures = "0.3"
+rayon = "1.5"
 
 [features]
 sql_server = ["tiberius", "futures"]

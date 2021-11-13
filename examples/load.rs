@@ -4,7 +4,7 @@ use std::{
 };
 use tiberius;
 use tokio::net;
-use tokio_util::compat::Tokio02AsyncWriteCompatExt;
+use tokio_util::compat::TokioAsyncWriteCompatExt;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -25,16 +25,14 @@ async fn main() -> anyhow::Result<()> {
     for entry in fs::read_dir("./data")? {
         let dir = entry?;
         let file = fs::File::open(dir.path())?;
-        let br = io::BufReader::new(file);
-
-        let aemo = aemo_rs::AemoFile::from_bufread(br)?;
+        let aemo = mmsdm::AemoFile::from_reader(file)?;
         dbg!(aemo.file_keys());
         // dbg!(&aemo.header);
         // for (k, v) in &aemo.data {
         //     // dbg!(k);
         //     // dbg!(v.len());
         // }
-        aemo.load_data(&mut client).await?;
+        aemo.load_data(&mut client, None).await?;
     }
     Ok(())
 }
