@@ -19,6 +19,7 @@
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsDaytrack6 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Not Used
@@ -31,6 +32,7 @@ pub struct SettlementsDaytrack6 {
     pub expostrunstatus: Option<String>,
     /// Settlement Run No
     pub expostrunno: rust_decimal::Decimal,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Length of a settlement interval, in minutes (was 30 minutes, will be 5 minutes starting the commencement of 5MS rule change date).
@@ -50,8 +52,8 @@ impl crate::GetTable for SettlementsDaytrack6 {
 
     fn primary_key(&self) -> SettlementsDaytrack6PrimaryKey {
         SettlementsDaytrack6PrimaryKey {
-            expostrunno: self.expostrunno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            expostrunno: self.expostrunno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -245,6 +247,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsCpdata6 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -291,6 +294,7 @@ pub struct SettlementsCpdata6 {
     pub resp: Option<rust_decimal::Decimal>,
     /// Meter Run Number = version number of the meter file
     pub meterrunno: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Not used
@@ -322,10 +326,10 @@ impl crate::GetTable for SettlementsCpdata6 {
         SettlementsCpdata6PrimaryKey {
             mda: self.mda.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
             tcpid: self.tcpid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
@@ -834,6 +838,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsCpdataregion5 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -854,6 +859,7 @@ pub struct SettlementsCpdataregion5 {
     pub sumipower: Option<rust_decimal::Decimal>,
     /// Not used
     pub sumxpower: Option<rust_decimal::Decimal>,
+    /// current system date, to enable automatic replication
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Sum of energy price across the region
@@ -873,10 +879,10 @@ impl crate::GetTable for SettlementsCpdataregion5 {
 
     fn primary_key(&self) -> SettlementsCpdataregion5PrimaryKey {
         SettlementsCpdataregion5PrimaryKey {
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -1166,6 +1172,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsFcasregionrecovery5 {
+    /// Settlement Date of trading interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -1182,6 +1189,7 @@ pub struct SettlementsFcasregionrecovery5 {
     pub customerregionenergy: Option<rust_decimal::Decimal>,
     /// The NEM Regional Recovery Amount for FCAS
     pub regionrecovery: Option<rust_decimal::Decimal>,
+    /// Last Date record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1200,10 +1208,10 @@ impl crate::GetTable for SettlementsFcasregionrecovery5 {
     fn primary_key(&self) -> SettlementsFcasregionrecovery5PrimaryKey {
         SettlementsFcasregionrecovery5PrimaryKey {
             bidtype: self.bidtype.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -1440,6 +1448,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsGendata6 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -1486,6 +1495,7 @@ pub struct SettlementsGendata6 {
     pub resc: Option<rust_decimal::Decimal>,
     /// Not used
     pub resp: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Export Energy (Generator Purchases) (MWh)
@@ -1515,11 +1525,11 @@ impl crate::GetTable for SettlementsGendata6 {
         SettlementsGendata6PrimaryKey {
             duid: self.duid.clone(),
             gensetid: self.gensetid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
             stationid: self.stationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
@@ -2031,6 +2041,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsGendataregion5 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -2057,6 +2068,7 @@ pub struct SettlementsGendataregion5 {
     pub expenergy: Option<rust_decimal::Decimal>,
     /// Export Energy Cost
     pub expenergycost: Option<rust_decimal::Decimal>,
+    /// current system date, to enable automatic replication
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2074,10 +2086,10 @@ impl crate::GetTable for SettlementsGendataregion5 {
 
     fn primary_key(&self) -> SettlementsGendataregion5PrimaryKey {
         SettlementsGendataregion5PrimaryKey {
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -2398,6 +2410,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsIntraregionresidues5 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -2416,6 +2429,7 @@ pub struct SettlementsIntraregionresidues5 {
     pub exp: Option<rust_decimal::Decimal>,
     /// Intra-regional surplus (a negative sign indicates surplus, and a positive sign indicates a deficiency)
     pub irss: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2433,10 +2447,10 @@ impl crate::GetTable for SettlementsIntraregionresidues5 {
 
     fn primary_key(&self) -> SettlementsIntraregionresidues5PrimaryKey {
         SettlementsIntraregionresidues5PrimaryKey {
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -2658,6 +2672,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
 /// * SETTLEMENTRUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsIraucsurplus6 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -2678,6 +2693,7 @@ pub struct SettlementsIraucsurplus6 {
     pub contractallocation: Option<rust_decimal::Decimal>,
     /// Amount NSP is paid for Inter/intra-Regional surplus energy produced
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA
@@ -2703,9 +2719,9 @@ impl crate::GetTable for SettlementsIraucsurplus6 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            settlementrunno: self.settlementrunno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
         }
     }
 
@@ -3012,6 +3028,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
 /// * SETTLEMENTRUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsIrnspsurplus6 {
+    /// Settlement date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -3032,6 +3049,7 @@ pub struct SettlementsIrnspsurplus6 {
     pub contractallocation: Option<rust_decimal::Decimal>,
     /// Amount NSP is paid for Inter/intra-Regional surplus energy produced by the participant
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA
@@ -3057,9 +3075,9 @@ impl crate::GetTable for SettlementsIrnspsurplus6 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            settlementrunno: self.settlementrunno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
         }
     }
 
@@ -3366,6 +3384,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
 /// * SETTLEMENTRUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsIrpartsurplus6 {
+    /// Settlement date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -3386,6 +3405,7 @@ pub struct SettlementsIrpartsurplus6 {
     pub contractallocation: Option<rust_decimal::Decimal>,
     /// Amount NSP is paid for Inter/intra-Regional surplus energy produced
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last updated
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA
@@ -3411,9 +3431,9 @@ impl crate::GetTable for SettlementsIrpartsurplus6 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            settlementrunno: self.settlementrunno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
         }
     }
 
@@ -3718,6 +3738,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
 /// * SETTLEMENTRUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsIrsurplus6 {
+    /// Settlement date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -3734,6 +3755,7 @@ pub struct SettlementsIrsurplus6 {
     pub lossfactor: Option<rust_decimal::Decimal>,
     /// Amount of surplus in $
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA
@@ -3756,10 +3778,10 @@ impl crate::GetTable for SettlementsIrsurplus6 {
     fn primary_key(&self) -> SettlementsIrsurplus6PrimaryKey {
         SettlementsIrsurplus6PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            settlementrunno: self.settlementrunno.clone(),
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
         }
     }
 
@@ -4030,6 +4052,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
 /// * SETTLEMENTRUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsLocalareaenergy1 {
+    /// Settlement date of the settlement run
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number of the settlement run
@@ -4048,6 +4071,7 @@ pub struct SettlementsLocalareaenergy1 {
     pub adme: Option<rust_decimal::Decimal>,
     /// The sum of all DME amounts for each Market Customer FRMP and TNI in the local area, in this trading interval.
     pub admela: Option<rust_decimal::Decimal>,
+    /// Last changed date time for the record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4066,9 +4090,9 @@ impl crate::GetTable for SettlementsLocalareaenergy1 {
     fn primary_key(&self) -> SettlementsLocalareaenergy1PrimaryKey {
         SettlementsLocalareaenergy1PrimaryKey {
             localareaid: self.localareaid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            settlementrunno: self.settlementrunno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
         }
     }
 
@@ -4318,6 +4342,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
 /// * TNI
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsLocalareatni1 {
+    /// Settlement date of the settlement run
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number of the settlement run
@@ -4326,6 +4351,7 @@ pub struct SettlementsLocalareatni1 {
     pub localareaid: String,
     /// Unique identifier for a TNI constituent to the local area as at the settlement run
     pub tni: String,
+    /// Last changed date time for the record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4344,8 +4370,8 @@ impl crate::GetTable for SettlementsLocalareatni1 {
     fn primary_key(&self) -> SettlementsLocalareatni1PrimaryKey {
         SettlementsLocalareatni1PrimaryKey {
             localareaid: self.localareaid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            settlementrunno: self.settlementrunno.clone(),
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
             tni: self.tni.clone(),
         }
     }
@@ -4515,6 +4541,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsLshedpayment5 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No.
@@ -4555,10 +4582,12 @@ pub struct SettlementsLshedpayment5 {
     pub finaldemand: Option<rust_decimal::Decimal>,
     /// AS Contract Version No.
     pub contractversionno: Option<rust_decimal::Decimal>,
+    /// Re-offer offer date
     #[serde(with = "crate::mms_datetime_opt")]
     pub offerdate: Option<chrono::NaiveDateTime>,
     /// Re-Offer Version No.
     pub offerversionno: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Payment amount for the Load Shed Availability service
@@ -4580,9 +4609,9 @@ impl crate::GetTable for SettlementsLshedpayment5 {
         SettlementsLshedpayment5PrimaryKey {
             contractid: self.contractid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -5019,6 +5048,7 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsLshedrecovery5 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No.
@@ -5043,6 +5073,7 @@ pub struct SettlementsLshedrecovery5 {
     pub lserecovery: Option<rust_decimal::Decimal>,
     /// Compensation Recovery
     pub ccrecovery: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Load Shed Enabling Recovery for Generator
@@ -5073,10 +5104,10 @@ impl crate::GetTable for SettlementsLshedrecovery5 {
     fn primary_key(&self) -> SettlementsLshedrecovery5PrimaryKey {
         SettlementsLshedrecovery5PrimaryKey {
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -5470,6 +5501,7 @@ impl crate::ArrowSchema for SettlementsLshedrecovery5 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsMarketfees6 {
+    /// Settlement date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -5484,6 +5516,7 @@ pub struct SettlementsMarketfees6 {
     pub marketfeevalue: Option<rust_decimal::Decimal>,
     /// Energy amount for variable fees
     pub energy: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The participant category that the market fee recovery pertains to. Corresponds to the PARTICIPANTCATEGORYID column of the PARTICIPANT_BANDFEE_CATEGORYALLOC_C_V view for BAND$ type fees, or to the MARKETFEETYPE column of the MARKETFEE_P_V view for all other fee types.
@@ -5510,9 +5543,9 @@ impl crate::GetTable for SettlementsMarketfees6 {
             marketfeeid: self.marketfeeid.clone(),
             participantcategoryid: self.participantcategoryid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            periodid: self.periodid,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -5786,6 +5819,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsReallocations5 {
+    /// Calendar Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run no
@@ -5802,6 +5836,7 @@ pub struct SettlementsReallocations5 {
     pub energy: Option<rust_decimal::Decimal>,
     /// Regional Reference Price
     pub rrp: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -5820,10 +5855,10 @@ impl crate::GetTable for SettlementsReallocations5 {
     fn primary_key(&self) -> SettlementsReallocations5PrimaryKey {
         SettlementsReallocations5PrimaryKey {
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             reallocationid: self.reallocationid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -6062,6 +6097,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsRestartpayment6 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No.
@@ -6086,10 +6122,12 @@ pub struct SettlementsRestartpayment6 {
     pub availabilitypayment: Option<rust_decimal::Decimal>,
     /// Contract Version No.
     pub contractversionno: Option<rust_decimal::Decimal>,
+    /// Re-offer offer date
     #[serde(with = "crate::mms_datetime_opt")]
     pub offerdate: Option<chrono::NaiveDateTime>,
     /// Re-Offer Version No.
     pub offerversionno: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The enabling payment made for system restart in this half-hour interval
@@ -6111,9 +6149,9 @@ impl crate::GetTable for SettlementsRestartpayment6 {
         SettlementsRestartpayment6PrimaryKey {
             contractid: self.contractid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -6446,6 +6484,7 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsRestartrecovery6 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No.
@@ -6466,6 +6505,7 @@ pub struct SettlementsRestartrecovery6 {
     pub regiondemand: Option<rust_decimal::Decimal>,
     /// Availability Recovery
     pub availabilityrecovery: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Availability Recovery for Generator
@@ -6496,10 +6536,10 @@ impl crate::GetTable for SettlementsRestartrecovery6 {
     fn primary_key(&self) -> SettlementsRestartrecovery6PrimaryKey {
         SettlementsRestartrecovery6PrimaryKey {
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -6860,6 +6900,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsRpowerpayment6 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No.
@@ -6910,10 +6951,12 @@ pub struct SettlementsRpowerpayment6 {
     pub ccpayment: Option<rust_decimal::Decimal>,
     /// AS Contract Version No.
     pub contractversionno: Option<rust_decimal::Decimal>,
+    /// Re-offer offer date
     #[serde(with = "crate::mms_datetime_opt")]
     pub offerdate: Option<chrono::NaiveDateTime>,
     /// Re-Offer Version No.
     pub offerversionno: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The rebate amount if MegaVar (MVAr) is below the threshold.
@@ -6935,9 +6978,9 @@ impl crate::GetTable for SettlementsRpowerpayment6 {
         SettlementsRpowerpayment6PrimaryKey {
             contractid: self.contractid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -7450,6 +7493,7 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsRpowerrecovery5 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No.
@@ -7478,6 +7522,7 @@ pub struct SettlementsRpowerrecovery5 {
     pub enablingrecovery: Option<rust_decimal::Decimal>,
     /// Compensation Recovery
     pub ccrecovery: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Availability Recovery for Generator
@@ -7506,10 +7551,10 @@ impl crate::GetTable for SettlementsRpowerrecovery5 {
     fn primary_key(&self) -> SettlementsRpowerrecovery5PrimaryKey {
         SettlementsRpowerrecovery5PrimaryKey {
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -7917,6 +7962,7 @@ impl crate::ArrowSchema for SettlementsRpowerrecovery5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsSmallgendata1 {
+    /// Settlement date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Version number of the record for the settlement date
@@ -7941,6 +7987,7 @@ pub struct SettlementsSmallgendata1 {
     pub impenergycost: Option<rust_decimal::Decimal>,
     /// Export Energy Cost ($)
     pub expenergycost: Option<rust_decimal::Decimal>,
+    /// Last date and time the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7960,9 +8007,9 @@ impl crate::GetTable for SettlementsSmallgendata1 {
         SettlementsSmallgendata1PrimaryKey {
             connectionpointid: self.connectionpointid.clone(),
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -8250,6 +8297,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsAncillarySummary5 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No
@@ -8264,6 +8312,7 @@ pub struct SettlementsAncillarySummary5 {
     pub periodid: rust_decimal::Decimal,
     /// The NEM ancillary summary regional payment amount ($)
     pub paymentamount: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8282,11 +8331,11 @@ impl crate::GetTable for SettlementsAncillarySummary5 {
     fn primary_key(&self) -> SettlementsAncillarySummary5PrimaryKey {
         SettlementsAncillarySummary5PrimaryKey {
             paymenttype: self.paymenttype.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
             service: self.service.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -8504,6 +8553,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsApcCompensation1 {
+    /// Settlement run date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -8533,12 +8583,12 @@ impl crate::GetTable for SettlementsApcCompensation1 {
 
     fn primary_key(&self) -> SettlementsApcCompensation1PrimaryKey {
         SettlementsApcCompensation1PrimaryKey {
-            apeventid: self.apeventid.clone(),
-            claimid: self.claimid.clone(),
+            apeventid: self.apeventid,
+            claimid: self.claimid,
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -8721,6 +8771,7 @@ impl crate::ArrowSchema for SettlementsApcCompensation1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsApcRecovery1 {
+    /// Settlement run date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -8754,13 +8805,13 @@ impl crate::GetTable for SettlementsApcRecovery1 {
 
     fn primary_key(&self) -> SettlementsApcRecovery1PrimaryKey {
         SettlementsApcRecovery1PrimaryKey {
-            apeventid: self.apeventid.clone(),
-            claimid: self.claimid.clone(),
+            apeventid: self.apeventid,
+            claimid: self.claimid,
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -8970,6 +9021,7 @@ impl crate::ArrowSchema for SettlementsApcRecovery1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsFcasPayment5 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No
@@ -8998,6 +9050,7 @@ pub struct SettlementsFcasPayment5 {
     pub lowerreg_payment: Option<rust_decimal::Decimal>,
     /// Raise 5 Minute Regulation Payment
     pub raisereg_payment: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -9016,9 +9069,9 @@ impl crate::GetTable for SettlementsFcasPayment5 {
     fn primary_key(&self) -> SettlementsFcasPayment5PrimaryKey {
         SettlementsFcasPayment5PrimaryKey {
             duid: self.duid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -9332,6 +9385,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsFcasRecovery6 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No
@@ -9358,6 +9412,7 @@ pub struct SettlementsFcasRecovery6 {
     pub lowerreg_recovery: Option<rust_decimal::Decimal>,
     /// Recovery amount for the Raise Regulation Second service attributable to customer connection points
     pub raisereg_recovery: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Recovery amount for the Lower 6 Second service attributable to generator connection points
@@ -9392,9 +9447,9 @@ impl crate::GetTable for SettlementsFcasRecovery6 {
     fn primary_key(&self) -> SettlementsFcasRecovery6PrimaryKey {
         SettlementsFcasRecovery6PrimaryKey {
             participantid: self.participantid.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
             versionno: self.versionno.clone(),
         }
     }
@@ -9836,10 +9891,12 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsSetFcasRegulationTrk1 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run No
     pub versionno: rust_decimal::Decimal,
+    /// Dispatch Interval Date Time
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Generic Constraint ID
@@ -9852,6 +9909,7 @@ pub struct SettlementsSetFcasRegulationTrk1 {
     pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
     /// Recovery factor for CRMPF based recovery
     pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indication that substitute demand was used to recover this requirement
@@ -9874,9 +9932,9 @@ impl crate::GetTable for SettlementsSetFcasRegulationTrk1 {
     fn primary_key(&self) -> SettlementsSetFcasRegulationTrk1PrimaryKey {
         SettlementsSetFcasRegulationTrk1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            interval_datetime: self.interval_datetime,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -10156,6 +10214,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsNmasRecovery2 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -10182,6 +10241,7 @@ pub struct SettlementsNmasRecovery2 {
     pub region_energy: Option<rust_decimal::Decimal>,
     /// The Total recovery amount for the period for the PARTICIPANTID and REGIONID
     pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Last Updated date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Participant Generator Energy in the benefitting region
@@ -10210,11 +10270,11 @@ impl crate::GetTable for SettlementsNmasRecovery2 {
             contractid: self.contractid.clone(),
             participantid: self.participantid.clone(),
             paymenttype: self.paymenttype.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
             service: self.service.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -10587,6 +10647,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsNmasRecoveryRbf1 {
+    /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number
@@ -10607,6 +10668,7 @@ pub struct SettlementsNmasRecoveryRbf1 {
     pub payment_amount: Option<rust_decimal::Decimal>,
     /// The Total recovery amount for the period for the REGIONID
     pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Last Updated date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -10626,11 +10688,11 @@ impl crate::GetTable for SettlementsNmasRecoveryRbf1 {
         SettlementsNmasRecoveryRbf1PrimaryKey {
             contractid: self.contractid.clone(),
             paymenttype: self.paymenttype.clone(),
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
             service: self.service.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -10889,6 +10951,7 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementsRunParameter5 {
+    /// Settlement Date (Calendar)
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement Run Number for this date
@@ -10897,6 +10960,7 @@ pub struct SettlementsRunParameter5 {
     pub parameterid: String,
     /// Settlement Run Amount for the Constant Identifier
     pub numvalue: Option<rust_decimal::Decimal>,
+    /// Last date the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -10915,8 +10979,8 @@ impl crate::GetTable for SettlementsRunParameter5 {
     fn primary_key(&self) -> SettlementsRunParameter5PrimaryKey {
         SettlementsRunParameter5PrimaryKey {
             parameterid: self.parameterid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 

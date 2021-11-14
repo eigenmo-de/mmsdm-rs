@@ -18,6 +18,7 @@
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct TradingAverageprice301 {
+    /// 30-minute interval period, 1 to 48 from the start of the calendar day
     #[serde(with = "crate::mms_datetime")]
     pub perioddate: chrono::NaiveDateTime,
     /// Region Identifier
@@ -28,6 +29,7 @@ pub struct TradingAverageprice301 {
     pub rrp: Option<rust_decimal::Decimal>,
     /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM" or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
     pub price_confidence: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -45,14 +47,12 @@ impl crate::GetTable for TradingAverageprice301 {
 
     fn primary_key(&self) -> TradingAverageprice301PrimaryKey {
         TradingAverageprice301PrimaryKey {
-            perioddate: self.perioddate.clone(),
+            perioddate: self.perioddate,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "trading_averageprice30_v1".to_string()
@@ -203,6 +203,7 @@ impl crate::ArrowSchema for TradingAverageprice301 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct TradingInterconnectorres2 {
+    /// Date that this data applies to
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no.
@@ -217,6 +218,7 @@ pub struct TradingInterconnectorres2 {
     pub mwflow: Option<rust_decimal::Decimal>,
     /// MW losses at calculated MW flow
     pub mwlosses: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -235,9 +237,9 @@ impl crate::GetTable for TradingInterconnectorres2 {
     fn primary_key(&self) -> TradingInterconnectorres2PrimaryKey {
         TradingInterconnectorres2PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
-            periodid: self.periodid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            periodid: self.periodid,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -464,6 +466,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct TradingPrice2 {
+    /// Date that this data applies to
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Run No
@@ -478,6 +481,7 @@ pub struct TradingPrice2 {
     pub eep: Option<rust_decimal::Decimal>,
     /// Indicates when the Trading interval price has been adjusted after the trading interval was completed
     pub invalidflag: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Regional Original Price. The price before any adjustments were made
@@ -531,10 +535,10 @@ impl crate::GetTable for TradingPrice2 {
 
     fn primary_key(&self) -> TradingPrice2PrimaryKey {
         TradingPrice2PrimaryKey {
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 

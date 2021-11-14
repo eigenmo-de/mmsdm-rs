@@ -22,6 +22,7 @@
 pub struct MarketConfigBidtypes1 {
     /// Bid Type Identifier
     pub bidtype: String,
+    /// Market date starting at 04:30 inclusive
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Record version number
@@ -34,6 +35,7 @@ pub struct MarketConfigBidtypes1 {
     pub numdaysaheadpricelocked: Option<rust_decimal::Decimal>,
     /// ENERGY or AS validation rules to apply.
     pub validationrule: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Alias for this BIDTYPE used in the SPD Solver
@@ -54,14 +56,12 @@ impl crate::GetTable for MarketConfigBidtypes1 {
     fn primary_key(&self) -> MarketConfigBidtypes1PrimaryKey {
         MarketConfigBidtypes1PrimaryKey {
             bidtype: self.bidtype.clone(),
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_bidtypes_v1".to_string()
@@ -249,14 +249,17 @@ impl crate::ArrowSchema for MarketConfigBidtypes1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigBidtypestrk1 {
+    /// Market date starting at 04:30 inclusive
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Record version number
     pub versionno: rust_decimal::Decimal,
+    /// Date of record authorisation. A NULL value indicates the record is not authorised.
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User that authorised record. A NULL value indicates the record is not authorised.
     pub authorisedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -274,14 +277,12 @@ impl crate::GetTable for MarketConfigBidtypestrk1 {
 
     fn primary_key(&self) -> MarketConfigBidtypestrk1PrimaryKey {
         MarketConfigBidtypestrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_bidtypestrk_v1".to_string()
@@ -435,6 +436,7 @@ pub struct MarketConfigInterconnector1 {
     pub regionto: Option<String>,
     /// Description of interconnector
     pub description: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -456,9 +458,7 @@ impl crate::GetTable for MarketConfigInterconnector1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_interconnector_v1".to_string()
@@ -586,6 +586,7 @@ impl crate::ArrowSchema for MarketConfigInterconnector1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigInterconnectoralloc1 {
+    /// Effective Date of Allocation Details
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No in respect to effective date
@@ -598,6 +599,7 @@ pub struct MarketConfigInterconnectoralloc1 {
     pub participantid: String,
     /// Allocation % / 100
     pub allocation: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -615,17 +617,15 @@ impl crate::GetTable for MarketConfigInterconnectoralloc1 {
 
     fn primary_key(&self) -> MarketConfigInterconnectoralloc1PrimaryKey {
         MarketConfigInterconnectoralloc1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_interconnectoralloc_v1".to_string()
@@ -816,6 +816,7 @@ pub struct MarketConfigInterconnectorconstraint1 {
     pub reserveoverallloadfactor: Option<rust_decimal::Decimal>,
     /// Loss share attributable to from region
     pub fromregionlossshare: Option<rust_decimal::Decimal>,
+    /// Date that this limit is effective from
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version for this date
@@ -834,6 +835,7 @@ pub struct MarketConfigInterconnectorconstraint1 {
     pub emsmeasurand: Option<String>,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Not used
@@ -850,6 +852,7 @@ pub struct MarketConfigInterconnectorconstraint1 {
     pub overloadfactor60sec: Option<rust_decimal::Decimal>,
     /// Interconnector overload for 6 sec
     pub overloadfactor6sec: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate that the interconnector cannot support FCAS Transfers
@@ -871,15 +874,13 @@ impl crate::GetTable for MarketConfigInterconnectorconstraint1 {
 
     fn primary_key(&self) -> MarketConfigInterconnectorconstraint1PrimaryKey {
         MarketConfigInterconnectorconstraint1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             interconnectorid: self.interconnectorid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_interconnectorconstraint_v1".to_string()
@@ -1273,6 +1274,7 @@ impl crate::ArrowSchema for MarketConfigInterconnectorconstraint1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigIntraregionalloc1 {
+    /// Effective Date of Allocation Details
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No in respect to effective date
@@ -1283,6 +1285,7 @@ pub struct MarketConfigIntraregionalloc1 {
     pub participantid: String,
     /// Allocation Percent / 100
     pub allocation: Option<rust_decimal::Decimal>,
+    /// Last changed date/time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1300,16 +1303,14 @@ impl crate::GetTable for MarketConfigIntraregionalloc1 {
 
     fn primary_key(&self) -> MarketConfigIntraregionalloc1PrimaryKey {
         MarketConfigIntraregionalloc1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_intraregionalloc_v1".to_string()
@@ -1482,6 +1483,7 @@ impl crate::ArrowSchema for MarketConfigIntraregionalloc1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigLossfactormodel1 {
+    /// Calendar date data set is effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number within effective date of the status proposed
@@ -1492,6 +1494,7 @@ pub struct MarketConfigLossfactormodel1 {
     pub regionid: String,
     /// The coefficient applied to the region demand in the calculation of the interconnector loss factor
     pub demandcoefficient: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1509,16 +1512,14 @@ impl crate::GetTable for MarketConfigLossfactormodel1 {
 
     fn primary_key(&self) -> MarketConfigLossfactormodel1PrimaryKey {
         MarketConfigLossfactormodel1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             interconnectorid: self.interconnectorid.clone(),
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_lossfactormodel_v1".to_string()
@@ -1691,6 +1692,7 @@ impl crate::ArrowSchema for MarketConfigLossfactormodel1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigLossmodel1 {
+    /// Calendar date data set is effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number within effective date
@@ -1705,6 +1707,7 @@ pub struct MarketConfigLossmodel1 {
     pub mwbreakpoint: Option<rust_decimal::Decimal>,
     /// Not used
     pub lossfactor: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1722,16 +1725,14 @@ impl crate::GetTable for MarketConfigLossmodel1 {
 
     fn primary_key(&self) -> MarketConfigLossmodel1PrimaryKey {
         MarketConfigLossmodel1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             interconnectorid: self.interconnectorid.clone(),
-            losssegment: self.losssegment.clone(),
-            versionno: self.versionno.clone(),
+            losssegment: self.losssegment,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_lossmodel_v1".to_string()
@@ -1929,6 +1930,7 @@ impl crate::ArrowSchema for MarketConfigLossmodel1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigMarketPriceThresholds1 {
+    /// Calendar date that this record becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// version no for the effective date
@@ -1939,10 +1941,12 @@ pub struct MarketConfigMarketPriceThresholds1 {
     pub marketpricefloor: Option<rust_decimal::Decimal>,
     /// Threshold value beyond which Aggregate Prices per Region over 336 Trade Intervals (Energy), or 2016 Dispatch Intervals (FCAS), will result in an Administered Price declaration
     pub administered_price_threshold: Option<rust_decimal::Decimal>,
+    /// date data authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// user authorising
     pub authorisedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1960,14 +1964,12 @@ impl crate::GetTable for MarketConfigMarketPriceThresholds1 {
 
     fn primary_key(&self) -> MarketConfigMarketPriceThresholds1PrimaryKey {
         MarketConfigMarketPriceThresholds1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_market_price_thresholds_v1".to_string()
@@ -2165,6 +2167,7 @@ pub struct MarketConfigRegion1 {
     pub description: Option<String>,
     /// Status of the region e.g. working, inactive, archive.
     pub regionstatus: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2186,9 +2189,7 @@ impl crate::GetTable for MarketConfigRegion1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_region_v1".to_string()
@@ -2304,6 +2305,7 @@ impl crate::ArrowSchema for MarketConfigRegion1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MarketConfigRegionstandingdata1 {
+    /// Effective date of this record, only the latest date applies
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No of the standing data that should be effective on this date
@@ -2316,12 +2318,14 @@ pub struct MarketConfigRegionstandingdata1 {
     pub regionalreferencepointid: Option<String>,
     /// Period identifier of the peak trading period of this connection point
     pub peaktradingperiod: Option<rust_decimal::Decimal>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User authorising record
     pub authorisedby: Option<String>,
     /// Scaling factor for regional FCAS requirement
     pub scalingfactor: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2339,15 +2343,13 @@ impl crate::GetTable for MarketConfigRegionstandingdata1 {
 
     fn primary_key(&self) -> MarketConfigRegionstandingdata1PrimaryKey {
         MarketConfigRegionstandingdata1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_regionstandingdata_v1".to_string()
@@ -2558,6 +2560,7 @@ impl crate::ArrowSchema for MarketConfigRegionstandingdata1 {
 pub struct MarketConfigTransmissionlossfactor2 {
     /// Transmission Loss Factor
     pub transmissionlossfactor: rust_decimal::Decimal,
+    /// Effective date of record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of record for given effective date
@@ -2566,6 +2569,7 @@ pub struct MarketConfigTransmissionlossfactor2 {
     pub connectionpointid: String,
     /// &nbsp;
     pub regionid: Option<String>,
+    /// Record creation timestamp
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Secondary transmission loss factor applied in settlements for generator purchases.
@@ -2586,14 +2590,12 @@ impl crate::GetTable for MarketConfigTransmissionlossfactor2 {
     fn primary_key(&self) -> MarketConfigTransmissionlossfactor2PrimaryKey {
         MarketConfigTransmissionlossfactor2PrimaryKey {
             connectionpointid: self.connectionpointid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_config_transmissionlossfactor_v2".to_string()

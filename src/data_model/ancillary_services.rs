@@ -23,8 +23,10 @@ pub struct AncilliaryServicesContractagc1 {
     pub contractid: String,
     /// Contract Version No
     pub versionno: rust_decimal::Decimal,
+    /// Starting Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// End date of contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Unique participant identifier
@@ -43,8 +45,10 @@ pub struct AncilliaryServicesContractagc1 {
     pub bs: Option<rust_decimal::Decimal>,
     /// User Name
     pub authorisedby: Option<String>,
+    /// Date Contract was Authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -63,13 +67,11 @@ impl crate::GetTable for AncilliaryServicesContractagc1 {
     fn primary_key(&self) -> AncilliaryServicesContractagc1PrimaryKey {
         AncilliaryServicesContractagc1PrimaryKey {
             contractid: self.contractid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ancilliary_services_contractagc_v1".to_string()
@@ -312,8 +314,10 @@ pub struct AncilliaryServicesContractloadshed2 {
     pub contractid: String,
     /// Contract Version No.
     pub versionno: rust_decimal::Decimal,
+    /// Starting Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Termination Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Unique participant identifier
@@ -384,12 +388,15 @@ pub struct AncilliaryServicesContractloadshed2 {
     pub quant60seclowercontract: Option<rust_decimal::Decimal>,
     /// User Name
     pub authorisedby: Option<String>,
+    /// Date Contract was Authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The NMAS default payment amount
     pub default_testingpayment_amount: Option<rust_decimal::Decimal>,
+    /// The NMAS Testing Service Start Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub service_start_date: Option<chrono::NaiveDateTime>,
 }
@@ -408,13 +415,11 @@ impl crate::GetTable for AncilliaryServicesContractloadshed2 {
     fn primary_key(&self) -> AncilliaryServicesContractloadshed2PrimaryKey {
         AncilliaryServicesContractloadshed2PrimaryKey {
             contractid: self.contractid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ancilliary_services_contractloadshed_v2".to_string()
@@ -1111,8 +1116,10 @@ pub struct AncilliaryServicesContractreactivepower4 {
     pub contractid: String,
     /// Contract Version No.
     pub versionno: rust_decimal::Decimal,
+    /// Starting Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Termination Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Unique participant identifier
@@ -1145,12 +1152,15 @@ pub struct AncilliaryServicesContractreactivepower4 {
     pub bs: Option<rust_decimal::Decimal>,
     /// User Name
     pub authorisedby: Option<String>,
+    /// Date Contract was Authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The NMAS default payment amount
     pub default_testingpayment_amount: Option<rust_decimal::Decimal>,
+    /// The NMAS Testing Service Start Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub service_start_date: Option<chrono::NaiveDateTime>,
     /// The MWh the unit must produce in a trading interval to be eligible for an excess-to-gen availability payment
@@ -1179,13 +1189,11 @@ impl crate::GetTable for AncilliaryServicesContractreactivepower4 {
     fn primary_key(&self) -> AncilliaryServicesContractreactivepower4PrimaryKey {
         AncilliaryServicesContractreactivepower4PrimaryKey {
             contractid: self.contractid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ancilliary_services_contractreactivepower_v4".to_string()
@@ -1636,8 +1644,10 @@ pub struct AncilliaryServicesContractrestartservices2 {
     pub contractid: String,
     /// Contract Version No.
     pub versionno: rust_decimal::Decimal,
+    /// Starting Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Termination Date of Contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Unique participant identifier
@@ -1650,12 +1660,15 @@ pub struct AncilliaryServicesContractrestartservices2 {
     pub triptohouselevel: Option<rust_decimal::Decimal>,
     /// User Name
     pub authorisedby: Option<String>,
+    /// Date Contract was Authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The NMAS default payment amount
     pub default_testingpayment_amount: Option<rust_decimal::Decimal>,
+    /// The NMAS Testing Service Start Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub service_start_date: Option<chrono::NaiveDateTime>,
 }
@@ -1674,13 +1687,11 @@ impl crate::GetTable for AncilliaryServicesContractrestartservices2 {
     fn primary_key(&self) -> AncilliaryServicesContractrestartservices2PrimaryKey {
         AncilliaryServicesContractrestartservices2PrimaryKey {
             contractid: self.contractid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ancilliary_services_contractrestartservices_v2".to_string()
@@ -1932,10 +1943,12 @@ pub struct AncilliaryServicesContractrestartunits1 {
     pub versionno: rust_decimal::Decimal,
     /// Dispatchable Unit identifier
     pub duid: String,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// &nbsp;
     pub authorisedby: Option<String>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
 }
@@ -1955,13 +1968,11 @@ impl crate::GetTable for AncilliaryServicesContractrestartunits1 {
         AncilliaryServicesContractrestartunits1PrimaryKey {
             contractid: self.contractid.clone(),
             duid: self.duid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ancilliary_services_contractrestartunits_v1".to_string()

@@ -25,6 +25,7 @@
 pub struct MeterdataAggregateReads1 {
     /// Case Identifier
     pub case_id: rust_decimal::Decimal,
+    /// Settlement date within the case
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Connection Point ID
@@ -41,6 +42,7 @@ pub struct MeterdataAggregateReads1 {
     pub importvalue: rust_decimal::Decimal,
     /// The export(pool-centric) value for the meter read (MWh)
     pub exportvalue: rust_decimal::Decimal,
+    /// Last changed date for the record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -58,13 +60,13 @@ impl crate::GetTable for MeterdataAggregateReads1 {
 
     fn primary_key(&self) -> MeterdataAggregateReads1PrimaryKey {
         MeterdataAggregateReads1PrimaryKey {
-            case_id: self.case_id.clone(),
+            case_id: self.case_id,
             connectionpointid: self.connectionpointid.clone(),
             frmp: self.frmp.clone(),
             lr: self.lr.clone(),
             meter_type: self.meter_type.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -308,6 +310,7 @@ impl crate::ArrowSchema for MeterdataAggregateReads1 {
 pub struct MeterdataIndividualReads1 {
     /// Case Identifier
     pub case_id: rust_decimal::Decimal,
+    /// Settlement date within the case
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// The National Metering Identifier (NMI)
@@ -328,6 +331,7 @@ pub struct MeterdataIndividualReads1 {
     pub importvalue: rust_decimal::Decimal,
     /// The export(pool-centric) value for the meter read (MWh)
     pub exportvalue: rust_decimal::Decimal,
+    /// Last changed date for the record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -345,11 +349,11 @@ impl crate::GetTable for MeterdataIndividualReads1 {
 
     fn primary_key(&self) -> MeterdataIndividualReads1PrimaryKey {
         MeterdataIndividualReads1PrimaryKey {
-            case_id: self.case_id.clone(),
+            case_id: self.case_id,
             meter_id: self.meter_id.clone(),
             meter_id_suffix: self.meter_id_suffix.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -600,6 +604,7 @@ impl crate::ArrowSchema for MeterdataIndividualReads1 {
 pub struct MeterdataInterconnector1 {
     /// Case Identifier
     pub case_id: rust_decimal::Decimal,
+    /// Settlement date within the case
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Interconnector Identifier
@@ -610,6 +615,7 @@ pub struct MeterdataInterconnector1 {
     pub importvalue: Option<rust_decimal::Decimal>,
     /// The export direction value for the meter read (MWh)
     pub exportvalue: Option<rust_decimal::Decimal>,
+    /// Last changed date for the record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -627,10 +633,10 @@ impl crate::GetTable for MeterdataInterconnector1 {
 
     fn primary_key(&self) -> MeterdataInterconnector1PrimaryKey {
         MeterdataInterconnector1PrimaryKey {
-            case_id: self.case_id.clone(),
+            case_id: self.case_id,
             interconnectorid: self.interconnectorid.clone(),
-            periodid: self.periodid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
         }
     }
 

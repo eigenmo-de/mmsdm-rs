@@ -23,20 +23,28 @@ pub struct BillingConfigBillingcalendar2 {
     pub contractyear: rust_decimal::Decimal,
     /// Week no within the contract year. Week no 1 is the week containing 1st January
     pub weekno: rust_decimal::Decimal,
+    /// Start Date of week
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// End Date of week
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
+    /// Preliminary Statement Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub preliminarystatementdate: Option<chrono::NaiveDateTime>,
+    /// Final Statement Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub finalstatementdate: Option<chrono::NaiveDateTime>,
+    /// Payment Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub paymentdate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Revision 1 Statement Date for the billing week.
     #[serde(with = "crate::mms_datetime_opt")]
     pub revision1_statementdate: Option<chrono::NaiveDateTime>,
+    /// Revision 2 Statement Date for the billing week.
     #[serde(with = "crate::mms_datetime_opt")]
     pub revision2_statementdate: Option<chrono::NaiveDateTime>,
 }
@@ -54,14 +62,12 @@ impl crate::GetTable for BillingConfigBillingcalendar2 {
 
     fn primary_key(&self) -> BillingConfigBillingcalendar2PrimaryKey {
         BillingConfigBillingcalendar2PrimaryKey {
-            contractyear: self.contractyear.clone(),
-            weekno: self.weekno.clone(),
+            contractyear: self.contractyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_billingcalendar_v2".to_string()
@@ -272,6 +278,7 @@ pub struct BillingConfigGstBasClass1 {
     pub bas_class: String,
     /// Description of the BAS classification
     pub description: Option<String>,
+    /// Last date and time the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -293,9 +300,7 @@ impl crate::GetTable for BillingConfigGstBasClass1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_gst_bas_class_v1".to_string()
@@ -403,6 +408,7 @@ impl crate::ArrowSchema for BillingConfigGstBasClass1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct BillingConfigGstRate1 {
+    /// The effective date of the data set
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The version number of the data set
@@ -411,6 +417,7 @@ pub struct BillingConfigGstRate1 {
     pub bas_class: String,
     /// The GST rate that applies to this BAS classification
     pub gst_rate: Option<rust_decimal::Decimal>,
+    /// Last date and time the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -429,14 +436,12 @@ impl crate::GetTable for BillingConfigGstRate1 {
     fn primary_key(&self) -> BillingConfigGstRate1PrimaryKey {
         BillingConfigGstRate1PrimaryKey {
             bas_class: self.bas_class.clone(),
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_gst_rate_v1".to_string()
@@ -594,6 +599,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct BillingConfigGstTransactionClass1 {
+    /// The effective date of the data set
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The version number of the data set
@@ -602,6 +608,7 @@ pub struct BillingConfigGstTransactionClass1 {
     pub transaction_type: String,
     /// The BAS classification that the transaction type corresponds to
     pub bas_class: String,
+    /// Last date and time the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -620,15 +627,13 @@ impl crate::GetTable for BillingConfigGstTransactionClass1 {
     fn primary_key(&self) -> BillingConfigGstTransactionClass1PrimaryKey {
         BillingConfigGstTransactionClass1PrimaryKey {
             bas_class: self.bas_class.clone(),
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             transaction_type: self.transaction_type.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_gst_transaction_class_v1".to_string()
@@ -790,6 +795,7 @@ pub struct BillingConfigGstTransactionType1 {
     pub gl_financialcode: Option<String>,
     /// &nbsp;
     pub gl_tcode: Option<String>,
+    /// Last date and time the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -811,9 +817,7 @@ impl crate::GetTable for BillingConfigGstTransactionType1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_gst_transaction_type_v1".to_string()
@@ -939,8 +943,10 @@ impl crate::ArrowSchema for BillingConfigGstTransactionType1 {
 pub struct BillingConfigSecdepositInterestRate1 {
     /// The interest account ID for calculating the interest payment
     pub interest_acct_id: String,
+    /// The effective date of the interest rate change
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// Date Time this record was added
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// The interest rate for the interest account ID as on the effective date.
@@ -960,15 +966,13 @@ impl crate::GetTable for BillingConfigSecdepositInterestRate1 {
 
     fn primary_key(&self) -> BillingConfigSecdepositInterestRate1PrimaryKey {
         BillingConfigSecdepositInterestRate1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             interest_acct_id: self.interest_acct_id.clone(),
-            version_datetime: self.version_datetime.clone(),
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_secdeposit_interest_rate_v1".to_string()
@@ -1121,6 +1125,7 @@ pub struct BillingConfigSecdepositProvision1 {
     pub security_deposit_id: String,
     /// The Participant ID linked to the security deposit ID
     pub participantid: String,
+    /// The date the security deposit ID is entered and authorised by settlements
     #[serde(with = "crate::mms_datetime_opt")]
     pub transaction_date: Option<chrono::NaiveDateTime>,
     /// The contract year of the billing week when the security deposit is maturing
@@ -1155,9 +1160,7 @@ impl crate::GetTable for BillingConfigSecdepositProvision1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_config_secdeposit_provision_v1".to_string()

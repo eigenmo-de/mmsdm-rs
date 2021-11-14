@@ -18,6 +18,7 @@
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minBlockedConstraints1 {
+    /// 5-minute Predispatch Run
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Generic Constraint identifier (synonymous with GenConID)
@@ -38,13 +39,11 @@ impl crate::GetTable for P5minBlockedConstraints1 {
     fn primary_key(&self) -> P5minBlockedConstraints1PrimaryKey {
         P5minBlockedConstraints1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_blocked_constraints_v1".to_string()
@@ -151,6 +150,7 @@ impl crate::ArrowSchema for P5minBlockedConstraints1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minCasesolution2 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Date and Time of first interval in study
@@ -185,6 +185,7 @@ pub struct P5minCasesolution2 {
     pub totalasprofileviolation: Option<rust_decimal::Decimal>,
     /// Sum of unit Fast start profile violations
     pub totalfaststartviolation: Option<rust_decimal::Decimal>,
+    /// Last changed date and time of this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate if this Predispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
@@ -204,13 +205,11 @@ impl crate::GetTable for P5minCasesolution2 {
 
     fn primary_key(&self) -> P5minCasesolution2PrimaryKey {
         P5minCasesolution2PrimaryKey {
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_casesolution_v2".to_string()
@@ -584,8 +583,10 @@ impl crate::ArrowSchema for P5minCasesolution2 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minConstraintsolution6 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Constraint identifier (synonymous with GenConID)
@@ -596,10 +597,12 @@ pub struct P5minConstraintsolution6 {
     pub marginalvalue: Option<rust_decimal::Decimal>,
     /// Amount of Violation (&gt;0 if  violating)
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// DUID to which the Constraint is confidential. Null denotes non-confidential
     pub duid: Option<String>,
+    /// Effective date of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
     #[serde(with = "crate::mms_datetime_opt")]
     pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
     /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
@@ -624,14 +627,12 @@ impl crate::GetTable for P5minConstraintsolution6 {
     fn primary_key(&self) -> P5minConstraintsolution6PrimaryKey {
         P5minConstraintsolution6PrimaryKey {
             constraintid: self.constraintid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_constraintsolution_v6".to_string()
@@ -882,10 +883,12 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minInterconnectorsoln4 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Interconnector identifier
     pub interconnectorid: String,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// SCADA MW Flow measured at Run start. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run.
@@ -914,6 +917,7 @@ pub struct P5minInterconnectorsoln4 {
     pub fcasexportlimit: Option<rust_decimal::Decimal>,
     /// Calculated import limit applying to energy + Frequency Controlled Ancillary Services.
     pub fcasimportlimit: Option<rust_decimal::Decimal>,
+    /// Last changed date of this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
@@ -942,14 +946,12 @@ impl crate::GetTable for P5minInterconnectorsoln4 {
     fn primary_key(&self) -> P5minInterconnectorsoln4PrimaryKey {
         P5minInterconnectorsoln4PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_interconnectorsoln_v4".to_string()
@@ -1361,10 +1363,12 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minIntersensitivities1 {
+    /// Definitive Run from which this solution derives
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Interconnector identifier
     pub interconnectorid: String,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
@@ -1457,6 +1461,7 @@ pub struct P5minIntersensitivities1 {
     pub mwflow42: Option<rust_decimal::Decimal>,
     /// MW Flow value. Flow43 = MW flow for given Interconnector for Scenario 43
     pub mwflow43: Option<rust_decimal::Decimal>,
+    /// Timestamp when this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1475,14 +1480,12 @@ impl crate::GetTable for P5minIntersensitivities1 {
     fn primary_key(&self) -> P5minIntersensitivities1PrimaryKey {
         P5minIntersensitivities1PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_intersensitivities_v1".to_string()
@@ -2345,8 +2348,10 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minLocalPrice1 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Dispatchable unit identifier
@@ -2371,14 +2376,12 @@ impl crate::GetTable for P5minLocalPrice1 {
     fn primary_key(&self) -> P5minLocalPrice1PrimaryKey {
         P5minLocalPrice1PrimaryKey {
             duid: self.duid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_local_price_v1".to_string()
@@ -2538,10 +2541,12 @@ impl crate::ArrowSchema for P5minLocalPrice1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minPricesensitivities1 {
+    /// Definitive Run from which this solution derives
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Region
     pub regionid: String,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Whether an Intervention constraint was defined in this run
@@ -2634,6 +2639,7 @@ pub struct P5minPricesensitivities1 {
     pub rrp42: Option<rust_decimal::Decimal>,
     /// Regional Reference price for scenario 43
     pub rrp43: Option<rust_decimal::Decimal>,
+    /// Timestamp when this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2651,15 +2657,13 @@ impl crate::GetTable for P5minPricesensitivities1 {
 
     fn primary_key(&self) -> P5minPricesensitivities1PrimaryKey {
         P5minPricesensitivities1PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_pricesensitivities_v1".to_string()
@@ -3521,8 +3525,10 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minRegionsolution6 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Region Identifier
@@ -3697,6 +3703,7 @@ pub struct P5minRegionsolution6 {
     pub lower60secviolation: Option<rust_decimal::Decimal>,
     /// Not used since Dec 2003. Violation (MW) of Lower 6 seconds requirement
     pub lower6secviolation: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Allowance made for non-scheduled generation in the demand forecast (MW).
@@ -3744,15 +3751,13 @@ impl crate::GetTable for P5minRegionsolution6 {
 
     fn primary_key(&self) -> P5minRegionsolution6PrimaryKey {
         P5minRegionsolution6PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_regionsolution_v6".to_string()
@@ -5487,8 +5492,10 @@ impl crate::ArrowSchema for P5minRegionsolution6 {
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minScenariodemand1 {
+    /// The effective date of this set of scenarios
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// The version of this set of scenarios
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// The scenario identifier
@@ -5512,16 +5519,14 @@ impl crate::GetTable for P5minScenariodemand1 {
 
     fn primary_key(&self) -> P5minScenariodemand1PrimaryKey {
         P5minScenariodemand1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             regionid: self.regionid.clone(),
-            scenario: self.scenario.clone(),
-            version_datetime: self.version_datetime.clone(),
+            scenario: self.scenario,
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_scenariodemand_v1".to_string()
@@ -5688,12 +5693,16 @@ impl crate::ArrowSchema for P5minScenariodemand1 {
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minScenariodemandtrk1 {
+    /// The effective date of this set of scenarios
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// The version of this set of scenarios
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
+    /// The datetime that the scenario update was authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// The datetime that the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -5711,14 +5720,12 @@ impl crate::GetTable for P5minScenariodemandtrk1 {
 
     fn primary_key(&self) -> P5minScenariodemandtrk1PrimaryKey {
         P5minScenariodemandtrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            version_datetime: self.version_datetime.clone(),
+            effectivedate: self.effectivedate,
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_scenariodemandtrk_v1".to_string()
@@ -5858,8 +5865,10 @@ impl crate::ArrowSchema for P5minScenariodemandtrk1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minUnitsolution3 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Dispatchable unit identifier
@@ -5912,6 +5921,7 @@ pub struct P5minUnitsolution3 {
     pub lower5minflags: Option<rust_decimal::Decimal>,
     /// Lower Reg status flag  
     pub lowerregflags: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Boolean representation flagging if the Target is Capped
@@ -5936,14 +5946,12 @@ impl crate::GetTable for P5minUnitsolution3 {
     fn primary_key(&self) -> P5minUnitsolution3PrimaryKey {
         P5minUnitsolution3PrimaryKey {
             duid: self.duid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "p5min_unitsolution_v3".to_string()

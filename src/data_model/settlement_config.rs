@@ -21,6 +21,7 @@
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct SettlementConfigAncillaryRecoverySplit1 {
+    /// Calendar settlement date record becomes effective.
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number of the record for the given date.
@@ -31,6 +32,7 @@ pub struct SettlementConfigAncillaryRecoverySplit1 {
     pub paymenttype: String,
     /// The percentage value of the recovery funded by market customers.
     pub customer_portion: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -48,16 +50,14 @@ impl crate::GetTable for SettlementConfigAncillaryRecoverySplit1 {
 
     fn primary_key(&self) -> SettlementConfigAncillaryRecoverySplit1PrimaryKey {
         SettlementConfigAncillaryRecoverySplit1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             paymenttype: self.paymenttype.clone(),
             service: self.service.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_ancillary_recovery_split_v1".to_string()
@@ -231,6 +231,7 @@ pub struct SettlementConfigMarketfee1 {
     pub marketfeetype: Option<String>,
     /// Description of market fee
     pub description: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// &nbsp;
@@ -258,9 +259,7 @@ impl crate::GetTable for SettlementConfigMarketfee1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_marketfee_v1".to_string()
@@ -412,10 +411,12 @@ pub struct SettlementConfigMarketfeedata1 {
     pub marketfeeid: String,
     /// Version of fees for this id
     pub marketfeeversionno: rust_decimal::Decimal,
+    /// Date on which this data becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Market fee rate/MWh, a dollar amount
     pub marketfeevalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -433,15 +434,13 @@ impl crate::GetTable for SettlementConfigMarketfeedata1 {
 
     fn primary_key(&self) -> SettlementConfigMarketfeedata1PrimaryKey {
         SettlementConfigMarketfeedata1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             marketfeeid: self.marketfeeid.clone(),
-            marketfeeversionno: self.marketfeeversionno.clone(),
+            marketfeeversionno: self.marketfeeversionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_marketfeedata_v1".to_string()
@@ -601,12 +600,15 @@ impl crate::ArrowSchema for SettlementConfigMarketfeedata1 {
 pub struct SettlementConfigMarketfeetrk1 {
     /// Version of fees for this ID
     pub marketfeeversionno: rust_decimal::Decimal,
+    /// Effective Date of Market notice
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -624,14 +626,12 @@ impl crate::GetTable for SettlementConfigMarketfeetrk1 {
 
     fn primary_key(&self) -> SettlementConfigMarketfeetrk1PrimaryKey {
         SettlementConfigMarketfeetrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            marketfeeversionno: self.marketfeeversionno.clone(),
+            effectivedate: self.effectivedate,
+            marketfeeversionno: self.marketfeeversionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_marketfeetrk_v1".to_string()
@@ -779,8 +779,10 @@ impl crate::ArrowSchema for SettlementConfigMarketfeetrk1 {
 pub struct SettlementConfigMarketFeeCatExcl1 {
     /// The excluded market fee
     pub marketfeeid: String,
+    /// The date the exclusion is effective from
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// The version information for this record
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Participant category to be excluded from this market fee
@@ -800,16 +802,14 @@ impl crate::GetTable for SettlementConfigMarketFeeCatExcl1 {
 
     fn primary_key(&self) -> SettlementConfigMarketFeeCatExcl1PrimaryKey {
         SettlementConfigMarketFeeCatExcl1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             marketfeeid: self.marketfeeid.clone(),
             participant_categoryid: self.participant_categoryid.clone(),
-            version_datetime: self.version_datetime.clone(),
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_cat_excl_v1".to_string()
@@ -960,10 +960,13 @@ impl crate::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
 pub struct SettlementConfigMarketFeeCatExclTrk1 {
     /// The excluded market fee
     pub marketfeeid: String,
+    /// The date the exclusion is effective from
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// The version information for this record
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
+    /// Last date and time the record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -981,15 +984,13 @@ impl crate::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
 
     fn primary_key(&self) -> SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
         SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             marketfeeid: self.marketfeeid.clone(),
-            version_datetime: self.version_datetime.clone(),
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_cat_excl_trk_v1".to_string()
@@ -1137,12 +1138,14 @@ impl crate::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
 pub struct SettlementConfigMarketFeeExclusion1 {
     /// Unique participant identifier
     pub participantid: String,
+    /// Date on which this data becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of fees for this ID
     pub versionno: rust_decimal::Decimal,
     /// Identifier for Market Fee
     pub marketfeeid: String,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1160,16 +1163,14 @@ impl crate::GetTable for SettlementConfigMarketFeeExclusion1 {
 
     fn primary_key(&self) -> SettlementConfigMarketFeeExclusion1PrimaryKey {
         SettlementConfigMarketFeeExclusion1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             marketfeeid: self.marketfeeid.clone(),
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_exclusion_v1".to_string()
@@ -1329,14 +1330,17 @@ impl crate::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
 pub struct SettlementConfigMarketFeeExclusionTrk1 {
     /// Unique participant identifier
     pub participantid: String,
+    /// Date on which this data becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of fees for this ID
     pub versionno: rust_decimal::Decimal,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1354,15 +1358,13 @@ impl crate::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
 
     fn primary_key(&self) -> SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
         SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_exclusion_trk_v1".to_string()
@@ -1533,6 +1535,7 @@ pub struct SettlementConfigParticipantBandfeeAlloc1 {
     pub participantid: String,
     /// Identifier for Market Fee
     pub marketfeeid: String,
+    /// Date on which this data becomes effective.
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Period identifier
@@ -1541,6 +1544,7 @@ pub struct SettlementConfigParticipantBandfeeAlloc1 {
     pub participantcategoryid: String,
     /// The value of this market fee
     pub marketfeevalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1558,17 +1562,15 @@ impl crate::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
 
     fn primary_key(&self) -> SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
         SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             marketfeeid: self.marketfeeid.clone(),
             participantcategoryid: self.participantcategoryid.clone(),
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_participant_bandfee_alloc_v1".to_string()
@@ -1769,10 +1771,13 @@ pub struct SetcfgReallocation2 {
     pub creditreference: Option<String>,
     /// Optional reference detail for debit participant
     pub debitreference: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// First day of the Reallocation contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Last day of the Reallocation contract
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Reallocation state. One of SUBMITTED, AUTHORISED, CANCELLED.
@@ -1804,9 +1809,7 @@ impl crate::GetTable for SetcfgReallocation2 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "setcfg_reallocation_v2".to_string()
@@ -2026,6 +2029,7 @@ pub struct SetcfgReallocationinterval1 {
     pub periodid: i64,
     /// Reallocation value in the units of the agreement type
     pub value: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Nominated Reallocation Price, only used in agreement types of SWAP, CAP and FLOOR, being the contract strike price in $/MWh
@@ -2045,14 +2049,12 @@ impl crate::GetTable for SetcfgReallocationinterval1 {
 
     fn primary_key(&self) -> SetcfgReallocationinterval1PrimaryKey {
         SetcfgReallocationinterval1PrimaryKey {
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             reallocationid: self.reallocationid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "setcfg_reallocationinterval_v1".to_string()
@@ -2191,6 +2193,7 @@ impl crate::ArrowSchema for SetcfgReallocationinterval1 {
 pub struct SettlementConfigSetcfgParticipantMpf1 {
     /// Participant identifier
     pub participantid: String,
+    /// Effective date of the MPF data
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number of the MPF data
@@ -2201,6 +2204,7 @@ pub struct SettlementConfigSetcfgParticipantMpf1 {
     pub connectionpointid: String,
     /// Market Participation Factor
     pub mpf: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2219,16 +2223,14 @@ impl crate::GetTable for SettlementConfigSetcfgParticipantMpf1 {
     fn primary_key(&self) -> SettlementConfigSetcfgParticipantMpf1PrimaryKey {
         SettlementConfigSetcfgParticipantMpf1PrimaryKey {
             connectionpointid: self.connectionpointid.clone(),
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantcategoryid: self.participantcategoryid.clone(),
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_setcfg_participant_mpf_v1".to_string()
@@ -2415,14 +2417,17 @@ impl crate::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
 pub struct SettlementConfigSetcfgParticipantMpftrk1 {
     /// Participant identifier
     pub participantid: String,
+    /// Effective date of the MPF data
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number of the MPF data
     pub versionno: rust_decimal::Decimal,
     /// Authorising user
     pub authorisedby: Option<String>,
+    /// Authorised date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2440,15 +2445,13 @@ impl crate::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
 
     fn primary_key(&self) -> SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
         SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_setcfg_participant_mpftrk_v1".to_string()

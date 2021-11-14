@@ -19,6 +19,7 @@
 /// * RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PrudentialCompanyPosition1 {
+    /// The prudential date
     #[serde(with = "crate::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
@@ -55,6 +56,7 @@ pub struct PrudentialCompanyPosition1 {
     pub early_payment_amount: Option<rust_decimal::Decimal>,
     /// The percentage of outstandings calculated against the trading margin and prudential margin
     pub percentage_outstandings: Option<rust_decimal::Decimal>,
+    /// The datetime that the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -73,14 +75,12 @@ impl crate::GetTable for PrudentialCompanyPosition1 {
     fn primary_key(&self) -> PrudentialCompanyPosition1PrimaryKey {
         PrudentialCompanyPosition1PrimaryKey {
             company_id: self.company_id.clone(),
-            prudential_date: self.prudential_date.clone(),
-            runno: self.runno.clone(),
+            prudential_date: self.prudential_date,
+            runno: self.runno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "prudential_company_position_v1".to_string()
@@ -447,14 +447,17 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
 /// * RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PrudentialRuntrk1 {
+    /// The prudential date
     #[serde(with = "crate::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
     pub runno: i64,
     /// The user that authorised the prudential run
     pub authorisedby: Option<String>,
+    /// The datetime that the prudential run was authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// The datetime that the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -472,14 +475,12 @@ impl crate::GetTable for PrudentialRuntrk1 {
 
     fn primary_key(&self) -> PrudentialRuntrk1PrimaryKey {
         PrudentialRuntrk1PrimaryKey {
-            prudential_date: self.prudential_date.clone(),
-            runno: self.runno.clone(),
+            prudential_date: self.prudential_date,
+            runno: self.runno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "prudential_runtrk_v1".to_string()

@@ -19,12 +19,14 @@
 /// * RUN_NO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaCaseresult1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
     pub run_no: i64,
     /// Version of PLEXOS used
     pub plexos_version: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -42,14 +44,12 @@ impl crate::GetTable for MtpasaCaseresult1 {
 
     fn primary_key(&self) -> MtpasaCaseresult1PrimaryKey {
         MtpasaCaseresult1PrimaryKey {
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_caseresult_v1".to_string()
@@ -173,6 +173,7 @@ impl crate::ArrowSchema for MtpasaCaseresult1 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaConstraintresult1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
@@ -181,10 +182,12 @@ pub struct MtpasaConstraintresult1 {
     pub runtype: String,
     /// Demand POE type used. Value is POE10
     pub demand_poe_type: String,
+    /// Day this result is for
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// The unique identifier for the constraint. Only binding or violating constraints are reported
     pub constraintid: String,
+    /// The effective date of the constraint used
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// The version of the constraint used
@@ -201,6 +204,7 @@ pub struct MtpasaConstraintresult1 {
     pub constraintviolation50: Option<rust_decimal::Decimal>,
     /// The 10th percentile violation degree for this constraint, across iterations and reference years (MW)
     pub constraintviolation10: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -219,17 +223,15 @@ impl crate::GetTable for MtpasaConstraintresult1 {
     fn primary_key(&self) -> MtpasaConstraintresult1PrimaryKey {
         MtpasaConstraintresult1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            day: self.day.clone(),
+            day: self.day,
             demand_poe_type: self.demand_poe_type.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_constraintresult_v1".to_string()
@@ -532,6 +534,7 @@ impl crate::ArrowSchema for MtpasaConstraintresult1 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaConstraintsummary1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
@@ -540,10 +543,12 @@ pub struct MtpasaConstraintsummary1 {
     pub runtype: String,
     /// Demand POE type used. Value is POE10
     pub demand_poe_type: String,
+    /// Day this result is for
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// The unique identifier for the constraint. Only binding or violating constraints are reported
     pub constraintid: String,
+    /// The effective date of the constraint used
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// The version of the constraintID
@@ -552,6 +557,7 @@ pub struct MtpasaConstraintsummary1 {
     pub aggregation_period: String,
     /// Constraint hours binding or violating for period, averaged across iterations and reference years
     pub constrainthoursbinding: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -571,17 +577,15 @@ impl crate::GetTable for MtpasaConstraintsummary1 {
         MtpasaConstraintsummary1PrimaryKey {
             aggregation_period: self.aggregation_period.clone(),
             constraintid: self.constraintid.clone(),
-            day: self.day.clone(),
+            day: self.day,
             demand_poe_type: self.demand_poe_type.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_constraintsummary_v1".to_string()
@@ -815,8 +819,10 @@ impl crate::ArrowSchema for MtpasaConstraintsummary1 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaDuidavailability1 {
+    /// Date Time the report was published.
     #[serde(with = "crate::mms_datetime")]
     pub publish_datetime: chrono::NaiveDateTime,
+    /// Date on which the PASA availability of DUID applies.
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// NEM Region.
@@ -825,8 +831,10 @@ pub struct MtpasaDuidavailability1 {
     pub duid: String,
     /// Offered PASA Availability of Scheduled generator DUID for the day.
     pub pasaavailability: Option<rust_decimal::Decimal>,
+    /// Date Time of the latest offer used for DUID for this date.
     #[serde(with = "crate::mms_datetime_opt")]
     pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Status of a reported capacity value (e.g. 1 for Yes, 0 for No)
@@ -846,16 +854,14 @@ impl crate::GetTable for MtpasaDuidavailability1 {
 
     fn primary_key(&self) -> MtpasaDuidavailability1PrimaryKey {
         MtpasaDuidavailability1PrimaryKey {
-            day: self.day.clone(),
+            day: self.day,
             duid: self.duid.clone(),
-            publish_datetime: self.publish_datetime.clone(),
+            publish_datetime: self.publish_datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_duidavailability_v1".to_string()
@@ -1052,6 +1058,7 @@ impl crate::ArrowSchema for MtpasaDuidavailability1 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaInterconnectorresult1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
@@ -1060,6 +1067,7 @@ pub struct MtpasaInterconnectorresult1 {
     pub runtype: String,
     /// Demand POE type used. Value is POE10
     pub demand_poe_type: String,
+    /// Day this result is for
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// The unique identifier for the interconnector
@@ -1080,6 +1088,7 @@ pub struct MtpasaInterconnectorresult1 {
     pub calculatedexportlimit: Option<rust_decimal::Decimal>,
     /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit, averaged across iterations and reference years
     pub calculatedimportlimit: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1097,18 +1106,16 @@ impl crate::GetTable for MtpasaInterconnectorresult1 {
 
     fn primary_key(&self) -> MtpasaInterconnectorresult1PrimaryKey {
         MtpasaInterconnectorresult1PrimaryKey {
-            day: self.day.clone(),
+            day: self.day,
             demand_poe_type: self.demand_poe_type.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_interconnectorresult_v1".to_string()
@@ -1411,12 +1418,14 @@ impl crate::ArrowSchema for MtpasaInterconnectorresult1 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaLolpresult1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
     pub run_no: i64,
     /// Type of run. Always LOLP
     pub runtype: String,
+    /// Day this result is for
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// The unique region identifier
@@ -1433,6 +1442,7 @@ pub struct MtpasaLolpresult1 {
     pub lossofloadprobability: Option<rust_decimal::Decimal>,
     /// Loss of Load Magnitude for the worst interval in this region. Values are LOW, MEDIUM, HIGH
     pub lossofloadmagnitude: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1450,17 +1460,15 @@ impl crate::GetTable for MtpasaLolpresult1 {
 
     fn primary_key(&self) -> MtpasaLolpresult1PrimaryKey {
         MtpasaLolpresult1PrimaryKey {
-            day: self.day.clone(),
+            day: self.day,
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_lolpresult_v1".to_string()
@@ -1706,14 +1714,17 @@ impl crate::ArrowSchema for MtpasaLolpresult1 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaRegionavailability3 {
+    /// Date Time the report was published.
     #[serde(with = "crate::mms_datetime")]
     pub publish_datetime: chrono::NaiveDateTime,
+    /// Date on which the aggregation applies.
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// NEM Region.
     pub regionid: String,
     /// Aggregate of the offered PASA Availability for all Scheduled generators in this region.
     pub pasaavailability_scheduled: Option<rust_decimal::Decimal>,
+    /// Date Time of the latest offer used in the aggregation for this region and date.
     #[serde(with = "crate::mms_datetime_opt")]
     pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
     /// Region energy unconstrained MW capacity
@@ -1730,6 +1741,7 @@ pub struct MtpasaRegionavailability3 {
     pub energyreqdemand10: Option<rust_decimal::Decimal>,
     /// Total weekly operational as generated consumption (POE 50)
     pub energyreqdemand50: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Minimum of the Operational Load as Generated (OPGEN) peaks that occur in all ref years for the P10 traces (MW).
@@ -1757,15 +1769,13 @@ impl crate::GetTable for MtpasaRegionavailability3 {
 
     fn primary_key(&self) -> MtpasaRegionavailability3PrimaryKey {
         MtpasaRegionavailability3PrimaryKey {
-            day: self.day.clone(),
-            publish_datetime: self.publish_datetime.clone(),
+            day: self.day,
+            publish_datetime: self.publish_datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_regionavailability_v3".to_string()
@@ -2123,12 +2133,16 @@ impl crate::ArrowSchema for MtpasaRegionavailability3 {
 /// * PUBLISH_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaRegionavailtrk1 {
+    /// Date Time the report was published.
     #[serde(with = "crate::mms_datetime")]
     pub publish_datetime: chrono::NaiveDateTime,
+    /// First date of the report inclusive.
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Last date of the report inclusive.
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
+    /// Date Time of the latest offer used in the report.
     #[serde(with = "crate::mms_datetime_opt")]
     pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
 }
@@ -2146,13 +2160,11 @@ impl crate::GetTable for MtpasaRegionavailtrk1 {
 
     fn primary_key(&self) -> MtpasaRegionavailtrk1PrimaryKey {
         MtpasaRegionavailtrk1PrimaryKey {
-            publish_datetime: self.publish_datetime.clone(),
+            publish_datetime: self.publish_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_regionavailtrk_v1".to_string()
@@ -2290,6 +2302,7 @@ impl crate::ArrowSchema for MtpasaRegionavailtrk1 {
 /// * USE_ITERATION_ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaRegioniteration1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
@@ -2300,6 +2313,7 @@ pub struct MtpasaRegioniteration1 {
     pub demand_poe_type: String,
     /// Period data is aggregated over. Values are YEAR
     pub aggregation_period: String,
+    /// Datetime of day at end of period (i.e. last day of year reported)
     #[serde(with = "crate::mms_datetime")]
     pub period_ending: chrono::NaiveDateTime,
     /// The unique region identifier
@@ -2310,6 +2324,7 @@ pub struct MtpasaRegioniteration1 {
     pub use_iteration_event_number: Option<rust_decimal::Decimal>,
     /// Average unserved energy event size for iteration over year (MW)
     pub use_iteration_event_average: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2329,18 +2344,16 @@ impl crate::GetTable for MtpasaRegioniteration1 {
         MtpasaRegioniteration1PrimaryKey {
             aggregation_period: self.aggregation_period.clone(),
             demand_poe_type: self.demand_poe_type.clone(),
-            period_ending: self.period_ending.clone(),
+            period_ending: self.period_ending,
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
-            use_iteration_id: self.use_iteration_id.clone(),
+            use_iteration_id: self.use_iteration_id,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_regioniteration_v1".to_string()
@@ -2580,6 +2593,7 @@ impl crate::ArrowSchema for MtpasaRegioniteration1 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaRegionresult2 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
@@ -2588,6 +2602,7 @@ pub struct MtpasaRegionresult2 {
     pub runtype: String,
     /// Demand POE type used. Value is POE10
     pub demand_poe_type: String,
+    /// Day this result is for
     #[serde(with = "crate::mms_datetime")]
     pub day: chrono::NaiveDateTime,
     /// The unique region identifier
@@ -2634,6 +2649,7 @@ pub struct MtpasaRegionresult2 {
     pub demandsideparticipation50: Option<rust_decimal::Decimal>,
     /// The 10th percentile for demand side participation, across iterations and reference years (MW)
     pub demandsideparticipation10: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The 90% percentile for semi-scheduled generation across iterations and reference years (MW)
@@ -2667,18 +2683,16 @@ impl crate::GetTable for MtpasaRegionresult2 {
 
     fn primary_key(&self) -> MtpasaRegionresult2PrimaryKey {
         MtpasaRegionresult2PrimaryKey {
-            day: self.day.clone(),
+            day: self.day,
             demand_poe_type: self.demand_poe_type.clone(),
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_regionresult_v2".to_string()
@@ -3317,6 +3331,7 @@ impl crate::ArrowSchema for MtpasaRegionresult2 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaRegionsummary1 {
+    /// Date processing of the run begins.
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Unique run id.
@@ -3327,6 +3342,7 @@ pub struct MtpasaRegionsummary1 {
     pub demand_poe_type: String,
     /// Period data is aggregated over. Values are YEAR, MONTH
     pub aggregation_period: String,
+    /// Datetime of day at end of period (i.e. last day of month or year reported)
     #[serde(with = "crate::mms_datetime")]
     pub period_ending: chrono::NaiveDateTime,
     /// The unique region identifier
@@ -3375,6 +3391,7 @@ pub struct MtpasaRegionsummary1 {
     pub use_weighted_avg: Option<rust_decimal::Decimal>,
     /// LRC Condition reported (Value=1) if USE_WEIGHTED_AVG &gt;= 0.002% otherwise (Value=0)
     pub lrc: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3394,17 +3411,15 @@ impl crate::GetTable for MtpasaRegionsummary1 {
         MtpasaRegionsummary1PrimaryKey {
             aggregation_period: self.aggregation_period.clone(),
             demand_poe_type: self.demand_poe_type.clone(),
-            period_ending: self.period_ending.clone(),
+            period_ending: self.period_ending,
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
-            run_no: self.run_no.clone(),
+            run_datetime: self.run_datetime,
+            run_no: self.run_no,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_regionsummary_v1".to_string()

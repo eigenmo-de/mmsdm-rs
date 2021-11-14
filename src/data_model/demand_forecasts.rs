@@ -18,12 +18,14 @@
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct OperationalDemandActual2 {
+    /// Date time interval for operational demand value
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Region identifier
     pub regionid: String,
     /// Average 30-minute measured operational demand MW value (unadjusted)
     pub operational_demand: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Adjustment value containing the estimated amount of activated RERT and involuntary load shedding that occurred as a result of a NER 4.8.9 instruction for load shedding from AEMO.
@@ -45,14 +47,12 @@ impl crate::GetTable for OperationalDemandActual2 {
 
     fn primary_key(&self) -> OperationalDemandActual2PrimaryKey {
         OperationalDemandActual2PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "operational_demand_actual_v2".to_string()
@@ -204,10 +204,12 @@ impl crate::ArrowSchema for OperationalDemandActual2 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct OperationalDemandForecast1 {
+    /// Forecast for a particular date time interval
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Region identifier
     pub regionid: String,
+    /// Date time this forecast was produced
     #[serde(with = "crate::mms_datetime_opt")]
     pub load_date: Option<chrono::NaiveDateTime>,
     /// 10% probability of exceedance operational demand forecast value
@@ -216,6 +218,7 @@ pub struct OperationalDemandForecast1 {
     pub operational_demand_poe50: Option<rust_decimal::Decimal>,
     /// 90% probability of exceedance operational demand forecast value
     pub operational_demand_poe90: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -233,14 +236,12 @@ impl crate::GetTable for OperationalDemandForecast1 {
 
     fn primary_key(&self) -> OperationalDemandForecast1PrimaryKey {
         OperationalDemandForecast1PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "operational_demand_forecast_v1".to_string()
@@ -417,10 +418,12 @@ impl crate::ArrowSchema for OperationalDemandForecast1 {
 /// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandIntermittentClusterAvail1 {
+    /// The trading day to which the availability submission applies
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
     pub duid: String,
+    /// Date and Time when this cluster availability submission was loaded
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique Cluster Identifier for this cluster within the DUID
@@ -448,15 +451,13 @@ impl crate::GetTable for DemandIntermittentClusterAvail1 {
         DemandIntermittentClusterAvail1PrimaryKey {
             clusterid: self.clusterid.clone(),
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            periodid: self.periodid.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            periodid: self.periodid,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_intermittent_cluster_avail_v1".to_string()
@@ -649,10 +650,12 @@ impl crate::ArrowSchema for DemandIntermittentClusterAvail1 {
 /// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandIntermittentClusterAvailDay1 {
+    /// Trading Day for which this cluster availability submission applies
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
     pub duid: String,
+    /// Date and Time when this cluster availability submission was loaded
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique Cluster Identifier for this cluster within the DUID
@@ -674,14 +677,12 @@ impl crate::GetTable for DemandIntermittentClusterAvailDay1 {
         DemandIntermittentClusterAvailDay1PrimaryKey {
             clusterid: self.clusterid.clone(),
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_intermittent_cluster_avail_day_v1".to_string()
@@ -824,12 +825,15 @@ impl crate::ArrowSchema for DemandIntermittentClusterAvailDay1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandIntermittentDsPred1 {
+    /// Date and Time when the forecast applies (dispatch interval ending)<br>
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// DUID (or Area for non-scheduled) where this forecast applies
     pub duid: String,
+    /// Date and Time when this forecast submission was loaded
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
+    /// Date and Time when the forecast applies (dispatch interval ending)
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Origin of this forecast (PARTICIPANTID, AWEFS/ASEFS, or another vendor)
@@ -860,17 +864,15 @@ impl crate::GetTable for DemandIntermittentDsPred1 {
     fn primary_key(&self) -> DemandIntermittentDsPred1PrimaryKey {
         DemandIntermittentDsPred1PrimaryKey {
             duid: self.duid.clone(),
-            forecast_priority: self.forecast_priority.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            offerdatetime: self.offerdatetime.clone(),
+            forecast_priority: self.forecast_priority,
+            interval_datetime: self.interval_datetime,
+            offerdatetime: self.offerdatetime,
             origin: self.origin.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_intermittent_ds_pred_v1".to_string()
@@ -1114,10 +1116,12 @@ impl crate::ArrowSchema for DemandIntermittentDsPred1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandIntermittentDsRun1 {
+    /// Date and Time where the forecast applies (dispatch interval ending)
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// DUID (or Area for non-scheduled) where this forecast applies
     pub duid: String,
+    /// Date and Time when this forecast submission was loaded.
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Origin of this forecast (PARTICIPANTID, AWEFS/ASEFS, or another vendor)
@@ -1128,10 +1132,12 @@ pub struct DemandIntermittentDsRun1 {
     pub authorisedby: Option<String>,
     /// Comments relating to the forecast. This column is not made available to the public.
     pub comments: Option<String>,
+    /// Last date and time the record changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Metadata relating to the forecast. This column is not made available to the public.
     pub model: Option<String>,
+    /// Participant can document when the forecast was created
     #[serde(with = "crate::mms_datetime_opt")]
     pub participant_timestamp: Option<chrono::NaiveDateTime>,
     /// Was this forecast suppressed by AEMO? Suppressed = 1,Not suppressed =0<br>
@@ -1156,16 +1162,14 @@ impl crate::GetTable for DemandIntermittentDsRun1 {
     fn primary_key(&self) -> DemandIntermittentDsRun1PrimaryKey {
         DemandIntermittentDsRun1PrimaryKey {
             duid: self.duid.clone(),
-            forecast_priority: self.forecast_priority.clone(),
-            offerdatetime: self.offerdatetime.clone(),
+            forecast_priority: self.forecast_priority,
+            offerdatetime: self.offerdatetime,
             origin: self.origin.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_intermittent_ds_run_v1".to_string()
@@ -1401,16 +1405,20 @@ impl crate::ArrowSchema for DemandIntermittentDsRun1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ForecastIntermittentGen1 {
+    /// Date Time of forecast (AEST).
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Identifier of the intermittent generator.
     pub duid: String,
+    /// Date Time (AEST) of the first half-hour interval being forecast.
     #[serde(with = "crate::mms_datetime")]
     pub start_interval_datetime: chrono::NaiveDateTime,
+    /// Date Time (AEST) of the final half-hour interval being forecast.
     #[serde(with = "crate::mms_datetime")]
     pub end_interval_datetime: chrono::NaiveDateTime,
     /// Versioning information for resolution back to AEMO's wind generation forecasting system.
     pub versionno: Option<rust_decimal::Decimal>,
+    /// Date Time record was created
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1429,13 +1437,11 @@ impl crate::GetTable for ForecastIntermittentGen1 {
     fn primary_key(&self) -> ForecastIntermittentGen1PrimaryKey {
         ForecastIntermittentGen1PrimaryKey {
             duid: self.duid.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "forecast_intermittent_gen_v1".to_string()
@@ -1598,10 +1604,12 @@ impl crate::ArrowSchema for ForecastIntermittentGen1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ForecastIntermittentGenData1 {
+    /// Date Time of forecast (AEST).
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Identifier of the intermittent generator
     pub duid: String,
+    /// Date Time (AEST) of the halfhour interval being forecast
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// The average forecast value in MW at the interval end
@@ -1612,6 +1620,7 @@ pub struct ForecastIntermittentGenData1 {
     pub powerpoelow: Option<rust_decimal::Decimal>,
     /// 90% probability of exceedance forecast value in MW at the interval end
     pub powerpoehigh: Option<rust_decimal::Decimal>,
+    /// Date Time record was created
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1630,14 +1639,12 @@ impl crate::GetTable for ForecastIntermittentGenData1 {
     fn primary_key(&self) -> ForecastIntermittentGenData1PrimaryKey {
         ForecastIntermittentGenData1PrimaryKey {
             duid: self.duid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "forecast_intermittent_gen_data_v1".to_string()
@@ -1840,10 +1847,12 @@ impl crate::ArrowSchema for ForecastIntermittentGenData1 {
 /// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandIntermittentGenLimit1 {
+    /// Trading Day for which this unit availability submission applies
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
     pub duid: String,
+    /// Date and Time when this unit availability submission was loaded
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Trading interval number (1...48) within this TRADINGDATE for which UPPERMWLIMIT applies
@@ -1866,15 +1875,13 @@ impl crate::GetTable for DemandIntermittentGenLimit1 {
     fn primary_key(&self) -> DemandIntermittentGenLimit1PrimaryKey {
         DemandIntermittentGenLimit1PrimaryKey {
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            periodid: self.periodid.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            periodid: self.periodid,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_intermittent_gen_limit_v1".to_string()
@@ -2025,14 +2032,17 @@ impl crate::ArrowSchema for DemandIntermittentGenLimit1 {
 /// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandIntermittentGenLimitDay1 {
+    /// Trading Day for which this unit availability submission applies
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
     pub duid: String,
+    /// Date and Time when this unit availability submission was loaded
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique participant identifier
     pub participantid: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// User entering the unit availability submission
@@ -2055,14 +2065,12 @@ impl crate::GetTable for DemandIntermittentGenLimitDay1 {
     fn primary_key(&self) -> DemandIntermittentGenLimitDay1PrimaryKey {
         DemandIntermittentGenLimitDay1PrimaryKey {
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_intermittent_gen_limit_day_v1".to_string()
@@ -2228,14 +2236,17 @@ impl crate::ArrowSchema for DemandIntermittentGenLimitDay1 {
 /// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandMtpasaIntermittentAvail1 {
+    /// Trading Day for which this cluster availability submission applies
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
     pub duid: String,
+    /// Date and Time when this cluster availability submission was loaded
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique Cluster Identifier for this cluster within the DUID
     pub clusterid: String,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Number of elements within this CLUSTERID (turbines for wind, or inverters for solar) that are not available for this TRADINGDATE. Value between 0 and the registered Number of Cluster Elements.Value = 0 means no elements unavailable
@@ -2259,14 +2270,12 @@ impl crate::GetTable for DemandMtpasaIntermittentAvail1 {
         DemandMtpasaIntermittentAvail1PrimaryKey {
             clusterid: self.clusterid.clone(),
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_mtpasa_intermittent_avail_v1".to_string()
@@ -2448,12 +2457,15 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentAvail1 {
 /// * TRADINGDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandMtpasaIntermittentLimit1 {
+    /// Trading Day for which this unit availability submission applies
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
     pub duid: String,
+    /// Date time file processed
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Maximum imposed MW limit. Value between 0 and the registered DUID Maximum Capacity.Value = -1 means no limit applies.
@@ -2478,14 +2490,12 @@ impl crate::GetTable for DemandMtpasaIntermittentLimit1 {
     fn primary_key(&self) -> DemandMtpasaIntermittentLimit1PrimaryKey {
         DemandMtpasaIntermittentLimit1PrimaryKey {
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_mtpasa_intermittent_limit_v1".to_string()
@@ -2635,7 +2645,7 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 /// * Data Version: 1
 ///
 /// # Description
-///  The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records. Source PERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date. Volume 1296000 rows per year Note In the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are: ·	 UnRestricted Profile  = ResDemand + MR_Schedule ·	 Restricted Profile  = ResDemand
+///  The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records. Source PERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date. Volume 1296000 rows per year Note In the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are: · UnRestricted Profile  = ResDemand + MR_Schedule · Restricted Profile  = ResDemand
 ///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
@@ -2649,12 +2659,15 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandPeriod1 {
+    /// Market date the forecast is made for. First date of the 7 days.
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
+    /// Market date of forecast up to 7 days ahead.
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Differentiates this region from all other regions
     pub regionid: String,
+    /// Date record issued
     #[serde(with = "crate::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Half hourly trading intervals from 04:30.
@@ -2667,6 +2680,7 @@ pub struct DemandPeriod1 {
     pub demand90probability: Option<rust_decimal::Decimal>,
     /// Demand level for a 10% probability of exceedance
     pub demand10probability: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// MR_Schedule = Unrestricted Demand - POE
@@ -2686,11 +2700,11 @@ impl crate::GetTable for DemandPeriod1 {
 
     fn primary_key(&self) -> DemandPeriod1PrimaryKey {
         DemandPeriod1PrimaryKey {
-            offerdate: self.offerdate.clone(),
-            periodid: self.periodid.clone(),
+            offerdate: self.offerdate,
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -2962,20 +2976,24 @@ impl crate::ArrowSchema for DemandPeriod1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DemandTrk1 {
+    /// Trading Date of the regional forecast
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Unique RegionID
     pub regionid: String,
+    /// Date the forecast was created
     #[serde(with = "crate::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Version of this forecast with respect to the Effectivedate and Offerdate
     pub versionno: rust_decimal::Decimal,
     /// Tracking purposes only
     pub filename: Option<String>,
+    /// Date forecast authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Identifier of authorising user
     pub authorisedby: Option<String>,
+    /// Date and time the record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2993,16 +3011,14 @@ impl crate::GetTable for DemandTrk1 {
 
     fn primary_key(&self) -> DemandTrk1PrimaryKey {
         DemandTrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            offerdate: self.offerdate.clone(),
+            effectivedate: self.effectivedate,
+            offerdate: self.offerdate,
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "demand_trk_v1".to_string()
@@ -3185,8 +3201,10 @@ impl crate::ArrowSchema for DemandTrk1 {
 /// * TYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct RooftopActual2 {
+    /// The forecast half-hour interval (time ending)
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
+    /// One of DAILY, MEASUREMENT or SATELLITE. DAILY- best quality estimated actuals, available day after. MEASUREMENT- best quality estimated actuals on day, delayed by 1 half hour. SATELLITE- estimated actuals using satellite imagery, delayed by 1 half hour.
     #[serde(rename = "type")]
     pub r#type: String,
     /// Region identifier
@@ -3195,6 +3213,7 @@ pub struct RooftopActual2 {
     pub power: Option<rust_decimal::Decimal>,
     /// Quality indicator. Represents the quality of the estimate.
     pub qi: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3212,15 +3231,13 @@ impl crate::GetTable for RooftopActual2 {
 
     fn primary_key(&self) -> RooftopActual2PrimaryKey {
         RooftopActual2PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
             r#type: self.r#type.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "rooftop_actual_v2".to_string()
@@ -3378,10 +3395,12 @@ impl crate::ArrowSchema for RooftopActual2 {
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct RooftopForecast1 {
+    /// Date time this forecast was produced
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Region identifier
     pub regionid: String,
+    /// The forecast half-hour interval (time ending)
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// The average forecast value in MW at the interval end
@@ -3392,6 +3411,7 @@ pub struct RooftopForecast1 {
     pub powerpoelow: Option<rust_decimal::Decimal>,
     /// 90% probability of exceedance forecast value in MW at the interval end
     pub powerpoehigh: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3409,15 +3429,13 @@ impl crate::GetTable for RooftopForecast1 {
 
     fn primary_key(&self) -> RooftopForecast1PrimaryKey {
         RooftopForecast1PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
-            version_datetime: self.version_datetime.clone(),
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "rooftop_forecast_v1".to_string()

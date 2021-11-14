@@ -21,6 +21,7 @@
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PriceloadConstraintrelaxation1 {
+    /// End date and time of the dispatch interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no
@@ -29,6 +30,7 @@ pub struct PriceloadConstraintrelaxation1 {
     pub constraintid: String,
     /// Relaxed RHS used in attempt to avoid constraint violation
     pub rhs: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Version Number
@@ -49,9 +51,9 @@ impl crate::GetTable for PriceloadConstraintrelaxation1 {
     fn primary_key(&self) -> PriceloadConstraintrelaxation1PrimaryKey {
         PriceloadConstraintrelaxation1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -240,6 +242,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchBlockedConstraints1 {
+    /// Dispatch Interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -262,8 +265,8 @@ impl crate::GetTable for DispatchBlockedConstraints1 {
     fn primary_key(&self) -> DispatchBlockedConstraints1PrimaryKey {
         DispatchBlockedConstraints1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -410,6 +413,7 @@ impl crate::ArrowSchema for DispatchBlockedConstraints1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchCaseSolution2 {
+    /// Date and time of the dispatch interval (e.g. five minute dispatch interval ending 28/09/2000 16:35)
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -450,6 +454,7 @@ pub struct DispatchCaseSolution2 {
     pub totalfaststartviolation: Option<rust_decimal::Decimal>,
     /// Total of unit summated offer band violations
     pub totalenergyofferviolation: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag indicating the SCADA status for FCAS Interconnector dead-band. "0" if SCADA Status or requesting Constraint not invoked. "1" if SCADA Status AND requesting Constraint is invoked
@@ -473,8 +478,8 @@ impl crate::GetTable for DispatchCaseSolution2 {
 
     fn primary_key(&self) -> DispatchCaseSolution2PrimaryKey {
         DispatchCaseSolution2PrimaryKey {
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -934,12 +939,14 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchConstraint5 {
+    /// Market date starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
     pub runno: rust_decimal::Decimal,
     /// Generic Constraint identifier (synonymous with GenConID)
     pub constraintid: String,
+    /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
     #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Manual Intervention flag, which, if set (1), causes predispatch to solve twice.
@@ -950,10 +957,12 @@ pub struct DispatchConstraint5 {
     pub marginalvalue: Option<rust_decimal::Decimal>,
     /// Degree of violation in MW
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// DUID to which the Constraint is confidential. Null denotes non-confidential
     pub duid: Option<String>,
+    /// Effective date of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
     #[serde(with = "crate::mms_datetime_opt")]
     pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
     /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
@@ -976,10 +985,10 @@ impl crate::GetTable for DispatchConstraint5 {
     fn primary_key(&self) -> DispatchConstraint5PrimaryKey {
         DispatchConstraint5PrimaryKey {
             constraintid: self.constraintid.clone(),
-            dispatchinterval: self.dispatchinterval.clone(),
-            intervention: self.intervention.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            dispatchinterval: self.dispatchinterval,
+            intervention: self.intervention,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -1265,12 +1274,14 @@ impl crate::ArrowSchema for DispatchConstraint5 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchInterconnectorres3 {
+    /// Market date starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
     pub runno: rust_decimal::Decimal,
     /// Interconnector identifier
     pub interconnectorid: String,
+    /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
     #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Intervention case or not
@@ -1285,6 +1296,7 @@ pub struct DispatchInterconnectorres3 {
     pub marginalvalue: Option<rust_decimal::Decimal>,
     /// Degree of violation on interconnector constraints
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Calculated export limit applying to energy only.
@@ -1324,11 +1336,11 @@ impl crate::GetTable for DispatchInterconnectorres3 {
 
     fn primary_key(&self) -> DispatchInterconnectorres3PrimaryKey {
         DispatchInterconnectorres3PrimaryKey {
-            dispatchinterval: self.dispatchinterval.clone(),
+            dispatchinterval: self.dispatchinterval,
             interconnectorid: self.interconnectorid.clone(),
-            intervention: self.intervention.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            intervention: self.intervention,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -1763,6 +1775,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchUnitSolution2 {
+    /// Market date and time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -1771,6 +1784,7 @@ pub struct DispatchUnitSolution2 {
     pub duid: String,
     /// Not used
     pub tradetype: Option<rust_decimal::Decimal>,
+    /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
     #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Intervention flag if intervention run
@@ -1821,6 +1835,7 @@ pub struct DispatchUnitSolution2 {
     pub violation6secdegree: Option<rust_decimal::Decimal>,
     /// Violation MW energy
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Lower Regulation reserve target
@@ -1893,9 +1908,9 @@ impl crate::GetTable for DispatchUnitSolution2 {
     fn primary_key(&self) -> DispatchUnitSolution2PrimaryKey {
         DispatchUnitSolution2PrimaryKey {
             duid: self.duid.clone(),
-            intervention: self.intervention.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            intervention: self.intervention,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -2888,16 +2903,19 @@ impl crate::ArrowSchema for DispatchUnitSolution2 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchOffertrk1 {
+    /// Date and time of the dispatch interval (e.g. five minute dispatch interval ending 28/09/2000 16:35)
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatchable unit identifier
     pub duid: String,
     /// Bid type Identifier - the ancillary service to which the bid applies
     pub bidtype: String,
+    /// Settlement date of bid applied
     #[serde(with = "crate::mms_datetime_opt")]
     pub bidsettlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
     pub bidofferdate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2917,7 +2935,7 @@ impl crate::GetTable for DispatchOffertrk1 {
         DispatchOffertrk1PrimaryKey {
             bidtype: self.bidtype.clone(),
             duid: self.duid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -3071,7 +3089,7 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
 /// * Data Version: 4
 ///
 /// # Description
-///  Source DISPATCHPRICE updates every 5 minutes. Note APCFLAG is a 5-bit Region-based field indicating that the original Dispatch Price (ROP) calculated by the Dispatch Algorithm for a region has undergone modification by one of more of the following processes: Bit Value Description 5 16 Price Scaling via Inter-regional Loss Factor (IRLF) 4 8 Price manually overwritten 3 4 MPC or MPF binding (ROP was outside of MPC/MPF) 2 2 VoLL Override applied 1 1 APC or APF binding (ROP was outside of APC/APF) Where: ·	 MPC = Market Price Cap ·	 MPF = Market Price Floor ·	 APC = Administered Price Cap ·	 APF = Administered Price Floor xxxAPCFLAGs are each a 5-bit Region-based field indicating FCAS price post-processing (where "ROP" is the original NEMDE Solver price): Bit Cum Value Description 5 16 Not applicable 4 8 Price manually overwritten 3 4 MPC ($VoLL) or MPF ($zero) binding (xxFCAS ROP was outside of MPC/MPF) 2 2 Not applicable 1 1 APC or APF binding (ROP was outside of APC/APF)
+///  Source DISPATCHPRICE updates every 5 minutes. Note APCFLAG is a 5-bit Region-based field indicating that the original Dispatch Price (ROP) calculated by the Dispatch Algorithm for a region has undergone modification by one of more of the following processes: Bit Value Description 5 16 Price Scaling via Inter-regional Loss Factor (IRLF) 4 8 Price manually overwritten 3 4 MPC or MPF binding (ROP was outside of MPC/MPF) 2 2 VoLL Override applied 1 1 APC or APF binding (ROP was outside of APC/APF) Where: · MPC = Market Price Cap · MPF = Market Price Floor · APC = Administered Price Cap · APF = Administered Price Floor xxxAPCFLAGs are each a 5-bit Region-based field indicating FCAS price post-processing (where "ROP" is the original NEMDE Solver price): Bit Cum Value Description 5 16 Not applicable 4 8 Price manually overwritten 3 4 MPC ($VoLL) or MPF ($zero) binding (xxFCAS ROP was outside of MPC/MPF) 2 2 Not applicable 1 1 APC or APF binding (ROP was outside of APC/APF)
 ///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
@@ -3085,12 +3103,14 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchPrice4 {
+    /// Market date and time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
     pub runno: rust_decimal::Decimal,
     /// Region Identifier
     pub regionid: String,
+    /// Dispatch interval identifier 001 to 288 in format YYYYMMDDPPP
     #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Manual intervention flag
@@ -3105,6 +3125,7 @@ pub struct DispatchPrice4 {
     pub apcflag: Option<rust_decimal::Decimal>,
     /// Market suspended flag
     pub marketsuspendedflag: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// &nbsp;
@@ -3212,11 +3233,11 @@ impl crate::GetTable for DispatchPrice4 {
 
     fn primary_key(&self) -> DispatchPrice4PrimaryKey {
         DispatchPrice4PrimaryKey {
-            dispatchinterval: self.dispatchinterval.clone(),
-            intervention: self.intervention.clone(),
+            dispatchinterval: self.dispatchinterval,
+            intervention: self.intervention,
             regionid: self.regionid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -4174,12 +4195,14 @@ impl crate::ArrowSchema for DispatchPrice4 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchRegionsum5 {
+    /// Market date and time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
     pub runno: rust_decimal::Decimal,
     /// Region Identifier
     pub regionid: String,
+    /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
     #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Manual Intervention flag
@@ -4300,6 +4323,7 @@ pub struct DispatchRegionsum5 {
     pub aggegatedispatcherror: Option<rust_decimal::Decimal>,
     /// Calculated dispatch error
     pub aggregatedispatcherror: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Sum of initial generation and import for region
@@ -4417,11 +4441,11 @@ impl crate::GetTable for DispatchRegionsum5 {
 
     fn primary_key(&self) -> DispatchRegionsum5PrimaryKey {
         DispatchRegionsum5PrimaryKey {
-            dispatchinterval: self.dispatchinterval.clone(),
-            intervention: self.intervention.clone(),
+            dispatchinterval: self.dispatchinterval,
+            intervention: self.intervention,
             regionid: self.regionid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -6342,6 +6366,7 @@ impl crate::ArrowSchema for DispatchRegionsum5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PriceloadConstraintFcasOcd1 {
+    /// Dispatch interval that the prices were loaded to
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -6352,6 +6377,7 @@ pub struct PriceloadConstraintFcasOcd1 {
     pub constraintid: String,
     /// VersionNo
     pub versionno: i64,
+    /// The datetime that the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// RHS from OCD re-run
@@ -6376,10 +6402,10 @@ impl crate::GetTable for PriceloadConstraintFcasOcd1 {
     fn primary_key(&self) -> PriceloadConstraintFcasOcd1PrimaryKey {
         PriceloadConstraintFcasOcd1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            intervention: self.intervention.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            intervention: self.intervention,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -6597,6 +6623,7 @@ impl crate::ArrowSchema for PriceloadConstraintFcasOcd1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchFcasReq2 {
+    /// Settlement date and time of Dispatch Interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -6609,12 +6636,14 @@ pub struct DispatchFcasReq2 {
     pub regionid: String,
     /// DUID offered type
     pub bidtype: String,
+    /// Generic Constraint EffectiveDate - Join to table GenConData
     #[serde(with = "crate::mms_datetime_opt")]
     pub genconeffectivedate: Option<chrono::NaiveDateTime>,
     /// Generic Constraint Version number - Join to table GenConData
     pub genconversionno: Option<rust_decimal::Decimal>,
     /// &nbsp;
     pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Date record is changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The base cost of the constraint for this service, before the regulation/contingency split
@@ -6646,10 +6675,10 @@ impl crate::GetTable for DispatchFcasReq2 {
         DispatchFcasReq2PrimaryKey {
             bidtype: self.bidtype.clone(),
             genconid: self.genconid.clone(),
-            intervention: self.intervention.clone(),
+            intervention: self.intervention,
             regionid: self.regionid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -6990,6 +7019,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
 /// * TO_REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchInterconnection1 {
+    /// Market date starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -7000,6 +7030,7 @@ pub struct DispatchInterconnection1 {
     pub from_regionid: String,
     /// Nominated RegionID to which the energy flows
     pub to_regionid: String,
+    /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP
     #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Inter-Regional Loss Factor. Calculated based on the MWFLOW and the nominal From and To Region losses.  
@@ -7012,6 +7043,7 @@ pub struct DispatchInterconnection1 {
     pub from_region_mw_losses: Option<rust_decimal::Decimal>,
     /// Losses across the Interconnection attributable to the nominal To Region
     pub to_region_mw_losses: Option<rust_decimal::Decimal>,
+    /// The datetime that the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7030,9 +7062,9 @@ impl crate::GetTable for DispatchInterconnection1 {
     fn primary_key(&self) -> DispatchInterconnection1PrimaryKey {
         DispatchInterconnection1PrimaryKey {
             from_regionid: self.from_regionid.clone(),
-            intervention: self.intervention.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            intervention: self.intervention,
+            runno: self.runno,
+            settlementdate: self.settlementdate,
             to_regionid: self.to_regionid.clone(),
         }
     }
@@ -7315,6 +7347,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchLocalPrice1 {
+    /// Market date time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatchable unit identifier
@@ -7339,7 +7372,7 @@ impl crate::GetTable for DispatchLocalPrice1 {
     fn primary_key(&self) -> DispatchLocalPrice1PrimaryKey {
         DispatchLocalPrice1PrimaryKey {
             duid: self.duid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -7490,6 +7523,7 @@ impl crate::ArrowSchema for DispatchLocalPrice1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchMnspbidtrk1 {
+    /// Market date starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -7498,12 +7532,14 @@ pub struct DispatchMnspbidtrk1 {
     pub participantid: String,
     /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
     pub linkid: String,
+    /// Offer date for bid
     #[serde(with = "crate::mms_datetime_opt")]
     pub offersettlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
     pub offereffectivedate: Option<chrono::NaiveDateTime>,
     /// VersionNo of the bid/offer used
     pub offerversionno: Option<rust_decimal::Decimal>,
+    /// Record creation timestamp
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7523,8 +7559,8 @@ impl crate::GetTable for DispatchMnspbidtrk1 {
         DispatchMnspbidtrk1PrimaryKey {
             linkid: self.linkid.clone(),
             participantid: self.participantid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -7731,14 +7767,18 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchMrScheduleTrk1 {
+    /// Date Time of the Dispatch Interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Unique RegionID; Key reference to MR_Event_Schedule
     pub regionid: String,
+    /// Mandatory Restriction date; Key reference to MR_Event_Schedule table
     #[serde(with = "crate::mms_datetime_opt")]
     pub mr_date: Option<chrono::NaiveDateTime>,
+    /// Date Time the MR  acceptance stack was created; Key reference to MR_Event_Schedule table
     #[serde(with = "crate::mms_datetime_opt")]
     pub version_datetime: Option<chrono::NaiveDateTime>,
+    /// Date and  time the record was last inserted/modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7757,7 +7797,7 @@ impl crate::GetTable for DispatchMrScheduleTrk1 {
     fn primary_key(&self) -> DispatchMrScheduleTrk1PrimaryKey {
         DispatchMrScheduleTrk1PrimaryKey {
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -7915,6 +7955,7 @@ impl crate::ArrowSchema for DispatchMrScheduleTrk1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PriceloadPriceRevision1 {
+    /// Market date and time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -7931,6 +7972,7 @@ pub struct PriceloadPriceRevision1 {
     pub rrp_new: Option<rust_decimal::Decimal>,
     /// Old RRP from DISPATCHPRICE table
     pub rrp_old: Option<rust_decimal::Decimal>,
+    /// The datetime the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7949,11 +7991,11 @@ impl crate::GetTable for PriceloadPriceRevision1 {
     fn primary_key(&self) -> PriceloadPriceRevision1PrimaryKey {
         PriceloadPriceRevision1PrimaryKey {
             bidtype: self.bidtype.clone(),
-            intervention: self.intervention.clone(),
+            intervention: self.intervention,
             regionid: self.regionid.clone(),
-            runno: self.runno.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            runno: self.runno,
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -8178,6 +8220,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
 /// * INTERVAL_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchUnitConformance1 {
+    /// Dispatch Interval that the conformance data applies to
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Dispatchable Unit Identifier
@@ -8212,6 +8255,7 @@ pub struct DispatchUnitConformance1 {
     pub participant_status_action: Option<String>,
     /// conformance operating mode<br>MANUAL<br>AUTO
     pub operating_mode: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8230,13 +8274,11 @@ impl crate::GetTable for DispatchUnitConformance1 {
     fn primary_key(&self) -> DispatchUnitConformance1PrimaryKey {
         DispatchUnitConformance1PrimaryKey {
             duid: self.duid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "dispatch_unit_conformance_v1".to_string()
@@ -8535,6 +8577,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchUnitScada1 {
+    /// Date Time of the Dispatch Interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatchable Unit Identifier
@@ -8557,7 +8600,7 @@ impl crate::GetTable for DispatchUnitScada1 {
     fn primary_key(&self) -> DispatchUnitScada1PrimaryKey {
         DispatchUnitScada1PrimaryKey {
             duid: self.duid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -8689,6 +8732,7 @@ impl crate::ArrowSchema for DispatchUnitScada1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchIntermittentForecastTrk1 {
+    /// DateTime of the Dispatch run (dispatch interval ending)
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Tracks to INTERMITTENT_DS_RUN.DUID
@@ -8697,6 +8741,7 @@ pub struct DispatchIntermittentForecastTrk1 {
     pub origin: Option<String>,
     /// Tracks to INTERMITTENT_DS_RUN.FORECAST_PRIORITY, except for -1 which denotes SCADA or FCST, and 0 which denotes Last Target
     pub forecast_priority: Option<rust_decimal::Decimal>,
+    /// Tracks to INTERMITTENT_DS_RUN.OFFERDATETIME
     #[serde(with = "crate::mms_datetime_opt")]
     pub offerdatetime: Option<chrono::NaiveDateTime>,
 }
@@ -8715,7 +8760,7 @@ impl crate::GetTable for DispatchIntermittentForecastTrk1 {
     fn primary_key(&self) -> DispatchIntermittentForecastTrk1PrimaryKey {
         DispatchIntermittentForecastTrk1PrimaryKey {
             duid: self.duid.clone(),
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -8866,8 +8911,10 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchNegativeResidue1 {
+    /// Dispatch Interval
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
+    /// The time that residue information is processed
     #[serde(with = "crate::mms_datetime")]
     pub nrm_datetime: chrono::NaiveDateTime,
     /// Negative residue related direction interconnector id
@@ -8886,8 +8933,10 @@ pub struct DispatchNegativeResidue1 {
     pub price_revision: Option<String>,
     /// Predispatch sequence number
     pub predispatchseqno: Option<String>,
+    /// The starting DI when NRM event is active
     #[serde(with = "crate::mms_datetime_opt")]
     pub event_activated_di: Option<chrono::NaiveDateTime>,
+    /// The finishing DI when NRM event stops being active.
     #[serde(with = "crate::mms_datetime_opt")]
     pub event_deactivated_di: Option<chrono::NaiveDateTime>,
     /// Count of the number of DIs not binding by this constraint
@@ -8912,8 +8961,8 @@ impl crate::GetTable for DispatchNegativeResidue1 {
     fn primary_key(&self) -> DispatchNegativeResidue1PrimaryKey {
         DispatchNegativeResidue1PrimaryKey {
             directional_interconnectorid: self.directional_interconnectorid.clone(),
-            nrm_datetime: self.nrm_datetime.clone(),
-            settlementdate: self.settlementdate.clone(),
+            nrm_datetime: self.nrm_datetime,
+            settlementdate: self.settlementdate,
         }
     }
 

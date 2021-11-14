@@ -25,6 +25,7 @@ pub struct BidsBiddayoffer1 {
     pub duid: String,
     /// Bid Type Identifier
     pub bidtype: String,
+    /// Market date for applying the bid
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
@@ -69,6 +70,7 @@ pub struct BidsBiddayoffer1 {
     pub t4: Option<rust_decimal::Decimal>,
     /// not used; was ON/OFF for loads (Energy Bids Only)
     pub normalstatus: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Mandatory Restriction Offer Factor
@@ -102,8 +104,8 @@ impl crate::GetTable for BidsBiddayoffer1 {
         BidsBiddayoffer1PrimaryKey {
             bidtype: self.bidtype.clone(),
             duid: self.duid.clone(),
-            offerdate: self.offerdate.clone(),
-            settlementdate: self.settlementdate.clone(),
+            offerdate: self.offerdate,
+            settlementdate: self.settlementdate,
         }
     }
 
@@ -598,7 +600,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
 /// * Data Version: 1
 ///
 /// # Description
-///  BIDOFFERFILETRK data is confidential to the submitting participant. The new ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three new tables facilitate ancillary service bidding. The new tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) are similar in structure to energy bidding tables (OFFERFILETRK, DAYOFFER and PEROFFER). The significant differences with the new tables are. · 	 The OFFERDATE field reflects the time the bid was loaded and this field alone provides the key for versioning of bids. The VERSIONNO field is retained for participant use as information only. · 	 The new tables support bids for multiple services. The BIDTYPE field defines the service to which the bid applies. · 	 There are no default bids. In the absence of a bid for a specific settlement date, the latest bid submitted for a previous settlement date applies. Source This data is updated as bids are processed. It includes all bids submitted including corrupt bids. Volume Approximately 100,000 records per year Note Confirmation is via CSV bid acknowledgement file
+///  BIDOFFERFILETRK data is confidential to the submitting participant. The new ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three new tables facilitate ancillary service bidding. The new tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) are similar in structure to energy bidding tables (OFFERFILETRK, DAYOFFER and PEROFFER). The significant differences with the new tables are. ·  The OFFERDATE field reflects the time the bid was loaded and this field alone provides the key for versioning of bids. The VERSIONNO field is retained for participant use as information only. ·  The new tables support bids for multiple services. The BIDTYPE field defines the service to which the bid applies. ·  There are no default bids. In the absence of a bid for a specific settlement date, the latest bid submitted for a previous settlement date applies. Source This data is updated as bids are processed. It includes all bids submitted including corrupt bids. Volume Approximately 100,000 records per year Note Confirmation is via CSV bid acknowledgement file
 ///
 /// # Notes
 ///  * (Visibility) Data in this table is: Private
@@ -617,16 +619,19 @@ pub struct BidsBidofferfiletrk1 {
     pub filename: String,
     /// Load status [SUCCESSFUL/CORRUPT]
     pub status: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Participant agent who created the Offer
     pub authorisedby: Option<String>,
+    /// When the Offer was processed - synonymous with LastChanged
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// A GUID used to identify the submission transaction in AEMOs systems
     pub transaction_id: Option<String>,
     /// A participant provided reference, which is required to be unique per submission (for a PARTICIPANTID)
     pub reference_id: Option<String>,
+    /// The participant provided date/time for the submission
     #[serde(with = "crate::mms_datetime_opt")]
     pub submission_timestamp: Option<chrono::NaiveDateTime>,
     /// A participant provided comment
@@ -648,14 +653,12 @@ impl crate::GetTable for BidsBidofferfiletrk1 {
 
     fn primary_key(&self) -> BidsBidofferfiletrk1PrimaryKey {
         BidsBidofferfiletrk1PrimaryKey {
-            offerdate: self.offerdate.clone(),
+            offerdate: self.offerdate,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "bids_bidofferfiletrk_v1".to_string()
@@ -848,6 +851,7 @@ pub struct BidsBidofferperiod1 {
     pub duid: String,
     /// The type of bid, one-of ENERGY, RAISE6SEC, RAISE60SEC, RAISE5MIN, RAISEREG, LOWER6SEC, LOWER60SEC, LOWER5MIN, LOWERREG
     pub bidtype: String,
+    /// The trading date this bid is for
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
@@ -909,15 +913,13 @@ impl crate::GetTable for BidsBidofferperiod1 {
         BidsBidofferperiod1PrimaryKey {
             bidtype: self.bidtype.clone(),
             duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            periodid: self.periodid.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            periodid: self.periodid,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "bids_bidofferperiod_v1".to_string()
@@ -1351,6 +1353,7 @@ impl crate::ArrowSchema for BidsBidofferperiod1 {
 pub struct BidsMnspBidofferperiod1 {
     /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
     pub linkid: String,
+    /// The trading date this bid is for
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
@@ -1401,15 +1404,13 @@ impl crate::GetTable for BidsMnspBidofferperiod1 {
     fn primary_key(&self) -> BidsMnspBidofferperiod1PrimaryKey {
         BidsMnspBidofferperiod1PrimaryKey {
             linkid: self.linkid.clone(),
-            offerdatetime: self.offerdatetime.clone(),
-            periodid: self.periodid.clone(),
-            tradingdate: self.tradingdate.clone(),
+            offerdatetime: self.offerdatetime,
+            periodid: self.periodid,
+            tradingdate: self.tradingdate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "bids_mnsp_bidofferperiod_v1".to_string()
@@ -1766,6 +1767,7 @@ impl crate::ArrowSchema for BidsMnspBidofferperiod1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct BidsMnspDayoffer1 {
+    /// Market Date from which bid is active
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
@@ -1800,6 +1802,7 @@ pub struct BidsMnspDayoffer1 {
     pub priceband9: Option<rust_decimal::Decimal>,
     /// Price for Availability Band 10
     pub priceband10: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Mandatory Restriction Offer Factor
@@ -1830,10 +1833,10 @@ impl crate::GetTable for BidsMnspDayoffer1 {
     fn primary_key(&self) -> BidsMnspDayoffer1PrimaryKey {
         BidsMnspDayoffer1PrimaryKey {
             linkid: self.linkid.clone(),
-            offerdate: self.offerdate.clone(),
+            offerdate: self.offerdate,
             participantid: self.participantid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 
@@ -2254,10 +2257,12 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
 pub struct OfferMtpasaOfferdata1 {
     /// Unique participant identifier
     pub participantid: String,
+    /// Date time file processed
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// either duid or mnsp linkid
     pub unitid: String,
+    /// trade date when the offer becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// weekly energy constraint value
@@ -2276,6 +2281,7 @@ pub struct OfferMtpasaOfferdata1 {
     pub capacity6: Option<i64>,
     /// capacity value day 7 (saturday)
     pub capacity7: Option<i64>,
+    /// timestamp when record last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2293,16 +2299,14 @@ impl crate::GetTable for OfferMtpasaOfferdata1 {
 
     fn primary_key(&self) -> OfferMtpasaOfferdata1PrimaryKey {
         OfferMtpasaOfferdata1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            offerdatetime: self.offerdatetime.clone(),
+            effectivedate: self.effectivedate,
+            offerdatetime: self.offerdatetime,
             participantid: self.participantid.clone(),
             unitid: self.unitid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "offer_mtpasa_offerdata_v1".to_string()
@@ -2488,6 +2492,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
 pub struct OfferMtpasaOfferfiletrk1 {
     /// Unique participant identifier
     pub participantid: String,
+    /// Date time file processed
     #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Submitted file name
@@ -2507,14 +2512,12 @@ impl crate::GetTable for OfferMtpasaOfferfiletrk1 {
 
     fn primary_key(&self) -> OfferMtpasaOfferfiletrk1PrimaryKey {
         OfferMtpasaOfferfiletrk1PrimaryKey {
-            offerdatetime: self.offerdatetime.clone(),
+            offerdatetime: self.offerdatetime,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "offer_mtpasa_offerfiletrk_v1".to_string()

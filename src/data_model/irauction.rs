@@ -20,20 +20,26 @@
 pub struct IrauctionConfigAuction1 {
     /// Unique id for each auction date
     pub auctionid: String,
+    /// Auction date
     #[serde(with = "crate::mms_datetime_opt")]
     pub auctiondate: Option<chrono::NaiveDateTime>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
+    /// Open date for bidding
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Close date for bidding
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Description of an auction
     pub description: Option<String>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// &nbsp;
     pub authorisedby: Option<String>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -55,9 +61,7 @@ impl crate::GetTable for IrauctionConfigAuction1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_v1".to_string()
@@ -230,24 +234,34 @@ pub struct IrauctionConfigAuctionCalendar2 {
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
     pub quarter: rust_decimal::Decimal,
+    /// First day of SRA Contract Quarter expressed as Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Last day of SRA Contract Quarter expressed as Date
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
+    /// Default notification date
     #[serde(with = "crate::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
+    /// Date for payment by Participant
     #[serde(with = "crate::mms_datetime_opt")]
     pub paymentdate: Option<chrono::NaiveDateTime>,
+    /// Date of reconciliation for the quarter
     #[serde(with = "crate::mms_datetime_opt")]
     pub reconciliationdate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The date the Prelim Purchase Statement is generated
     #[serde(with = "crate::mms_datetime_opt")]
     pub prelimpurchasestmtdate: Option<chrono::NaiveDateTime>,
+    /// The date the Prelim Proceeds Statement is generated
     #[serde(with = "crate::mms_datetime_opt")]
     pub prelimproceedsstmtdate: Option<chrono::NaiveDateTime>,
+    /// The date the Final Purchase Statement is generated
     #[serde(with = "crate::mms_datetime_opt")]
     pub finalpurchasestmtdate: Option<chrono::NaiveDateTime>,
+    /// The date the Final Proceeds Statement is generated
     #[serde(with = "crate::mms_datetime_opt")]
     pub finalproceedsstmtdate: Option<chrono::NaiveDateTime>,
 }
@@ -265,14 +279,12 @@ impl crate::GetTable for IrauctionConfigAuctionCalendar2 {
 
     fn primary_key(&self) -> IrauctionConfigAuctionCalendar2PrimaryKey {
         IrauctionConfigAuctionCalendar2PrimaryKey {
-            contractyear: self.contractyear.clone(),
-            quarter: self.quarter.clone(),
+            contractyear: self.contractyear,
+            quarter: self.quarter,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_calendar_v2".to_string()
@@ -523,10 +535,12 @@ pub struct IrauctionConfigAuctionIcAllocations2 {
     pub proportion: Option<rust_decimal::Decimal>,
     /// Daily auction fee
     pub auctionfee: Option<rust_decimal::Decimal>,
+    /// Authorisation date
     #[serde(with = "crate::mms_datetime_opt")]
     pub changedate: Option<chrono::NaiveDateTime>,
     /// Name of person authorising this data set
     pub changedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Fees for Cancelled Units.
@@ -546,17 +560,15 @@ impl crate::GetTable for IrauctionConfigAuctionIcAllocations2 {
 
     fn primary_key(&self) -> IrauctionConfigAuctionIcAllocations2PrimaryKey {
         IrauctionConfigAuctionIcAllocations2PrimaryKey {
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            quarter: self.quarter.clone(),
-            versionno: self.versionno.clone(),
+            quarter: self.quarter,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_ic_allocations_v2".to_string()
@@ -833,12 +845,15 @@ pub struct IrauctionConfigAuctionRevenueEstimate1 {
     pub fromregionid: String,
     /// Month number within quarter (1..3)
     pub monthno: rust_decimal::Decimal,
+    /// First day of month as date
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Last day of month as date
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Estimated Revenue
     pub revenue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -856,19 +871,17 @@ impl crate::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
 
     fn primary_key(&self) -> IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
         IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            monthno: self.monthno.clone(),
-            quarter: self.quarter.clone(),
+            monthno: self.monthno,
+            quarter: self.quarter,
             valuationid: self.valuationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_revenue_estimate_v1".to_string()
@@ -1125,16 +1138,19 @@ pub struct IrauctionConfigAuctionRevenueTrack1 {
     pub valuationid: String,
     /// Version of data for other key data - a higher version for same key data takes precedence
     pub versionno: rust_decimal::Decimal,
+    /// Date from which the record change is applicable
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// Internal use
     pub status: Option<String>,
     /// Reference to methodology document
     pub documentref: Option<String>,
+    /// Date of authorisation for this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Name of person authorising this record
     pub authorisedby: Option<String>,
+    /// Date and time this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1152,16 +1168,14 @@ impl crate::GetTable for IrauctionConfigAuctionRevenueTrack1 {
 
     fn primary_key(&self) -> IrauctionConfigAuctionRevenueTrack1PrimaryKey {
         IrauctionConfigAuctionRevenueTrack1PrimaryKey {
-            contractyear: self.contractyear.clone(),
-            quarter: self.quarter.clone(),
+            contractyear: self.contractyear,
+            quarter: self.quarter,
             valuationid: self.valuationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_revenue_track_v1".to_string()
@@ -1388,6 +1402,7 @@ pub struct IrauctionConfigAuctionRpEstimate1 {
     pub fromregionid: String,
     /// Estimate of reserve price
     pub rpestimate: Option<rust_decimal::Decimal>,
+    /// Last date and time record was changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1405,18 +1420,16 @@ impl crate::GetTable for IrauctionConfigAuctionRpEstimate1 {
 
     fn primary_key(&self) -> IrauctionConfigAuctionRpEstimate1PrimaryKey {
         IrauctionConfigAuctionRpEstimate1PrimaryKey {
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            quarter: self.quarter.clone(),
+            quarter: self.quarter,
             valuationid: self.valuationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_rp_estimate_v1".to_string()
@@ -1633,16 +1646,20 @@ pub struct IrauctionConfigAuctionTranche1 {
     pub versionno: rust_decimal::Decimal,
     /// Label identifying the arbitrary segmented share of the Interconnector flow
     pub tranche: rust_decimal::Decimal,
+    /// Default date of the auction
     #[serde(with = "crate::mms_datetime_opt")]
     pub auctiondate: Option<chrono::NaiveDateTime>,
+    /// Default date participants notified of details
     #[serde(with = "crate::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
     /// Percentage of units allocated to the tranche
     pub unitallocation: Option<rust_decimal::Decimal>,
+    /// Date of changing this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub changedate: Option<chrono::NaiveDateTime>,
     /// Name of person who changed this record
     pub changedby: Option<String>,
+    /// Date and time record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1660,16 +1677,14 @@ impl crate::GetTable for IrauctionConfigAuctionTranche1 {
 
     fn primary_key(&self) -> IrauctionConfigAuctionTranche1PrimaryKey {
         IrauctionConfigAuctionTranche1PrimaryKey {
-            contractyear: self.contractyear.clone(),
-            quarter: self.quarter.clone(),
-            tranche: self.tranche.clone(),
-            versionno: self.versionno.clone(),
+            contractyear: self.contractyear,
+            quarter: self.quarter,
+            tranche: self.tranche,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_config_auction_tranche_v1".to_string()
@@ -1893,6 +1908,7 @@ pub struct SettlementConfigResiduecontractpayments1 {
     pub contractid: String,
     /// Participant Identifier
     pub participantid: String,
+    /// Date and time this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1915,9 +1931,7 @@ impl crate::GetTable for SettlementConfigResiduecontractpayments1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "settlement_config_residuecontractpayments_v1".to_string()
@@ -2034,6 +2048,7 @@ pub struct IrauctionBidsFileTrk1 {
     pub contractid: Option<String>,
     /// Participant Identifier
     pub participantid: String,
+    /// Date-Time SRA offer was loaded
     #[serde(with = "crate::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// SRA offer file name
@@ -2042,6 +2057,7 @@ pub struct IrauctionBidsFileTrk1 {
     pub ackfilename: Option<String>,
     /// Load status [SUCCESSFUL/CORRUPT]
     pub status: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
@@ -2062,14 +2078,12 @@ impl crate::GetTable for IrauctionBidsFileTrk1 {
     fn primary_key(&self) -> IrauctionBidsFileTrk1PrimaryKey {
         IrauctionBidsFileTrk1PrimaryKey {
             auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate.clone(),
+            loaddate: self.loaddate,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_bids_file_trk_v1".to_string()
@@ -2231,8 +2245,10 @@ pub struct IrauctionResidueBidTrk1 {
     pub versionno: rust_decimal::Decimal,
     /// Identifier of participant
     pub participantid: String,
+    /// Date and time bid used
     #[serde(with = "crate::mms_datetime_opt")]
     pub bidloaddate: Option<chrono::NaiveDateTime>,
+    /// Date and time this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
@@ -2254,13 +2270,11 @@ impl crate::GetTable for IrauctionResidueBidTrk1 {
         IrauctionResidueBidTrk1PrimaryKey {
             auctionid: self.auctionid.clone(),
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_bid_trk_v1".to_string()
@@ -2421,28 +2435,36 @@ pub struct IrauctionResidueContracts1 {
     pub tranche: rust_decimal::Decimal,
     /// Unique identifier for each SRA Contract as specified by AEMO
     pub contractid: Option<String>,
+    /// SRA Quarter start date
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// SRA Quarter end date
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
+    /// Open date of bidding, calculated as RNOTIFYDATE business days before the auction date
     #[serde(with = "crate::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
+    /// Close date of bidding, calculated as RAUCDATE business days before the contract start date
     #[serde(with = "crate::mms_datetime_opt")]
     pub auctiondate: Option<chrono::NaiveDateTime>,
     /// Identifies methodology used
     pub calcmethod: Option<String>,
+    /// Authorisation date for this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Name of authorising officer or process
     pub authorisedby: Option<String>,
+    /// Date notification posted
     #[serde(with = "crate::mms_datetime_opt")]
     pub notifypostdate: Option<chrono::NaiveDateTime>,
     /// Name of notifying person
     pub notifyby: Option<String>,
+    /// Date of publishing the auction results
     #[serde(with = "crate::mms_datetime_opt")]
     pub postdate: Option<chrono::NaiveDateTime>,
     /// Name of publishing officer or process
     pub postedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Description of Contract
@@ -2464,15 +2486,13 @@ impl crate::GetTable for IrauctionResidueContracts1 {
 
     fn primary_key(&self) -> IrauctionResidueContracts1PrimaryKey {
         IrauctionResidueContracts1PrimaryKey {
-            contractyear: self.contractyear.clone(),
-            quarter: self.quarter.clone(),
-            tranche: self.tranche.clone(),
+            contractyear: self.contractyear,
+            quarter: self.quarter,
+            tranche: self.tranche,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_contracts_v1".to_string()
@@ -2761,6 +2781,7 @@ pub struct IrauctionResidueConData2 {
     pub unitspurchased: Option<rust_decimal::Decimal>,
     /// Payment due (i.e. total purchase price)
     pub linkpayment: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The number of cancelled Units for all Auction Participants.
@@ -2784,13 +2805,11 @@ impl crate::GetTable for IrauctionResidueConData2 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_con_data_v2".to_string()
@@ -3016,6 +3035,7 @@ pub struct IrauctionResidueConEstimatesTrk1 {
     pub valuationid: String,
     /// Version of a record, as nominated by the participant
     pub versionno: Option<rust_decimal::Decimal>,
+    /// Date and time this record was changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3034,15 +3054,13 @@ impl crate::GetTable for IrauctionResidueConEstimatesTrk1 {
     fn primary_key(&self) -> IrauctionResidueConEstimatesTrk1PrimaryKey {
         IrauctionResidueConEstimatesTrk1PrimaryKey {
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
-            quarter: self.quarter.clone(),
+            contractyear: self.contractyear,
+            quarter: self.quarter,
             valuationid: self.valuationid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_con_estimates_trk_v1".to_string()
@@ -3235,6 +3253,7 @@ pub struct IrauctionResidueConFunds1 {
     pub scalefactor: Option<rust_decimal::Decimal>,
     /// Actual reserve price
     pub actualreserveprice: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3258,9 +3277,7 @@ impl crate::GetTable for IrauctionResidueConFunds1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_con_funds_v1".to_string()
@@ -3511,6 +3528,7 @@ pub struct IrauctionBidsFundsBid1 {
     pub contractid: String,
     /// Participant identifier
     pub participantid: String,
+    /// Date and time the batcher loaded the SRA offer
     #[serde(with = "crate::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// Unique option identifier (1..20)
@@ -3521,6 +3539,7 @@ pub struct IrauctionBidsFundsBid1 {
     pub fromregionid: String,
     /// Quantity of units bid for
     pub units: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3541,15 +3560,13 @@ impl crate::GetTable for IrauctionBidsFundsBid1 {
             contractid: self.contractid.clone(),
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            loaddate: self.loaddate.clone(),
-            optionid: self.optionid.clone(),
+            loaddate: self.loaddate,
+            optionid: self.optionid,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_bids_funds_bid_v1".to_string()
@@ -3754,12 +3771,14 @@ pub struct IrauctionBidsPriceBid1 {
     pub contractid: Option<String>,
     /// Participant identifier
     pub participantid: String,
+    /// Date and Time the batcher loaded the bid
     #[serde(with = "crate::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// Unique option (bid) identifier (1..800)
     pub optionid: rust_decimal::Decimal,
     /// Price offered for each unit
     pub bidprice: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
@@ -3780,15 +3799,13 @@ impl crate::GetTable for IrauctionBidsPriceBid1 {
     fn primary_key(&self) -> IrauctionBidsPriceBid1PrimaryKey {
         IrauctionBidsPriceBid1PrimaryKey {
             auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate.clone(),
-            optionid: self.optionid.clone(),
+            loaddate: self.loaddate,
+            optionid: self.optionid,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_bids_price_bid_v1".to_string()
@@ -3980,6 +3997,7 @@ pub struct IrauctionResiduePriceFundsBid1 {
     pub linkedbidflag: rust_decimal::Decimal,
     /// Unique id for each auction date
     pub auctionid: String,
+    /// Date and time this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4001,13 +4019,11 @@ impl crate::GetTable for IrauctionResiduePriceFundsBid1 {
             contractid: self.contractid.clone(),
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            linkedbidflag: self.linkedbidflag.clone(),
+            linkedbidflag: self.linkedbidflag,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_price_funds_bid_v1".to_string()
@@ -4221,6 +4237,7 @@ pub struct IrauctionResiduePublicData1 {
     pub clearingprice: Option<rust_decimal::Decimal>,
     /// Reserve price
     pub reserveprice: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4241,13 +4258,11 @@ impl crate::GetTable for IrauctionResiduePublicData1 {
             contractid: self.contractid.clone(),
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_public_data_v1".to_string()
@@ -4466,16 +4481,20 @@ pub struct IrauctionResidueTrk1 {
     pub contractid: Option<String>,
     /// Contract run version
     pub versionno: rust_decimal::Decimal,
+    /// Date auction results determined
     #[serde(with = "crate::mms_datetime_opt")]
     pub rundate: Option<chrono::NaiveDateTime>,
+    /// Date results published
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorising officer or process
     pub authorisedby: Option<String>,
+    /// Date the run is authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub postdate: Option<chrono::NaiveDateTime>,
     /// Name of authorising officer or process
     pub postedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Load status [SUCCESSFUL/CORRUPT]
@@ -4498,13 +4517,11 @@ impl crate::GetTable for IrauctionResidueTrk1 {
     fn primary_key(&self) -> IrauctionResidueTrk1PrimaryKey {
         IrauctionResidueTrk1PrimaryKey {
             auctionid: self.auctionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_residue_trk_v1".to_string()
@@ -4679,20 +4696,25 @@ pub struct IrauctionSraCashSecurity1 {
     pub cash_security_id: String,
     /// Unique identifier for the auction participant lodging the cash security.
     pub participantid: Option<String>,
+    /// Date AEMO received the Cash Security deposit
     #[serde(with = "crate::mms_datetime_opt")]
     pub provision_date: Option<chrono::NaiveDateTime>,
     /// Dollar amount of the cash security.
     pub cash_amount: Option<rust_decimal::Decimal>,
     /// The interest account ID for calculating the interest payment
     pub interest_acct_id: Option<String>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Date the entire Cash Security amount was returned to the Auction Participant
     #[serde(with = "crate::mms_datetime_opt")]
     pub finalreturndate: Option<chrono::NaiveDateTime>,
     /// Returned Dollar amount of the Cash Security.
     pub cash_security_returned: Option<rust_decimal::Decimal>,
+    /// Cash Security deleted date. For valid records, DeletionDate will be Null.
     #[serde(with = "crate::mms_datetime_opt")]
     pub deletiondate: Option<chrono::NaiveDateTime>,
+    /// The date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4714,9 +4736,7 @@ impl crate::GetTable for IrauctionSraCashSecurity1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_cash_security_v1".to_string()
@@ -4959,6 +4979,7 @@ pub struct IrauctionSraFinancialAucpayDetail1 {
     pub allocation: Option<rust_decimal::Decimal>,
     /// The payment amount owed by AEMO, including shortfall
     pub net_payment_amount: Option<rust_decimal::Decimal>,
+    /// The date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4980,15 +5001,13 @@ impl crate::GetTable for IrauctionSraFinancialAucpayDetail1 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter.clone(),
-            sra_runno: self.sra_runno.clone(),
-            sra_year: self.sra_year.clone(),
+            sra_quarter: self.sra_quarter,
+            sra_runno: self.sra_runno,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_financial_aucpay_detail_v1".to_string()
@@ -5324,6 +5343,7 @@ pub struct IrauctionSraFinancialAucpaySum1 {
     pub total_shortfall_amount: Option<rust_decimal::Decimal>,
     /// The net payment amount owed by AEMO to the TNSP
     pub net_payment_amount: Option<rust_decimal::Decimal>,
+    /// The date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -5342,15 +5362,13 @@ impl crate::GetTable for IrauctionSraFinancialAucpaySum1 {
     fn primary_key(&self) -> IrauctionSraFinancialAucpaySum1PrimaryKey {
         IrauctionSraFinancialAucpaySum1PrimaryKey {
             participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter.clone(),
-            sra_runno: self.sra_runno.clone(),
-            sra_year: self.sra_year.clone(),
+            sra_quarter: self.sra_quarter,
+            sra_runno: self.sra_runno,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_financial_aucpay_sum_v1".to_string()
@@ -5591,15 +5609,13 @@ impl crate::GetTable for IrauctionSraFinancialAucMardetail1 {
         IrauctionSraFinancialAucMardetail1PrimaryKey {
             cash_security_id: self.cash_security_id.clone(),
             participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter.clone(),
-            sra_runno: self.sra_runno.clone(),
-            sra_year: self.sra_year.clone(),
+            sra_quarter: self.sra_quarter,
+            sra_runno: self.sra_runno,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_financial_auc_mardetail_v1".to_string()
@@ -5797,15 +5813,13 @@ impl crate::GetTable for IrauctionSraFinancialAucMargin1 {
     fn primary_key(&self) -> IrauctionSraFinancialAucMargin1PrimaryKey {
         IrauctionSraFinancialAucMargin1PrimaryKey {
             participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter.clone(),
-            sra_runno: self.sra_runno.clone(),
-            sra_year: self.sra_year.clone(),
+            sra_quarter: self.sra_quarter,
+            sra_runno: self.sra_runno,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_financial_auc_margin_v1".to_string()
@@ -6011,6 +6025,7 @@ pub struct IrauctionSraFinancialAucReceipts1 {
     pub clearing_price: Option<rust_decimal::Decimal>,
     /// The payment amount owed to AEMO
     pub receipt_amount: Option<rust_decimal::Decimal>,
+    /// The last changed date for the record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Dollar value of Cancelled Units in the Auction for the Auction Participant
@@ -6036,15 +6051,13 @@ impl crate::GetTable for IrauctionSraFinancialAucReceipts1 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter.clone(),
-            sra_runno: self.sra_runno.clone(),
-            sra_year: self.sra_year.clone(),
+            sra_quarter: self.sra_quarter,
+            sra_runno: self.sra_runno,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_financial_auc_receipts_v1".to_string()
@@ -6305,14 +6318,17 @@ pub struct IrauctionSraFinancialRuntrk1 {
     pub sra_runno: i64,
     /// The type of SRA run
     pub runtype: Option<String>,
+    /// The date and time the run was triggered
     #[serde(with = "crate::mms_datetime_opt")]
     pub rundate: Option<chrono::NaiveDateTime>,
+    /// The date/time the run was posted
     #[serde(with = "crate::mms_datetime_opt")]
     pub posteddate: Option<chrono::NaiveDateTime>,
     /// Version number of the interest component used in the payments run
     pub interest_versionno: Option<i64>,
     /// Version number of the makeup component used in the makeup run
     pub makeup_versionno: Option<i64>,
+    /// The date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -6330,15 +6346,13 @@ impl crate::GetTable for IrauctionSraFinancialRuntrk1 {
 
     fn primary_key(&self) -> IrauctionSraFinancialRuntrk1PrimaryKey {
         IrauctionSraFinancialRuntrk1PrimaryKey {
-            sra_quarter: self.sra_quarter.clone(),
-            sra_runno: self.sra_runno.clone(),
-            sra_year: self.sra_year.clone(),
+            sra_quarter: self.sra_quarter,
+            sra_runno: self.sra_runno,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_financial_runtrk_v1".to_string()
@@ -6498,6 +6512,7 @@ pub struct IrauctionSraOfferProduct1 {
     pub auctionid: String,
     /// Unique participant identifier
     pub participantid: String,
+    /// The date and time the system loaded the SRA Offer File
     #[serde(with = "crate::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// Unique Product identifier (1 - 2000)
@@ -6512,6 +6527,7 @@ pub struct IrauctionSraOfferProduct1 {
     pub offer_price: Option<rust_decimal::Decimal>,
     /// Tranche identifier
     pub trancheid: Option<String>,
+    /// The date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -6530,15 +6546,13 @@ impl crate::GetTable for IrauctionSraOfferProduct1 {
     fn primary_key(&self) -> IrauctionSraOfferProduct1PrimaryKey {
         IrauctionSraOfferProduct1PrimaryKey {
             auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate.clone(),
-            optionid: self.optionid.clone(),
+            loaddate: self.loaddate,
+            optionid: self.optionid,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_offer_product_v1".to_string()
@@ -6732,6 +6746,7 @@ pub struct IrauctionSraOfferProfile1 {
     pub auctionid: String,
     /// Unique participant identifier
     pub participantid: String,
+    /// The date and time the system loaded the SRA Offer File
     #[serde(with = "crate::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// SRA Offer File name
@@ -6740,6 +6755,7 @@ pub struct IrauctionSraOfferProfile1 {
     pub ackfilename: Option<String>,
     /// Transaction ID used for tracking
     pub transactionid: Option<String>,
+    /// The date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -6758,14 +6774,12 @@ impl crate::GetTable for IrauctionSraOfferProfile1 {
     fn primary_key(&self) -> IrauctionSraOfferProfile1PrimaryKey {
         IrauctionSraOfferProfile1PrimaryKey {
             auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate.clone(),
+            loaddate: self.loaddate,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_offer_profile_v1".to_string()
@@ -6917,6 +6931,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProfile1 {
 /// * PRUDENTIAL_RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionSraPrudentialCashSecurity1 {
+    /// The prudential date of the run.
     #[serde(with = "crate::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
@@ -6944,14 +6959,12 @@ impl crate::GetTable for IrauctionSraPrudentialCashSecurity1 {
         IrauctionSraPrudentialCashSecurity1PrimaryKey {
             cash_security_id: self.cash_security_id.clone(),
             participantid: self.participantid.clone(),
-            prudential_date: self.prudential_date.clone(),
-            prudential_runno: self.prudential_runno.clone(),
+            prudential_date: self.prudential_date,
+            prudential_runno: self.prudential_runno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_prudential_cash_security_v1".to_string()
@@ -7110,6 +7123,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
 /// * PRUDENTIAL_RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionSraPrudentialCompPosition1 {
+    /// The prudential date of the run.
     #[serde(with = "crate::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
@@ -7138,14 +7152,12 @@ impl crate::GetTable for IrauctionSraPrudentialCompPosition1 {
     fn primary_key(&self) -> IrauctionSraPrudentialCompPosition1PrimaryKey {
         IrauctionSraPrudentialCompPosition1PrimaryKey {
             participantid: self.participantid.clone(),
-            prudential_date: self.prudential_date.clone(),
-            prudential_runno: self.prudential_runno.clone(),
+            prudential_date: self.prudential_date,
+            prudential_runno: self.prudential_runno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_prudential_comp_position_v1".to_string()
@@ -7325,6 +7337,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
 /// * SRA_YEAR
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionSraPrudentialExposure1 {
+    /// The prudential date of the run.
     #[serde(with = "crate::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date.
@@ -7343,6 +7356,7 @@ pub struct IrauctionSraPrudentialExposure1 {
     pub max_tranche: Option<i64>,
     /// Unique identifier for the Auction having the Offer. Has a null value when no Offer is made for the Relevant Quarter
     pub auctionid: Option<String>,
+    /// Timestamp of the Offer File submitted by the Auction Participant. Has a null value when no Offer is made for the Relevant Quarter
     #[serde(with = "crate::mms_datetime_opt")]
     pub offer_submissiontime: Option<chrono::NaiveDateTime>,
     /// Calculated Average Purchase Price for the Product
@@ -7371,16 +7385,14 @@ impl crate::GetTable for IrauctionSraPrudentialExposure1 {
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            prudential_date: self.prudential_date.clone(),
-            prudential_runno: self.prudential_runno.clone(),
-            sra_quarter: self.sra_quarter.clone(),
-            sra_year: self.sra_year.clone(),
+            prudential_date: self.prudential_date,
+            prudential_runno: self.prudential_runno,
+            sra_quarter: self.sra_quarter,
+            sra_year: self.sra_year,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_prudential_exposure_v1".to_string()
@@ -7645,6 +7657,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
 /// * PRUDENTIAL_RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct IrauctionSraPrudentialRun1 {
+    /// The prudential date of the run.
     #[serde(with = "crate::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The prudential run number for the run
@@ -7664,14 +7677,12 @@ impl crate::GetTable for IrauctionSraPrudentialRun1 {
 
     fn primary_key(&self) -> IrauctionSraPrudentialRun1PrimaryKey {
         IrauctionSraPrudentialRun1PrimaryKey {
-            prudential_date: self.prudential_date.clone(),
-            prudential_runno: self.prudential_runno.clone(),
+            prudential_date: self.prudential_date,
+            prudential_runno: self.prudential_runno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_sra_prudential_run_v1".to_string()
@@ -7783,6 +7794,7 @@ pub struct IrauctionValuationid1 {
     pub valuationid: String,
     /// Full name of estimator
     pub description: Option<String>,
+    /// Timestamp of record creation or modification
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7804,9 +7816,7 @@ impl crate::GetTable for IrauctionValuationid1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "irauction_valuationid_v1".to_string()

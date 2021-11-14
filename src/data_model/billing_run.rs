@@ -56,6 +56,7 @@ pub struct BillingAspayments6 {
     pub reactivepower: Option<rust_decimal::Decimal>,
     /// System Restart Payments
     pub systemrestart: Option<rust_decimal::Decimal>,
+    /// The latest date and time that a file was updated or inserted
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Lower 5 Minute Payment
@@ -85,17 +86,15 @@ impl crate::GetTable for BillingAspayments6 {
 
     fn primary_key(&self) -> BillingAspayments6PrimaryKey {
         BillingAspayments6PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             connectionpointid: self.connectionpointid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_aspayments_v6".to_string()
@@ -578,6 +577,7 @@ pub struct BillingAsrecovery7 {
     pub reactivepower: Option<rust_decimal::Decimal>,
     /// System Restart Recovery
     pub systemrestart: Option<rust_decimal::Decimal>,
+    /// The latest date and time a file was updated/inserted
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Raise 6 Sec Recovery for Generator
@@ -641,17 +641,15 @@ impl crate::GetTable for BillingAsrecovery7 {
 
     fn primary_key(&self) -> BillingAsrecovery7PrimaryKey {
         BillingAsrecovery7PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_asrecovery_v7".to_string()
@@ -1383,6 +1381,7 @@ pub struct BillingCpdata6 {
     pub aggregateenergy: Option<rust_decimal::Decimal>,
     /// Value of energy purchased/sold by customer, in $. Financial value of energy transactions for the Market Customer and FRMP and TNI in the Billing run.When GS commences, this includes the UFEA amount in the settlement runs.
     pub purchases: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// relevant MDA for this connection point.
@@ -1410,18 +1409,16 @@ impl crate::GetTable for BillingCpdata6 {
 
     fn primary_key(&self) -> BillingCpdata6PrimaryKey {
         BillingCpdata6PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             connectionpointid: self.connectionpointid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             mda: self.mda.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_cpdata_v6".to_string()
@@ -1698,10 +1695,12 @@ pub struct BillingDaytrk5 {
     pub weekno: rust_decimal::Decimal,
     /// Unique run no within a given contract year and week no
     pub billrunno: rust_decimal::Decimal,
+    /// Calendar Settlement Date contained in the billing run.
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Settlement run number used for each settlement date in that billing run.
     pub runno: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1719,10 +1718,10 @@ impl crate::GetTable for BillingDaytrk5 {
 
     fn primary_key(&self) -> BillingDaytrk5PrimaryKey {
         BillingDaytrk5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
-            settlementdate: self.settlementdate.clone(),
-            weekno: self.weekno.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            settlementdate: self.settlementdate,
+            weekno: self.weekno,
         }
     }
 
@@ -1940,6 +1939,7 @@ pub struct BillingFees5 {
     pub energy: Option<rust_decimal::Decimal>,
     /// Fee in $
     pub value: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The participant category pertaining to the market fee recovery. Corresponds to the PARTICIPANTCATEGORYID column of the SETMARKETFEES table.
@@ -1959,18 +1959,16 @@ impl crate::GetTable for BillingFees5 {
 
     fn primary_key(&self) -> BillingFees5PrimaryKey {
         BillingFees5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             marketfeeid: self.marketfeeid.clone(),
             participantcategoryid: self.participantcategoryid.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_fees_v5".to_string()
@@ -2228,6 +2226,7 @@ pub struct BillingFinancialadjustments5 {
     pub amount: Option<rust_decimal::Decimal>,
     /// Not Used
     pub value: Option<rust_decimal::Decimal>,
+    /// Last date and time the record changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The GL financial code of the manual adjustment line item. Used internally by AEMO systems.
@@ -2250,16 +2249,14 @@ impl crate::GetTable for BillingFinancialadjustments5 {
     fn primary_key(&self) -> BillingFinancialadjustments5PrimaryKey {
         BillingFinancialadjustments5PrimaryKey {
             adjustmentitem: self.adjustmentitem.clone(),
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_financialadjustments_v5".to_string()
@@ -2522,6 +2519,7 @@ pub struct BillingGendata5 {
     pub sales: Option<rust_decimal::Decimal>,
     /// $ outgoing
     pub purchases: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Amount of energy purchased in MWh
@@ -2543,17 +2541,15 @@ impl crate::GetTable for BillingGendata5 {
 
     fn primary_key(&self) -> BillingGendata5PrimaryKey {
         BillingGendata5PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             connectionpointid: self.connectionpointid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_gendata_v5".to_string()
@@ -2829,6 +2825,7 @@ pub struct BillingInterresidues5 {
     pub participantid: String,
     /// Amount NSP is paid for Inter-Regional Residues
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Region ID
@@ -2848,18 +2845,16 @@ impl crate::GetTable for BillingInterresidues5 {
 
     fn primary_key(&self) -> BillingInterresidues5PrimaryKey {
         BillingInterresidues5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_interresidues_v5".to_string()
@@ -3113,6 +3108,7 @@ pub struct BillingIntraresidues5 {
     pub participantid: String,
     /// Amount TNSP is paid for Intra-Regional Residues
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Last changed date
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Region ID
@@ -3132,17 +3128,15 @@ impl crate::GetTable for BillingIntraresidues5 {
 
     fn primary_key(&self) -> BillingIntraresidues5PrimaryKey {
         BillingIntraresidues5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_intraresidues_v5".to_string()
@@ -3391,6 +3385,7 @@ pub struct BillingIraucsurplus5 {
     pub totalresidues: Option<rust_decimal::Decimal>,
     /// Adjustment allocated to participant
     pub adjustment: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3408,19 +3403,17 @@ impl crate::GetTable for BillingIraucsurplus5 {
 
     fn primary_key(&self) -> BillingIraucsurplus5PrimaryKey {
         BillingIraucsurplus5PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_iraucsurplus_v5".to_string()
@@ -3720,6 +3713,7 @@ pub struct BillingIraucsurplussum7 {
     pub actualpayment: Option<rust_decimal::Decimal>,
     /// The GST amount on the auction fees, always being zero.
     pub auctionfees_gst: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA.
@@ -3743,20 +3737,18 @@ impl crate::GetTable for BillingIraucsurplussum7 {
 
     fn primary_key(&self) -> BillingIraucsurplussum7PrimaryKey {
         BillingIraucsurplussum7PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            quarter: self.quarter.clone(),
-            residueyear: self.residueyear.clone(),
-            weekno: self.weekno.clone(),
+            quarter: self.quarter,
+            residueyear: self.residueyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_iraucsurplussum_v7".to_string()
@@ -4111,6 +4103,7 @@ pub struct BillingIrfm5 {
     pub participantid: String,
     /// Industrial Relations Forced Majeure payment for the billing period.
     pub irfmpayment: Option<rust_decimal::Decimal>,
+    /// Last changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4128,16 +4121,14 @@ impl crate::GetTable for BillingIrfm5 {
 
     fn primary_key(&self) -> BillingIrfm5PrimaryKey {
         BillingIrfm5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_irfm_v5".to_string()
@@ -4341,6 +4332,7 @@ pub struct BillingIrnspsurplus5 {
     pub totalresidues: Option<rust_decimal::Decimal>,
     /// Adjustment allocated to participant
     pub adjustment: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4358,19 +4350,17 @@ impl crate::GetTable for BillingIrnspsurplus5 {
 
     fn primary_key(&self) -> BillingIrnspsurplus5PrimaryKey {
         BillingIrnspsurplus5PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_irnspsurplus_v5".to_string()
@@ -4668,6 +4658,7 @@ pub struct BillingIrnspsurplussum6 {
     pub auctionfees: Option<rust_decimal::Decimal>,
     /// The GST amount on the auction fees, always being zero.
     pub auctionfees_gst: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA.
@@ -4689,20 +4680,18 @@ impl crate::GetTable for BillingIrnspsurplussum6 {
 
     fn primary_key(&self) -> BillingIrnspsurplussum6PrimaryKey {
         BillingIrnspsurplussum6PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            quarter: self.quarter.clone(),
-            residueyear: self.residueyear.clone(),
-            weekno: self.weekno.clone(),
+            quarter: self.quarter,
+            residueyear: self.residueyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_irnspsurplussum_v6".to_string()
@@ -5040,6 +5029,7 @@ pub struct BillingIrpartsurplus5 {
     pub totalresidues: Option<rust_decimal::Decimal>,
     /// Adjustment allocated to participant
     pub adjustment: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Net actual payment to participant, including auction fees
@@ -5059,19 +5049,17 @@ impl crate::GetTable for BillingIrpartsurplus5 {
 
     fn primary_key(&self) -> BillingIrpartsurplus5PrimaryKey {
         BillingIrpartsurplus5PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_irpartsurplus_v5".to_string()
@@ -5387,6 +5375,7 @@ pub struct BillingIrpartsurplussum7 {
     pub actualpayment: Option<rust_decimal::Decimal>,
     /// The GST amount on the auction fees, always being zero.
     pub auctionfees_gst: Option<rust_decimal::Decimal>,
+    /// Date and time this record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The CSP derogation amount applied as an adjustment to SRA.
@@ -5410,20 +5399,18 @@ impl crate::GetTable for BillingIrpartsurplussum7 {
 
     fn primary_key(&self) -> BillingIrpartsurplussum7PrimaryKey {
         BillingIrpartsurplussum7PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             fromregionid: self.fromregionid.clone(),
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            quarter: self.quarter.clone(),
-            residueyear: self.residueyear.clone(),
-            weekno: self.weekno.clone(),
+            quarter: self.quarter,
+            residueyear: self.residueyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_irpartsurplussum_v7".to_string()
@@ -5795,6 +5782,7 @@ pub struct BillingPrioradjustments5 {
     pub irp: Option<rust_decimal::Decimal>,
     /// Interest amount.
     pub interestamount: Option<rust_decimal::Decimal>,
+    /// Last changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// unused; always null
@@ -5818,19 +5806,17 @@ impl crate::GetTable for BillingPrioradjustments5 {
 
     fn primary_key(&self) -> BillingPrioradjustments5PrimaryKey {
         BillingPrioradjustments5PrimaryKey {
-            adjbillrunno: self.adjbillrunno.clone(),
-            adjcontractyear: self.adjcontractyear.clone(),
-            adjweekno: self.adjweekno.clone(),
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            adjbillrunno: self.adjbillrunno,
+            adjcontractyear: self.adjcontractyear,
+            adjweekno: self.adjweekno,
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_prioradjustments_v5".to_string()
@@ -6186,6 +6172,7 @@ pub struct BillingRealloc5 {
     pub counterparty: String,
     /// Value billed on this contract
     pub value: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -6203,17 +6190,15 @@ impl crate::GetTable for BillingRealloc5 {
 
     fn primary_key(&self) -> BillingRealloc5PrimaryKey {
         BillingRealloc5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             counterparty: self.counterparty.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_realloc_v5".to_string()
@@ -6423,6 +6408,7 @@ pub struct BillingReallocDetail5 {
     pub reallocationid: String,
     /// REALLOCATION VALUE
     pub value: Option<rust_decimal::Decimal>,
+    /// DATETIME WHEN RECORD SAVED
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -6440,18 +6426,16 @@ impl crate::GetTable for BillingReallocDetail5 {
 
     fn primary_key(&self) -> BillingReallocDetail5PrimaryKey {
         BillingReallocDetail5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             counterparty: self.counterparty.clone(),
             participantid: self.participantid.clone(),
             reallocationid: self.reallocationid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_realloc_detail_v5".to_string()
@@ -6679,6 +6663,7 @@ pub struct BillingRegionexports5 {
     pub surplusenergy: Option<rust_decimal::Decimal>,
     /// $ Interregional residue
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -6696,17 +6681,15 @@ impl crate::GetTable for BillingRegionexports5 {
 
     fn primary_key(&self) -> BillingRegionexports5PrimaryKey {
         BillingRegionexports5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             exportto: self.exportto.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_regionexports_v5".to_string()
@@ -6974,6 +6957,7 @@ pub struct BillingRegionfigures5 {
     pub aspayment: Option<rust_decimal::Decimal>,
     /// This field is populated with 0
     pub poolfees: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// WDR Settlement Quantity Capped in MWh
@@ -6995,16 +6979,14 @@ impl crate::GetTable for BillingRegionfigures5 {
 
     fn primary_key(&self) -> BillingRegionfigures5PrimaryKey {
         BillingRegionfigures5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_regionfigures_v5".to_string()
@@ -7392,6 +7374,7 @@ pub struct BillingRegionimports5 {
     pub surplusenergy: Option<rust_decimal::Decimal>,
     /// Interregional residue
     pub surplusvalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7409,17 +7392,15 @@ impl crate::GetTable for BillingRegionimports5 {
 
     fn primary_key(&self) -> BillingRegionimports5PrimaryKey {
         BillingRegionimports5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             importfrom: self.importfrom.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_regionimports_v5".to_string()
@@ -7668,20 +7649,25 @@ pub struct BillingRuntrk5 {
     pub status: Option<String>,
     /// Flag
     pub adj_cleared: Option<String>,
+    /// null, since not used
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// null, since not used
     pub authorisedby: Option<String>,
+    /// When the results were posted
     #[serde(with = "crate::mms_datetime_opt")]
     pub postdate: Option<chrono::NaiveDateTime>,
     /// Who posted the results
     pub postby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// null, since not used
     #[serde(with = "crate::mms_datetime_opt")]
     pub receiptpostdate: Option<chrono::NaiveDateTime>,
     /// null, since not used
     pub receiptpostby: Option<String>,
+    /// When the payment was posted
     #[serde(with = "crate::mms_datetime_opt")]
     pub paymentpostdate: Option<chrono::NaiveDateTime>,
     /// Who posted the payment
@@ -7705,15 +7691,13 @@ impl crate::GetTable for BillingRuntrk5 {
 
     fn primary_key(&self) -> BillingRuntrk5PrimaryKey {
         BillingRuntrk5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
-            weekno: self.weekno.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_runtrk_v5".to_string()
@@ -8004,6 +7988,7 @@ pub struct BillingApcCompensation2 {
     pub event_type: Option<String>,
     /// The Type of Administered Price Compensation Claim. Valid values: DIRECT_COST, OTHER_COST
     pub compensation_type: Option<String>,
+    /// The date and time of last changed record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8021,17 +8006,15 @@ impl crate::GetTable for BillingApcCompensation2 {
 
     fn primary_key(&self) -> BillingApcCompensation2PrimaryKey {
         BillingApcCompensation2PrimaryKey {
-            apeventid: self.apeventid.clone(),
-            billrunno: self.billrunno.clone(),
-            claimid: self.claimid.clone(),
-            contractyear: self.contractyear.clone(),
-            weekno: self.weekno.clone(),
+            apeventid: self.apeventid,
+            billrunno: self.billrunno,
+            claimid: self.claimid,
+            contractyear: self.contractyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_apc_compensation_v2".to_string()
@@ -8231,14 +8214,17 @@ pub struct BillingApcRecovery2 {
     pub regionid: String,
     /// Recovery amount attributable to the participant in that region
     pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The starting half hourly interval for the eligibility period for recovery of APC Payment
     #[serde(with = "crate::mms_datetime_opt")]
     pub eligibility_start_interval: Option<chrono::NaiveDateTime>,
+    /// The ending half hourly interval for the eligibility period for recovery of APC Payment
     #[serde(with = "crate::mms_datetime_opt")]
     pub eligibility_end_interval: Option<chrono::NaiveDateTime>,
     /// The participant demand in the cost recovery region
     pub participant_demand: Option<rust_decimal::Decimal>,
     /// The sum of demand of all participants in the cost recovery region (Region Sum)
     pub region_demand: Option<rust_decimal::Decimal>,
+    /// The date and time of last changed record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8256,19 +8242,17 @@ impl crate::GetTable for BillingApcRecovery2 {
 
     fn primary_key(&self) -> BillingApcRecovery2PrimaryKey {
         BillingApcRecovery2PrimaryKey {
-            apeventid: self.apeventid.clone(),
-            billrunno: self.billrunno.clone(),
-            claimid: self.claimid.clone(),
-            contractyear: self.contractyear.clone(),
+            apeventid: self.apeventid,
+            billrunno: self.billrunno,
+            claimid: self.claimid,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_apc_recovery_v2".to_string()
@@ -8516,6 +8500,7 @@ pub struct BillingBillingCo2ePublication1 {
     pub weekno: i64,
     /// Billing run no
     pub billrunno: i64,
+    /// Settlement Date (Calendar)
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Region identifier
@@ -8541,10 +8526,10 @@ impl crate::GetTable for BillingBillingCo2ePublication1 {
 
     fn primary_key(&self) -> BillingBillingCo2ePublication1PrimaryKey {
         BillingBillingCo2ePublication1PrimaryKey {
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            weekno: self.weekno.clone(),
+            settlementdate: self.settlementdate,
+            weekno: self.weekno,
         }
     }
 
@@ -8750,6 +8735,7 @@ pub struct BillingBillingCo2ePublicationTrk1 {
     pub weekno: i64,
     /// Billing run no
     pub billrunno: Option<i64>,
+    /// Last changed date time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8767,14 +8753,12 @@ impl crate::GetTable for BillingBillingCo2ePublicationTrk1 {
 
     fn primary_key(&self) -> BillingBillingCo2ePublicationTrk1PrimaryKey {
         BillingBillingCo2ePublicationTrk1PrimaryKey {
-            contractyear: self.contractyear.clone(),
-            weekno: self.weekno.clone(),
+            contractyear: self.contractyear,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_billing_co2e_publication_trk_v1".to_string()
@@ -8894,6 +8878,7 @@ pub struct BillingDailyEnergySummary1 {
     pub weekno: rust_decimal::Decimal,
     /// Billing Run number
     pub billrunno: rust_decimal::Decimal,
+    /// settlement date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// participant identifier
@@ -8921,12 +8906,12 @@ impl crate::GetTable for BillingDailyEnergySummary1 {
 
     fn primary_key(&self) -> BillingDailyEnergySummary1PrimaryKey {
         BillingDailyEnergySummary1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            weekno: self.weekno.clone(),
+            settlementdate: self.settlementdate,
+            weekno: self.weekno,
         }
     }
 
@@ -9186,8 +9171,10 @@ pub struct BillingDirectionReconciliatn1 {
     pub direction_id: String,
     /// Direction description
     pub direction_desc: Option<String>,
+    /// Direction start date time
     #[serde(with = "crate::mms_datetime_opt")]
     pub direction_start_date: Option<chrono::NaiveDateTime>,
+    /// Direction end date time
     #[serde(with = "crate::mms_datetime_opt")]
     pub direction_end_date: Option<chrono::NaiveDateTime>,
     /// Direction compensation amount
@@ -9206,6 +9193,7 @@ pub struct BillingDirectionReconciliatn1 {
     pub mkt_customer_perc: Option<rust_decimal::Decimal>,
     /// Direction compensation recovery amount percentage breakdown among generators
     pub generator_perc: Option<rust_decimal::Decimal>,
+    /// Last changed date time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -9223,16 +9211,14 @@ impl crate::GetTable for BillingDirectionReconciliatn1 {
 
     fn primary_key(&self) -> BillingDirectionReconciliatn1PrimaryKey {
         BillingDirectionReconciliatn1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             direction_id: self.direction_id.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_direction_reconciliatn_v1".to_string()
@@ -9534,12 +9520,16 @@ pub struct BillingBillingDirectionReconOther1 {
     pub direction_desc: Option<String>,
     /// The service for which the direction occurred (ENERGY, ANCILLARY, NON_ENERGY_NON_AS, etc)
     pub direction_type_id: Option<String>,
+    /// Settlement day on which the direction starts
     #[serde(with = "crate::mms_datetime_opt")]
     pub direction_start_date: Option<chrono::NaiveDateTime>,
+    /// Settlement day on which the direction ends.  The same value for all regions
     #[serde(with = "crate::mms_datetime_opt")]
     pub direction_end_date: Option<chrono::NaiveDateTime>,
+    /// Dispatch interval in which the direction starts.  The same value for all regions
     #[serde(with = "crate::mms_datetime_opt")]
     pub direction_start_interval: Option<chrono::NaiveDateTime>,
+    /// Dispatch interval in which the direction ends.  The same value for all regions
     #[serde(with = "crate::mms_datetime_opt")]
     pub direction_end_interval: Option<chrono::NaiveDateTime>,
     /// The final compensation amount for the direction.  The same value for all regions
@@ -9571,17 +9561,15 @@ impl crate::GetTable for BillingBillingDirectionReconOther1 {
 
     fn primary_key(&self) -> BillingBillingDirectionReconOther1PrimaryKey {
         BillingBillingDirectionReconOther1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             direction_id: self.direction_id.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_billing_direction_recon_other_v1".to_string()
@@ -9937,16 +9925,14 @@ impl crate::GetTable for BillingEftshortfallAmount1 {
 
     fn primary_key(&self) -> BillingEftshortfallAmount1PrimaryKey {
         BillingEftshortfallAmount1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_eftshortfall_amount_v1".to_string()
@@ -10217,17 +10203,15 @@ impl crate::GetTable for BillingEftshortfallDetail1 {
 
     fn primary_key(&self) -> BillingEftshortfallDetail1PrimaryKey {
         BillingEftshortfallDetail1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             transaction_type: self.transaction_type.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_eftshortfall_detail_v1".to_string()
@@ -10429,6 +10413,7 @@ pub struct BillingGstDetail5 {
     pub gst_exclusive_amount: Option<rust_decimal::Decimal>,
     /// The GST amount for this transaction type.
     pub gst_amount: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -10447,17 +10432,15 @@ impl crate::GetTable for BillingGstDetail5 {
     fn primary_key(&self) -> BillingGstDetail5PrimaryKey {
         BillingGstDetail5PrimaryKey {
             bas_class: self.bas_class.clone(),
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             transaction_type: self.transaction_type.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_gst_detail_v5".to_string()
@@ -10695,6 +10678,7 @@ pub struct BillingGstSummary5 {
     pub gst_exclusive_amount: Option<rust_decimal::Decimal>,
     /// The GST amount for this BAS classification.
     pub gst_amount: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -10713,16 +10697,14 @@ impl crate::GetTable for BillingGstSummary5 {
     fn primary_key(&self) -> BillingGstSummary5PrimaryKey {
         BillingGstSummary5PrimaryKey {
             bas_class: self.bas_class.clone(),
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_gst_summary_v5".to_string()
@@ -10960,18 +10942,16 @@ impl crate::GetTable for BillingNmasTstPayments1 {
 
     fn primary_key(&self) -> BillingNmasTstPayments1PrimaryKey {
         BillingNmasTstPayments1PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             service: self.service.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_nmas_tst_payments_v1".to_string()
@@ -11184,8 +11164,10 @@ pub struct BillingNmasTstRecovery1 {
     pub rbf: Option<rust_decimal::Decimal>,
     /// The total Testing Payment Amount to recover from all benefitting regions
     pub test_payment: Option<rust_decimal::Decimal>,
+    /// The Recovery Start Date for the Testing Payment Calculation
     #[serde(with = "crate::mms_datetime_opt")]
     pub recovery_start_date: Option<chrono::NaiveDateTime>,
+    /// The Recovery End Date for the Testing Payment Calculation
     #[serde(with = "crate::mms_datetime_opt")]
     pub recovery_end_date: Option<chrono::NaiveDateTime>,
     /// The Participant energy in MWh for the recovery period
@@ -11204,6 +11186,7 @@ pub struct BillingNmasTstRecovery1 {
     pub nem_generation: Option<rust_decimal::Decimal>,
     /// The Total recovery amount for the billing week, being the sum of the customer and generator proportions for the PARTICIPANTID in REGIONID
     pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Last Updated date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -11221,19 +11204,17 @@ impl crate::GetTable for BillingNmasTstRecovery1 {
 
     fn primary_key(&self) -> BillingNmasTstRecovery1PrimaryKey {
         BillingNmasTstRecovery1PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             regionid: self.regionid.clone(),
             service: self.service.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_nmas_tst_recovery_v1".to_string()
@@ -11636,6 +11617,7 @@ pub struct BillingNmasTstRecvryRbf1 {
     pub payment_amount: Option<rust_decimal::Decimal>,
     /// The Testing Payment amount to recover from RegionId
     pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Last Updated date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -11653,18 +11635,16 @@ impl crate::GetTable for BillingNmasTstRecvryRbf1 {
 
     fn primary_key(&self) -> BillingNmasTstRecvryRbf1PrimaryKey {
         BillingNmasTstRecvryRbf1PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
+            contractyear: self.contractyear,
             regionid: self.regionid.clone(),
             service: self.service.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_nmas_tst_recvry_rbf_v1".to_string()
@@ -11921,18 +11901,16 @@ impl crate::GetTable for BillingNmasTstRecvryTrk1 {
 
     fn primary_key(&self) -> BillingNmasTstRecvryTrk1PrimaryKey {
         BillingNmasTstRecvryTrk1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
-            recovery_billrunno: self.recovery_billrunno.clone(),
-            recovery_contractyear: self.recovery_contractyear.clone(),
-            recovery_weekno: self.recovery_weekno.clone(),
-            weekno: self.weekno.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            recovery_billrunno: self.recovery_billrunno,
+            recovery_contractyear: self.recovery_contractyear,
+            recovery_weekno: self.recovery_weekno,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_nmas_tst_recvry_trk_v1".to_string()
@@ -12155,16 +12133,14 @@ impl crate::GetTable for BillingSecdepositApplication1 {
 
     fn primary_key(&self) -> BillingSecdepositApplication1PrimaryKey {
         BillingSecdepositApplication1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_secdeposit_application_v1".to_string()
@@ -12367,17 +12343,15 @@ impl crate::GetTable for BillingSecdepInterestPay1 {
 
     fn primary_key(&self) -> BillingSecdepInterestPay1PrimaryKey {
         BillingSecdepInterestPay1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
             security_deposit_id: self.security_deposit_id.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_secdep_interest_pay_v1".to_string()
@@ -12605,6 +12579,7 @@ pub struct BillingSecdepInterestRate1 {
     pub billrunno: rust_decimal::Decimal,
     /// The interest account ID used by security deposit interest calculation
     pub interest_acct_id: String,
+    /// The effective date of the new interest change
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The interest rate to apply from the effective date
@@ -12624,17 +12599,15 @@ impl crate::GetTable for BillingSecdepInterestRate1 {
 
     fn primary_key(&self) -> BillingSecdepInterestRate1PrimaryKey {
         BillingSecdepInterestRate1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
-            effectivedate: self.effectivedate.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            effectivedate: self.effectivedate,
             interest_acct_id: self.interest_acct_id.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_secdep_interest_rate_v1".to_string()
@@ -12855,17 +12828,15 @@ impl crate::GetTable for BillingReservetraderpayment1 {
 
     fn primary_key(&self) -> BillingReservetraderpayment1PrimaryKey {
         BillingReservetraderpayment1PrimaryKey {
-            billrunno: self.billrunno.clone(),
+            billrunno: self.billrunno,
             contractid: self.contractid.clone(),
-            contractyear: self.contractyear.clone(),
-            payment_id: self.payment_id.clone(),
-            weekno: self.weekno.clone(),
+            contractyear: self.contractyear,
+            payment_id: self.payment_id,
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_reservetraderpayment_v1".to_string()
@@ -13092,8 +13063,10 @@ pub struct BillingReservetraderrecovery1 {
     pub participant_demand: Option<rust_decimal::Decimal>,
     /// Region Demand Value used for RERT Recovery
     pub region_demand: Option<rust_decimal::Decimal>,
+    /// Starting Period of RERT Recovery for Usage Payments
     #[serde(with = "crate::mms_datetime_opt")]
     pub eligibility_start_interval: Option<chrono::NaiveDateTime>,
+    /// Ending Period of RERT Recovery for Usage Payments
     #[serde(with = "crate::mms_datetime_opt")]
     pub eligibility_end_interval: Option<chrono::NaiveDateTime>,
     /// Recovery Amount applicable for each Market Customer
@@ -13113,19 +13086,17 @@ impl crate::GetTable for BillingReservetraderrecovery1 {
 
     fn primary_key(&self) -> BillingReservetraderrecovery1PrimaryKey {
         BillingReservetraderrecovery1PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             participantid: self.participantid.clone(),
-            payment_id: self.payment_id.clone(),
+            payment_id: self.payment_id,
             publication_id: self.publication_id.clone(),
             regionid: self.regionid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_reservetraderrecovery_v1".to_string()
@@ -13435,6 +13406,7 @@ pub struct BillingWhitehole5 {
     pub regiondemand: Option<rust_decimal::Decimal>,
     /// Payment in $
     pub whiteholepayment: Option<rust_decimal::Decimal>,
+    /// The latest date and time that a file was updated or inserted
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Interconnector ID
@@ -13454,17 +13426,15 @@ impl crate::GetTable for BillingWhitehole5 {
 
     fn primary_key(&self) -> BillingWhitehole5PrimaryKey {
         BillingWhitehole5PrimaryKey {
-            billrunno: self.billrunno.clone(),
-            contractyear: self.contractyear.clone(),
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            weekno: self.weekno.clone(),
+            weekno: self.weekno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "billing_whitehole_v5".to_string()

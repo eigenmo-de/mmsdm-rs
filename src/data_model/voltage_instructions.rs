@@ -19,6 +19,7 @@
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct VoltageInstructionInstruction2 {
+    /// MVAr Interval – a timestamp of when instructions issued
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// The unique identifier for reference within AEMO –matches equipment names between NOS and EMS
@@ -39,6 +40,7 @@ pub struct VoltageInstructionInstruction2 {
     pub conforming: Option<rust_decimal::Decimal>,
     /// Verbose summary of instruction
     pub instruction_summary: Option<String>,
+    /// Datetime the file was published by VDS - Versions differ from Run_DateTime only for Supplemental runs
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Order for execution of Instruction
@@ -61,14 +63,12 @@ impl crate::GetTable for VoltageInstructionInstruction2 {
     fn primary_key(&self) -> VoltageInstructionInstruction2PrimaryKey {
         VoltageInstructionInstruction2PrimaryKey {
             ems_id: self.ems_id.clone(),
-            run_datetime: self.run_datetime.clone(),
-            version_datetime: self.version_datetime.clone(),
+            run_datetime: self.run_datetime,
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "voltage_instruction_instruction_v2".to_string()
@@ -303,12 +303,15 @@ impl crate::ArrowSchema for VoltageInstructionInstruction2 {
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct VoltageInstructionTrack2 {
+    /// MVAr Interval - a timestamp of when instructions issued
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Either 'SIGNAL' (childless) or 'INSTRUCTION'
     pub file_type: Option<String>,
+    /// Datetime the file was published by VDS - Versions differ from Run_DateTime only for Supplemental runs
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
+    /// State Estimator start time, when a snapshot is taken of SCADA values
     #[serde(with = "crate::mms_datetime_opt")]
     pub se_datetime: Option<chrono::NaiveDateTime>,
     /// VDS solver solution category. Valid values: SUCCESS, WARNING, FAILURE
@@ -319,8 +322,10 @@ pub struct VoltageInstructionTrack2 {
     pub operating_mode: Option<String>,
     /// Unstructured code and message from AEMO
     pub operating_status: Option<String>,
+    /// Estimated expiry time of current Instruction set
     #[serde(with = "crate::mms_datetime_opt")]
     pub est_expiry: Option<chrono::NaiveDateTime>,
+    /// Estimated issue time of next Instruction set
     #[serde(with = "crate::mms_datetime_opt")]
     pub est_next_instruction: Option<chrono::NaiveDateTime>,
 }
@@ -338,14 +343,12 @@ impl crate::GetTable for VoltageInstructionTrack2 {
 
     fn primary_key(&self) -> VoltageInstructionTrack2PrimaryKey {
         VoltageInstructionTrack2PrimaryKey {
-            run_datetime: self.run_datetime.clone(),
-            version_datetime: self.version_datetime.clone(),
+            run_datetime: self.run_datetime,
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "voltage_instruction_track_v2".to_string()

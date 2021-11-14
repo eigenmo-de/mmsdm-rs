@@ -16,7 +16,7 @@ fn main() -> anyhow::Result<()> {
             let file = fs::File::open(dir.path())?;
             let aemo = mmsdm::AemoFile::from_reader(file)?;
             dbg!(aemo.file_keys());
-            let dispatch = aemo.get_table::<data_model::DispatchUnitSolution2>()?;
+            let dispatch: Vec<_> = aemo.get_table::<data_model::DispatchUnitSolution2>()?;
             partitions = mmsdm::merge_with_partitions(partitions, &dispatch);
         }
     }

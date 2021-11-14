@@ -19,20 +19,25 @@
 pub struct ApApevent1 {
     /// Unique identifier for this administered pricing event
     pub apeventid: rust_decimal::Decimal,
+    /// Date Time of the first Dispatch Interval to which the administered event applies
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivefrominterval: Option<chrono::NaiveDateTime>,
+    /// Date Time of the final Dispatch Interval to which the administered event applies
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivetointerval: Option<chrono::NaiveDateTime>,
     /// Description of the driver for the Event
     pub reason: Option<String>,
     /// Authorising staff for start of AP event
     pub startauthorisedby: Option<String>,
+    /// Date-Time start authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub startauthoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorising staff for end of AP event
     pub endauthorisedby: Option<String>,
+    /// Date Time end authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub endauthoriseddate: Option<chrono::NaiveDateTime>,
+    /// Date-Time the record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -50,13 +55,11 @@ impl crate::GetTable for ApApevent1 {
 
     fn primary_key(&self) -> ApApevent1PrimaryKey {
         ApApevent1PrimaryKey {
-            apeventid: self.apeventid.clone(),
+            apeventid: self.apeventid,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ap_apevent_v1".to_string()
@@ -243,6 +246,7 @@ pub struct ApApeventregion1 {
     pub apeventid: rust_decimal::Decimal,
     /// Date-Time of the first Dispatch Interval to which the administered event applies
     pub regionid: String,
+    /// Date Time of the final Dispatch Interval to which the administered event applies
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// flag indicating if the apevent covers an energy AP
@@ -278,14 +282,12 @@ impl crate::GetTable for ApApeventregion1 {
 
     fn primary_key(&self) -> ApApeventregion1PrimaryKey {
         ApApeventregion1PrimaryKey {
-            apeventid: self.apeventid.clone(),
+            apeventid: self.apeventid,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ap_apeventregion_v1".to_string()
@@ -547,6 +549,7 @@ impl crate::ArrowSchema for ApApeventregion1 {
 pub struct ForceMajeureIrfmamount1 {
     /// Unique Industrial Relations Force Majeure event
     pub irfmid: String,
+    /// Date of event
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// Version number of record of event
@@ -557,8 +560,10 @@ pub struct ForceMajeureIrfmamount1 {
     pub amount: Option<rust_decimal::Decimal>,
     /// Person authorising amount
     pub authorisedby: Option<String>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -577,14 +582,12 @@ impl crate::GetTable for ForceMajeureIrfmamount1 {
     fn primary_key(&self) -> ForceMajeureIrfmamount1PrimaryKey {
         ForceMajeureIrfmamount1PrimaryKey {
             irfmid: self.irfmid.clone(),
-            periodid: self.periodid.clone(),
-            versionno: self.versionno.clone(),
+            periodid: self.periodid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_irfmamount_v1".to_string()
@@ -772,14 +775,17 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
 pub struct ForceMajeureIrfmevents1 {
     /// &nbsp;
     pub irfmid: String,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// &nbsp;
     pub startperiod: Option<rust_decimal::Decimal>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// &nbsp;
     pub endperiod: Option<rust_decimal::Decimal>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -801,9 +807,7 @@ impl crate::GetTable for ForceMajeureIrfmevents1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_irfmevents_v1".to_string()
@@ -955,12 +959,15 @@ pub struct ForceMajeureMarketSuspendRegimeSum1 {
     pub suspension_id: String,
     /// Region(s) covered by this evolution of the event
     pub regionid: String,
+    /// First Dispatch interval from which this regime applies
     #[serde(with = "crate::mms_datetime")]
     pub start_interval: chrono::NaiveDateTime,
+    /// Last Dispatch interval for which this regime applies
     #[serde(with = "crate::mms_datetime_opt")]
     pub end_interval: Option<chrono::NaiveDateTime>,
     /// Pricing Regime applied
     pub pricing_regime: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -979,14 +986,12 @@ impl crate::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
     fn primary_key(&self) -> ForceMajeureMarketSuspendRegimeSum1PrimaryKey {
         ForceMajeureMarketSuspendRegimeSum1PrimaryKey {
             regionid: self.regionid.clone(),
-            start_interval: self.start_interval.clone(),
+            start_interval: self.start_interval,
             suspension_id: self.suspension_id.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_market_suspend_regime_sum_v1".to_string()
@@ -1148,12 +1153,16 @@ pub struct ForceMajeureMarketSuspendRegionSum1 {
     pub suspension_id: String,
     /// Region(s) covered by the Suspension event
     pub regionid: String,
+    /// Initial interval of the Suspension event
     #[serde(with = "crate::mms_datetime_opt")]
     pub initial_interval: Option<chrono::NaiveDateTime>,
+    /// Last Dispatch interval for the Suspension event for this Region
     #[serde(with = "crate::mms_datetime_opt")]
     pub end_region_interval: Option<chrono::NaiveDateTime>,
+    /// Last Dispatch interval for the Suspension event
     #[serde(with = "crate::mms_datetime_opt")]
     pub end_suspension_interval: Option<chrono::NaiveDateTime>,
+    /// Last DateTime the Suspension was administered
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1176,9 +1185,7 @@ impl crate::GetTable for ForceMajeureMarketSuspendRegionSum1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_market_suspend_region_sum_v1".to_string()
@@ -1332,6 +1339,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ForceMajeureMarketSuspendSchedule1 {
+    /// Calendar date from when this record set is effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Distinguishes which record set to apply - at time of writing this was Business or Non-business day but may change in the future depending on outcome of consultation
@@ -1358,6 +1366,7 @@ pub struct ForceMajeureMarketSuspendSchedule1 {
     pub l5_rrp: Option<rust_decimal::Decimal>,
     /// Lower Regulation Price applied for this period for this Day Type
     pub lreg_rrp: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1376,15 +1385,13 @@ impl crate::GetTable for ForceMajeureMarketSuspendSchedule1 {
     fn primary_key(&self) -> ForceMajeureMarketSuspendSchedule1PrimaryKey {
         ForceMajeureMarketSuspendSchedule1PrimaryKey {
             day_type: self.day_type.clone(),
-            effectivedate: self.effectivedate.clone(),
-            periodid: self.periodid.clone(),
+            effectivedate: self.effectivedate,
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_market_suspend_schedule_v1".to_string()
@@ -1679,16 +1686,21 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
 /// * EFFECTIVEDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ForceMajeureMarketSuspendScheduleTrk1 {
+    /// Calendar date from when this record set is effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// Start Date of the date range for the source data
     #[serde(with = "crate::mms_datetime_opt")]
     pub source_start_date: Option<chrono::NaiveDateTime>,
+    /// End Date of the date range for the source data
     #[serde(with = "crate::mms_datetime_opt")]
     pub source_end_date: Option<chrono::NaiveDateTime>,
     /// Reason why this regime was applied
     pub comments: Option<String>,
+    /// DateTime this record set was loaded
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1706,13 +1718,11 @@ impl crate::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
 
     fn primary_key(&self) -> ForceMajeureMarketSuspendScheduleTrk1PrimaryKey {
         ForceMajeureMarketSuspendScheduleTrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_market_suspend_schedule_trk_v1".to_string()
@@ -1868,10 +1878,12 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
 pub struct ForceMajeureOverriderrp1 {
     /// Region Identifier
     pub regionid: String,
+    /// Starting date of override
     #[serde(with = "crate::mms_datetime")]
     pub startdate: chrono::NaiveDateTime,
     /// Starting period of override
     pub startperiod: rust_decimal::Decimal,
+    /// Termination date of override
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Terminate period of override
@@ -1884,6 +1896,7 @@ pub struct ForceMajeureOverriderrp1 {
     pub authorisestart: Option<String>,
     /// Authorise End of Override
     pub authoriseend: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1902,14 +1915,12 @@ impl crate::GetTable for ForceMajeureOverriderrp1 {
     fn primary_key(&self) -> ForceMajeureOverriderrp1PrimaryKey {
         ForceMajeureOverriderrp1PrimaryKey {
             regionid: self.regionid.clone(),
-            startdate: self.startdate.clone(),
-            startperiod: self.startperiod.clone(),
+            startdate: self.startdate,
+            startperiod: self.startperiod,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "force_majeure_overriderrp_v1".to_string()
@@ -2110,14 +2121,17 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
 pub struct ApRegionapc1 {
     /// Region Identifier
     pub regionid: String,
+    /// Date the APC profile applies from
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number for the same date
     pub versionno: rust_decimal::Decimal,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorised by
     pub authorisedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2135,15 +2149,13 @@ impl crate::GetTable for ApRegionapc1 {
 
     fn primary_key(&self) -> ApRegionapc1PrimaryKey {
         ApRegionapc1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ap_regionapc_v1".to_string()
@@ -2309,6 +2321,7 @@ impl crate::ArrowSchema for ApRegionapc1 {
 pub struct ApRegionapcintervals1 {
     /// Region Identifier
     pub regionid: String,
+    /// Date the APC profile applies from
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number for the same date
@@ -2317,6 +2330,7 @@ pub struct ApRegionapcintervals1 {
     pub periodid: rust_decimal::Decimal,
     /// Administered price cap in $
     pub apcvalue: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// not used
@@ -2340,16 +2354,14 @@ impl crate::GetTable for ApRegionapcintervals1 {
 
     fn primary_key(&self) -> ApRegionapcintervals1PrimaryKey {
         ApRegionapcintervals1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            periodid: self.periodid.clone(),
+            effectivedate: self.effectivedate,
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "ap_regionapcintervals_v1".to_string()

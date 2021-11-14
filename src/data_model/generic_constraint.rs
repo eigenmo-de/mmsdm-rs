@@ -26,6 +26,7 @@ pub struct GenericConstraintEmsmaster1 {
     pub description: Option<String>,
     /// The Grouping associated with the SPD ID - most often a RegionID
     pub grouping_id: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -48,9 +49,7 @@ impl crate::GetTable for GenericConstraintEmsmaster1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "generic_constraint_emsmaster_v1".to_string()
@@ -159,7 +158,7 @@ impl crate::ArrowSchema for GenericConstraintEmsmaster1 {
 /// * Data Version: 6
 ///
 /// # Description
-///  GENCONDATA is a public data, and is available to all participants. Source GENCONDATA updates as constraint details are updated by AEMO. Note The following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes: ·	 DISPATCH ·	 PREDISPATCH ·	 STPASA ·	 MTPASA The flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA . The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
+///  GENCONDATA is a public data, and is available to all participants. Source GENCONDATA updates as constraint details are updated by AEMO. Note The following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes: · DISPATCH · PREDISPATCH · STPASA · MTPASA The flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA . The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
 ///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
@@ -171,6 +170,7 @@ impl crate::ArrowSchema for GenericConstraintEmsmaster1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct GencondataNull6 {
+    /// Effective date of this constraint
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version with respect to the effective date
@@ -187,12 +187,14 @@ pub struct GencondataNull6 {
     pub status: Option<String>,
     /// The constraint violation penalty factor
     pub genericconstraintweight: Option<rust_decimal::Decimal>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User authorising record
     pub authorisedby: Option<String>,
     /// Not used
     pub dynamicrhs: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag: constraint RHS used for Dispatch? 1-used, 0-not used
@@ -238,15 +240,13 @@ impl crate::GetTable for GencondataNull6 {
 
     fn primary_key(&self) -> GencondataNull6PrimaryKey {
         GencondataNull6PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconid: self.genconid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "gencondata_null_v6".to_string()
@@ -570,16 +570,19 @@ impl crate::ArrowSchema for GencondataNull6 {
 pub struct GenconsetNull1 {
     /// Unique ID for the Constraint Set
     pub genconsetid: String,
+    /// Date this record becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of the record for the given effective date
     pub versionno: rust_decimal::Decimal,
     /// Generic Contraint ID
     pub genconid: String,
+    /// Since market start in 1998 these fields have not been used and any data that has been populated in the fields should be ignored
     #[serde(with = "crate::mms_datetime_opt")]
     pub genconeffdate: Option<chrono::NaiveDateTime>,
     /// Since market start in 1998 these fields have not been used and any data that has been populated in the fields should be ignored
     pub genconversionno: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -597,16 +600,14 @@ impl crate::GetTable for GenconsetNull1 {
 
     fn primary_key(&self) -> GenconsetNull1PrimaryKey {
         GenconsetNull1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconid: self.genconid.clone(),
             genconsetid: self.genconsetid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "genconset_null_v1".to_string()
@@ -792,12 +793,14 @@ impl crate::ArrowSchema for GenconsetNull1 {
 pub struct GenericConstraintGenconsetinvoke2 {
     /// Abstract unique identifier for the record. Allows Invocations to be modified without affecting PK values
     pub invocation_id: i64,
+    /// Market date of start
     #[serde(with = "crate::mms_datetime")]
     pub startdate: chrono::NaiveDateTime,
     /// The first dispatch interval of the invocation being the dispatch interval number starting from1 at 04:05.
     pub startperiod: rust_decimal::Decimal,
     /// Unique generic constraint set identifier
     pub genconsetid: String,
+    /// Market date end
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Dispatch interval number end
@@ -810,10 +813,13 @@ pub struct GenericConstraintGenconsetinvoke2 {
     pub intervention: Option<String>,
     /// Constraint type (e.g. ancillary services). This also flags where a constraint is an interconnector or intra-region network limit.
     pub asconstrainttype: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The settlement date and time corresponding to the first interval to which the constraint set is to be applied.
     #[serde(with = "crate::mms_datetime_opt")]
     pub startintervaldatetime: Option<chrono::NaiveDateTime>,
+    /// The settlement date and time corresponding to the last interval to which the constraint set is to be applied.
     #[serde(with = "crate::mms_datetime_opt")]
     pub endintervaldatetime: Option<chrono::NaiveDateTime>,
     /// Flag to indicate if the constraint set is a system normal (1) or an outage set (0)
@@ -833,13 +839,11 @@ impl crate::GetTable for GenericConstraintGenconsetinvoke2 {
 
     fn primary_key(&self) -> GenericConstraintGenconsetinvoke2PrimaryKey {
         GenericConstraintGenconsetinvoke2PrimaryKey {
-            invocation_id: self.invocation_id.clone(),
+            invocation_id: self.invocation_id,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "generic_constraint_genconsetinvoke_v2".to_string()
@@ -1078,6 +1082,7 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
 pub struct GenconsettrkNull2 {
     /// Unique ID for the Constraint Set
     pub genconsetid: String,
+    /// Date this record becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of the record for the given effective date
@@ -1086,8 +1091,10 @@ pub struct GenconsettrkNull2 {
     pub description: Option<String>,
     /// The person who authorised the constraint set
     pub authorisedby: Option<String>,
+    /// The date and time of authorising the constraint set
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The region the constraint set is located in or a special grouping (e.g. CHIMERA)
@@ -1113,15 +1120,13 @@ impl crate::GetTable for GenconsettrkNull2 {
 
     fn primary_key(&self) -> GenconsettrkNull2PrimaryKey {
         GenconsettrkNull2PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconsetid: self.genconsetid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "genconsettrk_null_v2".to_string()
@@ -1322,6 +1327,7 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
 pub struct GcrhsNull1 {
     /// Generic Constraint Identifier
     pub genconid: String,
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of this record for the effective date
@@ -1348,6 +1354,7 @@ pub struct GcrhsNull1 {
     pub parameterterm2: Option<String>,
     /// The unique identifier for the third term (logic&gt;0 result) to use in a Branch term
     pub parameterterm3: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1365,17 +1372,15 @@ impl crate::GetTable for GcrhsNull1 {
 
     fn primary_key(&self) -> GcrhsNull1PrimaryKey {
         GcrhsNull1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconid: self.genconid.clone(),
             scope: self.scope.clone(),
-            termid: self.termid.clone(),
-            versionno: self.versionno.clone(),
+            termid: self.termid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "gcrhs_null_v1".to_string()
@@ -1635,6 +1640,7 @@ pub struct GeqdescNull2 {
     pub equationid: String,
     /// Generic Equation Description
     pub description: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The device(s) affected by the constraint (e.g. Interconnector, Generator(s) or Cutset)
@@ -1668,9 +1674,7 @@ impl crate::GetTable for GeqdescNull2 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "geqdesc_null_v2".to_string()
@@ -1819,6 +1823,7 @@ impl crate::ArrowSchema for GeqdescNull2 {
 pub struct GeqrhsNull1 {
     /// Generic Equation Identifier
     pub equationid: String,
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of this record for the effective date
@@ -1843,6 +1848,7 @@ pub struct GeqrhsNull1 {
     pub parameterterm2: Option<String>,
     /// The unique identifier for the third term (logic&gt;0 result) to use in a Branch term
     pub parameterterm3: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1860,16 +1866,14 @@ impl crate::GetTable for GeqrhsNull1 {
 
     fn primary_key(&self) -> GeqrhsNull1PrimaryKey {
         GeqrhsNull1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             equationid: self.equationid.clone(),
-            termid: self.termid.clone(),
-            versionno: self.versionno.clone(),
+            termid: self.termid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "geqrhs_null_v1".to_string()
@@ -2124,6 +2128,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
 pub struct SpdcpcNull2 {
     /// Connection Point Identifier
     pub connectionpointid: String,
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of this record for the effective date
@@ -2132,6 +2137,7 @@ pub struct SpdcpcNull2 {
     pub genconid: String,
     /// Constraint factor
     pub factor: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Bid Type Identifier; one of (RAISE6SEC, RAISE60SEC, RAISE5MIN, LOWER6SEC, LOWER60SEC, LOWER5MIN, RAISEREG, LOWERREG)
@@ -2153,15 +2159,13 @@ impl crate::GetTable for SpdcpcNull2 {
         SpdcpcNull2PrimaryKey {
             bidtype: self.bidtype.clone(),
             connectionpointid: self.connectionpointid.clone(),
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconid: self.genconid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "spdcpc_null_v2".to_string()
@@ -2345,6 +2349,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
 pub struct SpdiccNull1 {
     /// Interconnector Identifier
     pub interconnectorid: String,
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of this record for the effective date
@@ -2353,6 +2358,7 @@ pub struct SpdiccNull1 {
     pub genconid: String,
     /// Constraint factor
     pub factor: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2370,16 +2376,14 @@ impl crate::GetTable for SpdiccNull1 {
 
     fn primary_key(&self) -> SpdiccNull1PrimaryKey {
         SpdiccNull1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconid: self.genconid.clone(),
             interconnectorid: self.interconnectorid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "spdicc_null_v1".to_string()
@@ -2555,6 +2559,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
 pub struct SpdrcNull2 {
     /// Region Identifier
     pub regionid: String,
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of this record for the effective date
@@ -2563,6 +2568,7 @@ pub struct SpdrcNull2 {
     pub genconid: String,
     /// Constraint factor; one of (-1, 1)
     pub factor: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// AS Service type - relates to the BidType table; one of (RAISE6SEC, RAISE60SEC, RAISE5MIN, LOWER6SEC, LOWER60SEC, LOWER5MIN, RAISEREG, LOWERREG)
@@ -2583,16 +2589,14 @@ impl crate::GetTable for SpdrcNull2 {
     fn primary_key(&self) -> SpdrcNull2PrimaryKey {
         SpdrcNull2PrimaryKey {
             bidtype: self.bidtype.clone(),
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             genconid: self.genconid.clone(),
             regionid: self.regionid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "spdrc_null_v2".to_string()

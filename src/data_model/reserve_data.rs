@@ -20,8 +20,10 @@
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaReservelimit1 {
+    /// Trade date when the set of reserve requirements become effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// Timestamp when the set of reserve requirements become effective
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// MT PASA Reserve Requirement identifier
@@ -30,6 +32,7 @@ pub struct MtpasaReservelimit1 {
     pub description: Option<String>,
     /// Right hand side value for this Reserve requirement
     pub rhs: Option<rust_decimal::Decimal>,
+    /// Timestamp the record was last modified.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -47,15 +50,13 @@ impl crate::GetTable for MtpasaReservelimit1 {
 
     fn primary_key(&self) -> MtpasaReservelimit1PrimaryKey {
         MtpasaReservelimit1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             reservelimitid: self.reservelimitid.clone(),
-            version_datetime: self.version_datetime.clone(),
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_reservelimit_v1".to_string()
@@ -221,8 +222,10 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaReservelimitRegion1 {
+    /// Trade date when the set of reserve requirements become effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// Timestamp when the set of reserve requirements become effective
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// MT PASA Reserve requirement identifier
@@ -231,6 +234,7 @@ pub struct MtpasaReservelimitRegion1 {
     pub regionid: String,
     /// Coefficient for the region in this reserve requirement
     pub coef: Option<rust_decimal::Decimal>,
+    /// Timestamp the record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -248,16 +252,14 @@ impl crate::GetTable for MtpasaReservelimitRegion1 {
 
     fn primary_key(&self) -> MtpasaReservelimitRegion1PrimaryKey {
         MtpasaReservelimitRegion1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             regionid: self.regionid.clone(),
             reservelimitid: self.reservelimitid.clone(),
-            version_datetime: self.version_datetime.clone(),
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_reservelimit_region_v1".to_string()
@@ -430,18 +432,22 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
 /// * VERSION_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MtpasaReservelimitSet1 {
+    /// Trade date when the set of reserve requirements become effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
+    /// Timestamp when the set of reserve requirements become effective
     #[serde(with = "crate::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// MT PASA LRC Reserve Requirement Set Identifier
     pub reservelimit_set_id: Option<String>,
     /// Description of this set of Reserve Requirements
     pub description: Option<String>,
+    /// Date the requirement set was authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User authorising this requirement set
     pub authorisedby: Option<String>,
+    /// Timestamp the record was last modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -459,14 +465,12 @@ impl crate::GetTable for MtpasaReservelimitSet1 {
 
     fn primary_key(&self) -> MtpasaReservelimitSet1PrimaryKey {
         MtpasaReservelimitSet1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            version_datetime: self.version_datetime.clone(),
+            effectivedate: self.effectivedate,
+            version_datetime: self.version_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mtpasa_reservelimit_set_v1".to_string()
@@ -633,6 +637,7 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ReserveDataReserve1 {
+    /// Market date starting at 04:00am
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Version No of record for this date, the version of the file loaded to produce these reserve figures
@@ -653,6 +658,7 @@ pub struct ReserveDataReserve1 {
     pub raise60sec: Option<rust_decimal::Decimal>,
     /// Raise 6 second reserve requirement
     pub raise6sec: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// PASA reserve requirement
@@ -682,10 +688,10 @@ impl crate::GetTable for ReserveDataReserve1 {
 
     fn primary_key(&self) -> ReserveDataReserve1PrimaryKey {
         ReserveDataReserve1PrimaryKey {
-            periodid: self.periodid.clone(),
+            periodid: self.periodid,
             regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate.clone(),
-            versionno: self.versionno.clone(),
+            settlementdate: self.settlementdate,
+            versionno: self.versionno,
         }
     }
 

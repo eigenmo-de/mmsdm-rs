@@ -17,6 +17,7 @@
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MccCasesolution1 {
+    /// 5-minute Dispatch Run identifier
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
 }
@@ -34,13 +35,11 @@ impl crate::GetTable for MccCasesolution1 {
 
     fn primary_key(&self) -> MccCasesolution1PrimaryKey {
         MccCasesolution1PrimaryKey {
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mcc_casesolution_v1".to_string()
@@ -132,6 +131,7 @@ impl crate::ArrowSchema for MccCasesolution1 {
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct MccConstraintsolution1 {
+    /// 5-minute Dispatch Run identifier
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Generic Constraint identifier (synonymous with GenConID)
@@ -156,13 +156,11 @@ impl crate::GetTable for MccConstraintsolution1 {
     fn primary_key(&self) -> MccConstraintsolution1PrimaryKey {
         MccConstraintsolution1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "mcc_constraintsolution_v1".to_string()

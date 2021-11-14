@@ -36,16 +36,20 @@ pub struct GdInstructGdinstruct1 {
     pub reason: Option<String>,
     /// Instruction target level
     pub instlevel: Option<rust_decimal::Decimal>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User authorised by
     pub authorisedby: Option<String>,
     /// Unique participant identifier
     pub participantid: Option<String>,
+    /// Date / time issued
     #[serde(with = "crate::mms_datetime_opt")]
     pub issuedtime: Option<chrono::NaiveDateTime>,
+    /// Date / time instruction to apply
     #[serde(with = "crate::mms_datetime_opt")]
     pub targettime: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -62,14 +66,10 @@ impl crate::GetTable for GdInstructGdinstruct1 {
     }
 
     fn primary_key(&self) -> GdInstructGdinstruct1PrimaryKey {
-        GdInstructGdinstruct1PrimaryKey {
-            id: self.id.clone(),
-        }
+        GdInstructGdinstruct1PrimaryKey { id: self.id }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "gd_instruct_gdinstruct_v1".to_string()
@@ -293,6 +293,7 @@ pub struct GdInstructInstructionsubtype1 {
     pub instructionsubtypeid: String,
     /// Description of instruction subtype
     pub description: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -315,9 +316,7 @@ impl crate::GetTable for GdInstructInstructionsubtype1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "gd_instruct_instructionsubtype_v1".to_string()
@@ -446,6 +445,7 @@ pub struct GdInstructInstructiontype1 {
     pub description: Option<String>,
     /// Region id if regional instruction only.
     pub regionid: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -467,9 +467,7 @@ impl crate::GetTable for GdInstructInstructiontype1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "gd_instruct_instructiontype_v1".to_string()

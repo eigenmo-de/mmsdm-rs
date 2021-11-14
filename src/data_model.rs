@@ -100,11 +100,11 @@ mod meter_data;
 #[cfg(feature = "meter_data")]
 pub use meter_data::*;
 
-#[cfg(feature = "mrevent")]
-mod mrevent;
+// #[cfg(feature = "mrevent")]
+// mod mrevent;
 
-#[cfg(feature = "mrevent")]
-pub use mrevent::*;
+// #[cfg(feature = "mrevent")]
+// pub use mrevent::*;
 
 #[cfg(feature = "mtpasa")]
 mod mtpasa;

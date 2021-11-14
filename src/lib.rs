@@ -185,6 +185,9 @@ impl Subtable {
     pub fn len(&self) -> usize {
         self.data.len()
     }
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -196,7 +199,7 @@ pub struct FileKey {
 impl FileKey {
     pub fn table_name(&self) -> &str {
         if let Some(t) = &self.table_name {
-            &t
+            t
         } else {
             ""
         }
@@ -350,7 +353,7 @@ where
         let partition = row.partition_suffix();
         let pk = row.primary_key();
         if let Some(entry) = existing.get_mut(&partition) {
-            entry.entry(pk).or_insert(row.clone());
+            entry.entry(pk).or_insert_with(|| row.clone());
         } else {
             existing.insert(partition, iter::once((pk, row.clone())).collect());
         }
@@ -444,7 +447,7 @@ impl AemoFile {
         let subtable = self
             .data
             .get(&file_key)
-            .ok_or_else(|| Error::MissingFile(file_key))?;
+            .ok_or(Error::MissingFile(file_key))?;
 
         subtable
             .data
@@ -505,9 +508,9 @@ impl std::str::FromStr for DispatchPeriod {
             return Err(Error::InvalidDispatchPeriod(s.into()));
         };
 
-        let period = s[8..11].parse()?;
+        let period = s[8..11].parse::<u16>()?;
 
-        if period < 1 || period > 288 {
+        if !(1..=288).contains(&period) {
             return Err(Error::InvalidDispatchPeriod(s.into()));
         }
 
@@ -587,9 +590,9 @@ impl std::str::FromStr for TradingPeriod {
             return Err(Error::InvalidTradingPeriod(s.into()));
         };
 
-        let period = s[8..10].parse()?;
+        let period = s[8..10].parse::<u8>()?;
 
-        if period < 1 || period > 48 {
+        if !(1..=48).contains(&period) {
             return Err(Error::InvalidTradingPeriod(s.into()));
         }
 

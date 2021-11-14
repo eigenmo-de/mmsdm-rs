@@ -23,6 +23,7 @@
 pub struct AsofferOfferagcdata1 {
     /// Contract Identifier
     pub contractid: String,
+    /// Market date of offer
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of record
@@ -33,12 +34,14 @@ pub struct AsofferOfferagcdata1 {
     pub upperlimit: Option<rust_decimal::Decimal>,
     /// Lower control limit MW. This is used by SPD.
     pub lowerlimit: Option<rust_decimal::Decimal>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorised by
     pub authorisedby: Option<String>,
     /// Name of reoffer file
     pub filename: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Market day trading interval number
@@ -63,15 +66,13 @@ impl crate::GetTable for AsofferOfferagcdata1 {
     fn primary_key(&self) -> AsofferOfferagcdata1PrimaryKey {
         AsofferOfferagcdata1PrimaryKey {
             contractid: self.contractid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            periodid: self.periodid.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            periodid: self.periodid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "asoffer_offeragcdata_v1".to_string()
@@ -340,6 +341,7 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct AsofferOfferastrk1 {
+    /// Market day starting at 4:00 am
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of the offer for that date
@@ -348,6 +350,7 @@ pub struct AsofferOfferastrk1 {
     pub participantid: String,
     /// Submitted file name.
     pub filename: Option<String>,
+    /// Last changed date and time.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -365,15 +368,13 @@ impl crate::GetTable for AsofferOfferastrk1 {
 
     fn primary_key(&self) -> AsofferOfferastrk1PrimaryKey {
         AsofferOfferastrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "asoffer_offerastrk_v1".to_string()
@@ -523,18 +524,21 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
 pub struct AsofferOfferlsheddata1 {
     /// Contract identifier
     pub contractid: String,
+    /// Market date of reoffer
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No of reoffer
     pub versionno: rust_decimal::Decimal,
     /// Available load
     pub availableload: Option<rust_decimal::Decimal>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorised by
     pub authorisedby: Option<String>,
     /// Name of reoffer file
     pub filename: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Market day trading interval number
@@ -555,15 +559,13 @@ impl crate::GetTable for AsofferOfferlsheddata1 {
     fn primary_key(&self) -> AsofferOfferlsheddata1PrimaryKey {
         AsofferOfferlsheddata1PrimaryKey {
             contractid: self.contractid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            periodid: self.periodid.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            periodid: self.periodid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "asoffer_offerlsheddata_v1".to_string()
@@ -771,18 +773,21 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
 pub struct AsofferOfferrestartdata1 {
     /// Contract identifier
     pub contractid: String,
+    /// Effective date of contract
     #[serde(with = "crate::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Version No of contract
     pub versionno: rust_decimal::Decimal,
     /// Available load
     pub availability: Option<String>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorised by
     pub authorisedby: Option<String>,
     /// Name of reoffer file
     pub filename: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Market day trading interval number
@@ -803,15 +808,13 @@ impl crate::GetTable for AsofferOfferrestartdata1 {
     fn primary_key(&self) -> AsofferOfferrestartdata1PrimaryKey {
         AsofferOfferrestartdata1PrimaryKey {
             contractid: self.contractid.clone(),
-            offerdate: self.offerdate.clone(),
-            periodid: self.periodid.clone(),
-            versionno: self.versionno.clone(),
+            offerdate: self.offerdate,
+            periodid: self.periodid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "asoffer_offerrestartdata_v1".to_string()
@@ -1007,6 +1010,7 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
 pub struct AsofferOfferrpowerdata1 {
     /// Contract Version No.
     pub contractid: String,
+    /// Contract Version No.
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No. of Re-Offer
@@ -1019,12 +1023,14 @@ pub struct AsofferOfferrpowerdata1 {
     pub mta: Option<rust_decimal::Decimal>,
     /// Reactive Power Generation Capability (MVar)
     pub mtg: Option<rust_decimal::Decimal>,
+    /// Date Contract was Authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User Name
     pub authorisedby: Option<String>,
     /// File name of Re-Offer file
     pub filename: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1043,15 +1049,13 @@ impl crate::GetTable for AsofferOfferrpowerdata1 {
     fn primary_key(&self) -> AsofferOfferrpowerdata1PrimaryKey {
         AsofferOfferrpowerdata1PrimaryKey {
             contractid: self.contractid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            periodid: self.periodid.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            periodid: self.periodid,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "asoffer_offerrpowerdata_v1".to_string()

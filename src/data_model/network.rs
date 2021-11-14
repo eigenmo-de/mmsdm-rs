@@ -54,17 +54,15 @@ impl crate::GetTable for NetworkEquipmentdetail1 {
 
     fn primary_key(&self) -> NetworkEquipmentdetail1PrimaryKey {
         NetworkEquipmentdetail1PrimaryKey {
-            elementid: self.elementid.clone(),
+            elementid: self.elementid,
             equipmentid: self.equipmentid.clone(),
             equipmenttype: self.equipmenttype.clone(),
             substationid: self.substationid.clone(),
-            validfrom: self.validfrom.clone(),
+            validfrom: self.validfrom,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_equipmentdetail_v1".to_string()
@@ -246,8 +244,10 @@ pub struct NetworkOutageconstraintset1 {
     pub outageid: rust_decimal::Decimal,
     /// ID for the constraint set
     pub genconsetid: String,
+    /// The dispatch interval that this constraint applies from
     #[serde(with = "crate::mms_datetime_opt")]
     pub startinterval: Option<chrono::NaiveDateTime>,
+    /// The dispatch interval that this constraint applies until.
     #[serde(with = "crate::mms_datetime_opt")]
     pub endinterval: Option<chrono::NaiveDateTime>,
 }
@@ -266,13 +266,11 @@ impl crate::GetTable for NetworkOutageconstraintset1 {
     fn primary_key(&self) -> NetworkOutageconstraintset1PrimaryKey {
         NetworkOutageconstraintset1PrimaryKey {
             genconsetid: self.genconsetid.clone(),
-            outageid: self.outageid.clone(),
+            outageid: self.outageid,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_outageconstraintset_v1".to_string()
@@ -414,10 +412,13 @@ pub struct NetworkOutagedetail3 {
     pub equipmenttype: String,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: String,
+    /// The planned starting date and time of the outage
     #[serde(with = "crate::mms_datetime")]
     pub starttime: chrono::NaiveDateTime,
+    /// The planned ending date and time of the outage
     #[serde(with = "crate::mms_datetime_opt")]
     pub endtime: Option<chrono::NaiveDateTime>,
+    /// The date and time this outage was first submitted
     #[serde(with = "crate::mms_datetime_opt")]
     pub submitteddate: Option<chrono::NaiveDateTime>,
     /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.<br>
@@ -436,8 +437,10 @@ pub struct NetworkOutagedetail3 {
     pub reason: Option<String>,
     /// 1 = The outage is for a secondary piece of equipment that has an associated constraint set. The transmission equipment is still in service. 0 = The outage is for the transmission equipment
     pub issecondary: Option<rust_decimal::Decimal>,
+    /// The actual starting date/time of the outage
     #[serde(with = "crate::mms_datetime_opt")]
     pub actual_starttime: Option<chrono::NaiveDateTime>,
+    /// The actual ending date/time of the outage
     #[serde(with = "crate::mms_datetime_opt")]
     pub actual_endtime: Option<chrono::NaiveDateTime>,
     /// The asset owners reference code for this outage
@@ -459,18 +462,16 @@ impl crate::GetTable for NetworkOutagedetail3 {
 
     fn primary_key(&self) -> NetworkOutagedetail3PrimaryKey {
         NetworkOutagedetail3PrimaryKey {
-            elementid: self.elementid.clone(),
+            elementid: self.elementid,
             equipmentid: self.equipmentid.clone(),
             equipmenttype: self.equipmenttype.clone(),
-            outageid: self.outageid.clone(),
-            starttime: self.starttime.clone(),
+            outageid: self.outageid,
+            starttime: self.starttime,
             substationid: self.substationid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_outagedetail_v3".to_string()
@@ -803,6 +804,7 @@ pub struct NetworkOutagestatuscode1 {
     pub outagestatuscode: String,
     /// A description of the status code
     pub description: Option<String>,
+    /// The time that this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -824,9 +826,7 @@ impl crate::GetTable for NetworkOutagestatuscode1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_outagestatuscode_v1".to_string()
@@ -936,8 +936,10 @@ impl crate::ArrowSchema for NetworkOutagestatuscode1 {
 pub struct NetworkRating1 {
     /// ID defining this data source for use in constraints
     pub spd_id: String,
+    /// The date that this record is applies from (inclusive)
     #[serde(with = "crate::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
+    /// The date that this record applies until (exclusive)
     #[serde(with = "crate::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// The region that this rating is for
@@ -952,6 +954,7 @@ pub struct NetworkRating1 {
     pub ratinglevel: Option<String>,
     /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used<br>
     pub isdynamic: Option<rust_decimal::Decimal>,
+    /// The time that this record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -970,13 +973,11 @@ impl crate::GetTable for NetworkRating1 {
     fn primary_key(&self) -> NetworkRating1PrimaryKey {
         NetworkRating1PrimaryKey {
             spd_id: self.spd_id.clone(),
-            validfrom: self.validfrom.clone(),
+            validfrom: self.validfrom,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_rating_v1".to_string()
@@ -1145,6 +1146,7 @@ impl crate::ArrowSchema for NetworkRating1 {
 /// * SPD_ID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct NetworkRealtimerating1 {
+    /// The dispatch interval the rating applies to
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// ID defining this data source for use in constraints
@@ -1166,7 +1168,7 @@ impl crate::GetTable for NetworkRealtimerating1 {
 
     fn primary_key(&self) -> NetworkRealtimerating1PrimaryKey {
         NetworkRealtimerating1PrimaryKey {
-            settlementdate: self.settlementdate.clone(),
+            settlementdate: self.settlementdate,
             spd_id: self.spd_id.clone(),
         }
     }
@@ -1312,12 +1314,15 @@ pub struct NetworkStaticrating1 {
     pub ratinglevel: String,
     /// The applicationid which defines the application timeframes of this rating.
     pub applicationid: String,
+    /// The date that this record is applies from (inclusive)
     #[serde(with = "crate::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
+    /// The date that this record applies until (exclusive)
     #[serde(with = "crate::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.<br>
     pub ratingvalue: Option<rust_decimal::Decimal>,
+    /// The time that this record was last changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1340,13 +1345,11 @@ impl crate::GetTable for NetworkStaticrating1 {
             equipmenttype: self.equipmenttype.clone(),
             ratinglevel: self.ratinglevel.clone(),
             substationid: self.substationid.clone(),
-            validfrom: self.validfrom.clone(),
+            validfrom: self.validfrom,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_staticrating_v1".to_string()
@@ -1579,13 +1582,11 @@ impl crate::GetTable for NetworkSubstationdetail1 {
     fn primary_key(&self) -> NetworkSubstationdetail1PrimaryKey {
         NetworkSubstationdetail1PrimaryKey {
             substationid: self.substationid.clone(),
-            validfrom: self.validfrom.clone(),
+            validfrom: self.validfrom,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "network_substationdetail_v1".to_string()

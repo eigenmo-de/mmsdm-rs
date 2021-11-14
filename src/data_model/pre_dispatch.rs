@@ -18,6 +18,7 @@
 /// * PREDISPATCHSEQNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchBlockedConstraints1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// Generic Constraint identifier (synonymous with GenConID)
@@ -38,13 +39,11 @@ impl crate::GetTable for PredispatchBlockedConstraints1 {
     fn primary_key(&self) -> PredispatchBlockedConstraints1PrimaryKey {
         PredispatchBlockedConstraints1PrimaryKey {
             constraintid: self.constraintid.clone(),
-            predispatchseqno: self.predispatchseqno.clone(),
+            predispatchseqno: self.predispatchseqno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_blocked_constraints_v1".to_string()
@@ -147,6 +146,7 @@ impl crate::ArrowSchema for PredispatchBlockedConstraints1 {
 /// * RUNNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchCaseSolution1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// Predispatch run no, normally 1.
@@ -183,6 +183,7 @@ pub struct PredispatchCaseSolution1 {
     pub totalenergyconstrviolation: Option<rust_decimal::Decimal>,
     /// Total of unit summated offer band violations
     pub totalenergyofferviolation: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate if this Pre-Dispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
@@ -202,14 +203,12 @@ impl crate::GetTable for PredispatchCaseSolution1 {
 
     fn primary_key(&self) -> PredispatchCaseSolution1PrimaryKey {
         PredispatchCaseSolution1PrimaryKey {
-            predispatchseqno: self.predispatchseqno.clone(),
-            runno: self.runno.clone(),
+            predispatchseqno: self.predispatchseqno,
+            runno: self.runno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_case_solution_v1".to_string()
@@ -591,6 +590,7 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
 /// * DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchConstraintSolution5 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
@@ -607,12 +607,15 @@ pub struct PredispatchConstraintSolution5 {
     pub marginalvalue: Option<rust_decimal::Decimal>,
     /// Degree of constraint violation
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// DUID to which the Constraint is confidential. Null denotes non-confidential
     pub duid: Option<String>,
+    /// Effective date of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
     #[serde(with = "crate::mms_datetime_opt")]
     pub genconid_effectivedate: Option<chrono::NaiveDateTime>,
     /// Version number of the Generic Constraint (ConstraintID). This field is used to track the version of this generic constraint applied in this dispatch interval
@@ -635,13 +638,11 @@ impl crate::GetTable for PredispatchConstraintSolution5 {
     fn primary_key(&self) -> PredispatchConstraintSolution5PrimaryKey {
         PredispatchConstraintSolution5PrimaryKey {
             constraintid: self.constraintid.clone(),
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_constraint_solution_v5".to_string()
@@ -892,6 +893,7 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
 /// * INTERCONNECTORID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchInterconnectorSoln3 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
@@ -912,8 +914,10 @@ pub struct PredispatchInterconnectorSoln3 {
     pub marginalvalue: Option<rust_decimal::Decimal>,
     /// Degree of violation of interconnector constraint in MW
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last changed.
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Calculated export limit.
@@ -953,14 +957,12 @@ impl crate::GetTable for PredispatchInterconnectorSoln3 {
 
     fn primary_key(&self) -> PredispatchInterconnectorSoln3PrimaryKey {
         PredispatchInterconnectorSoln3PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             interconnectorid: self.interconnectorid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_interconnector_soln_v3".to_string()
@@ -1360,6 +1362,7 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
 /// * INTERCONNECTORID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchInterconnectrSens1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
@@ -1370,6 +1373,7 @@ pub struct PredispatchInterconnectrSens1 {
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
     pub intervention: Option<rust_decimal::Decimal>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Flag to indicate if the sensitivity run contains an active intervention constraint: 0 = No, 1 = Yes
@@ -1460,6 +1464,7 @@ pub struct PredispatchInterconnectrSens1 {
     pub mwflow42: Option<rust_decimal::Decimal>,
     /// MW flow for given Interconnector for scenario 43
     pub mwflow43: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1477,14 +1482,12 @@ impl crate::GetTable for PredispatchInterconnectrSens1 {
 
     fn primary_key(&self) -> PredispatchInterconnectrSens1PrimaryKey {
         PredispatchInterconnectrSens1PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             interconnectorid: self.interconnectorid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_interconnectr_sens_v1".to_string()
@@ -2349,6 +2352,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
 /// * DUID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchUnitSolution2 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
@@ -2407,8 +2411,10 @@ pub struct PredispatchUnitSolution2 {
     pub violation6secdegree: Option<rust_decimal::Decimal>,
     /// Violation MW energy
     pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Lower Regulation reserve target
@@ -2466,14 +2472,12 @@ impl crate::GetTable for PredispatchUnitSolution2 {
 
     fn primary_key(&self) -> PredispatchUnitSolution2PrimaryKey {
         PredispatchUnitSolution2PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             duid: self.duid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_unit_solution_v2".to_string()
@@ -3328,6 +3332,7 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
 /// * PREDISPATCHSEQNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchOffertrk1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// Dispatchable Unit identifier
@@ -3336,12 +3341,15 @@ pub struct PredispatchOffertrk1 {
     pub bidtype: String,
     /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
     pub periodid: String,
+    /// Settlement date of bid applied
     #[serde(with = "crate::mms_datetime_opt")]
     pub bidsettlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
     pub bidofferdate: Option<chrono::NaiveDateTime>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub datetime: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3362,13 +3370,11 @@ impl crate::GetTable for PredispatchOffertrk1 {
             bidtype: self.bidtype.clone(),
             duid: self.duid.clone(),
             periodid: self.periodid.clone(),
-            predispatchseqno: self.predispatchseqno.clone(),
+            predispatchseqno: self.predispatchseqno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_offertrk_v1".to_string()
@@ -3536,6 +3542,7 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionPrices1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
@@ -3582,8 +3589,10 @@ pub struct PredispatchRegionPrices1 {
     pub rrp8: Option<rust_decimal::Decimal>,
     /// Not used
     pub eep8: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Regional reference price for this dispatch period
@@ -3617,14 +3626,12 @@ impl crate::GetTable for PredispatchRegionPrices1 {
 
     fn primary_key(&self) -> PredispatchRegionPrices1PrimaryKey {
         PredispatchRegionPrices1PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_region_prices_v1".to_string()
@@ -4191,6 +4198,7 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchPricesensitivities1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
@@ -4257,8 +4265,10 @@ pub struct PredispatchPricesensitivities1 {
     pub rrpeep27: Option<rust_decimal::Decimal>,
     /// Regional Energy Price for scenario 28
     pub rrpeep28: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Regional Energy Price for scenario 29
@@ -4308,14 +4318,12 @@ impl crate::GetTable for PredispatchPricesensitivities1 {
 
     fn primary_key(&self) -> PredispatchPricesensitivities1PrimaryKey {
         PredispatchPricesensitivities1PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_pricesensitivities_v1".to_string()
@@ -5178,6 +5186,7 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionSolution5 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Pre-Dispatch run no, typically 1. It increments if the case is re-run.
@@ -5300,8 +5309,10 @@ pub struct PredispatchRegionSolution5 {
     pub raise6secreq: Option<rust_decimal::Decimal>,
     /// Not used since Dec 2003. Supply price of raise 6 sec
     pub raise6secsupplyprice: Option<rust_decimal::Decimal>,
+    /// Period date and time
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Period expressed as Date/Time
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Sum of initial generation and import for region
@@ -5421,14 +5432,12 @@ impl crate::GetTable for PredispatchRegionSolution5 {
 
     fn primary_key(&self) -> PredispatchRegionSolution5PrimaryKey {
         PredispatchRegionSolution5PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_region_solution_v5".to_string()
@@ -7300,6 +7309,7 @@ impl crate::ArrowSchema for PredispatchRegionSolution5 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchScenarioDemand1 {
+    /// The effective date of this set of scenarios
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The version of this set of scenarios
@@ -7325,16 +7335,14 @@ impl crate::GetTable for PredispatchScenarioDemand1 {
 
     fn primary_key(&self) -> PredispatchScenarioDemand1PrimaryKey {
         PredispatchScenarioDemand1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             regionid: self.regionid.clone(),
-            scenario: self.scenario.clone(),
-            versionno: self.versionno.clone(),
+            scenario: self.scenario,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_scenario_demand_v1".to_string()
@@ -7465,14 +7473,17 @@ impl crate::ArrowSchema for PredispatchScenarioDemand1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchScenarioDemandTrk1 {
+    /// The effective date of this set of scenarios
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The version of this set of scenarios
     pub versionno: i64,
     /// The user that authorised the scenario update
     pub authorisedby: Option<String>,
+    /// The datetime that the scenario update was authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// The datetime that the record was last changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -7490,14 +7501,12 @@ impl crate::GetTable for PredispatchScenarioDemandTrk1 {
 
     fn primary_key(&self) -> PredispatchScenarioDemandTrk1PrimaryKey {
         PredispatchScenarioDemandTrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_scenario_demand_trk_v1".to_string()
@@ -7647,14 +7656,17 @@ pub struct PredispatchRegionfcasrequirement2 {
     pub regionid: String,
     /// Bid Type Identifier
     pub bidtype: String,
+    /// Generic Constraint EffectiveDate - Join to table GenConData
     #[serde(with = "crate::mms_datetime_opt")]
     pub genconeffectivedate: Option<chrono::NaiveDateTime>,
     /// Generic Constraint Version number - Join to table GenConData
     pub genconversionno: Option<rust_decimal::Decimal>,
     /// Marginal Value of generic constraint
     pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Date and Time of trading interval
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The base cost of the constraint for this service, before the regulation/contingency split
@@ -7685,15 +7697,13 @@ impl crate::GetTable for PredispatchRegionfcasrequirement2 {
     fn primary_key(&self) -> PredispatchRegionfcasrequirement2PrimaryKey {
         PredispatchRegionfcasrequirement2PrimaryKey {
             bidtype: self.bidtype.clone(),
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             genconid: self.genconid.clone(),
             regionid: self.regionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_regionfcasrequirement_v2".to_string()
@@ -8018,8 +8028,10 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
 /// * DUID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchLocalPrice1 {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
     /// Dispatchable unit identifier
@@ -8030,6 +8042,7 @@ pub struct PredispatchLocalPrice1 {
     pub local_price_adjustment: Option<rust_decimal::Decimal>,
     /// Key for Local_Price_Adjustment: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
     pub locally_constrained: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8047,14 +8060,12 @@ impl crate::GetTable for PredispatchLocalPrice1 {
 
     fn primary_key(&self) -> PredispatchLocalPrice1PrimaryKey {
         PredispatchLocalPrice1PrimaryKey {
-            datetime: self.datetime.clone(),
+            datetime: self.datetime,
             duid: self.duid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_local_price_v1".to_string()
@@ -8218,14 +8229,17 @@ pub struct PredispatchMnspbidtrk1 {
     pub periodid: String,
     /// Participant Identifier
     pub participantid: Option<String>,
+    /// Market Date from which bid is active
     #[serde(with = "crate::mms_datetime_opt")]
     pub settlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
     pub offerdate: Option<chrono::NaiveDateTime>,
     /// Version No. for given offer date and settlement date used
     pub versionno: Option<rust_decimal::Decimal>,
+    /// Period expressed as Date/Time
     #[serde(with = "crate::mms_datetime_opt")]
     pub datetime: Option<chrono::NaiveDateTime>,
+    /// Record creation timestamp
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -8249,9 +8263,7 @@ impl crate::GetTable for PredispatchMnspbidtrk1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "predispatch_mnspbidtrk_v1".to_string()

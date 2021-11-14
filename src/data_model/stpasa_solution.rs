@@ -18,6 +18,7 @@
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct StpasaCasesolution3 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Version of the PASA solver used to solve this case
@@ -36,6 +37,7 @@ pub struct StpasaCasesolution3 {
     pub maxsparecapacityoption: Option<rust_decimal::Decimal>,
     /// The penalty for non-zero interconnector flow
     pub interconnectorflowpenalty: Option<rust_decimal::Decimal>,
+    /// Date and time the record was created or modified
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Specifies the Probability of Exceedence (POE) demand forecast for Reliability LRC assessment (0 if no assessment, 10 for 10%, 50 for 50%, 90 for 90%)
@@ -71,13 +73,11 @@ impl crate::GetTable for StpasaCasesolution3 {
 
     fn primary_key(&self) -> StpasaCasesolution3PrimaryKey {
         StpasaCasesolution3PrimaryKey {
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "stpasa_casesolution_v3".to_string()
@@ -433,8 +433,10 @@ impl crate::ArrowSchema for StpasaCasesolution3 {
 /// * STUDYREGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct StpasaConstraintsolution3 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Constraint identifier (synonymous with GenConID)
@@ -445,6 +447,7 @@ pub struct StpasaConstraintsolution3 {
     pub capacitymarginalvalue: Option<rust_decimal::Decimal>,
     /// Capacity adequacy assessment violation degree for generic constraint; 0 if not violating
     pub capacityviolationdegree: Option<rust_decimal::Decimal>,
+    /// Last changed date of this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
@@ -467,16 +470,14 @@ impl crate::GetTable for StpasaConstraintsolution3 {
     fn primary_key(&self) -> StpasaConstraintsolution3PrimaryKey {
         StpasaConstraintsolution3PrimaryKey {
             constraintid: self.constraintid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
             runtype: self.runtype.clone(),
             studyregionid: self.studyregionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "stpasa_constraintsolution_v3".to_string()
@@ -695,8 +696,10 @@ impl crate::ArrowSchema for StpasaConstraintsolution3 {
 /// * STUDYREGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct StpasaInterconnectorsoln3 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Interconnector Identifier
@@ -711,6 +714,7 @@ pub struct StpasaInterconnectorsoln3 {
     pub calculatedexportlimit: Option<rust_decimal::Decimal>,
     /// Calculated Interconnector limit of importing energy on the basis of invoked constraints and static interconnector import limit. Note unlike the input interconnector import limit this is a directional quantity and should be defined with respect to the interconnector flow.
     pub calculatedimportlimit: Option<rust_decimal::Decimal>,
+    /// Last changed date of this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
@@ -737,16 +741,14 @@ impl crate::GetTable for StpasaInterconnectorsoln3 {
     fn primary_key(&self) -> StpasaInterconnectorsoln3PrimaryKey {
         StpasaInterconnectorsoln3PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
-            interval_datetime: self.interval_datetime.clone(),
-            run_datetime: self.run_datetime.clone(),
+            interval_datetime: self.interval_datetime,
+            run_datetime: self.run_datetime,
             runtype: self.runtype.clone(),
             studyregionid: self.studyregionid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "stpasa_interconnectorsoln_v3".to_string()
@@ -1016,8 +1018,10 @@ impl crate::ArrowSchema for StpasaInterconnectorsoln3 {
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct StpasaRegionsolution6 {
+    /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
+    /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Region Identifier
@@ -1056,6 +1060,7 @@ pub struct StpasaRegionsolution6 {
     pub aggregatecapacityavailable: Option<rust_decimal::Decimal>,
     /// Sum of  MAXAVAIL quantities bid by of all Scheduled Loads in a given Region for a given PERIODID.
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
+    /// Last changed date of this record
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Sum of  PASAAVAILABILITY quantities offered by all Scheduled Generators in a given Region for a given PERIODID.
@@ -1121,16 +1126,14 @@ impl crate::GetTable for StpasaRegionsolution6 {
 
     fn primary_key(&self) -> StpasaRegionsolution6PrimaryKey {
         StpasaRegionsolution6PrimaryKey {
-            interval_datetime: self.interval_datetime.clone(),
+            interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
-            run_datetime: self.run_datetime.clone(),
+            run_datetime: self.run_datetime,
             runtype: self.runtype.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "stpasa_regionsolution_v6".to_string()

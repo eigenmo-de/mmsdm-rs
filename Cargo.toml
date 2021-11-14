@@ -1,11 +1,12 @@
 [package]
 name = "mmsdm"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Eric Sheppard <eric@sheppard.cloud>", "Nayika Sheppard <nayika@eigenmo.de>"]
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"
+resolver = "2"
 
 [workspace]
 members = [
@@ -13,11 +14,17 @@ members = [
     "xtask",
 ]
 
-[[examples]]
+[[example]]
 name = "parquet"
-features = ["save_as_parquet", "dispatch", "settlement_data"]
+required-features = ["save_as_parquet", "dispatch"]
 
+[[example]]
+name = "load"
+required-features = ["sql_server", "dispatch", "settlement_data"]
 
+[[example]]
+name = "download_and_parse"
+required-features = ["dispatch"]
 
 [dependencies]
 log = "0.4"
@@ -69,6 +76,7 @@ reqwest = { version = "0.11", features = ["blocking"] }
 scraper = "0.12"
 futures = "0.3"
 rayon = "1.5"
+once_cell = "1.3"
 
 [features]
 sql_server = ["tiberius", "futures"]

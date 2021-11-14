@@ -75,8 +75,8 @@ impl crate::AemoFile {
                 &key.version,
             ],
         ).await?.into_row().await?;
-        let row = first_row.ok_or_else(|| crate::Error::CreateFileLogError)?;
-        row.try_get(0)?.ok_or_else(|| crate::Error::CreateFileLogError)
+        let row = first_row.ok_or(crate::Error::CreateFileLogError)?;
+        row.try_get(0)?.ok_or(crate::Error::CreateFileLogError)
 
     }
 
@@ -128,7 +128,7 @@ for file_key in self.data.keys() {
     }   
     match (
         file_key.data_set_name.as_str(),
-        file_key.table_name.as_ref().map(|s| s.as_str()),
+        file_key.table_name.as_deref(),
         file_key.version,
     ) {
     "#,

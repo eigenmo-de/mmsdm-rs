@@ -23,6 +23,7 @@
 pub struct ParticipantRegistrationBidduiddetails1 {
     /// Dispatchable unit identifier
     pub duid: String,
+    /// Market date starting at 04:30 inclusive
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Record version number
@@ -39,6 +40,7 @@ pub struct ParticipantRegistrationBidduiddetails1 {
     pub maxlowerangle: Option<rust_decimal::Decimal>,
     /// Maximum Angle at the upper end of the ancillary service profile (Degrees)
     pub maxupperangle: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -58,14 +60,12 @@ impl crate::GetTable for ParticipantRegistrationBidduiddetails1 {
         ParticipantRegistrationBidduiddetails1PrimaryKey {
             bidtype: self.bidtype.clone(),
             duid: self.duid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_bidduiddetails_v1".to_string()
@@ -293,14 +293,17 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
 pub struct ParticipantRegistrationBidduiddetailstrk1 {
     /// Dispatchable unit identifier
     pub duid: String,
+    /// Market date starting at 04:30 inclusive
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Record version number
     pub versionno: rust_decimal::Decimal,
+    /// Date of record authorisation. A NULL value indicates the record is not authorised.
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User that authorised record. A NULL value indicates the record is not authorised.
     pub authorisedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -319,14 +322,12 @@ impl crate::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     fn primary_key(&self) -> ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
         ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
             duid: self.duid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_bidduiddetailstrk_v1".to_string()
@@ -489,6 +490,7 @@ pub struct ParticipantRegistrationDispatchableunit1 {
     pub duname: Option<String>,
     /// Generation or Load
     pub unittype: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -510,9 +512,7 @@ impl crate::GetTable for ParticipantRegistrationDispatchableunit1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_dispatchableunit_v1".to_string()
@@ -617,6 +617,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationDualloc1 {
+    /// Effective calendar date of record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of record
@@ -625,6 +626,7 @@ pub struct ParticipantRegistrationDualloc1 {
     pub duid: String,
     /// Physical unit identifier
     pub gensetid: String,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -643,15 +645,13 @@ impl crate::GetTable for ParticipantRegistrationDualloc1 {
     fn primary_key(&self) -> ParticipantRegistrationDualloc1PrimaryKey {
         ParticipantRegistrationDualloc1PrimaryKey {
             duid: self.duid.clone(),
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             gensetid: self.gensetid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_dualloc_v1".to_string()
@@ -789,7 +789,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
 /// * Data Version: 3
 ///
 /// # Description
-///  DUDETAIL is public data, and is available to all participants. Source DUDETAIL updates only when registration details change. Note To find the current set of details for selected dispatchable units, query the participant's local database as follows. Select du.* from dudetail du where (du.EFFECTIVEDATE, du.VERSIONNO) = ( select effectivedate, max(versionno) from dudetail where EFFECTIVEDATE = (select max(effectivedate) from  dudetail where EFFECTIVEDATE &lt;= sysdate and duid = du.duid and authoriseddate is not null) and duid = du.duid and authoriseddate is not null group by effectivedate ) and du.duid in ('UNIT1', 'UNIT2') ; The following notes apply to this SQL code: ·	 This table is specific to dispatch units only. ·	 If you wish to query details for a different date, substitute a date expression for "sysdate" in the "where EFFECTIVEDATE &lt;= sysdate" clause. ·	 If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')" ·	 The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER ) ·	 If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC. ·	 If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
+///  DUDETAIL is public data, and is available to all participants. Source DUDETAIL updates only when registration details change. Note To find the current set of details for selected dispatchable units, query the participant's local database as follows. Select du.* from dudetail du where (du.EFFECTIVEDATE, du.VERSIONNO) = ( select effectivedate, max(versionno) from dudetail where EFFECTIVEDATE = (select max(effectivedate) from  dudetail where EFFECTIVEDATE &lt;= sysdate and duid = du.duid and authoriseddate is not null) and duid = du.duid and authoriseddate is not null group by effectivedate ) and du.duid in ('UNIT1', 'UNIT2') ; The following notes apply to this SQL code: · This table is specific to dispatch units only. · If you wish to query details for a different date, substitute a date expression for "sysdate" in the "where EFFECTIVEDATE &lt;= sysdate" clause. · If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')" · The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER ) · If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC. · If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
 ///
 /// # Notes
 ///  * (Visibility) Data in this table is: Public
@@ -801,6 +801,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationDudetail3 {
+    /// Effective calendar date of record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Dispatchable Unit Identifier
@@ -829,8 +830,10 @@ pub struct ParticipantRegistrationDudetail3 {
     pub spinningreserveflag: Option<String>,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Indicate whether a unit is intermittent (e.g. a wind farm)
@@ -859,14 +862,12 @@ impl crate::GetTable for ParticipantRegistrationDudetail3 {
     fn primary_key(&self) -> ParticipantRegistrationDudetail3PrimaryKey {
         ParticipantRegistrationDudetail3PrimaryKey {
             duid: self.duid.clone(),
-            effectivedate: self.effectivedate.clone(),
-            versionno: self.versionno.clone(),
+            effectivedate: self.effectivedate,
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_dudetail_v3".to_string()
@@ -1188,8 +1189,10 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
 pub struct ParticipantRegistrationDudetailsummary4 {
     /// Dispatchable Unit Identifier
     pub duid: String,
+    /// Start date for effective record
     #[serde(with = "crate::mms_datetime")]
     pub start_date: chrono::NaiveDateTime,
+    /// End date for effective record
     #[serde(with = "crate::mms_datetime")]
     pub end_date: chrono::NaiveDateTime,
     /// Identifies LOAD or GENERATOR. This will likely expand to more generic models as new technology types are integrated into the NEM
@@ -1202,6 +1205,7 @@ pub struct ParticipantRegistrationDudetailsummary4 {
     pub stationid: Option<String>,
     /// Participant that owns unit during effective record period
     pub participantid: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The transmission level loss factor for currently assigned connection point
@@ -1244,13 +1248,11 @@ impl crate::GetTable for ParticipantRegistrationDudetailsummary4 {
     fn primary_key(&self) -> ParticipantRegistrationDudetailsummary4PrimaryKey {
         ParticipantRegistrationDudetailsummary4PrimaryKey {
             duid: self.duid.clone(),
-            start_date: self.start_date.clone(),
+            start_date: self.start_date,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_dudetailsummary_v4".to_string()
@@ -1591,22 +1593,29 @@ pub struct ParticipantRegistrationGenmeter1 {
     pub meterclass: Option<String>,
     /// Voltage
     pub voltagelevel: Option<rust_decimal::Decimal>,
+    /// Application date
     #[serde(with = "crate::mms_datetime")]
     pub applydate: chrono::NaiveDateTime,
     /// Version no of the record for the given effective date
     pub versionno: rust_decimal::Decimal,
     /// AEMO user authorising
     pub authorisedby: Option<String>,
+    /// Date authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Not used
     #[serde(with = "crate::mms_datetime_opt")]
     pub comdate: Option<chrono::NaiveDateTime>,
+    /// Not used
     #[serde(with = "crate::mms_datetime_opt")]
     pub decomdate: Option<chrono::NaiveDateTime>,
+    /// Not used
     #[serde(with = "crate::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
+    /// Not used
     #[serde(with = "crate::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -1624,15 +1633,13 @@ impl crate::GetTable for ParticipantRegistrationGenmeter1 {
 
     fn primary_key(&self) -> ParticipantRegistrationGenmeter1PrimaryKey {
         ParticipantRegistrationGenmeter1PrimaryKey {
-            applydate: self.applydate.clone(),
+            applydate: self.applydate,
             meterid: self.meterid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_genmeter_v1".to_string()
@@ -1909,6 +1916,7 @@ pub struct ParticipantRegistrationGenunits2 {
     pub gensettype: Option<String>,
     /// Genset name
     pub gensetname: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The emissions factor for the generating unit, as calculated by Settlements staff members
@@ -1936,9 +1944,7 @@ impl crate::GetTable for ParticipantRegistrationGenunits2 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_genunits_v2".to_string()
@@ -2216,6 +2222,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
 pub struct ParticipantRegistrationGenunitsUnit1 {
     /// System wide unique Generating Set ID
     pub gensetid: String,
+    /// Effective Date of this detail record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version with respect to the effective date
@@ -2230,6 +2237,7 @@ pub struct ParticipantRegistrationGenunitsUnit1 {
     pub unit_max_size: Option<rust_decimal::Decimal>,
     /// Indicator that Unit is part of an Aggregated Unit (at the DUID level)
     pub aggregation_flag: Option<rust_decimal::Decimal>,
+    /// Date/Time when record was changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2247,16 +2255,14 @@ impl crate::GetTable for ParticipantRegistrationGenunitsUnit1 {
 
     fn primary_key(&self) -> ParticipantRegistrationGenunitsUnit1PrimaryKey {
         ParticipantRegistrationGenunitsUnit1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             gensetid: self.gensetid.clone(),
             unit_grouping_label: self.unit_grouping_label.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_genunits_unit_v1".to_string()
@@ -2478,6 +2484,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
 pub struct ParticipantRegistrationMnspInterconnector2 {
     /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
     pub linkid: String,
+    /// Date when Interconnector becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of data for other key data - a higher version for same key data will take precedence
@@ -2496,10 +2503,12 @@ pub struct ParticipantRegistrationMnspInterconnector2 {
     pub lhsfactor: Option<rust_decimal::Decimal>,
     /// Obsolete; no longer applied. Ignore.
     pub meterflowconstant: Option<rust_decimal::Decimal>,
+    /// Date of authorisation. Nominal date but required to enable Interconnector.
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorising officer
     pub authorisedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Transmission Loss Factor for Link "From Region" end
@@ -2521,15 +2530,13 @@ impl crate::GetTable for ParticipantRegistrationMnspInterconnector2 {
 
     fn primary_key(&self) -> ParticipantRegistrationMnspInterconnector2PrimaryKey {
         ParticipantRegistrationMnspInterconnector2PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             linkid: self.linkid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_mnsp_interconnector_v2".to_string()
@@ -2805,12 +2812,14 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
 pub struct ParticipantRegistrationMnspParticipant1 {
     /// Interconnector Identifier
     pub interconnectorid: String,
+    /// Calendar date when Interconnector ownership becomes effective
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of data for other key data - a higher version for same key data takes precedence
     pub versionno: rust_decimal::Decimal,
     /// Participant Identifier
     pub participantid: String,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -2828,16 +2837,14 @@ impl crate::GetTable for ParticipantRegistrationMnspParticipant1 {
 
     fn primary_key(&self) -> ParticipantRegistrationMnspParticipant1PrimaryKey {
         ParticipantRegistrationMnspParticipant1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             interconnectorid: self.interconnectorid.clone(),
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_mnsp_participant_v1".to_string()
@@ -3005,6 +3012,7 @@ pub struct ParticipantRegistrationParticipant1 {
     pub acn: Option<String>,
     /// Identifies primary business activity of participant
     pub primarybusiness: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3026,9 +3034,7 @@ impl crate::GetTable for ParticipantRegistrationParticipant1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_participant_v1".to_string()
@@ -3184,10 +3190,13 @@ pub struct ParticipantRegistrationParticipantaccount1 {
     pub nemmcodebitaccountnumber: Option<rust_decimal::Decimal>,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Authorised date
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Australian Business Number
@@ -3211,9 +3220,7 @@ impl crate::GetTable for ParticipantRegistrationParticipantaccount1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_participantaccount_v1".to_string()
@@ -3457,6 +3464,7 @@ pub struct ParticipantRegistrationParticipantcategory1 {
     pub participantcategoryid: String,
     /// Category description
     pub description: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3478,9 +3486,7 @@ impl crate::GetTable for ParticipantRegistrationParticipantcategory1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_participantcategory_v1".to_string()
@@ -3593,6 +3599,7 @@ pub struct ParticipantRegistrationParticipantcategoryalloc1 {
     pub participantcategoryid: String,
     /// Unique participant identifier
     pub participantid: String,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3615,9 +3622,7 @@ impl crate::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_participantcategoryalloc_v1".to_string()
@@ -3736,6 +3741,7 @@ pub struct ParticipantRegistrationParticipantclass1 {
     pub participantclassid: String,
     /// Description of participant class
     pub description: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3757,9 +3763,7 @@ impl crate::GetTable for ParticipantRegistrationParticipantclass1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_participantclass_v1".to_string()
@@ -3868,6 +3872,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationParticipantcreditdetail1 {
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// &nbsp;
@@ -3876,8 +3881,10 @@ pub struct ParticipantRegistrationParticipantcreditdetail1 {
     pub creditlimit: Option<rust_decimal::Decimal>,
     /// &nbsp;
     pub authorisedby: Option<String>,
+    /// &nbsp;
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -3895,14 +3902,12 @@ impl crate::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
 
     fn primary_key(&self) -> ParticipantRegistrationParticipantcreditdetail1PrimaryKey {
         ParticipantRegistrationParticipantcreditdetail1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_participantcreditdetail_v1".to_string()
@@ -4062,12 +4067,14 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
 pub struct ParticipantRegistrationStadualloc1 {
     /// Dispatchable Unit Identifier
     pub duid: String,
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Station Identifier
     pub stationid: String,
     /// Version no of this record for the effective date
     pub versionno: rust_decimal::Decimal,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4086,15 +4093,13 @@ impl crate::GetTable for ParticipantRegistrationStadualloc1 {
     fn primary_key(&self) -> ParticipantRegistrationStadualloc1PrimaryKey {
         ParticipantRegistrationStadualloc1PrimaryKey {
             duid: self.duid.clone(),
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             stationid: self.stationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_stadualloc_v1".to_string()
@@ -4260,6 +4265,7 @@ pub struct ParticipantRegistrationStation1 {
     pub state: Option<String>,
     /// Post Code
     pub postcode: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Not used. Do not use as the Connection Point Identifier for station load
@@ -4283,9 +4289,7 @@ impl crate::GetTable for ParticipantRegistrationStation1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_station_v1".to_string()
@@ -4431,6 +4435,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStation1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationStationoperatingstatus1 {
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Unique station identifier
@@ -4441,8 +4446,10 @@ pub struct ParticipantRegistrationStationoperatingstatus1 {
     pub status: Option<String>,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4460,15 +4467,13 @@ impl crate::GetTable for ParticipantRegistrationStationoperatingstatus1 {
 
     fn primary_key(&self) -> ParticipantRegistrationStationoperatingstatus1PrimaryKey {
         ParticipantRegistrationStationoperatingstatus1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             stationid: self.stationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_stationoperatingstatus_v1".to_string()
@@ -4636,6 +4641,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationStationowner1 {
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Unique participant identifier
@@ -4644,6 +4650,7 @@ pub struct ParticipantRegistrationStationowner1 {
     pub stationid: String,
     /// Version no of record within the effective date
     pub versionno: rust_decimal::Decimal,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4661,16 +4668,14 @@ impl crate::GetTable for ParticipantRegistrationStationowner1 {
 
     fn primary_key(&self) -> ParticipantRegistrationStationowner1PrimaryKey {
         ParticipantRegistrationStationowner1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
             stationid: self.stationid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_stationowner_v1".to_string()
@@ -4826,6 +4831,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct ParticipantRegistrationStationownertrk1 {
+    /// Effective date of this record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Unique participant identifier
@@ -4834,8 +4840,10 @@ pub struct ParticipantRegistrationStationownertrk1 {
     pub versionno: rust_decimal::Decimal,
     /// User authorising record
     pub authorisedby: Option<String>,
+    /// Date record authorised
     #[serde(with = "crate::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -4853,15 +4861,13 @@ impl crate::GetTable for ParticipantRegistrationStationownertrk1 {
 
     fn primary_key(&self) -> ParticipantRegistrationStationownertrk1PrimaryKey {
         ParticipantRegistrationStationownertrk1PrimaryKey {
-            effectivedate: self.effectivedate.clone(),
+            effectivedate: self.effectivedate,
             participantid: self.participantid.clone(),
-            versionno: self.versionno.clone(),
+            versionno: self.versionno,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "participant_registration_stationownertrk_v1".to_string()

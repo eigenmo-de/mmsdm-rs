@@ -20,12 +20,14 @@
 pub struct MarketNoticeMarketnoticedata1 {
     /// Notice Identifier
     pub noticeid: rust_decimal::Decimal,
+    /// Effective Date of Market notice
     #[serde(with = "crate::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// Market Notice Type Identifier (Market - all participants. Participant - selected participants)
     pub typeid: Option<String>,
     /// Market Notice Type
     pub noticetype: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Detail of market notices.
@@ -47,13 +49,11 @@ impl crate::GetTable for MarketNoticeMarketnoticedata1 {
 
     fn primary_key(&self) -> MarketNoticeMarketnoticedata1PrimaryKey {
         MarketNoticeMarketnoticedata1PrimaryKey {
-            noticeid: self.noticeid.clone(),
+            noticeid: self.noticeid,
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_notice_marketnoticedata_v1".to_string()
@@ -204,6 +204,7 @@ pub struct MarketNoticeMarketnoticetype1 {
     pub description: Option<String>,
     /// Not used
     pub raisedby: Option<String>,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -225,9 +226,7 @@ impl crate::GetTable for MarketNoticeMarketnoticetype1 {
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_notice_marketnoticetype_v1".to_string()
@@ -338,6 +337,7 @@ pub struct MarketNoticeParticipantnoticetrk1 {
     pub participantid: String,
     /// Market notice identifier
     pub noticeid: rust_decimal::Decimal,
+    /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
@@ -355,14 +355,12 @@ impl crate::GetTable for MarketNoticeParticipantnoticetrk1 {
 
     fn primary_key(&self) -> MarketNoticeParticipantnoticetrk1PrimaryKey {
         MarketNoticeParticipantnoticetrk1PrimaryKey {
-            noticeid: self.noticeid.clone(),
+            noticeid: self.noticeid,
             participantid: self.participantid.clone(),
         }
     }
 
-    fn partition_suffix(&self) -> Self::Partition {
-        ()
-    }
+    fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
         "market_notice_participantnoticetrk_v1".to_string()
