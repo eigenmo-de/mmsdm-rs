@@ -12,8 +12,13 @@ impl mms::DataType {
             mms::DataType::Char => "pyarrow.large_utf8()".to_string(),
             mms::DataType::Date => "pyarrow.timestamp('s')".to_string(),
             mms::DataType::DateTime => "pyarrow.timestamp('s')".to_string(),
-            mms::DataType::Decimal { precision, scale } => {
-                format!("pyarrow.decimal128({},{})", precision, scale)
+            mms::DataType::Decimal { .. } => {
+                // we simply ignore the AEMO specified precision and scale
+                // this is because the CSV files often contain values outside these precisions
+                // the decimal128 has 34 significant digits anyway so we may as well use the largest 
+                // possible precision. The 16 for scale is the largest amount that has been empirically 
+                // observed, however this balance may need to be updated in future. 
+                format!("pyarrow.decimal128(34,16)",)
             }
             mms::DataType::Integer { .. } => "pyarrow.int64()".to_string(),
         }
@@ -165,10 +170,14 @@ import pyarrow.csv as pc
                     .unwrap_or("null".to_string())
                     .to_lowercase();
                 let schema_fn_name = format!("{}_{}_v{}", data_set, sub_type, pdr_report.version);
+                // the include_columns and include_missing_columns ensures that when we have less than expected columns
+                // we simply get null columns instead of an error. This allows earlier version data sets to be 
+                // processed as the most current version. It is important that old data can be reprocessed
+                // so that the schema matches
                 fmt_str.push_str(&format!(r#"
 def {fn_name}(file_path):
     schema = {schema}
-    table = pc.read_csv(file_path, convert_options=pc.ConvertOptions(column_types={{ schema.field(i).name: schema.field(i).type for i in range(0, len(schema.names)) }}, timestamp_parsers=["%Y/%m/%d %H:%M:%S"]))
+    table = pc.read_csv(file_path, convert_options=pc.ConvertOptions(include_columns=schema.names, include_missing_columns=True, column_types={{ schema.field(i).name: schema.field(i).type for i in range(0, len(schema.names)) }}, timestamp_parsers=["%Y/%m/%d %H:%M:%S"]))
     return table.cast(schema)
 "#, 
                     fn_name = schema_fn_name,
