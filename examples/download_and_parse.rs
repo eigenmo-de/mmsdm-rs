@@ -4,12 +4,11 @@ use scraper::{html, Selector}; //, node, selector};
 use std::{error, fmt, io, path};
 
 fn main() {
-	env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
 
-	test_dispatch_is::download_and_parse();
+    test_dispatch_is::download_and_parse();
 
-	test_dispatch_scada::download_and_parse();
-
+    test_dispatch_scada::download_and_parse();
 }
 
 // #[cfg(test)]
@@ -93,10 +92,10 @@ mod test_dispatch_is {
     use mmsdm::data_model;
     const LOCATION: &str = "https://nemweb.com.au/Reports/Current/DispatchIS_Reports";
 
-    pub fn download_and_parse() {  
+    pub fn download_and_parse() {
         let links = super::get_links(LOCATION).unwrap();
 
-	let rows = links
+        let rows = links
             .iter()
             .take(8)
             .map(|l| {
@@ -107,7 +106,6 @@ mod test_dispatch_is {
             })
             .flatten()
             .collect::<Vec<_>>();
-
 
         // let all_data: Vec<mmsdm::AemoFile> = super::url_get_files(LOCATION).await.unwrap();
 
@@ -127,7 +125,7 @@ mod test_dispatch_scada {
     use mmsdm::data_model;
     const LOCATION: &str = "https://nemweb.com.au/Reports/Current/Dispatch_SCADA";
 
-    pub fn download_and_parse() {      
+    pub fn download_and_parse() {
         let links = super::get_links(LOCATION).unwrap();
 
         let rows = links
@@ -149,7 +147,6 @@ mod test_dispatch_scada {
         // }
     }
 }
-
 
 // helper functions for testing purposes
 // these should also be useful as examples for consumers of the library

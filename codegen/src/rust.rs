@@ -8,8 +8,7 @@ impl mms::DataType {
         match self {
             mms::DataType::Varchar { .. } => "String",
             mms::DataType::Char => "char",
-            mms::DataType::Date => "chrono::NaiveDateTime",
-            mms::DataType::DateTime => "chrono::NaiveDateTime",
+            mms::DataType::Date | mms::DataType::DateTime => "chrono::NaiveDateTime",
             mms::DataType::Decimal { .. } => "rust_decimal::Decimal",
             mms::DataType::Integer { .. } => "i64",
         }
@@ -19,8 +18,9 @@ impl mms::DataType {
         match self {
             mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Char => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
-            mms::DataType::Date => "arrow2::datatypes::DataType::Date32".to_string(),
-            mms::DataType::DateTime => "arrow2::datatypes::DataType::Date64".to_string(),
+            mms::DataType::Date | mms::DataType::DateTime => {
+                "arrow2::datatypes::DataType::Date64".to_string()
+            }
             mms::DataType::Decimal { precision, scale } => format!(
                 "arrow2::datatypes::DataType::Decimal({},{})",
                 precision, scale
@@ -86,30 +86,47 @@ impl mms::TableColumn {
     }
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
-            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
-            (_, _) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.start().timestamp_millis()", self.rust_field_name()),
+            (_, _) if self.comment.contains("YYYYMMDDPPP") => {
+                format!("row.{}.start().timestamp_millis()", self.rust_field_name())
+            }
+            (_, _) if self.comment.contains("YYYYMMDDPP") => {
+                format!("row.{}.start().timestamp_millis()", self.rust_field_name())
+            }
             // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp_millis())", self.rust_field_name()),
             // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.map(|val| val.start().timestamp_millis())", self.rust_field_name()),
             (mms::DataType::Varchar { .. }, true) => format!("row.{}", self.rust_field_name()),
             (mms::DataType::Char, true) => format!("row.{}.to_string()", self.rust_field_name()),
-            (mms::DataType::Date, true) => format!("i32::try_from((row.{}.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days()).unwrap()", self.rust_field_name()),
-            (mms::DataType::DateTime, true) => format!("row.{}.timestamp_millis()", self.rust_field_name()),
-            (mms::DataType::Decimal { scale, .. }, true) => format!("{{
+            (mms::DataType::Date | mms::DataType::DateTime, true) => {
+                format!("row.{}.timestamp_millis()", self.rust_field_name())
+            }
+            (mms::DataType::Decimal { scale, .. }, true) => format!(
+                "{{
                 let mut val = row.{};
                 val.rescale({scale});
                 val.mantissa()
-            }}", self.rust_field_name(), scale = scale),
+            }}",
+                self.rust_field_name(),
+                scale = scale
+            ),
             (mms::DataType::Integer { .. }, true) => format!("row.{}", self.rust_field_name()),
             (mms::DataType::Varchar { .. }, false) => format!("row.{}", self.rust_field_name()),
-            (mms::DataType::Char, false) => format!("row.{}.map(|val| val.to_string())", self.rust_field_name()),
-            (mms::DataType::Date, false) =>  format!("row.{}.map(|val| i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days()).unwrap())", self.rust_field_name()),
-            (mms::DataType::DateTime, false) => format!("row.{}.map(|val| val.timestamp_millis())", self.rust_field_name()),
-            (mms::DataType::Decimal { scale, .. }, false) => format!("{{
+            (mms::DataType::Char, false) => {
+                format!("row.{}.map(|val| val.to_string())", self.rust_field_name())
+            }
+            (mms::DataType::Date | mms::DataType::DateTime, false) => format!(
+                "row.{}.map(|val| val.timestamp_millis())",
+                self.rust_field_name()
+            ),
+            (mms::DataType::Decimal { scale, .. }, false) => format!(
+                "{{
                 row.{}.map(|mut val| {{
                     val.rescale({scale});
                     val.mantissa()
                 }})
-            }}", self.rust_field_name(), scale = scale),
+            }}",
+                self.rust_field_name(),
+                scale = scale
+            ),
             (mms::DataType::Integer { .. }, false) => format!("row.{}", self.rust_field_name()),
         };
         format!(
@@ -150,12 +167,7 @@ impl mms::TableColumn {
                 self.as_arrow_array_name()
             ),
 
-            (mms::DataType::Date, true) => format!(
-                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (mms::DataType::DateTime, true) => format!(
+            (mms::DataType::Date | mms::DataType::DateTime, true) => format!(
                 "arrow2::array::PrimitiveArray::from_slice({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
@@ -169,13 +181,7 @@ impl mms::TableColumn {
                 "arrow2::array::PrimitiveArray::from_slice({})",
                 self.as_arrow_array_name()
             ),
-
-            (mms::DataType::Date, false) => format!(
-                "arrow2::array::PrimitiveArray::from({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (mms::DataType::DateTime, false) => format!(
+            (mms::DataType::Date | mms::DataType::DateTime, false) => format!(
                 "arrow2::array::PrimitiveArray::from({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
@@ -422,7 +428,8 @@ pub fn run() -> anyhow::Result<()> {
                         field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
                         field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
-                    } else if col.data_type == mms::DataType::Date {
+                    } else if matches!(col.data_type, mms::DataType::Date | mms::DataType::DateTime)
+                    {
                         let mut field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
                             &col.to_rust_type(),

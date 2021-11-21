@@ -22,9 +22,38 @@ fn main() -> anyhow::Result<()> {
             "python" => {
                 codegen_cmd("python")?;
             }
-            // cmd => {
-            //     codegen_cmd(cmd)?;
-            // },
+            "example" => {
+                if let Some(arg) = env::args().nth(2) {
+                    match arg.as_str() {
+                        "load" => {
+                            xshell::cmd!("cargo run --example load --release --features sql_server,dispatch,settlement_data")                            
+                            .env("RUST_LOG", "INFO")
+                            .run().unwrap()
+                        }
+                        "parquet" => {
+                            xshell::cmd!("cargo run --example parquet --release --features save_as_parquet,dispatch")
+                            .env("RUST_LOG", "INFO")
+                            .env("RUST_BACKTRACE", "1")
+                            .run().unwrap()
+                        }
+                        "download" => {
+                            xshell::cmd!("cargo run --example download_files --release")
+                            .env("RUST_LOG", "INFO")
+                            .run().unwrap()
+                        }
+                        other => {
+                            println!("Argument {} is not recognised as an example", other);
+                        }
+                    }
+                } else {
+                    println!(
+                        "Second arg is required to run an example, options are
+        `cargo xtask example load`
+        `cargo xtask example parquet`
+"
+                    )
+                }
+            }
             _ => help(),
         }
     } else {
@@ -37,7 +66,9 @@ fn help() {
     println!(
         "available options are:
     
-    `cargo xtask rust`
+        `cargo xtask rust`
+        `cargo xtask python`
+        `cargo xtask example`
 "
     );
 }

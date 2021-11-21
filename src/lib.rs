@@ -204,6 +204,13 @@ impl FileKey {
             ""
         }
     }
+    fn with_version(&self, version: i32) -> FileKey {
+        let original = self.clone();
+        FileKey {
+            version,
+            ..original
+        }
+    }
 }
 
 impl fmt::Display for FileKey {
@@ -421,33 +428,33 @@ impl AemoFile {
         T: serde::de::DeserializeOwned + Send + GetTable,
     {
         let latest_version = T::get_file_key();
-
         for version in (1..=latest_version.version).rev() {
-            let current_key = FileKey {
-                version,
-                data_set_name: latest_version.data_set_name.clone(),
-                table_name: latest_version.table_name.clone(),
-            };
-            if let Ok(parsed) = self.get_specific_table(current_key) {
-                return Ok(parsed);
-            } else {
-                log::warn!(
-                    "For file key {}, version {} was not available",
-                    latest_version,
-                    version
-                );
+            let current_key = latest_version.with_version(version);
+            match self.get_specific_table(&current_key) {
+                Ok(parsed) => {
+                    log::info!("Table found and parsed for file key {}", current_key);
+                    return Ok(parsed);
+                }
+                Err(e) => {
+                    log::warn!(
+                        "For file key {}, version {} was not available: {}",
+                        latest_version,
+                        version,
+                        e,
+                    );
+                }
             }
         }
         Err(Error::MissingFile(latest_version))
     }
-    fn get_specific_table<T>(&self, file_key: FileKey) -> Result<Vec<T>>
+    pub fn get_specific_table<T>(&self, file_key: &FileKey) -> Result<Vec<T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable,
     {
         let subtable = self
             .data
             .get(&file_key)
-            .ok_or(Error::MissingFile(file_key))?;
+            .ok_or(Error::MissingFile(file_key.clone()))?;
 
         subtable
             .data
@@ -461,7 +468,6 @@ impl AemoFile {
                     })
             })
             .collect()
-        // .map_err(|e| e.into())
     }
 }
 
