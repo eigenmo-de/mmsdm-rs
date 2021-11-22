@@ -5,7 +5,7 @@
 ///
 /// * Data Set Name: Network
 /// * File Name: Equipmentdetail
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
@@ -20,7 +20,7 @@
 /// * SUBSTATIONID
 /// * VALIDFROM
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkEquipmentdetail1 {
+pub struct NetworkEquipmentdetail2 {
     /// ID uniquely identifying the substation this equipment is located at
     pub substationid: String,
     /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
@@ -28,32 +28,35 @@ pub struct NetworkEquipmentdetail1 {
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: String,
     /// The date that this record is applies from (inclusive)
+    #[serde(with = "crate::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
+    #[serde(with = "crate::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
     pub voltage: Option<String>,
     /// A short description for this equipment.
     pub description: Option<String>,
     /// The time that this record was last changed.
+    #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Equipment element id
     pub elementid: rust_decimal::Decimal,
 }
-impl crate::GetTable for NetworkEquipmentdetail1 {
-    type PrimaryKey = NetworkEquipmentdetail1PrimaryKey;
+impl crate::GetTable for NetworkEquipmentdetail2 {
+    type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("EQUIPMENTDETAIL".into()),
-            version: 1,
+            version: 2,
         }
     }
 
-    fn primary_key(&self) -> NetworkEquipmentdetail1PrimaryKey {
-        NetworkEquipmentdetail1PrimaryKey {
+    fn primary_key(&self) -> NetworkEquipmentdetail2PrimaryKey {
+        NetworkEquipmentdetail2PrimaryKey {
             elementid: self.elementid,
             equipmentid: self.equipmentid.clone(),
             equipmenttype: self.equipmenttype.clone(),
@@ -65,11 +68,11 @@ impl crate::GetTable for NetworkEquipmentdetail1 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "network_equipmentdetail_v1".to_string()
+        "network_equipmentdetail_v2".to_string()
     }
 }
-impl crate::CompareWithRow for NetworkEquipmentdetail1 {
-    type Row = NetworkEquipmentdetail1;
+impl crate::CompareWithRow for NetworkEquipmentdetail2 {
+    type Row = NetworkEquipmentdetail2;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.elementid == row.elementid
@@ -79,8 +82,8 @@ impl crate::CompareWithRow for NetworkEquipmentdetail1 {
             && self.validfrom == row.validfrom
     }
 }
-impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail1 {
-    type PrimaryKey = NetworkEquipmentdetail1PrimaryKey;
+impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail2 {
+    type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.elementid == key.elementid
@@ -91,15 +94,15 @@ impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail1 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct NetworkEquipmentdetail1PrimaryKey {
+pub struct NetworkEquipmentdetail2PrimaryKey {
     pub elementid: rust_decimal::Decimal,
     pub equipmentid: String,
     pub equipmenttype: String,
     pub substationid: String,
     pub validfrom: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for NetworkEquipmentdetail1PrimaryKey {
-    type Row = NetworkEquipmentdetail1;
+impl crate::CompareWithRow for NetworkEquipmentdetail2PrimaryKey {
+    type Row = NetworkEquipmentdetail2;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.elementid == row.elementid
@@ -109,8 +112,8 @@ impl crate::CompareWithRow for NetworkEquipmentdetail1PrimaryKey {
             && self.validfrom == row.validfrom
     }
 }
-impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail1PrimaryKey {
-    type PrimaryKey = NetworkEquipmentdetail1PrimaryKey;
+impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail2PrimaryKey {
+    type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.elementid == key.elementid
@@ -120,9 +123,9 @@ impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail1PrimaryKey {
             && self.validfrom == key.validfrom
     }
 }
-impl crate::PrimaryKey for NetworkEquipmentdetail1PrimaryKey {}
+impl crate::PrimaryKey for NetworkEquipmentdetail2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for NetworkEquipmentdetail1 {
+impl crate::ArrowSchema for NetworkEquipmentdetail2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
@@ -326,10 +329,10 @@ impl crate::ArrowSchema for NetworkOutageconstraintset1 {
             ),
             arrow2::datatypes::Field::new(
                 "startinterval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("endinterval", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("endinterval", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -347,14 +350,8 @@ impl crate::ArrowSchema for NetworkOutageconstraintset1 {
                 val.mantissa()
             });
             genconsetid_array.push(row.genconsetid);
-            startinterval_array.push(row.startinterval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            endinterval_array.push(row.endinterval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startinterval_array.push(row.startinterval.map(|val| val.timestamp_millis()));
+            endinterval_array.push(row.endinterval.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -369,11 +366,11 @@ impl crate::ArrowSchema for NetworkOutageconstraintset1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startinterval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endinterval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -387,7 +384,7 @@ impl crate::ArrowSchema for NetworkOutageconstraintset1 {
 ///
 /// * Data Set Name: Network
 /// * File Name: Outagedetail
-/// * Data Version: 3
+/// * Data Version: 4
 ///
 ///
 ///
@@ -403,7 +400,7 @@ impl crate::ArrowSchema for NetworkOutageconstraintset1 {
 /// * STARTTIME
 /// * SUBSTATIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutagedetail3 {
+pub struct NetworkOutagedetail4 {
     /// ID uniquely identifying the outage
     pub outageid: rust_decimal::Decimal,
     /// The substation this equipment is located at
@@ -432,6 +429,7 @@ pub struct NetworkOutagedetail3 {
     /// The recall time in minutes during the night
     pub recalltimenight: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed
+    #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The reason provided by the asset owner for this outage
     pub reason: Option<String>,
@@ -448,20 +446,20 @@ pub struct NetworkOutagedetail3 {
     /// Equipment element id
     pub elementid: rust_decimal::Decimal,
 }
-impl crate::GetTable for NetworkOutagedetail3 {
-    type PrimaryKey = NetworkOutagedetail3PrimaryKey;
+impl crate::GetTable for NetworkOutagedetail4 {
+    type PrimaryKey = NetworkOutagedetail4PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("OUTAGEDETAIL".into()),
-            version: 3,
+            version: 4,
         }
     }
 
-    fn primary_key(&self) -> NetworkOutagedetail3PrimaryKey {
-        NetworkOutagedetail3PrimaryKey {
+    fn primary_key(&self) -> NetworkOutagedetail4PrimaryKey {
+        NetworkOutagedetail4PrimaryKey {
             elementid: self.elementid,
             equipmentid: self.equipmentid.clone(),
             equipmenttype: self.equipmenttype.clone(),
@@ -474,11 +472,11 @@ impl crate::GetTable for NetworkOutagedetail3 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "network_outagedetail_v3".to_string()
+        "network_outagedetail_v4".to_string()
     }
 }
-impl crate::CompareWithRow for NetworkOutagedetail3 {
-    type Row = NetworkOutagedetail3;
+impl crate::CompareWithRow for NetworkOutagedetail4 {
+    type Row = NetworkOutagedetail4;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.elementid == row.elementid
@@ -489,8 +487,8 @@ impl crate::CompareWithRow for NetworkOutagedetail3 {
             && self.substationid == row.substationid
     }
 }
-impl crate::CompareWithPrimaryKey for NetworkOutagedetail3 {
-    type PrimaryKey = NetworkOutagedetail3PrimaryKey;
+impl crate::CompareWithPrimaryKey for NetworkOutagedetail4 {
+    type PrimaryKey = NetworkOutagedetail4PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.elementid == key.elementid
@@ -502,7 +500,7 @@ impl crate::CompareWithPrimaryKey for NetworkOutagedetail3 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct NetworkOutagedetail3PrimaryKey {
+pub struct NetworkOutagedetail4PrimaryKey {
     pub elementid: rust_decimal::Decimal,
     pub equipmentid: String,
     pub equipmenttype: String,
@@ -510,8 +508,8 @@ pub struct NetworkOutagedetail3PrimaryKey {
     pub starttime: chrono::NaiveDateTime,
     pub substationid: String,
 }
-impl crate::CompareWithRow for NetworkOutagedetail3PrimaryKey {
-    type Row = NetworkOutagedetail3;
+impl crate::CompareWithRow for NetworkOutagedetail4PrimaryKey {
+    type Row = NetworkOutagedetail4;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.elementid == row.elementid
@@ -522,8 +520,8 @@ impl crate::CompareWithRow for NetworkOutagedetail3PrimaryKey {
             && self.substationid == row.substationid
     }
 }
-impl crate::CompareWithPrimaryKey for NetworkOutagedetail3PrimaryKey {
-    type PrimaryKey = NetworkOutagedetail3PrimaryKey;
+impl crate::CompareWithPrimaryKey for NetworkOutagedetail4PrimaryKey {
+    type PrimaryKey = NetworkOutagedetail4PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.elementid == key.elementid
@@ -534,9 +532,9 @@ impl crate::CompareWithPrimaryKey for NetworkOutagedetail3PrimaryKey {
             && self.substationid == key.substationid
     }
 }
-impl crate::PrimaryKey for NetworkOutagedetail3PrimaryKey {}
+impl crate::PrimaryKey for NetworkOutagedetail4PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for NetworkOutagedetail3 {
+impl crate::ArrowSchema for NetworkOutagedetail4 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
@@ -559,11 +557,11 @@ impl crate::ArrowSchema for NetworkOutagedetail3 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("starttime", arrow2::datatypes::DataType::Date32, false),
-            arrow2::datatypes::Field::new("endtime", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("starttime", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("endtime", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "submitteddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -600,12 +598,12 @@ impl crate::ArrowSchema for NetworkOutagedetail3 {
             ),
             arrow2::datatypes::Field::new(
                 "actual_starttime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "actual_endtime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -652,20 +650,9 @@ impl crate::ArrowSchema for NetworkOutagedetail3 {
             substationid_array.push(row.substationid);
             equipmenttype_array.push(row.equipmenttype);
             equipmentid_array.push(row.equipmentid);
-            starttime_array.push(
-                i32::try_from(
-                    (row.starttime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            endtime_array.push(row.endtime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            submitteddate_array.push(row.submitteddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            starttime_array.push(row.starttime.timestamp_millis());
+            endtime_array.push(row.endtime.map(|val| val.timestamp_millis()));
+            submitteddate_array.push(row.submitteddate.map(|val| val.timestamp_millis()));
             outagestatuscode_array.push(row.outagestatuscode);
             resubmitreason_array.push(row.resubmitreason);
             resubmitoutageid_array.push({
@@ -694,14 +681,8 @@ impl crate::ArrowSchema for NetworkOutagedetail3 {
                     val.mantissa()
                 })
             });
-            actual_starttime_array.push(row.actual_starttime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            actual_endtime_array.push(row.actual_endtime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            actual_starttime_array.push(row.actual_starttime.map(|val| val.timestamp_millis()));
+            actual_endtime_array.push(row.actual_endtime.map(|val| val.timestamp_millis()));
             companyrefcode_array.push(row.companyrefcode);
             elementid_array.push({
                 let mut val = row.elementid;
@@ -728,15 +709,15 @@ impl crate::ArrowSchema for NetworkOutagedetail3 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(starttime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endtime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(submitteddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     outagestatuscode_array,
@@ -765,11 +746,11 @@ impl crate::ArrowSchema for NetworkOutagedetail3 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(actual_starttime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(actual_endtime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(companyrefcode_array)),
                 std::sync::Arc::new(
@@ -879,7 +860,7 @@ impl crate::ArrowSchema for NetworkOutagestatuscode1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -892,10 +873,7 @@ impl crate::ArrowSchema for NetworkOutagestatuscode1 {
         for (_, row) in partition {
             outagestatuscode_array.push(row.outagestatuscode);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -907,7 +885,7 @@ impl crate::ArrowSchema for NetworkOutagestatuscode1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1022,8 +1000,8 @@ impl crate::ArrowSchema for NetworkRating1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new("spd_id", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date32, false),
-            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "substationid",
@@ -1050,7 +1028,7 @@ impl crate::ArrowSchema for NetworkRating1 {
                 arrow2::datatypes::DataType::Decimal(1, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1069,16 +1047,8 @@ impl crate::ArrowSchema for NetworkRating1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             spd_id_array.push(row.spd_id);
-            validfrom_array.push(
-                i32::try_from(
-                    (row.validfrom.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            validto_array.push(row.validto.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            validfrom_array.push(row.validfrom.timestamp_millis());
+            validto_array.push(row.validto.map(|val| val.timestamp_millis()));
             regionid_array.push(row.regionid);
             substationid_array.push(row.substationid);
             equipmenttype_array.push(row.equipmenttype);
@@ -1090,10 +1060,7 @@ impl crate::ArrowSchema for NetworkRating1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1102,11 +1069,11 @@ impl crate::ArrowSchema for NetworkRating1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(spd_id_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(validfrom_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(validto_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(substationid_array)),
@@ -1119,7 +1086,7 @@ impl crate::ArrowSchema for NetworkRating1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1229,7 +1196,7 @@ impl crate::ArrowSchema for NetworkRealtimerating1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("spd_id", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -1248,13 +1215,7 @@ impl crate::ArrowSchema for NetworkRealtimerating1 {
         let mut spd_id_array = Vec::new();
         let mut ratingvalue_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             spd_id_array.push(row.spd_id);
             ratingvalue_array.push({
                 let mut val = row.ratingvalue;
@@ -1268,7 +1229,7 @@ impl crate::ArrowSchema for NetworkRealtimerating1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(spd_id_array)),
                 std::sync::Arc::new(
@@ -1442,14 +1403,14 @@ impl crate::ArrowSchema for NetworkStaticrating1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date32, false),
-            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("validfrom", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("validto", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "ratingvalue",
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1471,26 +1432,15 @@ impl crate::ArrowSchema for NetworkStaticrating1 {
             equipmentid_array.push(row.equipmentid);
             ratinglevel_array.push(row.ratinglevel);
             applicationid_array.push(row.applicationid);
-            validfrom_array.push(
-                i32::try_from(
-                    (row.validfrom.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            validto_array.push(row.validto.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            validfrom_array.push(row.validfrom.timestamp_millis());
+            validto_array.push(row.validto.map(|val| val.timestamp_millis()));
             ratingvalue_array.push({
                 row.ratingvalue.map(|mut val| {
                     val.rescale(6);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1513,11 +1463,11 @@ impl crate::ArrowSchema for NetworkStaticrating1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(validfrom_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(validto_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ratingvalue_array)
@@ -1525,7 +1475,7 @@ impl crate::ArrowSchema for NetworkStaticrating1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1539,7 +1489,7 @@ impl crate::ArrowSchema for NetworkStaticrating1 {
 ///
 /// * Data Set Name: Network
 /// * File Name: Substationdetail
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
@@ -1551,12 +1501,14 @@ impl crate::ArrowSchema for NetworkStaticrating1 {
 /// * SUBSTATIONID
 /// * VALIDFROM
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkSubstationdetail1 {
+pub struct NetworkSubstationdetail2 {
     /// ID uniquely identifying this substation
     pub substationid: String,
     /// The record is valid from this date (inclusive)
+    #[serde(with = "crate::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
     /// The record is valid up until this date (exclusive)
+    #[serde(with = "crate::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// Description of the substation
     pub description: Option<String>,
@@ -1565,22 +1517,23 @@ pub struct NetworkSubstationdetail1 {
     /// The TNSP who is responsible for this substation
     pub ownerid: Option<String>,
     /// The time that this record was last changed.
+    #[serde(with = "crate::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
 }
-impl crate::GetTable for NetworkSubstationdetail1 {
-    type PrimaryKey = NetworkSubstationdetail1PrimaryKey;
+impl crate::GetTable for NetworkSubstationdetail2 {
+    type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "NETWORK".into(),
             table_name: Some("SUBSTATIONDETAIL".into()),
-            version: 1,
+            version: 2,
         }
     }
 
-    fn primary_key(&self) -> NetworkSubstationdetail1PrimaryKey {
-        NetworkSubstationdetail1PrimaryKey {
+    fn primary_key(&self) -> NetworkSubstationdetail2PrimaryKey {
+        NetworkSubstationdetail2PrimaryKey {
             substationid: self.substationid.clone(),
             validfrom: self.validfrom,
         }
@@ -1589,45 +1542,45 @@ impl crate::GetTable for NetworkSubstationdetail1 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "network_substationdetail_v1".to_string()
+        "network_substationdetail_v2".to_string()
     }
 }
-impl crate::CompareWithRow for NetworkSubstationdetail1 {
-    type Row = NetworkSubstationdetail1;
+impl crate::CompareWithRow for NetworkSubstationdetail2 {
+    type Row = NetworkSubstationdetail2;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.substationid == row.substationid && self.validfrom == row.validfrom
     }
 }
-impl crate::CompareWithPrimaryKey for NetworkSubstationdetail1 {
-    type PrimaryKey = NetworkSubstationdetail1PrimaryKey;
+impl crate::CompareWithPrimaryKey for NetworkSubstationdetail2 {
+    type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.substationid == key.substationid && self.validfrom == key.validfrom
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct NetworkSubstationdetail1PrimaryKey {
+pub struct NetworkSubstationdetail2PrimaryKey {
     pub substationid: String,
     pub validfrom: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for NetworkSubstationdetail1PrimaryKey {
-    type Row = NetworkSubstationdetail1;
+impl crate::CompareWithRow for NetworkSubstationdetail2PrimaryKey {
+    type Row = NetworkSubstationdetail2;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.substationid == row.substationid && self.validfrom == row.validfrom
     }
 }
-impl crate::CompareWithPrimaryKey for NetworkSubstationdetail1PrimaryKey {
-    type PrimaryKey = NetworkSubstationdetail1PrimaryKey;
+impl crate::CompareWithPrimaryKey for NetworkSubstationdetail2PrimaryKey {
+    type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.substationid == key.substationid && self.validfrom == key.validfrom
     }
 }
-impl crate::PrimaryKey for NetworkSubstationdetail1PrimaryKey {}
+impl crate::PrimaryKey for NetworkSubstationdetail2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for NetworkSubstationdetail1 {
+impl crate::ArrowSchema for NetworkSubstationdetail2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(

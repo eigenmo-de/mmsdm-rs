@@ -111,12 +111,12 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -130,7 +130,7 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
                 true,
             ),
             arrow2::datatypes::Field::new("rhs", arrow2::datatypes::DataType::Decimal(16, 6), true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -144,19 +144,8 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
         let mut rhs_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            version_datetime_array.push(
-                i32::try_from(
-                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            version_datetime_array.push(row.version_datetime.timestamp_millis());
             reservelimitid_array.push(row.reservelimitid);
             description_array.push(row.description);
             rhs_array.push({
@@ -165,10 +154,7 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -176,11 +162,11 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     reservelimitid_array,
@@ -192,7 +178,7 @@ impl crate::ArrowSchema for MtpasaReservelimit1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -319,12 +305,12 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -342,7 +328,7 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -356,19 +342,8 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
         let mut coef_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            version_datetime_array.push(
-                i32::try_from(
-                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            version_datetime_array.push(row.version_datetime.timestamp_millis());
             reservelimitid_array.push(row.reservelimitid);
             regionid_array.push(row.regionid);
             coef_array.push({
@@ -377,10 +352,7 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -388,11 +360,11 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     reservelimitid_array,
@@ -404,7 +376,7 @@ impl crate::ArrowSchema for MtpasaReservelimitRegion1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -516,12 +488,12 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -536,7 +508,7 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -544,7 +516,7 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -559,30 +531,13 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
         let mut authorisedby_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            version_datetime_array.push(
-                i32::try_from(
-                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            version_datetime_array.push(row.version_datetime.timestamp_millis());
             reservelimit_set_id_array.push(row.reservelimit_set_id);
             description_array.push(row.description);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -590,11 +545,11 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     reservelimit_set_id_array,
@@ -602,12 +557,12 @@ impl crate::ArrowSchema for MtpasaReservelimitSet1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -765,7 +720,7 @@ impl crate::ArrowSchema for ReserveDataReserve1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -813,7 +768,7 @@ impl crate::ArrowSchema for ReserveDataReserve1 {
                 arrow2::datatypes::DataType::Decimal(6, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "pasareserve",
                 arrow2::datatypes::DataType::Decimal(6, 0),
@@ -868,13 +823,7 @@ impl crate::ArrowSchema for ReserveDataReserve1 {
         let mut lor1level_array = Vec::new();
         let mut lor2level_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -922,10 +871,7 @@ impl crate::ArrowSchema for ReserveDataReserve1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             pasareserve_array.push({
                 row.pasareserve.map(|mut val| {
                     val.rescale(0);
@@ -969,7 +915,7 @@ impl crate::ArrowSchema for ReserveDataReserve1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1006,7 +952,7 @@ impl crate::ArrowSchema for ReserveDataReserve1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(pasareserve_array)

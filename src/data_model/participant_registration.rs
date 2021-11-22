@@ -126,7 +126,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -160,7 +160,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -179,12 +179,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             duid_array.push(row.duid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -221,10 +216,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -233,7 +225,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -262,7 +254,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -383,7 +375,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -393,7 +385,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -401,7 +393,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -416,26 +408,15 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             duid_array.push(row.duid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -444,7 +425,7 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -452,12 +433,12 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -558,7 +539,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("duname", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new("unittype", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -573,10 +554,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
             duid_array.push(row.duid);
             duname_array.push(row.duname);
             unittype_array.push(row.unittype);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -587,7 +565,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(unittype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -711,7 +689,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -725,7 +703,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -738,12 +716,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
         let mut gensetid_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -751,10 +724,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
             });
             duid_array.push(row.duid);
             gensetid_array.push(row.gensetid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -762,7 +732,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -772,7 +742,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -786,7 +756,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetail
-/// * Data Version: 3
+/// * Data Version: 4
 ///
 /// # Description
 ///  DUDETAIL is public data, and is available to all participants. Source DUDETAIL updates only when registration details change. Note To find the current set of details for selected dispatchable units, query the participant's local database as follows. Select du.* from dudetail du where (du.EFFECTIVEDATE, du.VERSIONNO) = ( select effectivedate, max(versionno) from dudetail where EFFECTIVEDATE = (select max(effectivedate) from  dudetail where EFFECTIVEDATE &lt;= sysdate and duid = du.duid and authoriseddate is not null) and duid = du.duid and authoriseddate is not null group by effectivedate ) and du.duid in ('UNIT1', 'UNIT2') ; The following notes apply to this SQL code: · This table is specific to dispatch units only. · If you wish to query details for a different date, substitute a date expression for "sysdate" in the "where EFFECTIVEDATE &lt;= sysdate" clause. · If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')" · The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER ) · If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC. · If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
@@ -800,7 +770,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ParticipantRegistrationDudetail3 {
+pub struct ParticipantRegistrationDudetail4 {
     /// Effective calendar date of record
     #[serde(with = "crate::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
@@ -847,20 +817,20 @@ pub struct ParticipantRegistrationDudetail3 {
     /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units. For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, the subtype value is NULL.
     pub dispatchsubtype: Option<String>,
 }
-impl crate::GetTable for ParticipantRegistrationDudetail3 {
-    type PrimaryKey = ParticipantRegistrationDudetail3PrimaryKey;
+impl crate::GetTable for ParticipantRegistrationDudetail4 {
+    type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
             table_name: Some("DUDETAIL".into()),
-            version: 3,
+            version: 4,
         }
     }
 
-    fn primary_key(&self) -> ParticipantRegistrationDudetail3PrimaryKey {
-        ParticipantRegistrationDudetail3PrimaryKey {
+    fn primary_key(&self) -> ParticipantRegistrationDudetail4PrimaryKey {
+        ParticipantRegistrationDudetail4PrimaryKey {
             duid: self.duid.clone(),
             effectivedate: self.effectivedate,
             versionno: self.versionno,
@@ -870,11 +840,11 @@ impl crate::GetTable for ParticipantRegistrationDudetail3 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "participant_registration_dudetail_v3".to_string()
+        "participant_registration_dudetail_v4".to_string()
     }
 }
-impl crate::CompareWithRow for ParticipantRegistrationDudetail3 {
-    type Row = ParticipantRegistrationDudetail3;
+impl crate::CompareWithRow for ParticipantRegistrationDudetail4 {
+    type Row = ParticipantRegistrationDudetail4;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid
@@ -882,8 +852,8 @@ impl crate::CompareWithRow for ParticipantRegistrationDudetail3 {
             && self.versionno == row.versionno
     }
 }
-impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail3 {
-    type PrimaryKey = ParticipantRegistrationDudetail3PrimaryKey;
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail4 {
+    type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -892,13 +862,13 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail3 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct ParticipantRegistrationDudetail3PrimaryKey {
+pub struct ParticipantRegistrationDudetail4PrimaryKey {
     pub duid: String,
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
-impl crate::CompareWithRow for ParticipantRegistrationDudetail3PrimaryKey {
-    type Row = ParticipantRegistrationDudetail3;
+impl crate::CompareWithRow for ParticipantRegistrationDudetail4PrimaryKey {
+    type Row = ParticipantRegistrationDudetail4;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid
@@ -906,8 +876,8 @@ impl crate::CompareWithRow for ParticipantRegistrationDudetail3PrimaryKey {
             && self.versionno == row.versionno
     }
 }
-impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail3PrimaryKey {
-    type PrimaryKey = ParticipantRegistrationDudetail3PrimaryKey;
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail4PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -915,14 +885,14 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail3PrimaryKey
             && self.versionno == key.versionno
     }
 }
-impl crate::PrimaryKey for ParticipantRegistrationDudetail3PrimaryKey {}
+impl crate::PrimaryKey for ParticipantRegistrationDudetail4PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
+impl crate::ArrowSchema for ParticipantRegistrationDudetail4 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -988,10 +958,10 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "intermittentflag",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -1045,12 +1015,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
         let mut maxrateofchangedown_array = Vec::new();
         let mut dispatchsubtype_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             duid_array.push(row.duid);
             versionno_array.push({
                 let mut val = row.versionno;
@@ -1078,14 +1043,8 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
             physicaldetailsflag_array.push(row.physicaldetailsflag);
             spinningreserveflag_array.push(row.spinningreserveflag);
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             intermittentflag_array.push(row.intermittentflag);
             semi_schedule_flag_array.push(row.semi_schedule_flag);
             maxrateofchangeup_array.push({
@@ -1108,7 +1067,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
@@ -1140,11 +1099,11 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     intermittentflag_array,
@@ -1173,7 +1132,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetailsummary
-/// * Data Version: 4
+/// * Data Version: 5
 ///
 /// # Description
 ///  DUDETAILSUMMARY is a public table, and is available to all participants. Source DUDETAILSUMMARY updates only when registration details change.
@@ -1186,7 +1145,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail3 {
 /// * DUID
 /// * START_DATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ParticipantRegistrationDudetailsummary4 {
+pub struct ParticipantRegistrationDudetailsummary5 {
     /// Dispatchable Unit Identifier
     pub duid: String,
     /// Start date for effective record
@@ -1233,20 +1192,20 @@ pub struct ParticipantRegistrationDudetailsummary4 {
     /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, subtype value is NULL.
     pub dispatchsubtype: Option<String>,
 }
-impl crate::GetTable for ParticipantRegistrationDudetailsummary4 {
-    type PrimaryKey = ParticipantRegistrationDudetailsummary4PrimaryKey;
+impl crate::GetTable for ParticipantRegistrationDudetailsummary5 {
+    type PrimaryKey = ParticipantRegistrationDudetailsummary5PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
             table_name: Some("DUDETAILSUMMARY".into()),
-            version: 4,
+            version: 5,
         }
     }
 
-    fn primary_key(&self) -> ParticipantRegistrationDudetailsummary4PrimaryKey {
-        ParticipantRegistrationDudetailsummary4PrimaryKey {
+    fn primary_key(&self) -> ParticipantRegistrationDudetailsummary5PrimaryKey {
+        ParticipantRegistrationDudetailsummary5PrimaryKey {
             duid: self.duid.clone(),
             start_date: self.start_date,
         }
@@ -1255,50 +1214,50 @@ impl crate::GetTable for ParticipantRegistrationDudetailsummary4 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "participant_registration_dudetailsummary_v4".to_string()
+        "participant_registration_dudetailsummary_v5".to_string()
     }
 }
-impl crate::CompareWithRow for ParticipantRegistrationDudetailsummary4 {
-    type Row = ParticipantRegistrationDudetailsummary4;
+impl crate::CompareWithRow for ParticipantRegistrationDudetailsummary5 {
+    type Row = ParticipantRegistrationDudetailsummary5;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.start_date == row.start_date
     }
 }
-impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary4 {
-    type PrimaryKey = ParticipantRegistrationDudetailsummary4PrimaryKey;
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary5 {
+    type PrimaryKey = ParticipantRegistrationDudetailsummary5PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.start_date == key.start_date
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct ParticipantRegistrationDudetailsummary4PrimaryKey {
+pub struct ParticipantRegistrationDudetailsummary5PrimaryKey {
     pub duid: String,
     pub start_date: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for ParticipantRegistrationDudetailsummary4PrimaryKey {
-    type Row = ParticipantRegistrationDudetailsummary4;
+impl crate::CompareWithRow for ParticipantRegistrationDudetailsummary5PrimaryKey {
+    type Row = ParticipantRegistrationDudetailsummary5;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.start_date == row.start_date
     }
 }
-impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary4PrimaryKey {
-    type PrimaryKey = ParticipantRegistrationDudetailsummary4PrimaryKey;
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary5PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationDudetailsummary5PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.start_date == key.start_date
     }
 }
-impl crate::PrimaryKey for ParticipantRegistrationDudetailsummary4PrimaryKey {}
+impl crate::PrimaryKey for ParticipantRegistrationDudetailsummary5PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary4 {
+impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new("start_date", arrow2::datatypes::DataType::Date32, false),
-            arrow2::datatypes::Field::new("end_date", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("start_date", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("end_date", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "dispatchtype",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -1320,7 +1279,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary4 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "transmissionlossfactor",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -1410,27 +1369,14 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary4 {
         let mut dispatchsubtype_array = Vec::new();
         for (_, row) in partition {
             duid_array.push(row.duid);
-            start_date_array.push(
-                i32::try_from(
-                    (row.start_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            end_date_array.push(
-                i32::try_from(
-                    (row.end_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            start_date_array.push(row.start_date.timestamp_millis());
+            end_date_array.push(row.end_date.timestamp_millis());
             dispatchtype_array.push(row.dispatchtype);
             connectionpointid_array.push(row.connectionpointid);
             regionid_array.push(row.regionid);
             stationid_array.push(row.stationid);
             participantid_array.push(row.participantid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             transmissionlossfactor_array.push({
                 row.transmissionlossfactor.map(|mut val| {
                     val.rescale(5);
@@ -1496,11 +1442,11 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary4 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(start_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(end_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -1511,7 +1457,7 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary4 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(transmissionlossfactor_array)
@@ -1719,7 +1665,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow2::datatypes::DataType::Decimal(6, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("applydate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("applydate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "versionno",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -1732,14 +1678,14 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("comdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("decomdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("comdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("decomdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1775,42 +1721,19 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
                     val.mantissa()
                 })
             });
-            applydate_array.push(
-                i32::try_from(
-                    (row.applydate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            applydate_array.push(row.applydate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            comdate_array.push(row.comdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            decomdate_array.push(row.decomdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            comdate_array.push(row.comdate.map(|val| val.timestamp_millis()));
+            decomdate_array.push(row.decomdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1830,7 +1753,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(applydate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1839,27 +1762,27 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(comdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(decomdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2058,7 +1981,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "co2e_emissions_factor",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -2135,10 +2058,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
             });
             gensettype_array.push(row.gensettype);
             gensetname_array.push(row.gensetname);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             co2e_emissions_factor_array.push({
                 row.co2e_emissions_factor.map(|mut val| {
                     val.rescale(8);
@@ -2181,7 +2101,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensetname_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(co2e_emissions_factor_array)
@@ -2327,7 +2247,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2360,7 +2280,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                 arrow2::datatypes::DataType::Decimal(1, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2378,12 +2298,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             gensetid_array.push(row.gensetid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2414,10 +2329,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2426,7 +2338,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2453,7 +2365,7 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2592,7 +2504,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
             arrow2::datatypes::Field::new("linkid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2629,7 +2541,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -2637,7 +2549,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "from_region_tlf",
                 arrow2::datatypes::DataType::Decimal(12, 7),
@@ -2671,12 +2583,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
         let mut to_region_tlf_array = Vec::new();
         for (_, row) in partition {
             linkid_array.push(row.linkid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2709,15 +2616,9 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                     val.mantissa()
                 })
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             from_region_tlf_array.push({
                 row.from_region_tlf.map(|mut val| {
                     val.rescale(7);
@@ -2738,7 +2639,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2767,12 +2668,12 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(from_region_tlf_array)
@@ -2909,7 +2810,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2922,7 +2823,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2936,22 +2837,14 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             interconnectorid_array.push(row.interconnectorid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
             participantid_array.push(row.participantid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2962,7 +2855,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2973,7 +2866,7 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3099,7 +2992,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipant1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3120,10 +3013,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipant1 {
             description_array.push(row.description);
             acn_array.push(row.acn);
             primarybusiness_array.push(row.primarybusiness);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3141,7 +3031,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipant1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(primarybusiness_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3316,15 +3206,15 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("abn", arrow2::datatypes::DataType::LargeUtf8, true),
         ])
     }
@@ -3379,18 +3269,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 })
             });
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            effectivedate_array.push(row.effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            effectivedate_array.push(row.effectivedate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             abn_array.push(row.abn);
         }
 
@@ -3424,15 +3305,15 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(abn_array)),
             ],
@@ -3539,7 +3420,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3552,10 +3433,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
         for (_, row) in partition {
             participantcategoryid_array.push(row.participantcategoryid);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3567,7 +3445,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3680,7 +3558,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3693,10 +3571,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
         for (_, row) in partition {
             participantcategoryid_array.push(row.participantcategoryid);
             participantid_array.push(row.participantid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3710,7 +3585,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3816,7 +3691,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3829,10 +3704,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
         for (_, row) in partition {
             participantclassid_array.push(row.participantclassid);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3844,7 +3716,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3953,7 +3825,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -3973,10 +3845,10 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3990,12 +3862,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             participantid_array.push(row.participantid);
             creditlimit_array.push({
                 row.creditlimit.map(|mut val| {
@@ -4004,14 +3871,8 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
                 })
             });
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4019,7 +3880,7 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
@@ -4031,11 +3892,732 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## PMS_GROUP
+///  _Entity table for group_
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Pms Group
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * GROUPID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct ParticipantRegistrationPmsGroup1 {
+    /// Abstract identifier for the group
+    pub groupid: rust_decimal::Decimal,
+    /// Date record was created
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub createddate: Option<chrono::NaiveDateTime>,
+    /// Date record was last changed
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for ParticipantRegistrationPmsGroup1 {
+    type PrimaryKey = ParticipantRegistrationPmsGroup1PrimaryKey;
+    type Partition = ();
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PMS_GROUP".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> ParticipantRegistrationPmsGroup1PrimaryKey {
+        ParticipantRegistrationPmsGroup1PrimaryKey {
+            groupid: self.groupid,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {}
+
+    fn partition_name(&self) -> String {
+        "participant_registration_pms_group_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for ParticipantRegistrationPmsGroup1 {
+    type Row = ParticipantRegistrationPmsGroup1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.groupid == row.groupid
+    }
+}
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroup1 {
+    type PrimaryKey = ParticipantRegistrationPmsGroup1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.groupid == key.groupid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ParticipantRegistrationPmsGroup1PrimaryKey {
+    pub groupid: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for ParticipantRegistrationPmsGroup1PrimaryKey {
+    type Row = ParticipantRegistrationPmsGroup1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.groupid == row.groupid
+    }
+}
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroup1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationPmsGroup1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.groupid == key.groupid
+    }
+}
+impl crate::PrimaryKey for ParticipantRegistrationPmsGroup1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for ParticipantRegistrationPmsGroup1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "groupid",
+                arrow2::datatypes::DataType::Decimal(20, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("createddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut groupid_array = Vec::new();
+        let mut createddate_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            groupid_array.push({
+                let mut val = row.groupid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            createddate_array.push(row.createddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(groupid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(20, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(createddate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## PMS_GROUPNMI
+///  _Describe the NMIs that a group uses to provide its service_
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Pms Groupnmi
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * GROUPNMIID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct ParticipantRegistrationPmsGroupnmi1 {
+    /// Record Identifier of the NMI within a Group. When data is updated, existing record identifier is terminated, and new record identifier(s) are allocated.
+    pub groupnmiid: rust_decimal::Decimal,
+    /// Group id of the Group which the NMI belongs in.
+    pub groupid: Option<rust_decimal::Decimal>,
+    /// Date for which this version is effective from
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub versionfrom: Option<chrono::NaiveDateTime>,
+    /// Date for which this version is effective to. Will be set to current day plus one if it is the current active record or past date if the record has been superseded/ended.
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub versionto: Option<chrono::NaiveDateTime>,
+    /// Effective date of when this service started operation
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    /// Date for which this version is effective to. Will be set to current day plus one if it is the current active record or past date if the record has been superseded/ended.
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    /// National Meter Identifier linked to the group.
+    pub nmi: Option<String>,
+    /// Site name
+    pub sitename: Option<String>,
+    /// Specifies whether NMI is in a NERR aggregated premises (TRUE = 1/FALSE = 0)
+    pub nerrgrouppremises: Option<rust_decimal::Decimal>,
+    /// Baseline methodology to be used for the PoL and Baseline assessment of the NMI
+    pub baselinemethodologyid: Option<String>,
+    /// Maximum responsive component for the NMI
+    pub mrc: Option<rust_decimal::Decimal>,
+    /// Reason for the MRC
+    pub mrcreason: Option<String>,
+    /// Retail customer of the NMI
+    pub retailcustomer: Option<String>,
+    /// Indicates whether the NMI has been suspended from use. (TRUE = 1/FALSE = 0)
+    pub suspended: Option<rust_decimal::Decimal>,
+    /// Indicates whether the NMI is unavailable for use. (TRUE = 1/FALSE = 0)
+    pub unavailable: Option<rust_decimal::Decimal>,
+    /// Date which this record was approved
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub approveddate: Option<chrono::NaiveDateTime>,
+    /// Date time which record was last changed
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for ParticipantRegistrationPmsGroupnmi1 {
+    type PrimaryKey = ParticipantRegistrationPmsGroupnmi1PrimaryKey;
+    type Partition = ();
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PMS_GROUPNMI".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+        ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+            groupnmiid: self.groupnmiid,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {}
+
+    fn partition_name(&self) -> String {
+        "participant_registration_pms_groupnmi_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for ParticipantRegistrationPmsGroupnmi1 {
+    type Row = ParticipantRegistrationPmsGroupnmi1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.groupnmiid == row.groupnmiid
+    }
+}
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupnmi1 {
+    type PrimaryKey = ParticipantRegistrationPmsGroupnmi1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.groupnmiid == key.groupnmiid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+    pub groupnmiid: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+    type Row = ParticipantRegistrationPmsGroupnmi1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.groupnmiid == row.groupnmiid
+    }
+}
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationPmsGroupnmi1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.groupnmiid == key.groupnmiid
+    }
+}
+impl crate::PrimaryKey for ParticipantRegistrationPmsGroupnmi1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "groupnmiid",
+                arrow2::datatypes::DataType::Decimal(20, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "groupid",
+                arrow2::datatypes::DataType::Decimal(20, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("versionfrom", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("versionto", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("nmi", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("sitename", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "nerrgrouppremises",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "baselinemethodologyid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("mrc", arrow2::datatypes::DataType::Decimal(10, 3), true),
+            arrow2::datatypes::Field::new(
+                "mrcreason",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "retailcustomer",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "suspended",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "unavailable",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "approveddate",
+                arrow2::datatypes::DataType::Date64,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut groupnmiid_array = Vec::new();
+        let mut groupid_array = Vec::new();
+        let mut versionfrom_array = Vec::new();
+        let mut versionto_array = Vec::new();
+        let mut startdate_array = Vec::new();
+        let mut enddate_array = Vec::new();
+        let mut nmi_array = Vec::new();
+        let mut sitename_array = Vec::new();
+        let mut nerrgrouppremises_array = Vec::new();
+        let mut baselinemethodologyid_array = Vec::new();
+        let mut mrc_array = Vec::new();
+        let mut mrcreason_array = Vec::new();
+        let mut retailcustomer_array = Vec::new();
+        let mut suspended_array = Vec::new();
+        let mut unavailable_array = Vec::new();
+        let mut approveddate_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            groupnmiid_array.push({
+                let mut val = row.groupnmiid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            groupid_array.push({
+                row.groupid.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            versionfrom_array.push(row.versionfrom.map(|val| val.timestamp_millis()));
+            versionto_array.push(row.versionto.map(|val| val.timestamp_millis()));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
+            nmi_array.push(row.nmi);
+            sitename_array.push(row.sitename);
+            nerrgrouppremises_array.push({
+                row.nerrgrouppremises.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            baselinemethodologyid_array.push(row.baselinemethodologyid);
+            mrc_array.push({
+                row.mrc.map(|mut val| {
+                    val.rescale(3);
+                    val.mantissa()
+                })
+            });
+            mrcreason_array.push(row.mrcreason);
+            retailcustomer_array.push(row.retailcustomer);
+            suspended_array.push({
+                row.suspended.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            unavailable_array.push({
+                row.unavailable.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            approveddate_array.push(row.approveddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(groupnmiid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(20, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(groupid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(20, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(versionfrom_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(versionto_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(startdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(enddate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(nmi_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(sitename_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(nerrgrouppremises_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    baselinemethodologyid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mrc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 3)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mrcreason_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(retailcustomer_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(suspended_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(unavailable_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(approveddate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## PMS_GROUPSERVICE
+///  _Describe the services a group provides and its relation to a market_
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Pms Groupservice
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * GROUPSERVICEID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct ParticipantRegistrationPmsGroupservice1 {
+    /// Record identifier of the Service allocated to the Group. When data is updated, existing record identifier is terminated, and new record identifier(s) are allocated.
+    pub groupserviceid: rust_decimal::Decimal,
+    /// Group id of the Group where the Service is attached to.
+    pub groupid: Option<rust_decimal::Decimal>,
+    /// Date for which this version is effective from.
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub versionfrom: Option<chrono::NaiveDateTime>,
+    /// Date for which this version is effective to. Will be set to max date 9999/12/31 23:59:59.999 until this version ends or a change to the version is required.
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub versionto: Option<chrono::NaiveDateTime>,
+    /// Effective date of when this service started operation
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub startdate: Option<chrono::NaiveDateTime>,
+    /// Effective date of when this service ended operation. Will be set to max date 9999/12/31 23:59:59.999 until its service ends or a change to the service is required.
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub enddate: Option<chrono::NaiveDateTime>,
+    /// Market that this group is operating its service in. Will only be NEM initially.
+    pub market: Option<String>,
+    /// Service that this group is operating. Will be only be ENERGY initially
+    pub servicetype: Option<String>,
+    /// Describes the entity that is operating. Will only be WDRU initially.
+    pub entitytype: Option<String>,
+    /// Describe the entity ID in the market that it will be operating in. Will only contain the DUID of the group initially.
+    pub entityid: Option<String>,
+    /// Maximum responsive component for the service offering
+    pub mrc: Option<rust_decimal::Decimal>,
+    /// Reason for the MRC.
+    pub mrcreason: Option<String>,
+    /// Maximum ramp rate MW per minute of the service.
+    pub maximumrampratepermin: Option<rust_decimal::Decimal>,
+    /// Region the group is operating this service in One of NSW1, QLD1, VIC1, SA1 or TAS1
+    pub region: Option<String>,
+    /// Date which this record was approved
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub approveddate: Option<chrono::NaiveDateTime>,
+    /// Date time which record was last changed
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl crate::GetTable for ParticipantRegistrationPmsGroupservice1 {
+    type PrimaryKey = ParticipantRegistrationPmsGroupservice1PrimaryKey;
+    type Partition = ();
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("PMS_GROUPSERVICE".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> ParticipantRegistrationPmsGroupservice1PrimaryKey {
+        ParticipantRegistrationPmsGroupservice1PrimaryKey {
+            groupserviceid: self.groupserviceid,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {}
+
+    fn partition_name(&self) -> String {
+        "participant_registration_pms_groupservice_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for ParticipantRegistrationPmsGroupservice1 {
+    type Row = ParticipantRegistrationPmsGroupservice1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.groupserviceid == row.groupserviceid
+    }
+}
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupservice1 {
+    type PrimaryKey = ParticipantRegistrationPmsGroupservice1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.groupserviceid == key.groupserviceid
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ParticipantRegistrationPmsGroupservice1PrimaryKey {
+    pub groupserviceid: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for ParticipantRegistrationPmsGroupservice1PrimaryKey {
+    type Row = ParticipantRegistrationPmsGroupservice1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.groupserviceid == row.groupserviceid
+    }
+}
+impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupservice1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationPmsGroupservice1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.groupserviceid == key.groupserviceid
+    }
+}
+impl crate::PrimaryKey for ParticipantRegistrationPmsGroupservice1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "groupserviceid",
+                arrow2::datatypes::DataType::Decimal(20, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "groupid",
+                arrow2::datatypes::DataType::Decimal(20, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("versionfrom", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("versionto", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("market", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "servicetype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "entitytype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("entityid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("mrc", arrow2::datatypes::DataType::Decimal(10, 3), true),
+            arrow2::datatypes::Field::new(
+                "mrcreason",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "maximumrampratepermin",
+                arrow2::datatypes::DataType::Decimal(10, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("region", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "approveddate",
+                arrow2::datatypes::DataType::Date64,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut groupserviceid_array = Vec::new();
+        let mut groupid_array = Vec::new();
+        let mut versionfrom_array = Vec::new();
+        let mut versionto_array = Vec::new();
+        let mut startdate_array = Vec::new();
+        let mut enddate_array = Vec::new();
+        let mut market_array = Vec::new();
+        let mut servicetype_array = Vec::new();
+        let mut entitytype_array = Vec::new();
+        let mut entityid_array = Vec::new();
+        let mut mrc_array = Vec::new();
+        let mut mrcreason_array = Vec::new();
+        let mut maximumrampratepermin_array = Vec::new();
+        let mut region_array = Vec::new();
+        let mut approveddate_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for (_, row) in partition {
+            groupserviceid_array.push({
+                let mut val = row.groupserviceid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            groupid_array.push({
+                row.groupid.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            versionfrom_array.push(row.versionfrom.map(|val| val.timestamp_millis()));
+            versionto_array.push(row.versionto.map(|val| val.timestamp_millis()));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
+            market_array.push(row.market);
+            servicetype_array.push(row.servicetype);
+            entitytype_array.push(row.entitytype);
+            entityid_array.push(row.entityid);
+            mrc_array.push({
+                row.mrc.map(|mut val| {
+                    val.rescale(3);
+                    val.mantissa()
+                })
+            });
+            mrcreason_array.push(row.mrcreason);
+            maximumrampratepermin_array.push({
+                row.maximumrampratepermin.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            region_array.push(row.region);
+            approveddate_array.push(row.approveddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(groupserviceid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(20, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(groupid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(20, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(versionfrom_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(versionto_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(startdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(enddate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(market_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(servicetype_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entitytype_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entityid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mrc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 3)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mrcreason_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(maximumrampratepermin_array)
+                        .to(arrow2::datatypes::DataType::Decimal(10, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(region_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(approveddate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4160,7 +4742,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4173,7 +4755,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4187,22 +4769,14 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             duid_array.push(row.duid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             stationid_array.push(row.stationid);
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4211,7 +4785,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array)),
                 std::sync::Arc::new(
@@ -4220,7 +4794,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4349,7 +4923,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStation1 {
             arrow2::datatypes::Field::new("city", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new("state", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new("postcode", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "connectionpointid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -4382,10 +4956,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStation1 {
             city_array.push(row.city);
             state_array.push(row.state);
             postcode_array.push(row.postcode);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             connectionpointid_array.push(row.connectionpointid);
         }
 
@@ -4403,7 +4974,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStation1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postcode_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     connectionpointid_array,
@@ -4528,7 +5099,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4549,10 +5120,10 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4567,12 +5138,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             stationid_array.push(row.stationid);
             versionno_array.push({
                 let mut val = row.versionno;
@@ -4581,14 +5147,8 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
             });
             status_array.push(row.status);
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4596,7 +5156,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array)),
                 std::sync::Arc::new(
@@ -4607,11 +5167,11 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4735,7 +5295,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4753,7 +5313,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4766,12 +5326,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
         let mut versionno_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             participantid_array.push(row.participantid);
             stationid_array.push(row.stationid);
             versionno_array.push({
@@ -4779,10 +5334,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4790,7 +5342,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
@@ -4802,7 +5354,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4922,7 +5474,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4942,10 +5494,10 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4959,12 +5511,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             participantid_array.push(row.participantid);
             versionno_array.push({
                 let mut val = row.versionno;
@@ -4972,14 +5519,8 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 val.mantissa()
             });
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4987,7 +5528,7 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
@@ -4999,11 +5540,11 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

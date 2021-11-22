@@ -31,10 +31,7 @@ fn main() -> anyhow::Result<()> {
 
     for location in LOCATIONS {
         let links = get_links(location).unwrap();
-        for link in links
-            .into_iter()
-            .take(num_files)
-        {
+        for link in links.into_iter().take(num_files) {
             download(location, &link, &storage_location)?;
         }
     }
@@ -70,11 +67,11 @@ fn download(base_url: &str, link: &str, local_path: &str) -> anyhow::Result<()> 
     let path = path::Path::new(&link);
     let file_name = get_filename_from_path(path)?;
     let file_url = format!("{}/{}", base_url, file_name);
-    
+
     let mut dest = path::PathBuf::new();
     dest.push(&local_path);
     dest.push(&link);
-    
+
     if !dest.as_path().exists() {
         info!("Getting: {}", file_url);
         for _ in 1..=4 {
@@ -84,18 +81,16 @@ fn download(base_url: &str, link: &str, local_path: &str) -> anyhow::Result<()> 
                     fs::write(dest, bytes)?;
                     return Ok(());
                 }
-                Err(e) => {
-                    match e.status() {
-                        Some(code) if code.as_u16() == 403 => {
-                            warn!("Rate limited by nemweb, retrying in 5 seconds");
-                            thread::sleep(time::Duration::from_secs(5));
-                            continue;
-                        } 
-                        _ => {
-                            return Err(anyhow::anyhow!(e));
-                        }
+                Err(e) => match e.status() {
+                    Some(code) if code.as_u16() == 403 => {
+                        warn!("Rate limited by nemweb, retrying in 5 seconds");
+                        thread::sleep(time::Duration::from_secs(5));
+                        continue;
                     }
-                }
+                    _ => {
+                        return Err(anyhow::anyhow!(e));
+                    }
+                },
             }
         }
     } else {
@@ -106,8 +101,8 @@ fn download(base_url: &str, link: &str, local_path: &str) -> anyhow::Result<()> 
 
 fn download_file(file_url: &str) -> Result<bytes::Bytes, reqwest::Error> {
     reqwest::blocking::get(file_url)?
-    .error_for_status()?
-    .bytes()
+        .error_for_status()?
+        .bytes()
 }
 
 fn get_links(url: &str) -> anyhow::Result<Vec<String>> {

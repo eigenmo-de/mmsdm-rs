@@ -234,7 +234,7 @@ impl crate::ArrowSchema for BillingAspayments6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "lower5min",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -380,10 +380,7 @@ impl crate::ArrowSchema for BillingAspayments6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             lower5min_array.push({
                 row.lower5min.map(|mut val| {
                     val.rescale(5);
@@ -490,7 +487,7 @@ impl crate::ArrowSchema for BillingAspayments6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5min_array)
@@ -788,7 +785,7 @@ impl crate::ArrowSchema for BillingAsrecovery7 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "raise6sec_gen",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -1034,10 +1031,7 @@ impl crate::ArrowSchema for BillingAsrecovery7 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             raise6sec_gen_array.push({
                 row.raise6sec_gen.map(|mut val| {
                     val.rescale(5);
@@ -1243,7 +1237,7 @@ impl crate::ArrowSchema for BillingAsrecovery7 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6sec_gen_array)
@@ -1521,7 +1515,7 @@ impl crate::ArrowSchema for BillingCpdata6 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("mda", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("afe", arrow2::datatypes::DataType::Decimal(18, 8), true),
             arrow2::datatypes::Field::new("dme", arrow2::datatypes::DataType::Decimal(18, 8), true),
@@ -1580,10 +1574,7 @@ impl crate::ArrowSchema for BillingCpdata6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             mda_array.push(row.mda);
             afe_array.push({
                 row.afe.map(|mut val| {
@@ -1642,7 +1633,7 @@ impl crate::ArrowSchema for BillingCpdata6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(mda_array)),
                 std::sync::Arc::new(
@@ -1810,7 +1801,7 @@ impl crate::ArrowSchema for BillingDaytrk5 {
             ),
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1818,7 +1809,7 @@ impl crate::ArrowSchema for BillingDaytrk5 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1847,23 +1838,14 @@ impl crate::ArrowSchema for BillingDaytrk5 {
                 val.rescale(0);
                 val.mantissa()
             });
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 row.runno.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1883,7 +1865,7 @@ impl crate::ArrowSchema for BillingDaytrk5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
@@ -1891,7 +1873,7 @@ impl crate::ArrowSchema for BillingDaytrk5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2076,7 +2058,7 @@ impl crate::ArrowSchema for BillingFees5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "participantcategoryid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2134,10 +2116,7 @@ impl crate::ArrowSchema for BillingFees5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             participantcategoryid_array.push(row.participantcategoryid);
         }
 
@@ -2176,7 +2155,7 @@ impl crate::ArrowSchema for BillingFees5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantcategoryid_array,
@@ -2359,7 +2338,7 @@ impl crate::ArrowSchema for BillingFinancialadjustments5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "financialcode",
                 arrow2::datatypes::DataType::Decimal(10, 0),
@@ -2418,10 +2397,7 @@ impl crate::ArrowSchema for BillingFinancialadjustments5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             financialcode_array.push({
                 row.financialcode.map(|mut val| {
                     val.rescale(0);
@@ -2463,7 +2439,7 @@ impl crate::ArrowSchema for BillingFinancialadjustments5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(financialcode_array)
@@ -2658,7 +2634,7 @@ impl crate::ArrowSchema for BillingGendata5 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "purchasedenergy",
                 arrow2::datatypes::DataType::Decimal(16, 6),
@@ -2722,10 +2698,7 @@ impl crate::ArrowSchema for BillingGendata5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             purchasedenergy_array.push({
                 row.purchasedenergy.map(|mut val| {
                     val.rescale(6);
@@ -2772,7 +2745,7 @@ impl crate::ArrowSchema for BillingGendata5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(purchasedenergy_array)
@@ -2962,7 +2935,7 @@ impl crate::ArrowSchema for BillingInterresidues5 {
                 arrow2::datatypes::DataType::Decimal(15, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "regionid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3020,10 +2993,7 @@ impl crate::ArrowSchema for BillingInterresidues5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             regionid_array.push(row.regionid);
         }
 
@@ -3062,7 +3032,7 @@ impl crate::ArrowSchema for BillingInterresidues5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
             ],
@@ -3234,7 +3204,7 @@ impl crate::ArrowSchema for BillingIntraresidues5 {
                 arrow2::datatypes::DataType::Decimal(15, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "regionid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3290,10 +3260,7 @@ impl crate::ArrowSchema for BillingIntraresidues5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             regionid_array.push(row.regionid);
         }
 
@@ -3329,7 +3296,7 @@ impl crate::ArrowSchema for BillingIntraresidues5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
             ],
@@ -3541,7 +3508,7 @@ impl crate::ArrowSchema for BillingIraucsurplus5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3604,10 +3571,7 @@ impl crate::ArrowSchema for BillingIraucsurplus5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3655,7 +3619,7 @@ impl crate::ArrowSchema for BillingIraucsurplus5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3886,7 +3850,7 @@ impl crate::ArrowSchema for BillingIraucsurplussum7 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -3977,10 +3941,7 @@ impl crate::ArrowSchema for BillingIraucsurplussum7 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -4051,7 +4012,7 @@ impl crate::ArrowSchema for BillingIraucsurplussum7 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -4064,220 +4025,6 @@ impl crate::ArrowSchema for BillingIraucsurplussum7 {
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(negative_residues_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
-            ],
-        )
-        .map_err(Into::into)
-    }
-}
-/// # Summary
-///
-/// ## BILLINGIRFM
-///  _BILLINGIRFM shows billing amounts associated with Industrial Relations Forced Majeure events for each participant._
-///
-/// * Data Set Name: Billing
-/// * File Name: Irfm
-/// * Data Version: 5
-///
-/// # Description
-///  BILLINGIRFM is confidential to the relevant participant. Source BILLINGIRFM is updated with each billing run as required.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * PARTICIPANTID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingIrfm5 {
-    /// Settlement Year
-    pub contractyear: rust_decimal::Decimal,
-    /// Week number starting 1 Jan each year.
-    pub weekno: rust_decimal::Decimal,
-    /// Unique bill run
-    pub billrunno: rust_decimal::Decimal,
-    /// Participant Identifier
-    pub participantid: String,
-    /// Industrial Relations Forced Majeure payment for the billing period.
-    pub irfmpayment: Option<rust_decimal::Decimal>,
-    /// Last changed.
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for BillingIrfm5 {
-    type PrimaryKey = BillingIrfm5PrimaryKey;
-    type Partition = ();
-
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("IRFM".into()),
-            version: 5,
-        }
-    }
-
-    fn primary_key(&self) -> BillingIrfm5PrimaryKey {
-        BillingIrfm5PrimaryKey {
-            billrunno: self.billrunno,
-            contractyear: self.contractyear,
-            participantid: self.participantid.clone(),
-            weekno: self.weekno,
-        }
-    }
-
-    fn partition_suffix(&self) -> Self::Partition {}
-
-    fn partition_name(&self) -> String {
-        "billing_irfm_v5".to_string()
-    }
-}
-impl crate::CompareWithRow for BillingIrfm5 {
-    type Row = BillingIrfm5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.billrunno == row.billrunno
-            && self.contractyear == row.contractyear
-            && self.participantid == row.participantid
-            && self.weekno == row.weekno
-    }
-}
-impl crate::CompareWithPrimaryKey for BillingIrfm5 {
-    type PrimaryKey = BillingIrfm5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.contractyear == key.contractyear
-            && self.participantid == key.participantid
-            && self.weekno == key.weekno
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingIrfm5PrimaryKey {
-    pub billrunno: rust_decimal::Decimal,
-    pub contractyear: rust_decimal::Decimal,
-    pub participantid: String,
-    pub weekno: rust_decimal::Decimal,
-}
-impl crate::CompareWithRow for BillingIrfm5PrimaryKey {
-    type Row = BillingIrfm5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.billrunno == row.billrunno
-            && self.contractyear == row.contractyear
-            && self.participantid == row.participantid
-            && self.weekno == row.weekno
-    }
-}
-impl crate::CompareWithPrimaryKey for BillingIrfm5PrimaryKey {
-    type PrimaryKey = BillingIrfm5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.contractyear == key.contractyear
-            && self.participantid == key.participantid
-            && self.weekno == key.weekno
-    }
-}
-impl crate::PrimaryKey for BillingIrfm5PrimaryKey {}
-#[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for BillingIrfm5 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
-            arrow2::datatypes::Field::new(
-                "contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "weekno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "billrunno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "irfmpayment",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-        ])
-    }
-
-    fn partition_to_record_batch(
-        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
-        let mut contractyear_array = Vec::new();
-        let mut weekno_array = Vec::new();
-        let mut billrunno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut irfmpayment_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for (_, row) in partition {
-            contractyear_array.push({
-                let mut val = row.contractyear;
-                val.rescale(0);
-                val.mantissa()
-            });
-            weekno_array.push({
-                let mut val = row.weekno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            billrunno_array.push({
-                let mut val = row.billrunno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            participantid_array.push(row.participantid);
-            irfmpayment_array.push({
-                row.irfmpayment.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-        }
-
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
-                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(irfmpayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
                 ),
             ],
         )
@@ -4488,7 +4235,7 @@ impl crate::ArrowSchema for BillingIrnspsurplus5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4551,10 +4298,7 @@ impl crate::ArrowSchema for BillingIrnspsurplus5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4602,7 +4346,7 @@ impl crate::ArrowSchema for BillingIrnspsurplus5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4824,7 +4568,7 @@ impl crate::ArrowSchema for BillingIrnspsurplussum6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -4902,10 +4646,7 @@ impl crate::ArrowSchema for BillingIrnspsurplussum6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -4966,7 +4707,7 @@ impl crate::ArrowSchema for BillingIrnspsurplussum6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -5187,7 +4928,7 @@ impl crate::ArrowSchema for BillingIrpartsurplus5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "actualpayment",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -5256,10 +4997,7 @@ impl crate::ArrowSchema for BillingIrpartsurplus5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             actualpayment_array.push({
                 row.actualpayment.map(|mut val| {
                     val.rescale(5);
@@ -5313,7 +5051,7 @@ impl crate::ArrowSchema for BillingIrpartsurplus5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(actualpayment_array)
@@ -5548,7 +5286,7 @@ impl crate::ArrowSchema for BillingIrpartsurplussum7 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -5639,10 +5377,7 @@ impl crate::ArrowSchema for BillingIrpartsurplussum7 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -5713,7 +5448,7 @@ impl crate::ArrowSchema for BillingIrpartsurplussum7 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -5941,7 +5676,7 @@ impl crate::ArrowSchema for BillingPrioradjustments5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "irsr_prevamount",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -6041,10 +5776,7 @@ impl crate::ArrowSchema for BillingPrioradjustments5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             irsr_prevamount_array.push({
                 row.irsr_prevamount.map(|mut val| {
                     val.rescale(5);
@@ -6117,7 +5849,7 @@ impl crate::ArrowSchema for BillingPrioradjustments5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(irsr_prevamount_array)
@@ -6291,7 +6023,7 @@ impl crate::ArrowSchema for BillingRealloc5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -6329,10 +6061,7 @@ impl crate::ArrowSchema for BillingRealloc5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6362,7 +6091,7 @@ impl crate::ArrowSchema for BillingRealloc5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6538,7 +6267,7 @@ impl crate::ArrowSchema for BillingReallocDetail5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -6578,10 +6307,7 @@ impl crate::ArrowSchema for BillingReallocDetail5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6614,7 +6340,7 @@ impl crate::ArrowSchema for BillingReallocDetail5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6797,7 +6523,7 @@ impl crate::ArrowSchema for BillingRegionexports5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -6856,10 +6582,7 @@ impl crate::ArrowSchema for BillingRegionexports5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6897,7 +6620,7 @@ impl crate::ArrowSchema for BillingRegionexports5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6911,7 +6634,7 @@ impl crate::ArrowSchema for BillingRegionexports5 {
 ///
 /// * Data Set Name: Billing
 /// * File Name: Regionfigures
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 ///  BILLINGREGIONFIGURES is public data, and is available to all participants. Source BILLINGREGIONFIGURES is populated by the posting of a billing run. Volume Five records inserted per billing run, or 55 records inserted per week.
@@ -6926,7 +6649,7 @@ impl crate::ArrowSchema for BillingRegionexports5 {
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingRegionfigures5 {
+pub struct BillingRegionfigures6 {
     /// AEMO Contract Year number starting in week containing 1st January
     pub contractyear: rust_decimal::Decimal,
     /// Week no within the contract year. Week no 1 is the week containing 1st January
@@ -6965,20 +6688,20 @@ pub struct BillingRegionfigures5 {
     /// WDR transaction amount in $
     pub wdrta: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for BillingRegionfigures5 {
-    type PrimaryKey = BillingRegionfigures5PrimaryKey;
+impl crate::GetTable for BillingRegionfigures6 {
+    type PrimaryKey = BillingRegionfigures6PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("REGIONFIGURES".into()),
-            version: 5,
+            version: 6,
         }
     }
 
-    fn primary_key(&self) -> BillingRegionfigures5PrimaryKey {
-        BillingRegionfigures5PrimaryKey {
+    fn primary_key(&self) -> BillingRegionfigures6PrimaryKey {
+        BillingRegionfigures6PrimaryKey {
             billrunno: self.billrunno,
             contractyear: self.contractyear,
             regionid: self.regionid.clone(),
@@ -6989,11 +6712,11 @@ impl crate::GetTable for BillingRegionfigures5 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "billing_regionfigures_v5".to_string()
+        "billing_regionfigures_v6".to_string()
     }
 }
-impl crate::CompareWithRow for BillingRegionfigures5 {
-    type Row = BillingRegionfigures5;
+impl crate::CompareWithRow for BillingRegionfigures6 {
+    type Row = BillingRegionfigures6;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno
@@ -7002,8 +6725,8 @@ impl crate::CompareWithRow for BillingRegionfigures5 {
             && self.weekno == row.weekno
     }
 }
-impl crate::CompareWithPrimaryKey for BillingRegionfigures5 {
-    type PrimaryKey = BillingRegionfigures5PrimaryKey;
+impl crate::CompareWithPrimaryKey for BillingRegionfigures6 {
+    type PrimaryKey = BillingRegionfigures6PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno
@@ -7013,14 +6736,14 @@ impl crate::CompareWithPrimaryKey for BillingRegionfigures5 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingRegionfigures5PrimaryKey {
+pub struct BillingRegionfigures6PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub regionid: String,
     pub weekno: rust_decimal::Decimal,
 }
-impl crate::CompareWithRow for BillingRegionfigures5PrimaryKey {
-    type Row = BillingRegionfigures5;
+impl crate::CompareWithRow for BillingRegionfigures6PrimaryKey {
+    type Row = BillingRegionfigures6;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno
@@ -7029,8 +6752,8 @@ impl crate::CompareWithRow for BillingRegionfigures5PrimaryKey {
             && self.weekno == row.weekno
     }
 }
-impl crate::CompareWithPrimaryKey for BillingRegionfigures5PrimaryKey {
-    type PrimaryKey = BillingRegionfigures5PrimaryKey;
+impl crate::CompareWithPrimaryKey for BillingRegionfigures6PrimaryKey {
+    type PrimaryKey = BillingRegionfigures6PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno
@@ -7039,9 +6762,9 @@ impl crate::CompareWithPrimaryKey for BillingRegionfigures5PrimaryKey {
             && self.weekno == key.weekno
     }
 }
-impl crate::PrimaryKey for BillingRegionfigures5PrimaryKey {}
+impl crate::PrimaryKey for BillingRegionfigures6PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for BillingRegionfigures5 {
+impl crate::ArrowSchema for BillingRegionfigures6 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
@@ -7119,7 +6842,7 @@ impl crate::ArrowSchema for BillingRegionfigures5 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "wdrsq",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -7237,10 +6960,7 @@ impl crate::ArrowSchema for BillingRegionfigures5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             wdrsq_array.push({
                 row.wdrsq.map(|mut val| {
                     val.rescale(8);
@@ -7317,7 +7037,7 @@ impl crate::ArrowSchema for BillingRegionfigures5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(wdrsq_array)
@@ -7508,7 +7228,7 @@ impl crate::ArrowSchema for BillingRegionimports5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -7567,10 +7287,7 @@ impl crate::ArrowSchema for BillingRegionimports5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -7610,7 +7327,7 @@ impl crate::ArrowSchema for BillingRegionimports5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -7773,7 +7490,7 @@ impl crate::ArrowSchema for BillingRuntrk5 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -7781,12 +7498,12 @@ impl crate::ArrowSchema for BillingRuntrk5 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("postby", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "receiptpostdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -7796,7 +7513,7 @@ impl crate::ArrowSchema for BillingRuntrk5 {
             ),
             arrow2::datatypes::Field::new(
                 "paymentpostdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -7854,29 +7571,14 @@ impl crate::ArrowSchema for BillingRuntrk5 {
             });
             status_array.push(row.status);
             adj_cleared_array.push(row.adj_cleared);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            postdate_array.push(row.postdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            postdate_array.push(row.postdate.map(|val| val.timestamp_millis()));
             postby_array.push(row.postby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            receiptpostdate_array.push(row.receiptpostdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            receiptpostdate_array.push(row.receiptpostdate.map(|val| val.timestamp_millis()));
             receiptpostby_array.push(row.receiptpostby);
-            paymentpostdate_array.push(row.paymentpostdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            paymentpostdate_array.push(row.paymentpostdate.map(|val| val.timestamp_millis()));
             paymentpostby_array.push(row.paymentpostby);
             shortfall_array.push({
                 row.shortfall.map(|mut val| {
@@ -7911,26 +7613,26 @@ impl crate::ArrowSchema for BillingRuntrk5 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(adj_cleared_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(postdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(receiptpostdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(receiptpostby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(paymentpostdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(paymentpostby_array)),
                 std::sync::Arc::new(
@@ -8106,7 +7808,7 @@ impl crate::ArrowSchema for BillingApcCompensation2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8138,10 +7840,7 @@ impl crate::ArrowSchema for BillingApcCompensation2 {
             });
             event_type_array.push(row.event_type);
             compensation_type_array.push(row.compensation_type);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8165,7 +7864,7 @@ impl crate::ArrowSchema for BillingApcCompensation2 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8351,12 +8050,12 @@ impl crate::ArrowSchema for BillingApcRecovery2 {
             ),
             arrow2::datatypes::Field::new(
                 "eligibility_start_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "eligibility_end_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -8369,7 +8068,7 @@ impl crate::ArrowSchema for BillingApcRecovery2 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8403,14 +8102,14 @@ impl crate::ArrowSchema for BillingApcRecovery2 {
                     val.mantissa()
                 })
             });
-            eligibility_start_interval_array.push(row.eligibility_start_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            eligibility_end_interval_array.push(row.eligibility_end_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            eligibility_start_interval_array.push(
+                row.eligibility_start_interval
+                    .map(|val| val.timestamp_millis()),
+            );
+            eligibility_end_interval_array.push(
+                row.eligibility_end_interval
+                    .map(|val| val.timestamp_millis()),
+            );
             participant_demand_array.push({
                 row.participant_demand.map(|mut val| {
                     val.rescale(8);
@@ -8423,10 +8122,7 @@ impl crate::ArrowSchema for BillingApcRecovery2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8449,11 +8145,11 @@ impl crate::ArrowSchema for BillingApcRecovery2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eligibility_start_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eligibility_end_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(participant_demand_array)
@@ -8465,7 +8161,7 @@ impl crate::ArrowSchema for BillingApcRecovery2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8610,7 +8306,7 @@ impl crate::ArrowSchema for BillingBillingCo2ePublication1 {
             arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -8651,13 +8347,7 @@ impl crate::ArrowSchema for BillingBillingCo2ePublication1 {
             contractyear_array.push(row.contractyear);
             weekno_array.push(row.weekno);
             billrunno_array.push(row.billrunno);
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             regionid_array.push(row.regionid);
             sentoutenergy_array.push({
                 row.sentoutenergy.map(|mut val| {
@@ -8689,7 +8379,7 @@ impl crate::ArrowSchema for BillingBillingCo2ePublication1 {
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
@@ -8809,7 +8499,7 @@ impl crate::ArrowSchema for BillingBillingCo2ePublicationTrk1 {
             ),
             arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
             arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8824,10 +8514,7 @@ impl crate::ArrowSchema for BillingBillingCo2ePublicationTrk1 {
             contractyear_array.push(row.contractyear);
             weekno_array.push(row.weekno);
             billrunno_array.push(row.billrunno);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8840,7 +8527,7 @@ impl crate::ArrowSchema for BillingBillingCo2ePublicationTrk1 {
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from(billrunno_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -9010,7 +8697,7 @@ impl crate::ArrowSchema for BillingDailyEnergySummary1 {
             ),
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -9069,13 +8756,7 @@ impl crate::ArrowSchema for BillingDailyEnergySummary1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             participantid_array.push(row.participantid);
             regionid_array.push(row.regionid);
             customer_energy_purchased_array.push({
@@ -9115,7 +8796,7 @@ impl crate::ArrowSchema for BillingDailyEnergySummary1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
@@ -9132,351 +8813,6 @@ impl crate::ArrowSchema for BillingDailyEnergySummary1 {
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(generator_energy_purchased_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
-            ],
-        )
-        .map_err(Into::into)
-    }
-}
-/// # Summary
-///
-/// ## BILLING_DIRECTION_RECONCILIATN
-///  _Billing reconciliation result table for both provisional and final directions using the FPP methodology (prior to 1st July 2011)_
-///
-/// * Data Set Name: Billing
-/// * File Name: Direction Reconciliatn
-/// * Data Version: 1
-///
-/// # Description
-///  Source BILLING_DIRECTION_RECONCILIATN is populated by the posting of a billing run. Volume One record inserted per direction per billing run, or 11 records inserted per week. Presently
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * DIRECTION_ID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingDirectionReconciliatn1 {
-    /// Billing contract year
-    pub contractyear: i64,
-    /// Billing week no
-    pub weekno: i64,
-    /// Billing run no
-    pub billrunno: i64,
-    /// Direction identifier
-    pub direction_id: String,
-    /// Direction description
-    pub direction_desc: Option<String>,
-    /// Direction start date time
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub direction_start_date: Option<chrono::NaiveDateTime>,
-    /// Direction end date time
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub direction_end_date: Option<chrono::NaiveDateTime>,
-    /// Direction compensation amount
-    pub compensation_amount: Option<rust_decimal::Decimal>,
-    /// Independent expert fee charged on calculating direction compensation amount
-    pub independent_expert_fee: Option<rust_decimal::Decimal>,
-    /// Interest occurred on direction compensation amount
-    pub interest_amount: Option<rust_decimal::Decimal>,
-    /// Direction compensation recovery amount
-    pub cra: Option<rust_decimal::Decimal>,
-    /// Fixed settlement fee identifier for direction purpose
-    pub nem_fee_id: Option<String>,
-    /// Fixed settlement fee for participants between direction start and end date
-    pub nem_fixed_fee_amount: Option<rust_decimal::Decimal>,
-    /// Direction compensation recovery amount percentage breakdown among customers
-    pub mkt_customer_perc: Option<rust_decimal::Decimal>,
-    /// Direction compensation recovery amount percentage breakdown among generators
-    pub generator_perc: Option<rust_decimal::Decimal>,
-    /// Last changed date time
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-}
-impl crate::GetTable for BillingDirectionReconciliatn1 {
-    type PrimaryKey = BillingDirectionReconciliatn1PrimaryKey;
-    type Partition = ();
-
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("DIRECTION_RECONCILIATN".into()),
-            version: 1,
-        }
-    }
-
-    fn primary_key(&self) -> BillingDirectionReconciliatn1PrimaryKey {
-        BillingDirectionReconciliatn1PrimaryKey {
-            billrunno: self.billrunno,
-            contractyear: self.contractyear,
-            direction_id: self.direction_id.clone(),
-            weekno: self.weekno,
-        }
-    }
-
-    fn partition_suffix(&self) -> Self::Partition {}
-
-    fn partition_name(&self) -> String {
-        "billing_direction_reconciliatn_v1".to_string()
-    }
-}
-impl crate::CompareWithRow for BillingDirectionReconciliatn1 {
-    type Row = BillingDirectionReconciliatn1;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.billrunno == row.billrunno
-            && self.contractyear == row.contractyear
-            && self.direction_id == row.direction_id
-            && self.weekno == row.weekno
-    }
-}
-impl crate::CompareWithPrimaryKey for BillingDirectionReconciliatn1 {
-    type PrimaryKey = BillingDirectionReconciliatn1PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.contractyear == key.contractyear
-            && self.direction_id == key.direction_id
-            && self.weekno == key.weekno
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingDirectionReconciliatn1PrimaryKey {
-    pub billrunno: i64,
-    pub contractyear: i64,
-    pub direction_id: String,
-    pub weekno: i64,
-}
-impl crate::CompareWithRow for BillingDirectionReconciliatn1PrimaryKey {
-    type Row = BillingDirectionReconciliatn1;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.billrunno == row.billrunno
-            && self.contractyear == row.contractyear
-            && self.direction_id == row.direction_id
-            && self.weekno == row.weekno
-    }
-}
-impl crate::CompareWithPrimaryKey for BillingDirectionReconciliatn1PrimaryKey {
-    type PrimaryKey = BillingDirectionReconciliatn1PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.contractyear == key.contractyear
-            && self.direction_id == key.direction_id
-            && self.weekno == key.weekno
-    }
-}
-impl crate::PrimaryKey for BillingDirectionReconciliatn1PrimaryKey {}
-#[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for BillingDirectionReconciliatn1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
-            arrow2::datatypes::Field::new(
-                "contractyear",
-                arrow2::datatypes::DataType::Int64,
-                false,
-            ),
-            arrow2::datatypes::Field::new("weekno", arrow2::datatypes::DataType::Int64, false),
-            arrow2::datatypes::Field::new("billrunno", arrow2::datatypes::DataType::Int64, false),
-            arrow2::datatypes::Field::new(
-                "direction_id",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "direction_desc",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "direction_start_date",
-                arrow2::datatypes::DataType::Date32,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "direction_end_date",
-                arrow2::datatypes::DataType::Date32,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "compensation_amount",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "independent_expert_fee",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "interest_amount",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new("cra", arrow2::datatypes::DataType::Decimal(16, 6), true),
-            arrow2::datatypes::Field::new(
-                "nem_fee_id",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "nem_fixed_fee_amount",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "mkt_customer_perc",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "generator_perc",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-        ])
-    }
-
-    fn partition_to_record_batch(
-        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
-        let mut contractyear_array = Vec::new();
-        let mut weekno_array = Vec::new();
-        let mut billrunno_array = Vec::new();
-        let mut direction_id_array = Vec::new();
-        let mut direction_desc_array = Vec::new();
-        let mut direction_start_date_array = Vec::new();
-        let mut direction_end_date_array = Vec::new();
-        let mut compensation_amount_array = Vec::new();
-        let mut independent_expert_fee_array = Vec::new();
-        let mut interest_amount_array = Vec::new();
-        let mut cra_array = Vec::new();
-        let mut nem_fee_id_array = Vec::new();
-        let mut nem_fixed_fee_amount_array = Vec::new();
-        let mut mkt_customer_perc_array = Vec::new();
-        let mut generator_perc_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for (_, row) in partition {
-            contractyear_array.push(row.contractyear);
-            weekno_array.push(row.weekno);
-            billrunno_array.push(row.billrunno);
-            direction_id_array.push(row.direction_id);
-            direction_desc_array.push(row.direction_desc);
-            direction_start_date_array.push(row.direction_start_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            direction_end_date_array.push(row.direction_end_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            compensation_amount_array.push({
-                row.compensation_amount.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            independent_expert_fee_array.push({
-                row.independent_expert_fee.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            interest_amount_array.push({
-                row.interest_amount.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            cra_array.push({
-                row.cra.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            nem_fee_id_array.push(row.nem_fee_id);
-            nem_fixed_fee_amount_array.push({
-                row.nem_fixed_fee_amount.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            mkt_customer_perc_array.push({
-                row.mkt_customer_perc.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            generator_perc_array.push({
-                row.generator_perc.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-        }
-
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
-                    contractyear_array,
-                )),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(weekno_array)),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(billrunno_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    direction_id_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(direction_desc_array)),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(direction_start_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(direction_end_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(compensation_amount_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(independent_expert_fee_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(interest_amount_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(cra_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(nem_fee_id_array)),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(nem_fixed_fee_amount_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(mkt_customer_perc_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(generator_perc_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
                 ),
             ],
         )
@@ -9661,22 +8997,22 @@ impl crate::ArrowSchema for BillingBillingDirectionReconOther1 {
             ),
             arrow2::datatypes::Field::new(
                 "direction_start_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "direction_end_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "direction_start_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "direction_end_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -9742,22 +9078,15 @@ impl crate::ArrowSchema for BillingBillingDirectionReconOther1 {
             regionid_array.push(row.regionid);
             direction_desc_array.push(row.direction_desc);
             direction_type_id_array.push(row.direction_type_id);
-            direction_start_date_array.push(row.direction_start_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            direction_end_date_array.push(row.direction_end_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            direction_start_interval_array.push(row.direction_start_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            direction_end_interval_array.push(row.direction_end_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            direction_start_date_array
+                .push(row.direction_start_date.map(|val| val.timestamp_millis()));
+            direction_end_date_array.push(row.direction_end_date.map(|val| val.timestamp_millis()));
+            direction_start_interval_array.push(
+                row.direction_start_interval
+                    .map(|val| val.timestamp_millis()),
+            );
+            direction_end_interval_array
+                .push(row.direction_end_interval.map(|val| val.timestamp_millis()));
             compensation_amount_array.push({
                 row.compensation_amount.map(|mut val| {
                     val.rescale(8);
@@ -9820,19 +9149,19 @@ impl crate::ArrowSchema for BillingBillingDirectionReconOther1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(direction_start_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(direction_end_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(direction_start_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(direction_end_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(compensation_amount_array)
@@ -10548,7 +9877,7 @@ impl crate::ArrowSchema for BillingGstDetail5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -10595,10 +9924,7 @@ impl crate::ArrowSchema for BillingGstDetail5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -10633,7 +9959,7 @@ impl crate::ArrowSchema for BillingGstDetail5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -10802,7 +10128,7 @@ impl crate::ArrowSchema for BillingGstSummary5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -10847,10 +10173,7 @@ impl crate::ArrowSchema for BillingGstSummary5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -10882,7 +10205,7 @@ impl crate::ArrowSchema for BillingGstSummary5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -11326,12 +10649,12 @@ impl crate::ArrowSchema for BillingNmasTstRecovery1 {
             ),
             arrow2::datatypes::Field::new(
                 "recovery_start_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "recovery_end_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -11374,7 +10697,7 @@ impl crate::ArrowSchema for BillingNmasTstRecovery1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -11433,14 +10756,9 @@ impl crate::ArrowSchema for BillingNmasTstRecovery1 {
                     val.mantissa()
                 })
             });
-            recovery_start_date_array.push(row.recovery_start_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            recovery_end_date_array.push(row.recovery_end_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            recovery_start_date_array
+                .push(row.recovery_start_date.map(|val| val.timestamp_millis()));
+            recovery_end_date_array.push(row.recovery_end_date.map(|val| val.timestamp_millis()));
             participant_energy_array.push({
                 row.participant_energy.map(|mut val| {
                     val.rescale(8);
@@ -11489,10 +10807,7 @@ impl crate::ArrowSchema for BillingNmasTstRecovery1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -11528,11 +10843,11 @@ impl crate::ArrowSchema for BillingNmasTstRecovery1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(recovery_start_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(recovery_end_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(participant_energy_array)
@@ -11568,7 +10883,7 @@ impl crate::ArrowSchema for BillingNmasTstRecovery1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -11749,7 +11064,7 @@ impl crate::ArrowSchema for BillingNmasTstRecvryRbf1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -11803,10 +11118,7 @@ impl crate::ArrowSchema for BillingNmasTstRecvryRbf1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -11843,7 +11155,7 @@ impl crate::ArrowSchema for BillingNmasTstRecvryRbf1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -12692,7 +12004,7 @@ impl crate::ArrowSchema for BillingSecdepInterestRate1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -12729,12 +12041,7 @@ impl crate::ArrowSchema for BillingSecdepInterestRate1 {
                 val.mantissa()
             });
             interest_acct_id_array.push(row.interest_acct_id);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             interest_rate_array.push({
                 row.interest_rate.map(|mut val| {
                     val.rescale(8);
@@ -12763,10 +12070,965 @@ impl crate::ArrowSchema for BillingSecdepInterestRate1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(interest_rate_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_SUBST_DEMAND
+///  _Demand Values Substituted in Billing Calculation_
+///
+/// * Data Set Name: Billing
+/// * File Name: Subst Demand
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * SETTLEMENTDATE
+/// * TNI
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingSubstDemand1 {
+    /// Billing contract year
+    pub contractyear: rust_decimal::Decimal,
+    /// Billing week number
+    pub weekno: rust_decimal::Decimal,
+    /// Billing run number
+    pub billrunno: rust_decimal::Decimal,
+    /// Settlement Date
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Unique identifier for the connection point
+    pub tni: String,
+    /// Unique identifier for the participant
+    pub participantid: String,
+    /// Unique identifier for the region to which the TNI belongs to on this settlement date
+    pub regionid: Option<String>,
+    /// Substitute metered quantity for non-energy recovery in MWh for the TNI and participant in the trading interval. A negative value indicates net consumption and a positive value indicates net generation
+    pub substitutedemand: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for BillingSubstDemand1 {
+    type PrimaryKey = BillingSubstDemand1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("SUBST_DEMAND".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> BillingSubstDemand1PrimaryKey {
+        BillingSubstDemand1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            participantid: self.participantid.clone(),
+            settlementdate: self.settlementdate,
+            tni: self.tni.clone(),
+            weekno: self.weekno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "billing_subst_demand_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for BillingSubstDemand1 {
+    type Row = BillingSubstDemand1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.settlementdate == row.settlementdate
+            && self.tni == row.tni
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSubstDemand1 {
+    type PrimaryKey = BillingSubstDemand1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.settlementdate == key.settlementdate
+            && self.tni == key.tni
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingSubstDemand1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub tni: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingSubstDemand1PrimaryKey {
+    type Row = BillingSubstDemand1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.settlementdate == row.settlementdate
+            && self.tni == row.tni
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSubstDemand1PrimaryKey {
+    type PrimaryKey = BillingSubstDemand1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.settlementdate == key.settlementdate
+            && self.tni == key.tni
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingSubstDemand1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingSubstDemand1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("tni", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "substitutedemand",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut settlementdate_array = Vec::new();
+        let mut tni_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut substitutedemand_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            tni_array.push(row.tni);
+            participantid_array.push(row.participantid);
+            regionid_array.push(row.regionid);
+            substitutedemand_array.push({
+                row.substitutedemand.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(tni_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(substitutedemand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_SUBST_RUN_VERSION
+///  _Details of settlement runs used as input in the substitute demand calculation_
+///
+/// * Data Set Name: Billing
+/// * File Name: Subst Run Version
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * REFERENCESETTLEMENTDATE
+/// * REFERENCESETTLEMENTRUNNO
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingSubstRunVersion1 {
+    /// Billing contract year
+    pub contractyear: rust_decimal::Decimal,
+    /// Billing week number
+    pub weekno: rust_decimal::Decimal,
+    /// Billing run number
+    pub billrunno: rust_decimal::Decimal,
+    /// Settlement Date
+    #[serde(with = "crate::mms_datetime")]
+    pub referencesettlementdate: chrono::NaiveDateTime,
+    /// The settlement run number matching the settlement date for a settlement run included in the reference period
+    pub referencesettlementrunno: rust_decimal::Decimal,
+}
+impl crate::GetTable for BillingSubstRunVersion1 {
+    type PrimaryKey = BillingSubstRunVersion1PrimaryKey;
+    type Partition = ();
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("SUBST_RUN_VERSION".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> BillingSubstRunVersion1PrimaryKey {
+        BillingSubstRunVersion1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            referencesettlementdate: self.referencesettlementdate,
+            referencesettlementrunno: self.referencesettlementrunno,
+            weekno: self.weekno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {}
+
+    fn partition_name(&self) -> String {
+        "billing_subst_run_version_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingSubstRunVersion1 {
+    type Row = BillingSubstRunVersion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.referencesettlementdate == row.referencesettlementdate
+            && self.referencesettlementrunno == row.referencesettlementrunno
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSubstRunVersion1 {
+    type PrimaryKey = BillingSubstRunVersion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.referencesettlementdate == key.referencesettlementdate
+            && self.referencesettlementrunno == key.referencesettlementrunno
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingSubstRunVersion1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub referencesettlementdate: chrono::NaiveDateTime,
+    pub referencesettlementrunno: rust_decimal::Decimal,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingSubstRunVersion1PrimaryKey {
+    type Row = BillingSubstRunVersion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.referencesettlementdate == row.referencesettlementdate
+            && self.referencesettlementrunno == row.referencesettlementrunno
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingSubstRunVersion1PrimaryKey {
+    type PrimaryKey = BillingSubstRunVersion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.referencesettlementdate == key.referencesettlementdate
+            && self.referencesettlementrunno == key.referencesettlementrunno
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingSubstRunVersion1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingSubstRunVersion1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "referencesettlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "referencesettlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut referencesettlementdate_array = Vec::new();
+        let mut referencesettlementrunno_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            referencesettlementdate_array.push(row.referencesettlementdate.timestamp_millis());
+            referencesettlementrunno_array.push({
+                let mut val = row.referencesettlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(referencesettlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(referencesettlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_WDR
+///  _Billing WDR Transaction Weekly Summary_
+///
+/// * Data Set Name: Billing
+/// * File Name: Wdr
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingWdr1 {
+    /// Contract year of the Billing run
+    pub contractyear: rust_decimal::Decimal,
+    /// Week number of the Billing run
+    pub weekno: rust_decimal::Decimal,
+    /// Billing run number identifier
+    pub billrunno: rust_decimal::Decimal,
+    /// DRSP or FRMP Participant Identifier
+    pub participantid: String,
+    /// WDR credit transaction amount
+    pub wdr_credit_amount: Option<rust_decimal::Decimal>,
+    /// WDR debit transaction amount
+    pub wdr_debit_amount: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for BillingWdr1 {
+    type PrimaryKey = BillingWdr1PrimaryKey;
+    type Partition = ();
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("WDR".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> BillingWdr1PrimaryKey {
+        BillingWdr1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            participantid: self.participantid.clone(),
+            weekno: self.weekno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {}
+
+    fn partition_name(&self) -> String {
+        "billing_wdr_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingWdr1 {
+    type Row = BillingWdr1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingWdr1 {
+    type PrimaryKey = BillingWdr1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingWdr1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingWdr1PrimaryKey {
+    type Row = BillingWdr1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingWdr1PrimaryKey {
+    type PrimaryKey = BillingWdr1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingWdr1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingWdr1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdr_credit_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdr_debit_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut wdr_credit_amount_array = Vec::new();
+        let mut wdr_debit_amount_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            wdr_credit_amount_array.push({
+                row.wdr_credit_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            wdr_debit_amount_array.push({
+                row.wdr_debit_amount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdr_credit_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdr_debit_amount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_WDR_DETAIL
+///  _Billing WDR transaction detail summary_
+///
+/// * Data Set Name: Billing
+/// * File Name: Wdr Detail
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * DRSP
+/// * FRMP
+/// * REGIONID
+/// * WDRRRPERIOD
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingWdrDetail1 {
+    /// Contract year of the Billing run
+    pub contractyear: rust_decimal::Decimal,
+    /// Week number of the Billing run
+    pub weekno: rust_decimal::Decimal,
+    /// Billing run number identifier
+    pub billrunno: rust_decimal::Decimal,
+    /// Unique identifier for the period to which the WDRRR applies. For quarter-based periods, this will be equal to YYYY[Q]NN, for example, 2020Q3 for 2020 Quarter 3.
+    pub wdrrrperiod: String,
+    /// Region identifier
+    pub regionid: String,
+    /// Financial Responsible Market Participant Identifier
+    pub frmp: String,
+    /// Demand Response Service Provider Identifier
+    pub drsp: String,
+    /// WDR Settlement Quantity capped in MWh
+    pub wdrsq: Option<rust_decimal::Decimal>,
+    /// WDR reimbursement rate in $/MWh
+    pub wdrrr: Option<rust_decimal::Decimal>,
+    /// WDR transaction amount in $ for demand response
+    pub wdrta: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for BillingWdrDetail1 {
+    type PrimaryKey = BillingWdrDetail1PrimaryKey;
+    type Partition = ();
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("WDR_DETAIL".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> BillingWdrDetail1PrimaryKey {
+        BillingWdrDetail1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            drsp: self.drsp.clone(),
+            frmp: self.frmp.clone(),
+            regionid: self.regionid.clone(),
+            wdrrrperiod: self.wdrrrperiod.clone(),
+            weekno: self.weekno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {}
+
+    fn partition_name(&self) -> String {
+        "billing_wdr_detail_v1".to_string()
+    }
+}
+impl crate::CompareWithRow for BillingWdrDetail1 {
+    type Row = BillingWdrDetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.drsp == row.drsp
+            && self.frmp == row.frmp
+            && self.regionid == row.regionid
+            && self.wdrrrperiod == row.wdrrrperiod
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingWdrDetail1 {
+    type PrimaryKey = BillingWdrDetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.drsp == key.drsp
+            && self.frmp == key.frmp
+            && self.regionid == key.regionid
+            && self.wdrrrperiod == key.wdrrrperiod
+            && self.weekno == key.weekno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingWdrDetail1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub drsp: String,
+    pub frmp: String,
+    pub regionid: String,
+    pub wdrrrperiod: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for BillingWdrDetail1PrimaryKey {
+    type Row = BillingWdrDetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.contractyear == row.contractyear
+            && self.drsp == row.drsp
+            && self.frmp == row.frmp
+            && self.regionid == row.regionid
+            && self.wdrrrperiod == row.wdrrrperiod
+            && self.weekno == row.weekno
+    }
+}
+impl crate::CompareWithPrimaryKey for BillingWdrDetail1PrimaryKey {
+    type PrimaryKey = BillingWdrDetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.contractyear == key.contractyear
+            && self.drsp == key.drsp
+            && self.frmp == key.frmp
+            && self.regionid == key.regionid
+            && self.wdrrrperiod == key.wdrrrperiod
+            && self.weekno == key.weekno
+    }
+}
+impl crate::PrimaryKey for BillingWdrDetail1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BillingWdrDetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrrrperiod",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("frmp", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new("drsp", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "wdrsq",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrrr",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrta",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut wdrrrperiod_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut frmp_array = Vec::new();
+        let mut drsp_array = Vec::new();
+        let mut wdrsq_array = Vec::new();
+        let mut wdrrr_array = Vec::new();
+        let mut wdrta_array = Vec::new();
+        for (_, row) in partition {
+            contractyear_array.push({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+            weekno_array.push({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            billrunno_array.push({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            wdrrrperiod_array.push(row.wdrrrperiod);
+            regionid_array.push(row.regionid);
+            frmp_array.push(row.frmp);
+            drsp_array.push(row.drsp);
+            wdrsq_array.push({
+                row.wdrsq.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            wdrrr_array.push({
+                row.wdrrr.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            wdrta_array.push({
+                row.wdrta.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
+                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    wdrrrperiod_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(frmp_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(drsp_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrsq_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrrr_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrta_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
                 ),
             ],
@@ -13221,12 +13483,12 @@ impl crate::ArrowSchema for BillingReservetraderrecovery1 {
             ),
             arrow2::datatypes::Field::new(
                 "eligibility_start_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "eligibility_end_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -13295,14 +13557,14 @@ impl crate::ArrowSchema for BillingReservetraderrecovery1 {
                     val.mantissa()
                 })
             });
-            eligibility_start_interval_array.push(row.eligibility_start_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            eligibility_end_interval_array.push(row.eligibility_end_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            eligibility_start_interval_array.push(
+                row.eligibility_start_interval
+                    .map(|val| val.timestamp_millis()),
+            );
+            eligibility_end_interval_array.push(
+                row.eligibility_end_interval
+                    .map(|val| val.timestamp_millis()),
+            );
             recovery_amount_array.push({
                 row.recovery_amount.map(|mut val| {
                     val.rescale(8);
@@ -13351,299 +13613,16 @@ impl crate::ArrowSchema for BillingReservetraderrecovery1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eligibility_start_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eligibility_end_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(recovery_amount_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
                 ),
-            ],
-        )
-        .map_err(Into::into)
-    }
-}
-/// # Summary
-///
-/// ## BILLWHITEHOLE
-///  _BILLWHITEHOLE shows white hole payments based on participant vs region demand._
-///
-/// * Data Set Name: Billing
-/// * File Name: Whitehole
-/// * Data Version: 5
-///
-/// # Description
-///  Confidential Source Obsolete; was updated weekly with each billing run.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONTRACTYEAR
-/// * INTERCONNECTORID
-/// * PARTICIPANTID
-/// * WEEKNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingWhitehole5 {
-    /// AEMO Contract Year number starting in week containing 1st January
-    pub contractyear: rust_decimal::Decimal,
-    /// Week no within the contract year. Week no 1 is the week containing 1st January
-    pub weekno: rust_decimal::Decimal,
-    /// Unique run no within a given contract year and week no
-    pub billrunno: rust_decimal::Decimal,
-    /// Unique participant identifier
-    pub participantid: String,
-    /// Sum of billing week (RRP * interconnector flow)
-    pub nl: Option<rust_decimal::Decimal>,
-    /// The sum of all customer purchases in MWh
-    pub participantdemand: Option<rust_decimal::Decimal>,
-    /// Sum of all region purchases in MWh
-    pub regiondemand: Option<rust_decimal::Decimal>,
-    /// Payment in $
-    pub whiteholepayment: Option<rust_decimal::Decimal>,
-    /// The latest date and time that a file was updated or inserted
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Interconnector ID
-    pub interconnectorid: String,
-}
-impl crate::GetTable for BillingWhitehole5 {
-    type PrimaryKey = BillingWhitehole5PrimaryKey;
-    type Partition = ();
-
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "BILLING".into(),
-            table_name: Some("WHITEHOLE".into()),
-            version: 5,
-        }
-    }
-
-    fn primary_key(&self) -> BillingWhitehole5PrimaryKey {
-        BillingWhitehole5PrimaryKey {
-            billrunno: self.billrunno,
-            contractyear: self.contractyear,
-            interconnectorid: self.interconnectorid.clone(),
-            participantid: self.participantid.clone(),
-            weekno: self.weekno,
-        }
-    }
-
-    fn partition_suffix(&self) -> Self::Partition {}
-
-    fn partition_name(&self) -> String {
-        "billing_whitehole_v5".to_string()
-    }
-}
-impl crate::CompareWithRow for BillingWhitehole5 {
-    type Row = BillingWhitehole5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.billrunno == row.billrunno
-            && self.contractyear == row.contractyear
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
-            && self.weekno == row.weekno
-    }
-}
-impl crate::CompareWithPrimaryKey for BillingWhitehole5 {
-    type PrimaryKey = BillingWhitehole5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.contractyear == key.contractyear
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
-            && self.weekno == key.weekno
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingWhitehole5PrimaryKey {
-    pub billrunno: rust_decimal::Decimal,
-    pub contractyear: rust_decimal::Decimal,
-    pub interconnectorid: String,
-    pub participantid: String,
-    pub weekno: rust_decimal::Decimal,
-}
-impl crate::CompareWithRow for BillingWhitehole5PrimaryKey {
-    type Row = BillingWhitehole5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.billrunno == row.billrunno
-            && self.contractyear == row.contractyear
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
-            && self.weekno == row.weekno
-    }
-}
-impl crate::CompareWithPrimaryKey for BillingWhitehole5PrimaryKey {
-    type PrimaryKey = BillingWhitehole5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.contractyear == key.contractyear
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
-            && self.weekno == key.weekno
-    }
-}
-impl crate::PrimaryKey for BillingWhitehole5PrimaryKey {}
-#[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for BillingWhitehole5 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
-            arrow2::datatypes::Field::new(
-                "contractyear",
-                arrow2::datatypes::DataType::Decimal(22, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "weekno",
-                arrow2::datatypes::DataType::Decimal(22, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "billrunno",
-                arrow2::datatypes::DataType::Decimal(22, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("nl", arrow2::datatypes::DataType::Decimal(15, 6), true),
-            arrow2::datatypes::Field::new(
-                "participantdemand",
-                arrow2::datatypes::DataType::Decimal(15, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "regiondemand",
-                arrow2::datatypes::DataType::Decimal(15, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "whiteholepayment",
-                arrow2::datatypes::DataType::Decimal(15, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-        ])
-    }
-
-    fn partition_to_record_batch(
-        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
-        let mut contractyear_array = Vec::new();
-        let mut weekno_array = Vec::new();
-        let mut billrunno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut nl_array = Vec::new();
-        let mut participantdemand_array = Vec::new();
-        let mut regiondemand_array = Vec::new();
-        let mut whiteholepayment_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        for (_, row) in partition {
-            contractyear_array.push({
-                let mut val = row.contractyear;
-                val.rescale(0);
-                val.mantissa()
-            });
-            weekno_array.push({
-                let mut val = row.weekno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            billrunno_array.push({
-                let mut val = row.billrunno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            participantid_array.push(row.participantid);
-            nl_array.push({
-                row.nl.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            participantdemand_array.push({
-                row.participantdemand.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            regiondemand_array.push({
-                row.regiondemand.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            whiteholepayment_array.push({
-                row.whiteholepayment.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            interconnectorid_array.push(row.interconnectorid);
-        }
-
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(contractyear_array)
-                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(weekno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(billrunno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(nl_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(participantdemand_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(regiondemand_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(whiteholepayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )),
             ],
         )
         .map_err(Into::into)

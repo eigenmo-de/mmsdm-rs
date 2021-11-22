@@ -29,6 +29,7 @@ pub struct BidsBiddayoffer1 {
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Version No. for given offer date
     pub versionno: Option<rust_decimal::Decimal>,
@@ -181,7 +182,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, false),
@@ -269,7 +270,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "mr_factor",
                 arrow2::datatypes::DataType::Decimal(16, 6),
@@ -346,13 +347,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
         for (_, row) in partition {
             duid_array.push(row.duid);
             bidtype_array.push(row.bidtype);
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             offerdate_array.push(row.offerdate.timestamp_millis());
             versionno_array.push({
                 row.versionno.map(|mut val| {
@@ -459,10 +454,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
                 })
             });
             normalstatus_array.push(row.normalstatus);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             mr_factor_array.push({
                 row.mr_factor.map(|mut val| {
                     val.rescale(6);
@@ -484,7 +476,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdate_array)
@@ -567,7 +559,7 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(normalstatus_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mr_factor_array)
@@ -614,6 +606,7 @@ pub struct BidsBidofferfiletrk1 {
     /// Unique participant identifier
     pub participantid: String,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Submitted file name
     pub filename: String,
@@ -714,7 +707,7 @@ impl crate::ArrowSchema for BidsBidofferfiletrk1 {
                 false,
             ),
             arrow2::datatypes::Field::new("status", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "authorisedby",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -722,7 +715,7 @@ impl crate::ArrowSchema for BidsBidofferfiletrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -737,7 +730,7 @@ impl crate::ArrowSchema for BidsBidofferfiletrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "submission_timestamp",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("comments", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -769,21 +762,13 @@ impl crate::ArrowSchema for BidsBidofferfiletrk1 {
             offerdate_array.push(row.offerdate.timestamp_millis());
             filename_array.push(row.filename);
             status_array.push(row.status);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             transaction_id_array.push(row.transaction_id);
             reference_id_array.push(row.reference_id);
-            submission_timestamp_array.push(row.submission_timestamp.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            submission_timestamp_array
+                .push(row.submission_timestamp.map(|val| val.timestamp_millis()));
             comments_array.push(row.comments);
             submission_method_array.push(row.submission_method);
         }
@@ -802,18 +787,18 @@ impl crate::ArrowSchema for BidsBidofferfiletrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(transaction_id_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(reference_id_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(submission_timestamp_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(comments_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -855,6 +840,7 @@ pub struct BidsBidofferperiod1 {
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Period ID 1 to 288
     pub periodid: rust_decimal::Decimal,
@@ -986,7 +972,7 @@ impl crate::ArrowSchema for BidsBidofferperiod1 {
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "tradingdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1119,12 +1105,7 @@ impl crate::ArrowSchema for BidsBidofferperiod1 {
         for (_, row) in partition {
             duid_array.push(row.duid);
             bidtype_array.push(row.bidtype);
-            tradingdate_array.push(
-                i32::try_from(
-                    (row.tradingdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            tradingdate_array.push(row.tradingdate.timestamp_millis());
             offerdatetime_array.push(row.offerdatetime.timestamp_millis());
             periodid_array.push({
                 let mut val = row.periodid;
@@ -1244,7 +1225,7 @@ impl crate::ArrowSchema for BidsBidofferperiod1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
@@ -1357,6 +1338,7 @@ pub struct BidsMnspBidofferperiod1 {
     #[serde(with = "crate::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Period ID, 1 to 288
     pub periodid: rust_decimal::Decimal,
@@ -1471,7 +1453,7 @@ impl crate::ArrowSchema for BidsMnspBidofferperiod1 {
             arrow2::datatypes::Field::new("linkid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "tradingdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1576,12 +1558,7 @@ impl crate::ArrowSchema for BidsMnspBidofferperiod1 {
         let mut pasaavailability_array = Vec::new();
         for (_, row) in partition {
             linkid_array.push(row.linkid);
-            tradingdate_array.push(
-                i32::try_from(
-                    (row.tradingdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            tradingdate_array.push(row.tradingdate.timestamp_millis());
             offerdatetime_array.push(row.offerdatetime.timestamp_millis());
             periodid_array.push({
                 let mut val = row.periodid;
@@ -1675,7 +1652,7 @@ impl crate::ArrowSchema for BidsMnspBidofferperiod1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
@@ -1771,6 +1748,7 @@ pub struct BidsMnspDayoffer1 {
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Version of data for other key data - a higher version for same key data will take precedence
     pub versionno: rust_decimal::Decimal,
@@ -1915,7 +1893,7 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, false),
@@ -1990,7 +1968,7 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
                 arrow2::datatypes::DataType::Decimal(9, 2),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "mr_factor",
                 arrow2::datatypes::DataType::Decimal(16, 6),
@@ -2052,13 +2030,7 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
         let mut rebid_category_array = Vec::new();
         let mut reference_id_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             offerdate_array.push(row.offerdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
@@ -2129,10 +2101,7 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             mr_factor_array.push({
                 row.mr_factor.map(|mut val| {
                     val.rescale(6);
@@ -2151,7 +2120,7 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdate_array)
@@ -2211,7 +2180,7 @@ impl crate::ArrowSchema for BidsMnspDayoffer1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mr_factor_array)
@@ -2371,13 +2340,13 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
             ),
             arrow2::datatypes::Field::new(
                 "offerdatetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("unitid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("energy", arrow2::datatypes::DataType::Int64, true),
@@ -2388,7 +2357,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
             arrow2::datatypes::Field::new("capacity5", arrow2::datatypes::DataType::Int64, true),
             arrow2::datatypes::Field::new("capacity6", arrow2::datatypes::DataType::Int64, true),
             arrow2::datatypes::Field::new("capacity7", arrow2::datatypes::DataType::Int64, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2410,19 +2379,9 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             participantid_array.push(row.participantid);
-            offerdatetime_array.push(
-                i32::try_from(
-                    (row.offerdatetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            offerdatetime_array.push(row.offerdatetime.timestamp_millis());
             unitid_array.push(row.unitid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             energy_array.push(row.energy);
             capacity1_array.push(row.capacity1);
             capacity2_array.push(row.capacity2);
@@ -2431,10 +2390,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
             capacity5_array.push(row.capacity5);
             capacity6_array.push(row.capacity6);
             capacity7_array.push(row.capacity7);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2445,12 +2401,12 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(unitid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from(energy_array)),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacity1_array)),
@@ -2462,7 +2418,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferdata1 {
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacity7_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2568,7 +2524,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferfiletrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "offerdatetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -2583,12 +2539,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferfiletrk1 {
         let mut filename_array = Vec::new();
         for (_, row) in partition {
             participantid_array.push(row.participantid);
-            offerdatetime_array.push(
-                i32::try_from(
-                    (row.offerdatetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            offerdatetime_array.push(row.offerdatetime.timestamp_millis());
             filename_array.push(row.filename);
         }
 
@@ -2600,7 +2551,7 @@ impl crate::ArrowSchema for OfferMtpasaOfferfiletrk1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
             ],

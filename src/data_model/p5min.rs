@@ -89,7 +89,7 @@ impl crate::ArrowSchema for P5minBlockedConstraints1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -106,12 +106,7 @@ impl crate::ArrowSchema for P5minBlockedConstraints1 {
         let mut run_datetime_array = Vec::new();
         let mut constraintid_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             constraintid_array.push(row.constraintid);
         }
 
@@ -120,7 +115,7 @@ impl crate::ArrowSchema for P5minBlockedConstraints1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,
@@ -254,7 +249,7 @@ impl crate::ArrowSchema for P5minCasesolution2 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -337,7 +332,7 @@ impl crate::ArrowSchema for P5minCasesolution2 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "intervention",
                 arrow2::datatypes::DataType::Decimal(2, 0),
@@ -369,12 +364,7 @@ impl crate::ArrowSchema for P5minCasesolution2 {
         let mut lastchanged_array = Vec::new();
         let mut intervention_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             startinterval_datetime_array.push(row.startinterval_datetime);
             totalobjective_array.push({
                 row.totalobjective.map(|mut val| {
@@ -466,10 +456,7 @@ impl crate::ArrowSchema for P5minCasesolution2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             intervention_array.push({
                 row.intervention.map(|mut val| {
                     val.rescale(0);
@@ -483,7 +470,7 @@ impl crate::ArrowSchema for P5minCasesolution2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     startinterval_datetime_array,
@@ -550,7 +537,7 @@ impl crate::ArrowSchema for P5minCasesolution2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
@@ -687,12 +674,12 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -711,11 +698,11 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "genconid_effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -748,19 +735,8 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
         let mut lhs_array = Vec::new();
         let mut intervention_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             constraintid_array.push(row.constraintid);
             rhs_array.push({
                 row.rhs.map(|mut val| {
@@ -780,15 +756,10 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             duid_array.push(row.duid);
-            genconid_effectivedate_array.push(row.genconid_effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            genconid_effectivedate_array
+                .push(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
             genconid_versionno_array.push({
                 row.genconid_versionno.map(|mut val| {
                     val.rescale(0);
@@ -814,11 +785,11 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,
@@ -837,12 +808,12 @@ impl crate::ArrowSchema for P5minConstraintsolution6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_versionno_array)
@@ -1006,7 +977,7 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1016,7 +987,7 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1080,7 +1051,7 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "local_price_adjustment_export",
                 arrow2::datatypes::DataType::Decimal(10, 2),
@@ -1135,20 +1106,9 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
         let mut locally_constrained_import_array = Vec::new();
         let mut intervention_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             interconnectorid_array.push(row.interconnectorid);
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             meteredmwflow_array.push({
                 row.meteredmwflow.map(|mut val| {
                     val.rescale(5);
@@ -1217,10 +1177,7 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             local_price_adjustment_export_array.push({
                 row.local_price_adjustment_export.map(|mut val| {
                     val.rescale(2);
@@ -1258,14 +1215,14 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(meteredmwflow_array)
@@ -1315,7 +1272,7 @@ impl crate::ArrowSchema for P5minInterconnectorsoln4 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(local_price_adjustment_export_array)
@@ -1540,7 +1497,7 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1550,7 +1507,7 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1778,7 +1735,7 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1835,20 +1792,9 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
         let mut mwflow43_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             interconnectorid_array.push(row.interconnectorid);
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             intervention_array.push({
                 let mut val = row.intervention;
                 val.rescale(0);
@@ -2118,10 +2064,7 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2129,14 +2072,14 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(intervention_array)
@@ -2320,7 +2263,7 @@ impl crate::ArrowSchema for P5minIntersensitivities1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2436,12 +2379,12 @@ impl crate::ArrowSchema for P5minLocalPrice1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -2467,19 +2410,8 @@ impl crate::ArrowSchema for P5minLocalPrice1 {
         let mut local_price_adjustment_array = Vec::new();
         let mut locally_constrained_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             duid_array.push(row.duid);
             local_price_adjustment_array.push({
                 row.local_price_adjustment.map(|mut val| {
@@ -2500,11 +2432,11 @@ impl crate::ArrowSchema for P5minLocalPrice1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
@@ -2718,7 +2650,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2728,7 +2660,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2956,7 +2888,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3013,20 +2945,9 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
         let mut rrp43_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             regionid_array.push(row.regionid);
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             intervention_array.push({
                 let mut val = row.intervention;
                 val.rescale(0);
@@ -3296,10 +3217,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3307,12 +3225,12 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(intervention_array)
@@ -3496,7 +3414,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3510,7 +3428,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
 ///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  P5MIN_REGIONSOLUTION is public data, so is available to all participants. Source P5MIN_REGIONSOLUTION updates every 5 minutes. Volume Rows per day: 1440
@@ -3524,7 +3442,7 @@ impl crate::ArrowSchema for P5minPricesensitivities1 {
 /// * REGIONID
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minRegionsolution6 {
+pub struct P5minRegionsolution7 {
     /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
@@ -3737,20 +3655,20 @@ pub struct P5minRegionsolution6 {
     /// Regional aggregated dispatched MW for Wholesale Demand Response (WDR) units
     pub wdr_dispatched: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for P5minRegionsolution6 {
-    type PrimaryKey = P5minRegionsolution6PrimaryKey;
+impl crate::GetTable for P5minRegionsolution7 {
+    type PrimaryKey = P5minRegionsolution7PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "P5MIN".into(),
             table_name: Some("REGIONSOLUTION".into()),
-            version: 6,
+            version: 7,
         }
     }
 
-    fn primary_key(&self) -> P5minRegionsolution6PrimaryKey {
-        P5minRegionsolution6PrimaryKey {
+    fn primary_key(&self) -> P5minRegionsolution7PrimaryKey {
+        P5minRegionsolution7PrimaryKey {
             interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
             run_datetime: self.run_datetime,
@@ -3760,11 +3678,11 @@ impl crate::GetTable for P5minRegionsolution6 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "p5min_regionsolution_v6".to_string()
+        "p5min_regionsolution_v7".to_string()
     }
 }
-impl crate::CompareWithRow for P5minRegionsolution6 {
-    type Row = P5minRegionsolution6;
+impl crate::CompareWithRow for P5minRegionsolution7 {
+    type Row = P5minRegionsolution7;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime
@@ -3772,8 +3690,8 @@ impl crate::CompareWithRow for P5minRegionsolution6 {
             && self.run_datetime == row.run_datetime
     }
 }
-impl crate::CompareWithPrimaryKey for P5minRegionsolution6 {
-    type PrimaryKey = P5minRegionsolution6PrimaryKey;
+impl crate::CompareWithPrimaryKey for P5minRegionsolution7 {
+    type PrimaryKey = P5minRegionsolution7PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime
@@ -3782,13 +3700,13 @@ impl crate::CompareWithPrimaryKey for P5minRegionsolution6 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct P5minRegionsolution6PrimaryKey {
+pub struct P5minRegionsolution7PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub run_datetime: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for P5minRegionsolution6PrimaryKey {
-    type Row = P5minRegionsolution6;
+impl crate::CompareWithRow for P5minRegionsolution7PrimaryKey {
+    type Row = P5minRegionsolution7;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime
@@ -3796,8 +3714,8 @@ impl crate::CompareWithRow for P5minRegionsolution6PrimaryKey {
             && self.run_datetime == row.run_datetime
     }
 }
-impl crate::CompareWithPrimaryKey for P5minRegionsolution6PrimaryKey {
-    type PrimaryKey = P5minRegionsolution6PrimaryKey;
+impl crate::CompareWithPrimaryKey for P5minRegionsolution7PrimaryKey {
+    type PrimaryKey = P5minRegionsolution7PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime
@@ -3805,19 +3723,19 @@ impl crate::CompareWithPrimaryKey for P5minRegionsolution6PrimaryKey {
             && self.run_datetime == key.run_datetime
     }
 }
-impl crate::PrimaryKey for P5minRegionsolution6PrimaryKey {}
+impl crate::PrimaryKey for P5minRegionsolution7PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for P5minRegionsolution6 {
+impl crate::ArrowSchema for P5minRegionsolution7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4242,7 +4160,7 @@ impl crate::ArrowSchema for P5minRegionsolution6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "totalintermittentgeneration",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -4429,19 +4347,8 @@ impl crate::ArrowSchema for P5minRegionsolution6 {
         let mut wdr_available_array = Vec::new();
         let mut wdr_dispatched_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             regionid_array.push(row.regionid);
             rrp_array.push({
                 row.rrp.map(|mut val| {
@@ -4953,10 +4860,7 @@ impl crate::ArrowSchema for P5minRegionsolution6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             totalintermittentgeneration_array.push({
                 row.totalintermittentgeneration.map(|mut val| {
                     val.rescale(5);
@@ -5054,11 +4958,11 @@ impl crate::ArrowSchema for P5minRegionsolution6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
@@ -5403,7 +5307,7 @@ impl crate::ArrowSchema for P5minRegionsolution6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalintermittentgeneration_array)
@@ -5586,12 +5490,12 @@ impl crate::ArrowSchema for P5minScenariodemand1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -5621,19 +5525,8 @@ impl crate::ArrowSchema for P5minScenariodemand1 {
         let mut regionid_array = Vec::new();
         let mut deltamw_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            version_datetime_array.push(
-                i32::try_from(
-                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            version_datetime_array.push(row.version_datetime.timestamp_millis());
             scenario_array.push({
                 let mut val = row.scenario;
                 val.rescale(0);
@@ -5653,11 +5546,11 @@ impl crate::ArrowSchema for P5minScenariodemand1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(scenario_array)
@@ -5771,20 +5664,20 @@ impl crate::ArrowSchema for P5minScenariodemandtrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -5796,27 +5689,10 @@ impl crate::ArrowSchema for P5minScenariodemandtrk1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            version_datetime_array.push(
-                i32::try_from(
-                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            version_datetime_array.push(row.version_datetime.timestamp_millis());
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -5824,19 +5700,19 @@ impl crate::ArrowSchema for P5minScenariodemandtrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -5850,7 +5726,7 @@ impl crate::ArrowSchema for P5minScenariodemandtrk1 {
 ///
 /// * Data Set Name: P5min
 /// * File Name: Unitsolution
-/// * Data Version: 3
+/// * Data Version: 4
 ///
 /// # Description
 ///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
@@ -5864,7 +5740,7 @@ impl crate::ArrowSchema for P5minScenariodemandtrk1 {
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minUnitsolution3 {
+pub struct P5minUnitsolution4 {
     /// Unique Timestamp Identifier for this study
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
@@ -5931,20 +5807,20 @@ pub struct P5minUnitsolution3 {
     /// Minutes for which the unit has been in the current DISPATCHMODE. From NEMDE TRADERSOLUTION element FSTARGETMODETIME attribute.
     pub dispatchmodetime: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for P5minUnitsolution3 {
-    type PrimaryKey = P5minUnitsolution3PrimaryKey;
+impl crate::GetTable for P5minUnitsolution4 {
+    type PrimaryKey = P5minUnitsolution4PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "P5MIN".into(),
             table_name: Some("UNITSOLUTION".into()),
-            version: 3,
+            version: 4,
         }
     }
 
-    fn primary_key(&self) -> P5minUnitsolution3PrimaryKey {
-        P5minUnitsolution3PrimaryKey {
+    fn primary_key(&self) -> P5minUnitsolution4PrimaryKey {
+        P5minUnitsolution4PrimaryKey {
             duid: self.duid.clone(),
             interval_datetime: self.interval_datetime,
             run_datetime: self.run_datetime,
@@ -5954,11 +5830,11 @@ impl crate::GetTable for P5minUnitsolution3 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "p5min_unitsolution_v3".to_string()
+        "p5min_unitsolution_v4".to_string()
     }
 }
-impl crate::CompareWithRow for P5minUnitsolution3 {
-    type Row = P5minUnitsolution3;
+impl crate::CompareWithRow for P5minUnitsolution4 {
+    type Row = P5minUnitsolution4;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid
@@ -5966,8 +5842,8 @@ impl crate::CompareWithRow for P5minUnitsolution3 {
             && self.run_datetime == row.run_datetime
     }
 }
-impl crate::CompareWithPrimaryKey for P5minUnitsolution3 {
-    type PrimaryKey = P5minUnitsolution3PrimaryKey;
+impl crate::CompareWithPrimaryKey for P5minUnitsolution4 {
+    type PrimaryKey = P5minUnitsolution4PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -5976,13 +5852,13 @@ impl crate::CompareWithPrimaryKey for P5minUnitsolution3 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct P5minUnitsolution3PrimaryKey {
+pub struct P5minUnitsolution4PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for P5minUnitsolution3PrimaryKey {
-    type Row = P5minUnitsolution3;
+impl crate::CompareWithRow for P5minUnitsolution4PrimaryKey {
+    type Row = P5minUnitsolution4;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid
@@ -5990,8 +5866,8 @@ impl crate::CompareWithRow for P5minUnitsolution3PrimaryKey {
             && self.run_datetime == row.run_datetime
     }
 }
-impl crate::CompareWithPrimaryKey for P5minUnitsolution3PrimaryKey {
-    type PrimaryKey = P5minUnitsolution3PrimaryKey;
+impl crate::CompareWithPrimaryKey for P5minUnitsolution4PrimaryKey {
+    type PrimaryKey = P5minUnitsolution4PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -5999,19 +5875,19 @@ impl crate::CompareWithPrimaryKey for P5minUnitsolution3PrimaryKey {
             && self.run_datetime == key.run_datetime
     }
 }
-impl crate::PrimaryKey for P5minUnitsolution3PrimaryKey {}
+impl crate::PrimaryKey for P5minUnitsolution4PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for P5minUnitsolution3 {
+impl crate::ArrowSchema for P5minUnitsolution4 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -6135,7 +6011,7 @@ impl crate::ArrowSchema for P5minUnitsolution3 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "semidispatchcap",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -6189,19 +6065,8 @@ impl crate::ArrowSchema for P5minUnitsolution3 {
         let mut intervention_array = Vec::new();
         let mut dispatchmodetime_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             duid_array.push(row.duid);
             connectionpointid_array.push(row.connectionpointid);
             tradetype_array.push({
@@ -6342,10 +6207,7 @@ impl crate::ArrowSchema for P5minUnitsolution3 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             semidispatchcap_array.push({
                 row.semidispatchcap.map(|mut val| {
                     val.rescale(0);
@@ -6371,11 +6233,11 @@ impl crate::ArrowSchema for P5minUnitsolution3 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -6475,7 +6337,7 @@ impl crate::ArrowSchema for P5minUnitsolution3 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(semidispatchcap_array)

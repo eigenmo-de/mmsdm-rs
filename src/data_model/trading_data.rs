@@ -96,7 +96,7 @@ impl crate::PrimaryKey for TradingAverageprice301PrimaryKey {}
 impl crate::ArrowSchema for TradingAverageprice301 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
-            arrow2::datatypes::Field::new("perioddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("perioddate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "regionid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -113,7 +113,7 @@ impl crate::ArrowSchema for TradingAverageprice301 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -127,12 +127,7 @@ impl crate::ArrowSchema for TradingAverageprice301 {
         let mut price_confidence_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            perioddate_array.push(
-                i32::try_from(
-                    (row.perioddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            perioddate_array.push(row.perioddate.timestamp_millis());
             regionid_array.push(row.regionid);
             periodid_array.push({
                 let mut val = row.periodid;
@@ -146,10 +141,7 @@ impl crate::ArrowSchema for TradingAverageprice301 {
                 })
             });
             price_confidence_array.push(row.price_confidence);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -157,7 +149,7 @@ impl crate::ArrowSchema for TradingAverageprice301 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(perioddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
@@ -173,7 +165,7 @@ impl crate::ArrowSchema for TradingAverageprice301 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -313,7 +305,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -346,7 +338,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -362,13 +354,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
         let mut mwlosses_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -398,10 +384,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -409,7 +392,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -436,7 +419,7 @@ impl crate::ArrowSchema for TradingInterconnectorres2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -612,7 +595,7 @@ impl crate::ArrowSchema for TradingPrice2 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -637,7 +620,7 @@ impl crate::ArrowSchema for TradingPrice2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("rop", arrow2::datatypes::DataType::Decimal(15, 5), true),
             arrow2::datatypes::Field::new(
                 "raise6secrrp",
@@ -757,13 +740,7 @@ impl crate::ArrowSchema for TradingPrice2 {
         let mut lowerregrop_array = Vec::new();
         let mut price_status_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -788,10 +765,7 @@ impl crate::ArrowSchema for TradingPrice2 {
                 })
             });
             invalidflag_array.push(row.invalidflag);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             rop_array.push({
                 row.rop.map(|mut val| {
                     val.rescale(5);
@@ -902,7 +876,7 @@ impl crate::ArrowSchema for TradingPrice2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -924,7 +898,7 @@ impl crate::ArrowSchema for TradingPrice2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(invalidflag_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rop_array)

@@ -135,7 +135,7 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "prudential_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("runno", arrow2::datatypes::DataType::Int64, false),
@@ -215,7 +215,7 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -242,13 +242,7 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
         let mut percentage_outstandings_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            prudential_date_array.push(
-                i32::try_from(
-                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            prudential_date_array.push(row.prudential_date.timestamp_millis());
             runno_array.push(row.runno);
             company_id_array.push(row.company_id);
             mcl_array.push({
@@ -341,10 +335,7 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -352,7 +343,7 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(runno_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
@@ -420,7 +411,7 @@ impl crate::ArrowSchema for PrudentialCompanyPosition1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -526,7 +517,7 @@ impl crate::ArrowSchema for PrudentialRuntrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "prudential_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("runno", arrow2::datatypes::DataType::Int64, false),
@@ -537,10 +528,10 @@ impl crate::ArrowSchema for PrudentialRuntrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -553,23 +544,11 @@ impl crate::ArrowSchema for PrudentialRuntrk1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            prudential_date_array.push(
-                i32::try_from(
-                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            prudential_date_array.push(row.prudential_date.timestamp_millis());
             runno_array.push(row.runno);
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -577,17 +556,17 @@ impl crate::ArrowSchema for PrudentialRuntrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(runno_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

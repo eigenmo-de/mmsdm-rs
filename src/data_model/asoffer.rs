@@ -137,7 +137,7 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -162,7 +162,7 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -171,7 +171,7 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
                 true,
             ),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "periodid",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -208,12 +208,7 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
         let mut agcdown_array = Vec::new();
         for (_, row) in partition {
             contractid_array.push(row.contractid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -237,16 +232,10 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
                     val.mantissa()
                 })
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             periodid_array.push({
                 let mut val = row.periodid;
                 val.rescale(0);
@@ -274,7 +263,7 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -294,13 +283,13 @@ impl crate::ArrowSchema for AsofferOfferagcdata1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(periodid_array)
@@ -429,7 +418,7 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -443,7 +432,7 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
                 false,
             ),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -456,12 +445,7 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
         let mut filename_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -469,10 +453,7 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
             });
             participantid_array.push(row.participantid);
             filename_array.push(row.filename);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -480,7 +461,7 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -492,7 +473,7 @@ impl crate::ArrowSchema for AsofferOfferastrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -630,7 +611,7 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -645,7 +626,7 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -654,7 +635,7 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
                 true,
             ),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "periodid",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -677,12 +658,7 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
         let mut periodid_array = Vec::new();
         for (_, row) in partition {
             contractid_array.push(row.contractid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -694,16 +670,10 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
                     val.mantissa()
                 })
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             periodid_array.push({
                 let mut val = row.periodid;
                 val.rescale(0);
@@ -719,7 +689,7 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -731,13 +701,13 @@ impl crate::ArrowSchema for AsofferOfferlsheddata1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(periodid_array)
@@ -877,7 +847,7 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "versionno",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -890,7 +860,7 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -899,7 +869,7 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
                 true,
             ),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "periodid",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -922,28 +892,17 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
         let mut periodid_array = Vec::new();
         for (_, row) in partition {
             contractid_array.push(row.contractid);
-            offerdate_array.push(
-                i32::try_from(
-                    (row.offerdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            offerdate_array.push(row.offerdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
             availability_array.push(row.availability);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             periodid_array.push({
                 let mut val = row.periodid;
                 val.rescale(0);
@@ -959,7 +918,7 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(offerdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -968,13 +927,13 @@ impl crate::ArrowSchema for AsofferOfferrestartdata1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(availability_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(periodid_array)
@@ -1120,7 +1079,7 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1142,7 +1101,7 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
             arrow2::datatypes::Field::new("mtg", arrow2::datatypes::DataType::Decimal(6, 0), true),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -1151,7 +1110,7 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
                 true,
             ),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1171,12 +1130,7 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             contractid_array.push(row.contractid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -1205,16 +1159,10 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
                     val.mantissa()
                 })
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1225,7 +1173,7 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1249,13 +1197,13 @@ impl crate::ArrowSchema for AsofferOfferrpowerdata1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

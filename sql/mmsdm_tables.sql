@@ -24,139 +24,6 @@ create table mmsdm.FileLog (
 )
 go
             
-create table mmsdm.AncilliaryServicesContractagc1 (
-file_log_id bigint not null,
-    [contractid] varchar(10) not null,
-[versionno] decimal(3,0) not null,
-[startdate] datetime2 null,
-[enddate] datetime2 null,
-[participantid] varchar(10) null,
-[duid] varchar(10) null,
-[crr] decimal(4,0) null,
-[crl] decimal(4,0) null,
-[rlprice] decimal(10,2) null,
-[ccprice] decimal(10,2) null,
-[bs] decimal(10,2) null,
-[authorisedby] varchar(15) null,
-[authoriseddate] datetime2 null,
-[lastchanged] datetime2 null,
-    primary key ([contractid],[versionno])
-)
-go
-                        
-create table mmsdm.AncilliaryServicesContractloadshed2 (
-file_log_id bigint not null,
-    [contractid] varchar(10) not null,
-[versionno] decimal(3,0) not null,
-[startdate] datetime2 null,
-[enddate] datetime2 null,
-[participantid] varchar(10) null,
-[duid] varchar(10) null,
-[lseprice] decimal(6,2) null,
-[mcpprice] decimal(12,2) null,
-[tenderedprice] decimal(6,2) null,
-[lscr] decimal(6,2) null,
-[ilscalingfactor] decimal(15,5) null,
-[lower60secbreakpoint] decimal(9,6) null,
-[lower60secmax] decimal(9,6) null,
-[lower6secbreakpoint] decimal(9,6) null,
-[lower6secmax] decimal(9,6) null,
-[raise60secbreakpoint] decimal(9,6) null,
-[raise60seccapacity] decimal(9,6) null,
-[raise60secmax] decimal(9,6) null,
-[raise6secbreakpoint] decimal(9,6) null,
-[raise6seccapacity] decimal(9,6) null,
-[raise6secmax] decimal(9,6) null,
-[price6secraisemandatory] decimal(16,6) null,
-[quant6secraisemandatory] decimal(9,6) null,
-[price6secraisecontract] decimal(16,6) null,
-[quant6secraisecontract] decimal(9,6) null,
-[price60secraisemandatory] decimal(16,6) null,
-[quant60secraisemandatory] decimal(9,6) null,
-[price60secraisecontract] decimal(16,6) null,
-[quant60secraisecontract] decimal(9,6) null,
-[price6seclowermandatory] decimal(16,6) null,
-[quant6seclowermandatory] decimal(9,6) null,
-[price6seclowercontract] decimal(16,6) null,
-[quant6seclowercontract] decimal(9,6) null,
-[price60seclowermandatory] decimal(16,6) null,
-[quant60seclowermandatory] decimal(9,6) null,
-[price60seclowercontract] decimal(16,6) null,
-[quant60seclowercontract] decimal(9,6) null,
-[authorisedby] varchar(15) null,
-[authoriseddate] datetime2 null,
-[lastchanged] datetime2 null,
-[default_testingpayment_amount] decimal(18,8) null,
-[service_start_date] datetime2 null,
-    primary key ([contractid],[versionno])
-)
-go
-                        
-create table mmsdm.AncilliaryServicesContractreactivepower4 (
-file_log_id bigint not null,
-    [contractid] varchar(10) not null,
-[versionno] decimal(3,0) not null,
-[startdate] datetime2 null,
-[enddate] datetime2 null,
-[participantid] varchar(10) null,
-[duid] varchar(10) null,
-[synccompensation] varchar(1) null,
-[mvaraprice] decimal(10,2) null,
-[mvareprice] decimal(10,2) null,
-[mvargprice] decimal(10,2) null,
-[ccprice] decimal(10,2) null,
-[mta] decimal(10,2) null,
-[mtg] decimal(10,2) null,
-[mmca] decimal(10,2) null,
-[mmcg] decimal(10,2) null,
-[eu] decimal(10,2) null,
-[pp] decimal(10,2) null,
-[bs] decimal(10,2) null,
-[authorisedby] varchar(15) null,
-[authoriseddate] datetime2 null,
-[lastchanged] datetime2 null,
-[default_testingpayment_amount] decimal(18,8) null,
-[service_start_date] datetime2 null,
-[availability_mwh_threshold] decimal(18,8) null,
-[mvar_threshold] decimal(18,8) null,
-[rebate_cap] decimal(18,8) null,
-[rebate_amount_per_mvar] decimal(18,8) null,
-[isrebateapplicable] decimal(1,0) null,
-    primary key ([contractid],[versionno])
-)
-go
-                        
-create table mmsdm.AncilliaryServicesContractrestartservices2 (
-file_log_id bigint not null,
-    [contractid] varchar(10) not null,
-[versionno] decimal(3,0) not null,
-[startdate] datetime2 null,
-[enddate] datetime2 null,
-[participantid] varchar(10) null,
-[restarttype] decimal(1,0) null,
-[rcprice] decimal(6,2) null,
-[triptohouselevel] decimal(5,0) null,
-[authorisedby] varchar(15) null,
-[authoriseddate] datetime2 null,
-[lastchanged] datetime2 null,
-[default_testingpayment_amount] decimal(18,8) null,
-[service_start_date] datetime2 null,
-    primary key ([contractid],[versionno])
-)
-go
-                        
-create table mmsdm.AncilliaryServicesContractrestartunits1 (
-file_log_id bigint not null,
-    [contractid] varchar(10) not null,
-[versionno] decimal(3,0) not null,
-[duid] varchar(10) not null,
-[lastchanged] datetime2 null,
-[authorisedby] varchar(15) null,
-[authoriseddate] datetime2 null,
-    primary key ([contractid],[duid],[versionno])
-)
-go
-                        
 create table mmsdm.AsofferOfferagcdata1 (
 file_log_id bigint not null,
     [contractid] varchar(10) not null,
@@ -272,6 +139,40 @@ file_log_id bigint not null,
 )
 go
                         
+create table mmsdm.BidBiddayofferD2 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[duid] varchar(10) not null,
+[bidtype] varchar(10) not null,
+[bidsettlementdate] datetime2 null,
+[offerdate] datetime2 null,
+[versionno] decimal(22,0) null,
+[participantid] varchar(10) null,
+[dailyenergyconstraint] decimal(12,6) null,
+[rebidexplanation] varchar(500) null,
+[priceband1] decimal(9,2) null,
+[priceband2] decimal(9,2) null,
+[priceband3] decimal(9,2) null,
+[priceband4] decimal(9,2) null,
+[priceband5] decimal(9,2) null,
+[priceband6] decimal(9,2) null,
+[priceband7] decimal(9,2) null,
+[priceband8] decimal(9,2) null,
+[priceband9] decimal(9,2) null,
+[priceband10] decimal(9,2) null,
+[minimumload] decimal(22,0) null,
+[t1] decimal(22,0) null,
+[t2] decimal(22,0) null,
+[t3] decimal(22,0) null,
+[t4] decimal(22,0) null,
+[normalstatus] varchar(3) null,
+[lastchanged] datetime2 null,
+[mr_factor] decimal(16,6) null,
+[entrytype] varchar(20) null,
+    primary key ([bidtype],[duid],[settlementdate])
+)
+go
+                        
 create table mmsdm.BidsBidofferfiletrk1 (
 file_log_id bigint not null,
     [participantid] varchar(10) not null,
@@ -317,6 +218,41 @@ file_log_id bigint not null,
 [bandavail10] decimal(8,3) null,
 [pasaavailability] decimal(8,3) null,
     primary key ([bidtype],[duid],[offerdatetime],[periodid],[tradingdate])
+)
+go
+                        
+create table mmsdm.BidBidperofferD2 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[duid] varchar(10) not null,
+[bidtype] varchar(10) not null,
+[bidsettlementdate] datetime2 null,
+[offerdate] datetime2 null,
+[periodid] decimal(22,0) null,
+[versionno] decimal(22,0) null,
+[maxavail] decimal(12,6) null,
+[fixedload] decimal(12,6) null,
+[rocup] decimal(6,0) null,
+[rocdown] decimal(6,0) null,
+[enablementmin] decimal(6,0) null,
+[enablementmax] decimal(6,0) null,
+[lowbreakpoint] decimal(6,0) null,
+[highbreakpoint] decimal(6,0) null,
+[bandavail1] decimal(22,0) null,
+[bandavail2] decimal(22,0) null,
+[bandavail3] decimal(22,0) null,
+[bandavail4] decimal(22,0) null,
+[bandavail5] decimal(22,0) null,
+[bandavail6] decimal(22,0) null,
+[bandavail7] decimal(22,0) null,
+[bandavail8] decimal(22,0) null,
+[bandavail9] decimal(22,0) null,
+[bandavail10] decimal(22,0) null,
+[lastchanged] datetime2 null,
+[pasaavailability] decimal(12,0) null,
+[interval_datetime] datetime2 not null,
+[mr_capacity] decimal(6,0) null,
+    primary key ([bidtype],[duid],[interval_datetime],[settlementdate])
 )
 go
                         
@@ -715,18 +651,6 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.BillingIrfm5 (
-file_log_id bigint not null,
-    [contractyear] decimal(4,0) not null,
-[weekno] decimal(3,0) not null,
-[billrunno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[irfmpayment] decimal(15,5) null,
-[lastchanged] datetime2 null,
-    primary key ([billrunno],[contractyear],[participantid],[weekno])
-)
-go
-                        
 create table mmsdm.BillingIrnspsurplus5 (
 file_log_id bigint not null,
     [contractyear] decimal(4,0) not null,
@@ -871,7 +795,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.BillingRegionfigures5 (
+create table mmsdm.BillingRegionfigures6 (
 file_log_id bigint not null,
     [contractyear] decimal(4,0) not null,
 [weekno] decimal(3,0) not null,
@@ -1004,28 +928,6 @@ file_log_id bigint not null,
 [generator_energy_sold] decimal(18,8) null,
 [generator_energy_purchased] decimal(18,8) null,
     primary key ([billrunno],[contractyear],[participantid],[regionid],[settlementdate],[weekno])
-)
-go
-                        
-create table mmsdm.BillingDirectionReconciliatn1 (
-file_log_id bigint not null,
-    [contractyear] decimal(4,0) not null,
-[weekno] decimal(3,0) not null,
-[billrunno] decimal(3,0) not null,
-[direction_id] varchar(20) not null,
-[direction_desc] varchar(200) null,
-[direction_start_date] datetime2 null,
-[direction_end_date] datetime2 null,
-[compensation_amount] decimal(16,6) null,
-[independent_expert_fee] decimal(16,6) null,
-[interest_amount] decimal(16,6) null,
-[cra] decimal(16,6) null,
-[nem_fee_id] varchar(20) null,
-[nem_fixed_fee_amount] decimal(16,6) null,
-[mkt_customer_perc] decimal(16,6) null,
-[generator_perc] decimal(16,6) null,
-[lastchanged] datetime2 null,
-    primary key ([billrunno],[contractyear],[direction_id],[weekno])
 )
 go
                         
@@ -1215,6 +1117,59 @@ file_log_id bigint not null,
 )
 go
                         
+create table mmsdm.BillingSubstDemand1 (
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
+[weekno] decimal(3,0) not null,
+[billrunno] decimal(3,0) not null,
+[settlementdate] datetime2 not null,
+[tni] varchar(20) not null,
+[participantid] varchar(20) not null,
+[regionid] varchar(20) null,
+[substitutedemand] decimal(18,8) null,
+    primary key ([billrunno],[contractyear],[participantid],[settlementdate],[tni],[weekno])
+)
+go
+                        
+create table mmsdm.BillingSubstRunVersion1 (
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
+[weekno] decimal(3,0) not null,
+[billrunno] decimal(3,0) not null,
+[referencesettlementdate] datetime2 not null,
+[referencesettlementrunno] decimal(3,0) not null,
+    primary key ([billrunno],[contractyear],[referencesettlementdate],[referencesettlementrunno],[weekno])
+)
+go
+                        
+create table mmsdm.BillingWdr1 (
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
+[weekno] decimal(3,0) not null,
+[billrunno] decimal(3,0) not null,
+[participantid] varchar(20) not null,
+[wdr_credit_amount] decimal(18,8) null,
+[wdr_debit_amount] decimal(18,8) null,
+    primary key ([billrunno],[contractyear],[participantid],[weekno])
+)
+go
+                        
+create table mmsdm.BillingWdrDetail1 (
+file_log_id bigint not null,
+    [contractyear] decimal(4,0) not null,
+[weekno] decimal(3,0) not null,
+[billrunno] decimal(3,0) not null,
+[wdrrrperiod] varchar(20) not null,
+[regionid] varchar(20) not null,
+[frmp] varchar(20) not null,
+[drsp] varchar(20) not null,
+[wdrsq] decimal(18,8) null,
+[wdrrr] decimal(18,8) null,
+[wdrta] decimal(18,8) null,
+    primary key ([billrunno],[contractyear],[drsp],[frmp],[regionid],[wdrrrperiod],[weekno])
+)
+go
+                        
 create table mmsdm.BillingReservetraderpayment1 (
 file_log_id bigint not null,
     [contractyear] decimal(4,0) not null,
@@ -1248,23 +1203,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.BillingWhitehole5 (
-file_log_id bigint not null,
-    [contractyear] decimal(22,0) not null,
-[weekno] decimal(22,0) not null,
-[billrunno] decimal(22,0) not null,
-[participantid] varchar(10) not null,
-[nl] decimal(15,6) null,
-[participantdemand] decimal(15,6) null,
-[regiondemand] decimal(15,6) null,
-[whiteholepayment] decimal(15,6) null,
-[lastchanged] datetime2 null,
-[interconnectorid] varchar(10) not null,
-    primary key ([billrunno],[contractyear],[interconnectorid],[participantid],[weekno])
-)
-go
-                        
-create table mmsdm.OperationalDemandActual2 (
+create table mmsdm.OperationalDemandActual3 (
 file_log_id bigint not null,
     [interval_datetime] datetime2 not null,
 [regionid] varchar(20) not null,
@@ -1289,7 +1228,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.DemandIntermittentClusterAvail1 (
+create table mmsdm.DemandIntermittentClusterAvail2 (
 file_log_id bigint not null,
     [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
@@ -1397,7 +1336,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.DemandMtpasaIntermittentAvail1 (
+create table mmsdm.DemandMtpasaIntermittentAvail2 (
 file_log_id bigint not null,
     [tradingdate] datetime2 not null,
 [duid] varchar(20) not null,
@@ -1578,7 +1517,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.DispatchUnitSolution2 (
+create table mmsdm.DispatchUnitSolution3 (
 file_log_id bigint not null,
     [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
@@ -1715,7 +1654,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.DispatchRegionsum5 (
+create table mmsdm.DispatchRegionsum6 (
 file_log_id bigint not null,
     [settlementdate] datetime2 not null,
 [runno] decimal(3,0) not null,
@@ -3151,237 +3090,27 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.MtpasaCaseresult1 (
+create table mmsdm.MeterdataWdrReads1 (
 file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[plexos_version] varchar(20) null,
-[lastchanged] datetime2 null,
-    primary key ([run_datetime],[run_no])
+    [market_id] varchar(20) not null,
+[case_id] decimal(15,0) not null,
+[settlementdate] datetime2 not null,
+[meter_id] varchar(20) not null,
+[tni] varchar(20) null,
+[frmp] varchar(20) null,
+[drsp] varchar(20) null,
+[periodid] decimal(3,0) not null,
+[meteredquantityimport] decimal(18,8) null,
+[meteredquantityexport] decimal(18,8) null,
+[baselinequantity] decimal(18,8) null,
+[qualityflag] varchar(20) null,
+[isnoncompliant] decimal(1,0) null,
+[baselinecalculationid] varchar(100) null,
+    primary key ([case_id],[market_id],[meter_id],[periodid],[settlementdate])
 )
 go
                         
-create table mmsdm.MtpasaConstraintresult1 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[demand_poe_type] varchar(20) not null,
-[day] datetime2 not null,
-[constraintid] varchar(20) not null,
-[effectivedate] datetime2 null,
-[versionno] decimal(3,0) null,
-[periodid] decimal(3,0) null,
-[probabilityofbinding] decimal(8,5) null,
-[probabilityofviolation] decimal(8,5) null,
-[constraintviolation90] decimal(12,2) null,
-[constraintviolation50] decimal(12,2) null,
-[constraintviolation10] decimal(12,2) null,
-[lastchanged] datetime2 null,
-    primary key ([constraintid],[day],[demand_poe_type],[run_datetime],[run_no],[runtype])
-)
-go
-                        
-create table mmsdm.MtpasaConstraintsummary1 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[demand_poe_type] varchar(20) not null,
-[day] datetime2 not null,
-[constraintid] varchar(20) not null,
-[effectivedate] datetime2 null,
-[versionno] decimal(3,0) null,
-[aggregation_period] varchar(20) not null,
-[constrainthoursbinding] decimal(12,2) null,
-[lastchanged] datetime2 null,
-    primary key ([aggregation_period],[constraintid],[day],[demand_poe_type],[run_datetime],[run_no],[runtype])
-)
-go
-                        
-create table mmsdm.MtpasaDuidavailability1 (
-file_log_id bigint not null,
-    [publish_datetime] datetime2 not null,
-[day] datetime2 not null,
-[regionid] varchar(20) not null,
-[duid] varchar(20) not null,
-[pasaavailability] decimal(12,0) null,
-[latest_offer_datetime] datetime2 null,
-[lastchanged] datetime2 null,
-[carryoverstatus] decimal(1,0) null,
-    primary key ([day],[duid],[publish_datetime],[regionid])
-)
-go
-                        
-create table mmsdm.MtpasaInterconnectorresult1 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[demand_poe_type] varchar(20) not null,
-[day] datetime2 not null,
-[interconnectorid] varchar(20) not null,
-[periodid] decimal(3,0) null,
-[flow90] decimal(12,2) null,
-[flow50] decimal(12,2) null,
-[flow10] decimal(12,2) null,
-[probabilityofbindingexport] decimal(8,5) null,
-[probabilityofbindingimport] decimal(8,5) null,
-[calculatedexportlimit] decimal(12,2) null,
-[calculatedimportlimit] decimal(12,2) null,
-[lastchanged] datetime2 null,
-    primary key ([day],[demand_poe_type],[interconnectorid],[run_datetime],[run_no],[runtype])
-)
-go
-                        
-create table mmsdm.MtpasaLolpresult1 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[day] datetime2 not null,
-[regionid] varchar(20) not null,
-[worst_interval_periodid] decimal(3,0) null,
-[worst_interval_demand] decimal(12,2) null,
-[worst_interval_intgen] decimal(12,2) null,
-[worst_interval_dsp] decimal(12,2) null,
-[lossofloadprobability] decimal(8,5) null,
-[lossofloadmagnitude] varchar(20) null,
-[lastchanged] datetime2 null,
-    primary key ([day],[regionid],[run_datetime],[run_no],[runtype])
-)
-go
-                        
-create table mmsdm.MtpasaRegionavailability3 (
-file_log_id bigint not null,
-    [publish_datetime] datetime2 not null,
-[day] datetime2 not null,
-[regionid] varchar(20) not null,
-[pasaavailability_scheduled] decimal(12,0) null,
-[latest_offer_datetime] datetime2 null,
-[energyunconstrainedcapacity] decimal(12,0) null,
-[energyconstrainedcapacity] decimal(12,0) null,
-[nonscheduledgeneration] decimal(12,2) null,
-[demand10] decimal(12,2) null,
-[demand50] decimal(12,2) null,
-[energyreqdemand10] decimal(12,2) null,
-[energyreqdemand50] decimal(12,2) null,
-[lastchanged] datetime2 null,
-[demand10min] decimal(12,2) null,
-[demand10max] decimal(12,2) null,
-[demand50min] decimal(12,2) null,
-[demand50max] decimal(12,2) null,
-[carryovercapacity] decimal(12,0) null,
-    primary key ([day],[publish_datetime],[regionid])
-)
-go
-                        
-create table mmsdm.MtpasaRegionavailtrk1 (
-file_log_id bigint not null,
-    [publish_datetime] datetime2 not null,
-[startdate] datetime2 null,
-[enddate] datetime2 null,
-[latest_offer_datetime] datetime2 null,
-    primary key ([publish_datetime])
-)
-go
-                        
-create table mmsdm.MtpasaRegioniteration1 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[demand_poe_type] varchar(20) not null,
-[aggregation_period] varchar(20) not null,
-[period_ending] datetime2 not null,
-[regionid] varchar(20) not null,
-[use_iteration_id] decimal(5,0) not null,
-[use_iteration_event_number] decimal(12,2) null,
-[use_iteration_event_average] decimal(12,2) null,
-[lastchanged] datetime2 null,
-    primary key ([aggregation_period],[demand_poe_type],[period_ending],[regionid],[run_datetime],[run_no],[runtype],[use_iteration_id])
-)
-go
-                        
-create table mmsdm.MtpasaRegionresult2 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[demand_poe_type] varchar(20) not null,
-[day] datetime2 not null,
-[regionid] varchar(20) not null,
-[periodid] decimal(3,0) null,
-[demand] decimal(12,2) null,
-[aggregateinstalledcapacity] decimal(12,2) null,
-[numberofiterations] decimal(12,2) null,
-[use_numberofiterations] decimal(12,2) null,
-[use_max] decimal(12,2) null,
-[use_upperquartile] decimal(12,2) null,
-[use_median] decimal(12,2) null,
-[use_lowerquartile] decimal(12,2) null,
-[use_min] decimal(12,2) null,
-[use_average] decimal(12,2) null,
-[use_event_average] decimal(12,2) null,
-[totalscheduledgen90] decimal(12,2) null,
-[totalscheduledgen50] decimal(12,2) null,
-[totalscheduledgen10] decimal(12,2) null,
-[totalintermittentgen90] decimal(12,2) null,
-[totalintermittentgen50] decimal(12,2) null,
-[totalintermittentgen10] decimal(12,2) null,
-[demandsideparticipation90] decimal(12,2) null,
-[demandsideparticipation50] decimal(12,2) null,
-[demandsideparticipation10] decimal(12,2) null,
-[lastchanged] datetime2 null,
-[totalsemischedulegen90] decimal(12,2) null,
-[totalsemischedulegen50] decimal(12,2) null,
-[totalsemischedulegen10] decimal(12,2) null,
-[totalavailablegenmin] decimal(12,2) null,
-[totalavailablegen10] decimal(12,2) null,
-[totalavailablegen50] decimal(12,2) null,
-[totalavailablegen90] decimal(12,2) null,
-[totalavailablegenmax] decimal(12,2) null,
-    primary key ([day],[demand_poe_type],[regionid],[run_datetime],[run_no],[runtype])
-)
-go
-                        
-create table mmsdm.MtpasaRegionsummary1 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[run_no] decimal(4,0) not null,
-[runtype] varchar(20) not null,
-[demand_poe_type] varchar(20) not null,
-[aggregation_period] varchar(20) not null,
-[period_ending] datetime2 not null,
-[regionid] varchar(20) not null,
-[nativedemand] decimal(12,2) null,
-[use_percentile10] decimal(12,2) null,
-[use_percentile20] decimal(12,2) null,
-[use_percentile30] decimal(12,2) null,
-[use_percentile40] decimal(12,2) null,
-[use_percentile50] decimal(12,2) null,
-[use_percentile60] decimal(12,2) null,
-[use_percentile70] decimal(12,2) null,
-[use_percentile80] decimal(12,2) null,
-[use_percentile90] decimal(12,2) null,
-[use_percentile100] decimal(12,2) null,
-[use_average] decimal(12,2) null,
-[numberofiterations] decimal(12,2) null,
-[use_numberofiterations] decimal(12,2) null,
-[use_event_max] decimal(12,2) null,
-[use_event_upperquartile] decimal(12,2) null,
-[use_event_median] decimal(12,2) null,
-[use_event_lowerquartile] decimal(12,2) null,
-[use_event_min] decimal(12,2) null,
-[weight] decimal(16,6) null,
-[use_weighted_avg] decimal(16,6) null,
-[lrc] decimal(12,2) null,
-[lastchanged] datetime2 null,
-    primary key ([aggregation_period],[demand_poe_type],[period_ending],[regionid],[run_datetime],[run_no],[runtype])
-)
-go
-                        
-create table mmsdm.NetworkEquipmentdetail1 (
+create table mmsdm.NetworkEquipmentdetail2 (
 file_log_id bigint not null,
     [substationid] varchar(30) not null,
 [equipmenttype] varchar(10) not null,
@@ -3406,7 +3135,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.NetworkOutagedetail3 (
+create table mmsdm.NetworkOutagedetail4 (
 file_log_id bigint not null,
     [outageid] decimal(15,0) not null,
 [substationid] varchar(30) not null,
@@ -3480,7 +3209,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.NetworkSubstationdetail1 (
+create table mmsdm.NetworkSubstationdetail2 (
 file_log_id bigint not null,
     [substationid] varchar(30) not null,
 [validfrom] datetime2 not null,
@@ -3693,7 +3422,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.P5minRegionsolution6 (
+create table mmsdm.P5minRegionsolution7 (
 file_log_id bigint not null,
     [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
@@ -3824,7 +3553,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.P5minUnitsolution3 (
+create table mmsdm.P5minUnitsolution4 (
 file_log_id bigint not null,
     [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
@@ -3910,7 +3639,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.ParticipantRegistrationDudetail3 (
+create table mmsdm.ParticipantRegistrationDudetail4 (
 file_log_id bigint not null,
     [effectivedate] datetime2 not null,
 [duid] varchar(10) not null,
@@ -3937,7 +3666,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.ParticipantRegistrationDudetailsummary4 (
+create table mmsdm.ParticipantRegistrationDudetailsummary5 (
 file_log_id bigint not null,
     [duid] varchar(10) not null,
 [start_date] datetime2 not null,
@@ -4131,6 +3860,60 @@ file_log_id bigint not null,
 )
 go
                         
+create table mmsdm.ParticipantRegistrationPmsGroup1 (
+file_log_id bigint not null,
+    [groupid] decimal(20,0) not null,
+[createddate] datetime2 null,
+[lastchanged] datetime2 null,
+    primary key ([groupid])
+)
+go
+                        
+create table mmsdm.ParticipantRegistrationPmsGroupnmi1 (
+file_log_id bigint not null,
+    [groupnmiid] decimal(20,0) not null,
+[groupid] decimal(20,0) null,
+[versionfrom] datetime2 null,
+[versionto] datetime2 null,
+[startdate] datetime2 null,
+[enddate] datetime2 null,
+[nmi] varchar(20) null,
+[sitename] varchar(50) null,
+[nerrgrouppremises] decimal(1,0) null,
+[baselinemethodologyid] varchar(50) null,
+[mrc] decimal(10,3) null,
+[mrcreason] varchar(500) null,
+[retailcustomer] varchar(50) null,
+[suspended] decimal(1,0) null,
+[unavailable] decimal(1,0) null,
+[approveddate] datetime2 null,
+[lastchanged] datetime2 null,
+    primary key ([groupnmiid])
+)
+go
+                        
+create table mmsdm.ParticipantRegistrationPmsGroupservice1 (
+file_log_id bigint not null,
+    [groupserviceid] decimal(20,0) not null,
+[groupid] decimal(20,0) null,
+[versionfrom] datetime2 null,
+[versionto] datetime2 null,
+[startdate] datetime2 null,
+[enddate] datetime2 null,
+[market] varchar(50) null,
+[servicetype] varchar(50) null,
+[entitytype] varchar(50) null,
+[entityid] varchar(50) null,
+[mrc] decimal(10,3) null,
+[mrcreason] varchar(500) null,
+[maximumrampratepermin] decimal(10,0) null,
+[region] varchar(20) null,
+[approveddate] datetime2 null,
+[lastchanged] datetime2 null,
+    primary key ([groupserviceid])
+)
+go
+                        
 create table mmsdm.ParticipantRegistrationStadualloc1 (
 file_log_id bigint not null,
     [duid] varchar(10) not null,
@@ -4254,7 +4037,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.PdpasaRegionsolution6 (
+create table mmsdm.PdpasaRegionsolution7 (
 file_log_id bigint not null,
     [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
@@ -4612,7 +4395,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.PredispatchRegionSolution5 (
+create table mmsdm.PredispatchRegionSolution6 (
 file_log_id bigint not null,
     [predispatchseqno] varchar(20) null,
 [runno] decimal(3,0) null,
@@ -5063,6 +4846,30 @@ file_log_id bigint not null,
 )
 go
                         
+create table mmsdm.SettlementsConfigWdrrrCalendar1 (
+file_log_id bigint not null,
+    [wdrrrperiod] varchar(20) not null,
+[regionid] varchar(20) not null,
+[version_datetime] datetime2 not null,
+[startdate] datetime2 null,
+[enddate] datetime2 null,
+[lastchanged] datetime2 null,
+    primary key ([regionid],[version_datetime],[wdrrrperiod])
+)
+go
+                        
+create table mmsdm.SettlementsConfigWdrReimburseRate1 (
+file_log_id bigint not null,
+    [wdrrrperiod] varchar(20) not null,
+[regionid] varchar(20) not null,
+[version_datetime] datetime2 not null,
+[wdrrr] decimal(18,8) null,
+[isfirm] decimal(3,0) null,
+[lastchanged] datetime2 null,
+    primary key ([regionid],[version_datetime],[wdrrrperiod])
+)
+go
+                        
 create table mmsdm.SettlementsDaytrack6 (
 file_log_id bigint not null,
     [settlementdate] datetime2 not null,
@@ -5348,31 +5155,6 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.SettlementsLshedrecovery5 (
-file_log_id bigint not null,
-    [settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) null,
-[periodid] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[lsepayment] decimal(15,5) null,
-[ccpayment] decimal(15,5) null,
-[participantdemand] decimal(15,5) null,
-[regiondemand] decimal(15,5) null,
-[lserecovery] decimal(15,5) null,
-[ccrecovery] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[lserecovery_gen] decimal(15,5) null,
-[ccrecovery_gen] decimal(15,5) null,
-[participantdemand_gen] decimal(15,5) null,
-[regiondemand_gen] decimal(15,5) null,
-[availabilityrecovery] decimal(16,6) null,
-[availabilityrecovery_gen] decimal(16,6) null,
-    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
-)
-go
-                        
 create table mmsdm.SettlementsMarketfees6 (
 file_log_id bigint not null,
     [settlementdate] datetime2 not null,
@@ -5482,32 +5264,6 @@ file_log_id bigint not null,
 [lastchanged] datetime2 null,
 [availabilitypayment_rebate] decimal(18,8) null,
     primary key ([contractid],[participantid],[periodid],[settlementdate],[versionno])
-)
-go
-                        
-create table mmsdm.SettlementsRpowerrecovery5 (
-file_log_id bigint not null,
-    [settlementdate] datetime2 not null,
-[versionno] decimal(3,0) not null,
-[participantid] varchar(10) not null,
-[contractid] varchar(10) null,
-[periodid] decimal(3,0) not null,
-[regionid] varchar(10) not null,
-[availabilitypayment] decimal(15,5) null,
-[enablingpayment] decimal(15,5) null,
-[ccpayment] decimal(15,5) null,
-[participantdemand] decimal(15,5) null,
-[regiondemand] decimal(15,5) null,
-[availabilityrecovery] decimal(15,5) null,
-[enablingrecovery] decimal(15,5) null,
-[ccrecovery] decimal(15,5) null,
-[lastchanged] datetime2 null,
-[availabilityrecovery_gen] decimal(15,5) null,
-[enablingrecovery_gen] decimal(15,5) null,
-[ccrecovery_gen] decimal(15,5) null,
-[participantdemand_gen] decimal(15,5) null,
-[regiondemand_gen] decimal(15,5) null,
-    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
 go
                         
@@ -5621,7 +5377,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.SettlementsSetFcasRegulationTrk1 (
+create table mmsdm.SettlementsSetFcasRegulationTrk2 (
 file_log_id bigint not null,
     [settlementdate] datetime2 not null,
 [versionno] decimal(3,0) not null,
@@ -5679,6 +5435,27 @@ file_log_id bigint not null,
 )
 go
                         
+create table mmsdm.SettlementsRecoveryEnergy1 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[settlementrunno] decimal(3,0) not null,
+[participantid] varchar(20) not null,
+[regionid] varchar(20) not null,
+[periodid] decimal(3,0) not null,
+[customerenergyactual] decimal(18,8) null,
+[customerenergympfexactual] decimal(18,8) null,
+[customerenergysubstitute] decimal(18,8) null,
+[customerenergympfexsubstitute] decimal(18,8) null,
+[generatorenergyactual] decimal(18,8) null,
+[regioncustenergyactual] decimal(18,8) null,
+[regioncustenergympfexactual] decimal(18,8) null,
+[regioncustenergysubst] decimal(18,8) null,
+[regioncustenergympfexsubst] decimal(18,8) null,
+[regiongenenergyactual] decimal(18,8) null,
+    primary key ([participantid],[periodid],[regionid],[settlementdate],[settlementrunno])
+)
+go
+                        
 create table mmsdm.SettlementsRunParameter5 (
 file_log_id bigint not null,
     [settlementdate] datetime2 not null,
@@ -5687,6 +5464,69 @@ file_log_id bigint not null,
 [numvalue] decimal(18,8) null,
 [lastchanged] datetime2 null,
     primary key ([parameterid],[settlementdate],[versionno])
+)
+go
+                        
+create table mmsdm.SettlementsSubstDemand1 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[settlementrunno] decimal(3,0) not null,
+[tni] varchar(20) not null,
+[participantid] varchar(20) not null,
+[regionid] varchar(20) null,
+[substitutedemand] decimal(18,8) null,
+    primary key ([participantid],[settlementdate],[settlementrunno],[tni])
+)
+go
+                        
+create table mmsdm.SettlementsSubstRunVersion1 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[settlementrunno] decimal(3,0) not null,
+[referencesettlementdate] datetime2 not null,
+[referencesettlementrunno] decimal(3,0) not null,
+    primary key ([referencesettlementdate],[referencesettlementrunno],[settlementdate],[settlementrunno])
+)
+go
+                        
+create table mmsdm.SettlementsWdrReconDetail1 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[settlementrunno] decimal(3,0) not null,
+[nmi] varchar(20) not null,
+[tni] varchar(20) null,
+[regionid] varchar(20) null,
+[frmp] varchar(20) null,
+[drsp] varchar(20) null,
+[periodid] decimal(3,0) not null,
+[wdrsq_uncapped] decimal(18,8) null,
+[wdrsq_capped] decimal(18,8) null,
+[mrc] decimal(18,8) null,
+[mrcsq] decimal(18,8) null,
+[wdrrr] decimal(18,8) null,
+[rrp] decimal(18,8) null,
+[tlf] decimal(18,8) null,
+[me_dlfadjusted] decimal(18,8) null,
+[bq_dlfadjusted] decimal(18,8) null,
+[isnoncompliant] decimal(1,0) null,
+[qualityflag] varchar(20) null,
+[transactionamount] decimal(18,8) null,
+[baselinecalculationid] varchar(100) null,
+    primary key ([nmi],[periodid],[settlementdate],[settlementrunno])
+)
+go
+                        
+create table mmsdm.SettlementsWdrTransact1 (
+file_log_id bigint not null,
+    [settlementdate] datetime2 not null,
+[settlementrunno] decimal(3,0) not null,
+[periodid] decimal(3,0) not null,
+[regionid] varchar(20) not null,
+[participantid] varchar(20) not null,
+[participantroleid] varchar(20) not null,
+[counterpartyparticipantid] varchar(20) not null,
+[transactionamount] decimal(18,8) null,
+    primary key ([counterpartyparticipantid],[participantid],[participantroleid],[periodid],[regionid],[settlementdate],[settlementrunno])
 )
 go
                         
@@ -5749,7 +5589,7 @@ file_log_id bigint not null,
 )
 go
                         
-create table mmsdm.StpasaRegionsolution6 (
+create table mmsdm.StpasaRegionsolution7 (
 file_log_id bigint not null,
     [run_datetime] datetime2 not null,
 [interval_datetime] datetime2 not null,
@@ -5855,41 +5695,6 @@ file_log_id bigint not null,
 [lowerregrop] decimal(15,5) null,
 [price_status] varchar(20) null,
     primary key ([periodid],[regionid],[runno],[settlementdate])
-)
-go
-                        
-create table mmsdm.VoltageInstructionInstruction2 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[ems_id] varchar(60) not null,
-[participantid] varchar(20) null,
-[station_id] varchar(60) null,
-[device_id] varchar(60) null,
-[device_type] varchar(20) null,
-[control_type] varchar(20) null,
-[target] decimal(15,0) null,
-[conforming] decimal(1,0) null,
-[instruction_summary] varchar(400) null,
-[version_datetime] datetime2 not null,
-[instruction_sequence] decimal(4,0) null,
-[additional_notes] varchar(60) null,
-    primary key ([ems_id],[run_datetime],[version_datetime])
-)
-go
-                        
-create table mmsdm.VoltageInstructionTrack2 (
-file_log_id bigint not null,
-    [run_datetime] datetime2 not null,
-[file_type] varchar(20) null,
-[version_datetime] datetime2 not null,
-[se_datetime] datetime2 null,
-[solution_category] varchar(60) null,
-[solution_status] varchar(60) null,
-[operating_mode] varchar(60) null,
-[operating_status] varchar(100) null,
-[est_expiry] datetime2 null,
-[est_next_instruction] datetime2 null,
-    primary key ([run_datetime],[version_datetime])
 )
 go
                         

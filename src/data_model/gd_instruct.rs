@@ -143,7 +143,7 @@ impl crate::ArrowSchema for GdInstructGdinstruct1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -156,9 +156,9 @@ impl crate::ArrowSchema for GdInstructGdinstruct1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("issuedtime", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("targettime", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("issuedtime", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("targettime", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -199,24 +199,12 @@ impl crate::ArrowSchema for GdInstructGdinstruct1 {
                     val.mantissa()
                 })
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
             participantid_array.push(row.participantid);
-            issuedtime_array.push(row.issuedtime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            targettime_array.push(row.targettime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            issuedtime_array.push(row.issuedtime.map(|val| val.timestamp_millis()));
+            targettime_array.push(row.targettime.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -245,21 +233,21 @@ impl crate::ArrowSchema for GdInstructGdinstruct1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(issuedtime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(targettime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -379,7 +367,7 @@ impl crate::ArrowSchema for GdInstructInstructionsubtype1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -394,10 +382,7 @@ impl crate::ArrowSchema for GdInstructInstructionsubtype1 {
             instructiontypeid_array.push(row.instructiontypeid);
             instructionsubtypeid_array.push(row.instructionsubtypeid);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -412,7 +397,7 @@ impl crate::ArrowSchema for GdInstructInstructionsubtype1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -521,7 +506,7 @@ impl crate::ArrowSchema for GdInstructInstructiontype1 {
                 true,
             ),
             arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -536,10 +521,7 @@ impl crate::ArrowSchema for GdInstructInstructiontype1 {
             instructiontypeid_array.push(row.instructiontypeid);
             description_array.push(row.description);
             regionid_array.push(row.regionid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -552,7 +534,7 @@ impl crate::ArrowSchema for GdInstructInstructiontype1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

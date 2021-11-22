@@ -109,12 +109,12 @@ impl crate::ArrowSchema for ApApevent1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivefrominterval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "effectivetointerval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("reason", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -125,7 +125,7 @@ impl crate::ArrowSchema for ApApevent1 {
             ),
             arrow2::datatypes::Field::new(
                 "startauthoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -135,10 +135,10 @@ impl crate::ArrowSchema for ApApevent1 {
             ),
             arrow2::datatypes::Field::new(
                 "endauthoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -160,29 +160,17 @@ impl crate::ArrowSchema for ApApevent1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            effectivefrominterval_array.push(row.effectivefrominterval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            effectivetointerval_array.push(row.effectivetointerval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            effectivefrominterval_array
+                .push(row.effectivefrominterval.map(|val| val.timestamp_millis()));
+            effectivetointerval_array
+                .push(row.effectivetointerval.map(|val| val.timestamp_millis()));
             reason_array.push(row.reason);
             startauthorisedby_array.push(row.startauthorisedby);
-            startauthoriseddate_array.push(row.startauthoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startauthoriseddate_array
+                .push(row.startauthoriseddate.map(|val| val.timestamp_millis()));
             endauthorisedby_array.push(row.endauthorisedby);
-            endauthoriseddate_array.push(row.endauthoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            endauthoriseddate_array.push(row.endauthoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -194,11 +182,11 @@ impl crate::ArrowSchema for ApApevent1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivefrominterval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivetointerval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(reason_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -206,16 +194,16 @@ impl crate::ArrowSchema for ApApevent1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startauthoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(endauthorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endauthoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -341,7 +329,7 @@ impl crate::ArrowSchema for ApApeventregion1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "energyapflag",
                 arrow2::datatypes::DataType::Decimal(1, 0),
@@ -412,10 +400,7 @@ impl crate::ArrowSchema for ApApeventregion1 {
                 val.mantissa()
             });
             regionid_array.push(row.regionid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             energyapflag_array.push({
                 row.energyapflag.map(|mut val| {
                     val.rescale(0);
@@ -482,7 +467,7 @@ impl crate::ArrowSchema for ApApeventregion1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(energyapflag_array)
@@ -643,7 +628,7 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
             arrow2::datatypes::Field::new("irfmid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -668,10 +653,10 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -688,10 +673,7 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             irfmid_array.push(row.irfmid);
-            effectivedate_array.push(row.effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            effectivedate_array.push(row.effectivedate.map(|val| val.timestamp_millis()));
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -709,14 +691,8 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
                 })
             });
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -725,7 +701,7 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(irfmid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -742,11 +718,11 @@ impl crate::ArrowSchema for ForceMajeureIrfmamount1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -851,19 +827,19 @@ impl crate::ArrowSchema for ForceMajeureIrfmevents1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new("irfmid", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "startperiod",
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "endperiod",
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -878,30 +854,21 @@ impl crate::ArrowSchema for ForceMajeureIrfmevents1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             irfmid_array.push(row.irfmid);
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
             startperiod_array.push({
                 row.startperiod.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
             endperiod_array.push({
                 row.endperiod.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -910,7 +877,7 @@ impl crate::ArrowSchema for ForceMajeureIrfmevents1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(irfmid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startperiod_array)
@@ -918,7 +885,7 @@ impl crate::ArrowSchema for ForceMajeureIrfmevents1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endperiod_array)
@@ -926,7 +893,7 @@ impl crate::ArrowSchema for ForceMajeureIrfmevents1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1056,12 +1023,12 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
             ),
             arrow2::datatypes::Field::new(
                 "start_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "end_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -1069,7 +1036,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1085,22 +1052,10 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
         for (_, row) in partition {
             suspension_id_array.push(row.suspension_id);
             regionid_array.push(row.regionid);
-            start_interval_array.push(
-                i32::try_from(
-                    (row.start_interval.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
-            end_interval_array.push(row.end_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            start_interval_array.push(row.start_interval.timestamp_millis());
+            end_interval_array.push(row.end_interval.map(|val| val.timestamp_millis()));
             pricing_regime_array.push(row.pricing_regime);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1112,16 +1067,16 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(start_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(end_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(pricing_regime_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1241,20 +1196,20 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
             ),
             arrow2::datatypes::Field::new(
                 "initial_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "end_region_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "end_suspension_interval",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1270,22 +1225,14 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
         for (_, row) in partition {
             suspension_id_array.push(row.suspension_id);
             regionid_array.push(row.regionid);
-            initial_interval_array.push(row.initial_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            end_region_interval_array.push(row.end_region_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            end_suspension_interval_array.push(row.end_suspension_interval.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            initial_interval_array.push(row.initial_interval.map(|val| val.timestamp_millis()));
+            end_region_interval_array
+                .push(row.end_region_interval.map(|val| val.timestamp_millis()));
+            end_suspension_interval_array.push(
+                row.end_suspension_interval
+                    .map(|val| val.timestamp_millis()),
+            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1297,19 +1244,19 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(initial_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(end_region_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(end_suspension_interval_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1451,7 +1398,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1514,7 +1461,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1536,12 +1483,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
         let mut lreg_rrp_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             day_type_array.push(row.day_type);
             regionid_array.push(row.regionid);
             periodid_array.push({
@@ -1603,10 +1545,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1614,7 +1553,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(day_type_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
@@ -1660,7 +1599,7 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1767,26 +1706,26 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "source_start_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "source_end_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("comments", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1800,29 +1739,12 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            source_start_date_array.push(row.source_start_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            source_end_date_array.push(row.source_end_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            source_start_date_array.push(row.source_start_date.map(|val| val.timestamp_millis()));
+            source_end_date_array.push(row.source_end_date.map(|val| val.timestamp_millis()));
             comments_array.push(row.comments);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1830,24 +1752,24 @@ impl crate::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(source_start_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(source_end_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(comments_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1978,13 +1900,13 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "startperiod",
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "endperiod",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -2006,7 +1928,7 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2025,21 +1947,13 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             regionid_array.push(row.regionid);
-            startdate_array.push(
-                i32::try_from(
-                    (row.startdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            startdate_array.push(row.startdate.timestamp_millis());
             startperiod_array.push({
                 let mut val = row.startperiod;
                 val.rescale(0);
                 val.mantissa()
             });
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
             endperiod_array.push({
                 row.endperiod.map(|mut val| {
                     val.rescale(0);
@@ -2055,10 +1969,7 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
             description_array.push(row.description);
             authorisestart_array.push(row.authorisestart);
             authoriseend_array.push(row.authoriseend);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2067,7 +1978,7 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(startperiod_array)
@@ -2075,7 +1986,7 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endperiod_array)
@@ -2090,7 +2001,7 @@ impl crate::ArrowSchema for ForceMajeureOverriderrp1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authoriseend_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2215,7 +2126,7 @@ impl crate::ArrowSchema for ApRegionapc1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2225,7 +2136,7 @@ impl crate::ArrowSchema for ApRegionapc1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -2233,7 +2144,7 @@ impl crate::ArrowSchema for ApRegionapc1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2248,26 +2159,15 @@ impl crate::ArrowSchema for ApRegionapc1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             regionid_array.push(row.regionid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2276,7 +2176,7 @@ impl crate::ArrowSchema for ApRegionapc1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2284,12 +2184,12 @@ impl crate::ArrowSchema for ApRegionapc1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2426,7 +2326,7 @@ impl crate::ArrowSchema for ApRegionapcintervals1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2444,7 +2344,7 @@ impl crate::ArrowSchema for ApRegionapcintervals1 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "apctype",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -2477,12 +2377,7 @@ impl crate::ArrowSchema for ApRegionapcintervals1 {
         let mut apfvalue_array = Vec::new();
         for (_, row) in partition {
             regionid_array.push(row.regionid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2499,10 +2394,7 @@ impl crate::ArrowSchema for ApRegionapcintervals1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             apctype_array.push({
                 row.apctype.map(|mut val| {
                     val.rescale(0);
@@ -2529,7 +2421,7 @@ impl crate::ArrowSchema for ApRegionapcintervals1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2545,7 +2437,7 @@ impl crate::ArrowSchema for ApRegionapcintervals1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(apctype_array)

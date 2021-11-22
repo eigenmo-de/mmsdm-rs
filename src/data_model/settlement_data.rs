@@ -113,7 +113,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -137,7 +137,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "settlementintervallength",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -158,13 +158,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
         let mut lastchanged_array = Vec::new();
         let mut settlementintervallength_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             regionid_array.push(row.regionid);
             exanterunstatus_array.push(row.exanterunstatus);
             exanterunno_array.push({
@@ -179,10 +173,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
                 val.rescale(0);
                 val.mantissa()
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             settlementintervallength_array.push({
                 row.settlementintervallength.map(|mut val| {
                     val.rescale(0);
@@ -196,7 +187,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(exanterunstatus_array)),
@@ -211,7 +202,7 @@ impl crate::ArrowSchema for SettlementsDaytrack6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(settlementintervallength_array)
@@ -413,7 +404,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -494,7 +485,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
                 arrow2::datatypes::DataType::Decimal(10, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "hostdistributor",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -546,13 +537,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
         let mut ufea_array = Vec::new();
         let mut age_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -668,10 +653,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             hostdistributor_array.push(row.hostdistributor);
             mda_array.push(row.mda);
             afe_array.push({
@@ -705,7 +687,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -790,7 +772,7 @@ impl crate::ArrowSchema for SettlementsCpdata6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(hostdistributor_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(mda_array)),
@@ -956,7 +938,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1004,7 +986,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
                 arrow2::datatypes::DataType::Decimal(22, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "sumep",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -1029,13 +1011,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
         let mut lastchanged_array = Vec::new();
         let mut sumep_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(10);
@@ -1083,10 +1059,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             sumep_array.push({
                 row.sumep.map(|mut val| {
                     val.rescale(5);
@@ -1100,7 +1073,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1137,7 +1110,7 @@ impl crate::ArrowSchema for SettlementsCpdataregion5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(sumep_array)
@@ -1290,7 +1263,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1324,7 +1297,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1341,13 +1314,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
         let mut regionrecovery_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -1378,10 +1345,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1389,7 +1353,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1415,7 +1379,7 @@ impl crate::ArrowSchema for SettlementsFcasregionrecovery5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1618,7 +1582,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1711,7 +1675,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "expenergy",
                 arrow2::datatypes::DataType::Decimal(15, 6),
@@ -1769,13 +1733,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
         let mut mda_array = Vec::new();
         let mut secondary_tlf_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -1881,10 +1839,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             expenergy_array.push({
                 row.expenergy.map(|mut val| {
                     val.rescale(6);
@@ -1917,7 +1872,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1994,7 +1949,7 @@ impl crate::ArrowSchema for SettlementsGendata6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(expenergy_array)
@@ -2163,7 +2118,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2226,7 +2181,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
                 arrow2::datatypes::DataType::Decimal(27, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2248,13 +2203,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
         let mut expenergycost_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(10);
@@ -2320,10 +2269,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2331,7 +2277,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2380,7 +2326,7 @@ impl crate::ArrowSchema for SettlementsGendataregion5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2524,7 +2470,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("runno", arrow2::datatypes::DataType::Int64, false),
@@ -2543,7 +2489,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2561,13 +2507,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
         let mut irss_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push(row.runno);
             periodid_array.push(row.periodid);
             regionid_array.push(row.regionid);
@@ -2601,10 +2541,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2612,7 +2549,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(runno_array)),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(periodid_array)),
@@ -2639,7 +2576,7 @@ impl crate::ArrowSchema for SettlementsIntraregionresidues5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2810,7 +2747,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2858,7 +2795,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -2889,13 +2826,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
         let mut csp_derogation_amount_array = Vec::new();
         let mut unadjusted_irsr_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             settlementrunno_array.push({
                 let mut val = row.settlementrunno;
                 val.rescale(0);
@@ -2928,10 +2859,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -2951,7 +2879,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
@@ -2987,7 +2915,7 @@ impl crate::ArrowSchema for SettlementsIraucsurplus6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -3166,7 +3094,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -3214,7 +3142,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -3245,13 +3173,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
         let mut csp_derogation_amount_array = Vec::new();
         let mut unadjusted_irsr_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             settlementrunno_array.push({
                 let mut val = row.settlementrunno;
                 val.rescale(0);
@@ -3284,10 +3206,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -3307,7 +3226,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
@@ -3343,7 +3262,7 @@ impl crate::ArrowSchema for SettlementsIrnspsurplus6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -3522,7 +3441,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -3570,7 +3489,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -3601,13 +3520,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
         let mut csp_derogation_amount_array = Vec::new();
         let mut unadjusted_irsr_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             settlementrunno_array.push({
                 let mut val = row.settlementrunno;
                 val.rescale(0);
@@ -3640,10 +3553,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -3663,7 +3573,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
@@ -3699,7 +3609,7 @@ impl crate::ArrowSchema for SettlementsIrpartsurplus6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -3860,7 +3770,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -3898,7 +3808,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "csp_derogation_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -3927,13 +3837,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
         let mut csp_derogation_amount_array = Vec::new();
         let mut unadjusted_irsr_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             settlementrunno_array.push({
                 let mut val = row.settlementrunno;
                 val.rescale(0);
@@ -3964,10 +3868,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             csp_derogation_amount_array.push({
                 row.csp_derogation_amount.map(|mut val| {
                     val.rescale(8);
@@ -3987,7 +3888,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
@@ -4015,7 +3916,7 @@ impl crate::ArrowSchema for SettlementsIrsurplus6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(csp_derogation_amount_array)
@@ -4166,7 +4067,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4201,7 +4102,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4219,13 +4120,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
         let mut admela_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             settlementrunno_array.push({
                 let mut val = row.settlementrunno;
                 val.rescale(0);
@@ -4267,10 +4162,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4278,7 +4170,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
@@ -4313,7 +4205,7 @@ impl crate::ArrowSchema for SettlementsLocalareaenergy1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4446,7 +4338,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4460,7 +4352,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
                 false,
             ),
             arrow2::datatypes::Field::new("tni", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4473,13 +4365,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
         let mut tni_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             settlementrunno_array.push({
                 let mut val = row.settlementrunno;
                 val.rescale(0);
@@ -4487,10 +4373,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
             });
             localareaid_array.push(row.localareaid);
             tni_array.push(row.tni);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4498,7 +4381,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
@@ -4510,7 +4393,7 @@ impl crate::ArrowSchema for SettlementsLocalareatni1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(tni_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4690,7 +4573,7 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4764,13 +4647,13 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "offerversionno",
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "availabilitypayment",
                 arrow2::datatypes::DataType::Decimal(16, 6),
@@ -4807,13 +4690,7 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
         let mut lastchanged_array = Vec::new();
         let mut availabilitypayment_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -4906,20 +4783,14 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
                     val.mantissa()
                 })
             });
-            offerdate_array.push(row.offerdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            offerdate_array.push(row.offerdate.map(|val| val.timestamp_millis()));
             offerversionno_array.push({
                 row.offerversionno.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             availabilitypayment_array.push({
                 row.availabilitypayment.map(|mut val| {
                     val.rescale(6);
@@ -4933,7 +4804,7 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -5005,7 +4876,7 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerversionno_array)
@@ -5013,462 +4884,10 @@ impl crate::ArrowSchema for SettlementsLshedpayment5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(availabilitypayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-            ],
-        )
-        .map_err(Into::into)
-    }
-}
-/// # Summary
-///
-/// ## SETLSHEDRECOVERY
-///  _SETLSHEDRECOVERY shows reimbursements for Load shed Ancillary Services to be recovered from participants. (Data no longer created for Settlement Days from 01/07/2012)_
-///
-/// * Data Set Name: Settlements
-/// * File Name: Lshedrecovery
-/// * Data Version: 5
-///
-/// # Description
-///  SETLSHEDRECOVERY data is confidential to the relevant participant. Source SETLSHEDRECOVERY updates with each settlement run. Note Only the payment fields (LSEPAYMENT and CCPAYMENT) are on a regional basis. All other demand and recovery fields are on NEM basis rather than a regional basis.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * PARTICIPANTID
-/// * PERIODID
-/// * REGIONID
-/// * SETTLEMENTDATE
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsLshedrecovery5 {
-    /// Settlement Date
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Settlement Run No.
-    pub versionno: rust_decimal::Decimal,
-    /// Participant to pay recovery
-    pub participantid: String,
-    /// Contract Identifier for reserve, intervention, settlement and ancillary service contracts. Contracts are coded by type and unit.
-    pub contractid: Option<String>,
-    /// Settlements Trading Interval.
-    pub periodid: rust_decimal::Decimal,
-    /// Region Identifier
-    pub regionid: String,
-    /// Load Shed Enabling Payment
-    pub lsepayment: Option<rust_decimal::Decimal>,
-    /// Compensation Payment
-    pub ccpayment: Option<rust_decimal::Decimal>,
-    /// Total Participant NEM Demand
-    pub participantdemand: Option<rust_decimal::Decimal>,
-    /// Total NEM Demand
-    pub regiondemand: Option<rust_decimal::Decimal>,
-    /// Load Shed Enabling Recovery
-    pub lserecovery: Option<rust_decimal::Decimal>,
-    /// Compensation Recovery
-    pub ccrecovery: Option<rust_decimal::Decimal>,
-    /// Last date and time record changed
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Load Shed Enabling Recovery for Generator
-    pub lserecovery_gen: Option<rust_decimal::Decimal>,
-    /// Compensation Recovery for Generator
-    pub ccrecovery_gen: Option<rust_decimal::Decimal>,
-    /// Total Participant NEM Demand for Generator
-    pub participantdemand_gen: Option<rust_decimal::Decimal>,
-    /// Total NEM Demand for Generator
-    pub regiondemand_gen: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Load Shed Availability service attributable to customer connection points
-    pub availabilityrecovery: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Load Shed Availability service attributable to generator connection points
-    pub availabilityrecovery_gen: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for SettlementsLshedrecovery5 {
-    type PrimaryKey = SettlementsLshedrecovery5PrimaryKey;
-    type Partition = (i32, chrono::Month);
-
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "SETTLEMENTS".into(),
-            table_name: Some("LSHEDRECOVERY".into()),
-            version: 5,
-        }
-    }
-
-    fn primary_key(&self) -> SettlementsLshedrecovery5PrimaryKey {
-        SettlementsLshedrecovery5PrimaryKey {
-            participantid: self.participantid.clone(),
-            periodid: self.periodid,
-            regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate,
-            versionno: self.versionno,
-        }
-    }
-
-    fn partition_suffix(&self) -> Self::Partition {
-        (
-            chrono::Datelike::year(&self.settlementdate),
-            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
-                .unwrap(),
-        )
-    }
-
-    fn partition_name(&self) -> String {
-        format!(
-            "settlements_lshedrecovery_v5_{}_{}",
-            chrono::Datelike::year(&self.settlementdate),
-            chrono::Datelike::month(&self.settlementdate)
-        )
-    }
-}
-impl crate::CompareWithRow for SettlementsLshedrecovery5 {
-    type Row = SettlementsLshedrecovery5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid
-            && self.periodid == row.periodid
-            && self.regionid == row.regionid
-            && self.settlementdate == row.settlementdate
-            && self.versionno == row.versionno
-    }
-}
-impl crate::CompareWithPrimaryKey for SettlementsLshedrecovery5 {
-    type PrimaryKey = SettlementsLshedrecovery5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid
-            && self.periodid == key.periodid
-            && self.regionid == key.regionid
-            && self.settlementdate == key.settlementdate
-            && self.versionno == key.versionno
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct SettlementsLshedrecovery5PrimaryKey {
-    pub participantid: String,
-    pub periodid: rust_decimal::Decimal,
-    pub regionid: String,
-    pub settlementdate: chrono::NaiveDateTime,
-    pub versionno: rust_decimal::Decimal,
-}
-impl crate::CompareWithRow for SettlementsLshedrecovery5PrimaryKey {
-    type Row = SettlementsLshedrecovery5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid
-            && self.periodid == row.periodid
-            && self.regionid == row.regionid
-            && self.settlementdate == row.settlementdate
-            && self.versionno == row.versionno
-    }
-}
-impl crate::CompareWithPrimaryKey for SettlementsLshedrecovery5PrimaryKey {
-    type PrimaryKey = SettlementsLshedrecovery5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid
-            && self.periodid == key.periodid
-            && self.regionid == key.regionid
-            && self.settlementdate == key.settlementdate
-            && self.versionno == key.versionno
-    }
-}
-impl crate::PrimaryKey for SettlementsLshedrecovery5PrimaryKey {}
-#[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for SettlementsLshedrecovery5 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
-            arrow2::datatypes::Field::new(
-                "settlementdate",
-                arrow2::datatypes::DataType::Date32,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "contractid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "lsepayment",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ccpayment",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantdemand",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "regiondemand",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lserecovery",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ccrecovery",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new(
-                "lserecovery_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ccrecovery_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantdemand_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "regiondemand_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "availabilityrecovery",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "availabilityrecovery_gen",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-        ])
-    }
-
-    fn partition_to_record_batch(
-        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
-        let mut settlementdate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut contractid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut lsepayment_array = Vec::new();
-        let mut ccpayment_array = Vec::new();
-        let mut participantdemand_array = Vec::new();
-        let mut regiondemand_array = Vec::new();
-        let mut lserecovery_array = Vec::new();
-        let mut ccrecovery_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut lserecovery_gen_array = Vec::new();
-        let mut ccrecovery_gen_array = Vec::new();
-        let mut participantdemand_gen_array = Vec::new();
-        let mut regiondemand_gen_array = Vec::new();
-        let mut availabilityrecovery_array = Vec::new();
-        let mut availabilityrecovery_gen_array = Vec::new();
-        for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            participantid_array.push(row.participantid);
-            contractid_array.push(row.contractid);
-            periodid_array.push({
-                let mut val = row.periodid;
-                val.rescale(0);
-                val.mantissa()
-            });
-            regionid_array.push(row.regionid);
-            lsepayment_array.push({
-                row.lsepayment.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            ccpayment_array.push({
-                row.ccpayment.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            participantdemand_array.push({
-                row.participantdemand.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            regiondemand_array.push({
-                row.regiondemand.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            lserecovery_array.push({
-                row.lserecovery.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            ccrecovery_array.push({
-                row.ccrecovery.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lserecovery_gen_array.push({
-                row.lserecovery_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            ccrecovery_gen_array.push({
-                row.ccrecovery_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            participantdemand_gen_array.push({
-                row.participantdemand_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            regiondemand_gen_array.push({
-                row.regiondemand_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            availabilityrecovery_array.push({
-                row.availabilityrecovery.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            availabilityrecovery_gen_array.push({
-                row.availabilityrecovery_gen.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-        }
-
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(contractid_array)),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lsepayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ccpayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(participantdemand_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(regiondemand_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lserecovery_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ccrecovery_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lserecovery_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ccrecovery_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(participantdemand_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(regiondemand_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availabilityrecovery_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availabilityrecovery_gen_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
                 ),
             ],
@@ -5629,7 +5048,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -5662,7 +5081,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "participantcategoryid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -5696,13 +5115,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
         let mut feerate_array = Vec::new();
         let mut feeunits_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -5727,10 +5140,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             participantcategoryid_array.push(row.participantcategoryid);
             feerate_array.push({
                 row.feerate.map(|mut val| {
@@ -5751,7 +5161,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -5777,7 +5187,7 @@ impl crate::ArrowSchema for SettlementsMarketfees6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantcategoryid_array,
@@ -5937,7 +5347,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -5971,7 +5381,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
                 true,
             ),
             arrow2::datatypes::Field::new("rrp", arrow2::datatypes::DataType::Decimal(15, 5), true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -5988,13 +5398,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
         let mut rrp_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -6025,10 +5429,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6036,7 +5437,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -6066,7 +5467,7 @@ impl crate::ArrowSchema for SettlementsReallocations5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6230,7 +5631,7 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -6280,13 +5681,13 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "offerversionno",
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "enablingpayment",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -6315,13 +5716,7 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
         let mut lastchanged_array = Vec::new();
         let mut enablingpayment_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -6371,20 +5766,14 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
                     val.mantissa()
                 })
             });
-            offerdate_array.push(row.offerdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            offerdate_array.push(row.offerdate.map(|val| val.timestamp_millis()));
             offerversionno_array.push({
                 row.offerversionno.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             enablingpayment_array.push({
                 row.enablingpayment.map(|mut val| {
                     val.rescale(8);
@@ -6398,7 +5787,7 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -6441,7 +5830,7 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerversionno_array)
@@ -6449,7 +5838,7 @@ impl crate::ArrowSchema for SettlementsRestartpayment6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enablingpayment_array)
@@ -6618,7 +6007,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -6666,7 +6055,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "availabilityrecovery_gen",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -6721,13 +6110,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
         let mut enablingrecovery_array = Vec::new();
         let mut enablingrecovery_gen_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -6765,10 +6148,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             availabilityrecovery_gen_array.push({
                 row.availabilityrecovery_gen.map(|mut val| {
                     val.rescale(5);
@@ -6812,7 +6192,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -6845,7 +6225,7 @@ impl crate::ArrowSchema for SettlementsRestartrecovery6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(availabilityrecovery_gen_array)
@@ -7059,7 +6439,7 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7154,13 +6534,13 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "offerversionno",
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "availabilitypayment_rebate",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -7202,13 +6582,7 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
         let mut lastchanged_array = Vec::new();
         let mut availabilitypayment_rebate_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -7331,20 +6705,14 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
                     val.mantissa()
                 })
             });
-            offerdate_array.push(row.offerdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            offerdate_array.push(row.offerdate.map(|val| val.timestamp_millis()));
             offerversionno_array.push({
                 row.offerversionno.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             availabilitypayment_rebate_array.push({
                 row.availabilitypayment_rebate.map(|mut val| {
                     val.rescale(8);
@@ -7358,7 +6726,7 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -7450,7 +6818,7 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerversionno_array)
@@ -7458,481 +6826,11 @@ impl crate::ArrowSchema for SettlementsRpowerpayment6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(availabilitypayment_rebate_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
-            ],
-        )
-        .map_err(Into::into)
-    }
-}
-/// # Summary
-///
-/// ## SETRPOWERRECOVERY
-///  _SETRPOWERRECOVERY shows reimbursements for Reactive Power Ancillary Services to be recovered from participants. (Data no longer created for Settlement Days from 01/07/2012)_
-///
-/// * Data Set Name: Settlements
-/// * File Name: Rpowerrecovery
-/// * Data Version: 5
-///
-/// # Description
-///  SETRPOWERRECOVERY data is confidential to the relevant participant. Source SETRPOWERRECOVERY updates with each settlement run. Note Only the payment fields (AVAILABILITYPAYMENT, ENABLINGPAYMENT and CCPAYMENT) are on a regional basis. All other demand and recovery fields are on NEM basis rather than a regional basis.
-///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
-///
-/// # Primary Key Columns
-///
-/// * PARTICIPANTID
-/// * PERIODID
-/// * REGIONID
-/// * SETTLEMENTDATE
-/// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsRpowerrecovery5 {
-    /// Settlement Date
-    #[serde(with = "crate::mms_datetime")]
-    pub settlementdate: chrono::NaiveDateTime,
-    /// Settlement Run No.
-    pub versionno: rust_decimal::Decimal,
-    /// Participant to pay recovery
-    pub participantid: String,
-    /// AS Contract Identifier
-    pub contractid: Option<String>,
-    /// Settlements Trading Interval.
-    pub periodid: rust_decimal::Decimal,
-    /// Region Identifier
-    pub regionid: String,
-    /// Availability Payment
-    pub availabilitypayment: Option<rust_decimal::Decimal>,
-    /// Enabling Payment
-    pub enablingpayment: Option<rust_decimal::Decimal>,
-    /// Compensation payment
-    pub ccpayment: Option<rust_decimal::Decimal>,
-    /// Total Participant NEM Demand
-    pub participantdemand: Option<rust_decimal::Decimal>,
-    /// Total NEM Demand
-    pub regiondemand: Option<rust_decimal::Decimal>,
-    /// Availability Recovery
-    pub availabilityrecovery: Option<rust_decimal::Decimal>,
-    /// Enabling Recovery
-    pub enablingrecovery: Option<rust_decimal::Decimal>,
-    /// Compensation Recovery
-    pub ccrecovery: Option<rust_decimal::Decimal>,
-    /// Last date and time record changed
-    #[serde(with = "crate::mms_datetime_opt")]
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Availability Recovery for Generator
-    pub availabilityrecovery_gen: Option<rust_decimal::Decimal>,
-    /// Enabling Recovery for Generator
-    pub enablingrecovery_gen: Option<rust_decimal::Decimal>,
-    /// Compensation Recovery for Generator
-    pub ccrecovery_gen: Option<rust_decimal::Decimal>,
-    /// Total Participant NEM Demand for Generator
-    pub participantdemand_gen: Option<rust_decimal::Decimal>,
-    /// Total NEM Demand for Generator
-    pub regiondemand_gen: Option<rust_decimal::Decimal>,
-}
-impl crate::GetTable for SettlementsRpowerrecovery5 {
-    type PrimaryKey = SettlementsRpowerrecovery5PrimaryKey;
-    type Partition = (i32, chrono::Month);
-
-    fn get_file_key() -> crate::FileKey {
-        crate::FileKey {
-            data_set_name: "SETTLEMENTS".into(),
-            table_name: Some("RPOWERRECOVERY".into()),
-            version: 5,
-        }
-    }
-
-    fn primary_key(&self) -> SettlementsRpowerrecovery5PrimaryKey {
-        SettlementsRpowerrecovery5PrimaryKey {
-            participantid: self.participantid.clone(),
-            periodid: self.periodid,
-            regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate,
-            versionno: self.versionno,
-        }
-    }
-
-    fn partition_suffix(&self) -> Self::Partition {
-        (
-            chrono::Datelike::year(&self.settlementdate),
-            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
-                .unwrap(),
-        )
-    }
-
-    fn partition_name(&self) -> String {
-        format!(
-            "settlements_rpowerrecovery_v5_{}_{}",
-            chrono::Datelike::year(&self.settlementdate),
-            chrono::Datelike::month(&self.settlementdate)
-        )
-    }
-}
-impl crate::CompareWithRow for SettlementsRpowerrecovery5 {
-    type Row = SettlementsRpowerrecovery5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid
-            && self.periodid == row.periodid
-            && self.regionid == row.regionid
-            && self.settlementdate == row.settlementdate
-            && self.versionno == row.versionno
-    }
-}
-impl crate::CompareWithPrimaryKey for SettlementsRpowerrecovery5 {
-    type PrimaryKey = SettlementsRpowerrecovery5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid
-            && self.periodid == key.periodid
-            && self.regionid == key.regionid
-            && self.settlementdate == key.settlementdate
-            && self.versionno == key.versionno
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct SettlementsRpowerrecovery5PrimaryKey {
-    pub participantid: String,
-    pub periodid: rust_decimal::Decimal,
-    pub regionid: String,
-    pub settlementdate: chrono::NaiveDateTime,
-    pub versionno: rust_decimal::Decimal,
-}
-impl crate::CompareWithRow for SettlementsRpowerrecovery5PrimaryKey {
-    type Row = SettlementsRpowerrecovery5;
-
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid
-            && self.periodid == row.periodid
-            && self.regionid == row.regionid
-            && self.settlementdate == row.settlementdate
-            && self.versionno == row.versionno
-    }
-}
-impl crate::CompareWithPrimaryKey for SettlementsRpowerrecovery5PrimaryKey {
-    type PrimaryKey = SettlementsRpowerrecovery5PrimaryKey;
-
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid
-            && self.periodid == key.periodid
-            && self.regionid == key.regionid
-            && self.settlementdate == key.settlementdate
-            && self.versionno == key.versionno
-    }
-}
-impl crate::PrimaryKey for SettlementsRpowerrecovery5PrimaryKey {}
-#[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for SettlementsRpowerrecovery5 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
-            arrow2::datatypes::Field::new(
-                "settlementdate",
-                arrow2::datatypes::DataType::Date32,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "contractid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "availabilitypayment",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "enablingpayment",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ccpayment",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantdemand",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "regiondemand",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "availabilityrecovery",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "enablingrecovery",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ccrecovery",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new(
-                "availabilityrecovery_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "enablingrecovery_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ccrecovery_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantdemand_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "regiondemand_gen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-        ])
-    }
-
-    fn partition_to_record_batch(
-        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
-        let mut settlementdate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut contractid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut availabilitypayment_array = Vec::new();
-        let mut enablingpayment_array = Vec::new();
-        let mut ccpayment_array = Vec::new();
-        let mut participantdemand_array = Vec::new();
-        let mut regiondemand_array = Vec::new();
-        let mut availabilityrecovery_array = Vec::new();
-        let mut enablingrecovery_array = Vec::new();
-        let mut ccrecovery_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut availabilityrecovery_gen_array = Vec::new();
-        let mut enablingrecovery_gen_array = Vec::new();
-        let mut ccrecovery_gen_array = Vec::new();
-        let mut participantdemand_gen_array = Vec::new();
-        let mut regiondemand_gen_array = Vec::new();
-        for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            participantid_array.push(row.participantid);
-            contractid_array.push(row.contractid);
-            periodid_array.push({
-                let mut val = row.periodid;
-                val.rescale(0);
-                val.mantissa()
-            });
-            regionid_array.push(row.regionid);
-            availabilitypayment_array.push({
-                row.availabilitypayment.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            enablingpayment_array.push({
-                row.enablingpayment.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            ccpayment_array.push({
-                row.ccpayment.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            participantdemand_array.push({
-                row.participantdemand.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            regiondemand_array.push({
-                row.regiondemand.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            availabilityrecovery_array.push({
-                row.availabilityrecovery.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            enablingrecovery_array.push({
-                row.enablingrecovery.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            ccrecovery_array.push({
-                row.ccrecovery.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            availabilityrecovery_gen_array.push({
-                row.availabilityrecovery_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            enablingrecovery_gen_array.push({
-                row.enablingrecovery_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            ccrecovery_gen_array.push({
-                row.ccrecovery_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            participantdemand_gen_array.push({
-                row.participantdemand_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            regiondemand_gen_array.push({
-                row.regiondemand_gen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-        }
-
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(contractid_array)),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availabilitypayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(enablingpayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ccpayment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(participantdemand_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(regiondemand_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availabilityrecovery_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(enablingrecovery_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ccrecovery_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availabilityrecovery_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(enablingrecovery_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ccrecovery_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(participantdemand_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(regiondemand_gen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
                 ),
             ],
         )
@@ -8088,7 +6986,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -8134,7 +7032,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8155,13 +7053,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
         let mut expenergycost_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -8211,10 +7103,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8222,7 +7111,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -8265,7 +7154,7 @@ impl crate::ArrowSchema for SettlementsSmallgendata1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8419,7 +7308,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -8448,7 +7337,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8464,13 +7353,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
         let mut paymentamount_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -8490,10 +7373,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8501,7 +7381,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -8522,7 +7402,7 @@ impl crate::ArrowSchema for SettlementsAncillarySummary5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8672,7 +7552,7 @@ impl crate::ArrowSchema for SettlementsApcCompensation1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("versionno", arrow2::datatypes::DataType::Int64, false),
@@ -8703,13 +7583,7 @@ impl crate::ArrowSchema for SettlementsApcCompensation1 {
         let mut periodid_array = Vec::new();
         let mut compensation_amount_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push(row.versionno);
             apeventid_array.push(row.apeventid);
             claimid_array.push(row.claimid);
@@ -8728,7 +7602,7 @@ impl crate::ArrowSchema for SettlementsApcCompensation1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(apeventid_array)),
@@ -8900,7 +7774,7 @@ impl crate::ArrowSchema for SettlementsApcRecovery1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("versionno", arrow2::datatypes::DataType::Int64, false),
@@ -8943,13 +7817,7 @@ impl crate::ArrowSchema for SettlementsApcRecovery1 {
         let mut recovery_amount_array = Vec::new();
         let mut region_recovery_br_amount_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push(row.versionno);
             apeventid_array.push(row.apeventid);
             claimid_array.push(row.claimid);
@@ -8975,7 +7843,7 @@ impl crate::ArrowSchema for SettlementsApcRecovery1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(apeventid_array)),
@@ -9145,7 +8013,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -9205,7 +8073,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -9228,13 +8096,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
         let mut raisereg_payment_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -9296,10 +8158,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -9307,7 +8166,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -9354,7 +8213,7 @@ impl crate::ArrowSchema for SettlementsFcasPayment5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -9529,7 +8388,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -9592,7 +8451,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "lower6sec_recovery_gen",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -9662,13 +8521,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
         let mut lowerreg_recovery_gen_array = Vec::new();
         let mut raisereg_recovery_gen_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push(row.versionno);
             participantid_array.push(row.participantid);
             regionid_array.push(row.regionid);
@@ -9725,10 +8578,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             lower6sec_recovery_gen_array.push({
                 row.lower6sec_recovery_gen.map(|mut val| {
                     val.rescale(8);
@@ -9784,7 +8634,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(versionno_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
@@ -9829,7 +8679,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6sec_recovery_gen_array)
@@ -9875,7 +8725,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Set Fcas Regulation Trk
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///  SET_FCAS_REGULATION_TRK contains public data and is available to all participants. Volume Approximately 350,000 per week.
@@ -9890,7 +8740,7 @@ impl crate::ArrowSchema for SettlementsFcasRecovery6 {
 /// * SETTLEMENTDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsSetFcasRegulationTrk1 {
+pub struct SettlementsSetFcasRegulationTrk2 {
     /// Settlement Date
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -9917,20 +8767,20 @@ pub struct SettlementsSetFcasRegulationTrk1 {
     /// the aggregate customer demand value used to recover the cost of this requirement
     pub requirementdemand: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for SettlementsSetFcasRegulationTrk1 {
-    type PrimaryKey = SettlementsSetFcasRegulationTrk1PrimaryKey;
+impl crate::GetTable for SettlementsSetFcasRegulationTrk2 {
+    type PrimaryKey = SettlementsSetFcasRegulationTrk2PrimaryKey;
     type Partition = (i32, chrono::Month);
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "SETTLEMENTS".into(),
             table_name: Some("SET_FCAS_REGULATION_TRK".into()),
-            version: 1,
+            version: 2,
         }
     }
 
-    fn primary_key(&self) -> SettlementsSetFcasRegulationTrk1PrimaryKey {
-        SettlementsSetFcasRegulationTrk1PrimaryKey {
+    fn primary_key(&self) -> SettlementsSetFcasRegulationTrk2PrimaryKey {
+        SettlementsSetFcasRegulationTrk2PrimaryKey {
             constraintid: self.constraintid.clone(),
             interval_datetime: self.interval_datetime,
             settlementdate: self.settlementdate,
@@ -9948,14 +8798,14 @@ impl crate::GetTable for SettlementsSetFcasRegulationTrk1 {
 
     fn partition_name(&self) -> String {
         format!(
-            "settlements_set_fcas_regulation_trk_v1_{}_{}",
+            "settlements_set_fcas_regulation_trk_v2_{}_{}",
             chrono::Datelike::year(&self.settlementdate),
             chrono::Datelike::month(&self.settlementdate)
         )
     }
 }
-impl crate::CompareWithRow for SettlementsSetFcasRegulationTrk1 {
-    type Row = SettlementsSetFcasRegulationTrk1;
+impl crate::CompareWithRow for SettlementsSetFcasRegulationTrk2 {
+    type Row = SettlementsSetFcasRegulationTrk2;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.constraintid == row.constraintid
@@ -9964,8 +8814,8 @@ impl crate::CompareWithRow for SettlementsSetFcasRegulationTrk1 {
             && self.versionno == row.versionno
     }
 }
-impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk1 {
-    type PrimaryKey = SettlementsSetFcasRegulationTrk1PrimaryKey;
+impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk2 {
+    type PrimaryKey = SettlementsSetFcasRegulationTrk2PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.constraintid == key.constraintid
@@ -9975,14 +8825,14 @@ impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk1 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct SettlementsSetFcasRegulationTrk1PrimaryKey {
+pub struct SettlementsSetFcasRegulationTrk2PrimaryKey {
     pub constraintid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub settlementdate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
-impl crate::CompareWithRow for SettlementsSetFcasRegulationTrk1PrimaryKey {
-    type Row = SettlementsSetFcasRegulationTrk1;
+impl crate::CompareWithRow for SettlementsSetFcasRegulationTrk2PrimaryKey {
+    type Row = SettlementsSetFcasRegulationTrk2;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.constraintid == row.constraintid
@@ -9991,8 +8841,8 @@ impl crate::CompareWithRow for SettlementsSetFcasRegulationTrk1PrimaryKey {
             && self.versionno == row.versionno
     }
 }
-impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk1PrimaryKey {
-    type PrimaryKey = SettlementsSetFcasRegulationTrk1PrimaryKey;
+impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk2PrimaryKey {
+    type PrimaryKey = SettlementsSetFcasRegulationTrk2PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.constraintid == key.constraintid
@@ -10001,14 +8851,14 @@ impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk1PrimaryKey
             && self.versionno == key.versionno
     }
 }
-impl crate::PrimaryKey for SettlementsSetFcasRegulationTrk1PrimaryKey {}
+impl crate::PrimaryKey for SettlementsSetFcasRegulationTrk2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
+impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -10018,7 +8868,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -10046,7 +8896,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "usesubstitutedemand",
                 arrow2::datatypes::DataType::Decimal(1, 0),
@@ -10075,25 +8925,13 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
         let mut usesubstitutedemand_array = Vec::new();
         let mut requirementdemand_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             constraintid_array.push(row.constraintid);
             cmpf_array.push({
                 row.cmpf.map(|mut val| {
@@ -10119,10 +8957,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             usesubstitutedemand_array.push({
                 row.usesubstitutedemand.map(|mut val| {
                     val.rescale(0);
@@ -10142,7 +8977,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -10150,7 +8985,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,
@@ -10173,7 +9008,7 @@ impl crate::ArrowSchema for SettlementsSetFcasRegulationTrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(usesubstitutedemand_array)
@@ -10368,7 +9203,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -10423,7 +9258,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "participant_generation",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -10469,13 +9304,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
         let mut recovery_amount_customer_array = Vec::new();
         let mut recovery_amount_generator_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -10521,10 +9350,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             participant_generation_array.push({
                 row.participant_generation.map(|mut val| {
                     val.rescale(8);
@@ -10556,7 +9382,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -10599,7 +9425,7 @@ impl crate::ArrowSchema for SettlementsNmasRecovery2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(participant_generation_array)
@@ -10781,7 +9607,7 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -10821,7 +9647,7 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -10840,13 +9666,7 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
         let mut recovery_amount_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -10879,10 +9699,7 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -10890,7 +9707,7 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -10922,7 +9739,393 @@ impl crate::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## SET_RECOVERY_ENERGY
+///  _Settlements substitution recovery energy used_
+///
+/// * Data Set Name: Settlements
+/// * File Name: Recovery Energy
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * PARTICIPANTID
+/// * PERIODID
+/// * REGIONID
+/// * SETTLEMENTDATE
+/// * SETTLEMENTRUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SettlementsRecoveryEnergy1 {
+    /// Settlement date
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Settlement run number
+    pub settlementrunno: rust_decimal::Decimal,
+    /// Unique identifier for the participant
+    pub participantid: String,
+    /// Unique Identifier for the Region to which the TNI belongs on this settlement date
+    pub regionid: String,
+    /// Trading interval identifier, with Period 1 being the first TI for the calendar day, i.e interval ending 00:05 for 5MS or 00:30 for 30MS.
+    pub periodid: rust_decimal::Decimal,
+    /// Actual Customer Demand
+    pub customerenergyactual: Option<rust_decimal::Decimal>,
+    /// Actual Customer Demand excluding TNIs that have a causer pays MPF
+    pub customerenergympfexactual: Option<rust_decimal::Decimal>,
+    /// Substitute Customer Demand
+    pub customerenergysubstitute: Option<rust_decimal::Decimal>,
+    /// Substitute Customer Demand excluding TNIs that have a causer pays MPF
+    pub customerenergympfexsubstitute: Option<rust_decimal::Decimal>,
+    /// Actual Generator Output
+    pub generatorenergyactual: Option<rust_decimal::Decimal>,
+    /// Region Total of Actual Customer Demand
+    pub regioncustenergyactual: Option<rust_decimal::Decimal>,
+    /// Region Total of Actual Customer Demand excluding TNIs that have a causer pays MPF.
+    pub regioncustenergympfexactual: Option<rust_decimal::Decimal>,
+    /// Region Total of Substitute Customer Demand
+    pub regioncustenergysubst: Option<rust_decimal::Decimal>,
+    /// Region total of Substitute Customer Demand excluding TNIs that have a causer pays MPF.
+    pub regioncustenergympfexsubst: Option<rust_decimal::Decimal>,
+    /// Region Total of Actual Generator Output
+    pub regiongenenergyactual: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for SettlementsRecoveryEnergy1 {
+    type PrimaryKey = SettlementsRecoveryEnergy1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("RECOVERY_ENERGY".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> SettlementsRecoveryEnergy1PrimaryKey {
+        SettlementsRecoveryEnergy1PrimaryKey {
+            participantid: self.participantid.clone(),
+            periodid: self.periodid,
+            regionid: self.regionid.clone(),
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "settlements_recovery_energy_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for SettlementsRecoveryEnergy1 {
+    type Row = SettlementsRecoveryEnergy1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.participantid == row.participantid
+            && self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsRecoveryEnergy1 {
+    type PrimaryKey = SettlementsRecoveryEnergy1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.participantid == key.participantid
+            && self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SettlementsRecoveryEnergy1PrimaryKey {
+    pub participantid: String,
+    pub periodid: rust_decimal::Decimal,
+    pub regionid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub settlementrunno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for SettlementsRecoveryEnergy1PrimaryKey {
+    type Row = SettlementsRecoveryEnergy1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.participantid == row.participantid
+            && self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsRecoveryEnergy1PrimaryKey {
+    type PrimaryKey = SettlementsRecoveryEnergy1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.participantid == key.participantid
+            && self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+impl crate::PrimaryKey for SettlementsRecoveryEnergy1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for SettlementsRecoveryEnergy1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "customerenergyactual",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "customerenergympfexactual",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "customerenergysubstitute",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "customerenergympfexsubstitute",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "generatorenergyactual",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regioncustenergyactual",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regioncustenergympfexactual",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regioncustenergysubst",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regioncustenergympfexsubst",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "regiongenenergyactual",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut settlementrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut customerenergyactual_array = Vec::new();
+        let mut customerenergympfexactual_array = Vec::new();
+        let mut customerenergysubstitute_array = Vec::new();
+        let mut customerenergympfexsubstitute_array = Vec::new();
+        let mut generatorenergyactual_array = Vec::new();
+        let mut regioncustenergyactual_array = Vec::new();
+        let mut regioncustenergympfexactual_array = Vec::new();
+        let mut regioncustenergysubst_array = Vec::new();
+        let mut regioncustenergympfexsubst_array = Vec::new();
+        let mut regiongenenergyactual_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            settlementrunno_array.push({
+                let mut val = row.settlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            participantid_array.push(row.participantid);
+            regionid_array.push(row.regionid);
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            customerenergyactual_array.push({
+                row.customerenergyactual.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            customerenergympfexactual_array.push({
+                row.customerenergympfexactual.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            customerenergysubstitute_array.push({
+                row.customerenergysubstitute.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            customerenergympfexsubstitute_array.push({
+                row.customerenergympfexsubstitute.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            generatorenergyactual_array.push({
+                row.generatorenergyactual.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regioncustenergyactual_array.push({
+                row.regioncustenergyactual.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regioncustenergympfexactual_array.push({
+                row.regioncustenergympfexactual.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regioncustenergysubst_array.push({
+                row.regioncustenergysubst.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regioncustenergympfexsubst_array.push({
+                row.regioncustenergympfexsubst.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            regiongenenergyactual_array.push({
+                row.regiongenenergyactual.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(customerenergyactual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(customerenergympfexactual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(customerenergysubstitute_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(customerenergympfexsubstitute_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(generatorenergyactual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regioncustenergyactual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regioncustenergympfexactual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regioncustenergysubst_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regioncustenergympfexsubst_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(regiongenenergyactual_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
                 ),
             ],
         )
@@ -11049,7 +10252,7 @@ impl crate::ArrowSchema for SettlementsRunParameter5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("versionno", arrow2::datatypes::DataType::Int64, false),
@@ -11063,7 +10266,7 @@ impl crate::ArrowSchema for SettlementsRunParameter5 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -11076,13 +10279,7 @@ impl crate::ArrowSchema for SettlementsRunParameter5 {
         let mut numvalue_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             versionno_array.push(row.versionno);
             parameterid_array.push(row.parameterid);
             numvalue_array.push({
@@ -11091,10 +10288,7 @@ impl crate::ArrowSchema for SettlementsRunParameter5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -11102,7 +10296,7 @@ impl crate::ArrowSchema for SettlementsRunParameter5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
@@ -11114,7 +10308,1077 @@ impl crate::ArrowSchema for SettlementsRunParameter5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## SET_SUBSTITUTE_DEMAND
+///  _Settlements substitution demand for Zero Demand figures_
+///
+/// * Data Set Name: Settlements
+/// * File Name: Subst Demand
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * PARTICIPANTID
+/// * SETTLEMENTDATE
+/// * SETTLEMENTRUNNO
+/// * TNI
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SettlementsSubstDemand1 {
+    /// Settlement date
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Settlement run number
+    pub settlementrunno: rust_decimal::Decimal,
+    /// Unique identifier for the connection point
+    pub tni: String,
+    /// Unique identifier for the participant
+    pub participantid: String,
+    /// Unique identifier for the region to which the TNI belongs to on this settlement date
+    pub regionid: Option<String>,
+    /// Substitute metered quantity for non-energy recovery in MWh for the TNI and participant in the trading interval. A negative value indicates net consumption and a positive value indicates net generation
+    pub substitutedemand: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for SettlementsSubstDemand1 {
+    type PrimaryKey = SettlementsSubstDemand1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("SUBST_DEMAND".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> SettlementsSubstDemand1PrimaryKey {
+        SettlementsSubstDemand1PrimaryKey {
+            participantid: self.participantid.clone(),
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
+            tni: self.tni.clone(),
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "settlements_subst_demand_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for SettlementsSubstDemand1 {
+    type Row = SettlementsSubstDemand1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.participantid == row.participantid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+            && self.tni == row.tni
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsSubstDemand1 {
+    type PrimaryKey = SettlementsSubstDemand1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.participantid == key.participantid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+            && self.tni == key.tni
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SettlementsSubstDemand1PrimaryKey {
+    pub participantid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub settlementrunno: rust_decimal::Decimal,
+    pub tni: String,
+}
+impl crate::CompareWithRow for SettlementsSubstDemand1PrimaryKey {
+    type Row = SettlementsSubstDemand1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.participantid == row.participantid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+            && self.tni == row.tni
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsSubstDemand1PrimaryKey {
+    type PrimaryKey = SettlementsSubstDemand1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.participantid == key.participantid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+            && self.tni == key.tni
+    }
+}
+impl crate::PrimaryKey for SettlementsSubstDemand1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for SettlementsSubstDemand1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("tni", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "substitutedemand",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut settlementrunno_array = Vec::new();
+        let mut tni_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut substitutedemand_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            settlementrunno_array.push({
+                let mut val = row.settlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            tni_array.push(row.tni);
+            participantid_array.push(row.participantid);
+            regionid_array.push(row.regionid);
+            substitutedemand_array.push({
+                row.substitutedemand.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(tni_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(substitutedemand_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## SET_SUBST_RUN_VERSION
+///  _Settlements substitution demand run version numbers_
+///
+/// * Data Set Name: Settlements
+/// * File Name: Subst Run Version
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * REFERENCESETTLEMENTDATE
+/// * REFERENCESETTLEMENTRUNNO
+/// * SETTLEMENTDATE
+/// * SETTLEMENTRUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SettlementsSubstRunVersion1 {
+    /// Settlement date
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Settlement run number
+    pub settlementrunno: rust_decimal::Decimal,
+    /// The settlement date of a settlement run included in the reference period
+    #[serde(with = "crate::mms_datetime")]
+    pub referencesettlementdate: chrono::NaiveDateTime,
+    /// The settlement run number matching the settlement date for a settlement run included in the reference period
+    pub referencesettlementrunno: rust_decimal::Decimal,
+}
+impl crate::GetTable for SettlementsSubstRunVersion1 {
+    type PrimaryKey = SettlementsSubstRunVersion1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("SUBST_RUN_VERSION".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> SettlementsSubstRunVersion1PrimaryKey {
+        SettlementsSubstRunVersion1PrimaryKey {
+            referencesettlementdate: self.referencesettlementdate,
+            referencesettlementrunno: self.referencesettlementrunno,
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "settlements_subst_run_version_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for SettlementsSubstRunVersion1 {
+    type Row = SettlementsSubstRunVersion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.referencesettlementdate == row.referencesettlementdate
+            && self.referencesettlementrunno == row.referencesettlementrunno
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsSubstRunVersion1 {
+    type PrimaryKey = SettlementsSubstRunVersion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.referencesettlementdate == key.referencesettlementdate
+            && self.referencesettlementrunno == key.referencesettlementrunno
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SettlementsSubstRunVersion1PrimaryKey {
+    pub referencesettlementdate: chrono::NaiveDateTime,
+    pub referencesettlementrunno: rust_decimal::Decimal,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub settlementrunno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for SettlementsSubstRunVersion1PrimaryKey {
+    type Row = SettlementsSubstRunVersion1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.referencesettlementdate == row.referencesettlementdate
+            && self.referencesettlementrunno == row.referencesettlementrunno
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsSubstRunVersion1PrimaryKey {
+    type PrimaryKey = SettlementsSubstRunVersion1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.referencesettlementdate == key.referencesettlementdate
+            && self.referencesettlementrunno == key.referencesettlementrunno
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+impl crate::PrimaryKey for SettlementsSubstRunVersion1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for SettlementsSubstRunVersion1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "referencesettlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "referencesettlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut settlementrunno_array = Vec::new();
+        let mut referencesettlementdate_array = Vec::new();
+        let mut referencesettlementrunno_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            settlementrunno_array.push({
+                let mut val = row.settlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            referencesettlementdate_array.push(row.referencesettlementdate.timestamp_millis());
+            referencesettlementrunno_array.push({
+                let mut val = row.referencesettlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(referencesettlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(referencesettlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## SET_WDR_RECON_DETAIL
+///  _Settlements WDR reconciliation details_
+///
+/// * Data Set Name: Settlements
+/// * File Name: Wdr Recon Detail
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * NMI
+/// * PERIODID
+/// * SETTLEMENTDATE
+/// * SETTLEMENTRUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SettlementsWdrReconDetail1 {
+    /// Settlement date
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Settlement run number
+    pub settlementrunno: rust_decimal::Decimal,
+    /// Unique identifier for the meter to which the metering records applies
+    pub nmi: String,
+    /// Unique identifier for the transmission node to which this meter belongs on the settlement date
+    pub tni: Option<String>,
+    /// Unique identifier for the region to which the TNI belongs on the settlement date
+    pub regionid: Option<String>,
+    /// Unique identifier for the participant acting as the FRMP for this NMI on the settlement date
+    pub frmp: Option<String>,
+    /// Unique identifier for the participant acting as the DRSP for this NMI on the settlement date
+    pub drsp: Option<String>,
+    /// Trading interval identifier with Period 1 being the first TI for the calendar day, that is the interval ending 00:05
+    pub periodid: rust_decimal::Decimal,
+    /// WDR settlement quantity before any capping or flooring (MWh)
+    pub wdrsq_uncapped: Option<rust_decimal::Decimal>,
+    /// WDR settlement quantity after capping or flooring (MWh)
+    pub wdrsq_capped: Option<rust_decimal::Decimal>,
+    /// Maximum responsive component for the NMI (MW)
+    pub mrc: Option<rust_decimal::Decimal>,
+    /// Maximum responsive component settlement quantity for the NMI (MWh)
+    pub mrcsq: Option<rust_decimal::Decimal>,
+    /// WDR reimbursement rate for the region ($/MWh)
+    pub wdrrr: Option<rust_decimal::Decimal>,
+    /// Regional reference price for the region in the settlement interval ($/MWh)
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// Transmission loss factor for the wholesale connection point associated with the NMI
+    pub tlf: Option<rust_decimal::Decimal>,
+    /// Metered quantity in MWh for the NMI trading interval. A negative value indicates net consumption and a positive value indicates net generation
+    pub me_dlfadjusted: Option<rust_decimal::Decimal>,
+    /// Baseline quantity in MWh for the NMI in the trading interval. A negative quantity indicates net consumption, while a positive value indicates net generation
+    pub bq_dlfadjusted: Option<rust_decimal::Decimal>,
+    /// A value of TRUE (indicated by 1) for this column indicates that financial settlement of WDR transactions for this NMI should not proceed for the settlement date and trading interval. Possible values are 1 and 0.
+    pub isnoncompliant: Option<rust_decimal::Decimal>,
+    /// Quality flag for the meter read. Where multiple datastreams exist against the NMI with different quality flags for each read, the lowest quality flag will be published against the NMI for the interval
+    pub qualityflag: Option<String>,
+    /// WDR transaction amount for this NMI in the settlement interval ($)
+    pub transactionamount: Option<rust_decimal::Decimal>,
+    /// A reference to the baseline run that produced the baseline quantity for this NMI and interval
+    pub baselinecalculationid: Option<String>,
+}
+impl crate::GetTable for SettlementsWdrReconDetail1 {
+    type PrimaryKey = SettlementsWdrReconDetail1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("WDR_RECON_DETAIL".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> SettlementsWdrReconDetail1PrimaryKey {
+        SettlementsWdrReconDetail1PrimaryKey {
+            nmi: self.nmi.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "settlements_wdr_recon_detail_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for SettlementsWdrReconDetail1 {
+    type Row = SettlementsWdrReconDetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.nmi == row.nmi
+            && self.periodid == row.periodid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsWdrReconDetail1 {
+    type PrimaryKey = SettlementsWdrReconDetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.nmi == key.nmi
+            && self.periodid == key.periodid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SettlementsWdrReconDetail1PrimaryKey {
+    pub nmi: String,
+    pub periodid: rust_decimal::Decimal,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub settlementrunno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for SettlementsWdrReconDetail1PrimaryKey {
+    type Row = SettlementsWdrReconDetail1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.nmi == row.nmi
+            && self.periodid == row.periodid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsWdrReconDetail1PrimaryKey {
+    type PrimaryKey = SettlementsWdrReconDetail1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.nmi == key.nmi
+            && self.periodid == key.periodid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+impl crate::PrimaryKey for SettlementsWdrReconDetail1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for SettlementsWdrReconDetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new("nmi", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new("tni", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("frmp", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new("drsp", arrow2::datatypes::DataType::LargeUtf8, true),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrsq_uncapped",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrsq_capped",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("mrc", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new(
+                "mrcsq",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "wdrrr",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new("rrp", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new("tlf", arrow2::datatypes::DataType::Decimal(18, 8), true),
+            arrow2::datatypes::Field::new(
+                "me_dlfadjusted",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bq_dlfadjusted",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "isnoncompliant",
+                arrow2::datatypes::DataType::Decimal(1, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "qualityflag",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "transactionamount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "baselinecalculationid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut settlementrunno_array = Vec::new();
+        let mut nmi_array = Vec::new();
+        let mut tni_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut frmp_array = Vec::new();
+        let mut drsp_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut wdrsq_uncapped_array = Vec::new();
+        let mut wdrsq_capped_array = Vec::new();
+        let mut mrc_array = Vec::new();
+        let mut mrcsq_array = Vec::new();
+        let mut wdrrr_array = Vec::new();
+        let mut rrp_array = Vec::new();
+        let mut tlf_array = Vec::new();
+        let mut me_dlfadjusted_array = Vec::new();
+        let mut bq_dlfadjusted_array = Vec::new();
+        let mut isnoncompliant_array = Vec::new();
+        let mut qualityflag_array = Vec::new();
+        let mut transactionamount_array = Vec::new();
+        let mut baselinecalculationid_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            settlementrunno_array.push({
+                let mut val = row.settlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            nmi_array.push(row.nmi);
+            tni_array.push(row.tni);
+            regionid_array.push(row.regionid);
+            frmp_array.push(row.frmp);
+            drsp_array.push(row.drsp);
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            wdrsq_uncapped_array.push({
+                row.wdrsq_uncapped.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            wdrsq_capped_array.push({
+                row.wdrsq_capped.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            mrc_array.push({
+                row.mrc.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            mrcsq_array.push({
+                row.mrcsq.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            wdrrr_array.push({
+                row.wdrrr.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            rrp_array.push({
+                row.rrp.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            tlf_array.push({
+                row.tlf.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            me_dlfadjusted_array.push({
+                row.me_dlfadjusted.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            bq_dlfadjusted_array.push({
+                row.bq_dlfadjusted.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            isnoncompliant_array.push({
+                row.isnoncompliant.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            qualityflag_array.push(row.qualityflag);
+            transactionamount_array.push({
+                row.transactionamount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+            baselinecalculationid_array.push(row.baselinecalculationid);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(nmi_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(tni_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(frmp_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(drsp_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrsq_uncapped_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrsq_capped_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mrc_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mrcsq_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(wdrrr_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rrp_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(tlf_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(me_dlfadjusted_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bq_dlfadjusted_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(isnoncompliant_array)
+                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(qualityflag_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(transactionamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    baselinecalculationid_array,
+                )),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## SET_WDR_TRANSACT
+///  _Settlements WDR transactions summary_
+///
+/// * Data Set Name: Settlements
+/// * File Name: Wdr Transact
+/// * Data Version: 1
+///
+///
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Private
+///
+/// # Primary Key Columns
+///
+/// * COUNTERPARTYPARTICIPANTID
+/// * PARTICIPANTID
+/// * PARTICIPANTROLEID
+/// * PERIODID
+/// * REGIONID
+/// * SETTLEMENTDATE
+/// * SETTLEMENTRUNNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SettlementsWdrTransact1 {
+    /// Settlement date
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Settlement run number
+    pub settlementrunno: rust_decimal::Decimal,
+    /// Trading interval identifier with Period 1 being the first TI for the calendar day, that is the interval ending 00:05
+    pub periodid: rust_decimal::Decimal,
+    /// Unique identifier for the region to which the TNI belongs on the settlement date
+    pub regionid: String,
+    /// Unique identifier for a participant
+    pub participantid: String,
+    /// Participant role identifier - FRMP or DRSP
+    pub participantroleid: String,
+    /// Unique identifier for the counter participant id.
+    pub counterpartyparticipantid: String,
+    /// Aggregate WDR transaction amount for the participant and counterparty in the settlement interval
+    pub transactionamount: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for SettlementsWdrTransact1 {
+    type PrimaryKey = SettlementsWdrTransact1PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("WDR_TRANSACT".into()),
+            version: 1,
+        }
+    }
+
+    fn primary_key(&self) -> SettlementsWdrTransact1PrimaryKey {
+        SettlementsWdrTransact1PrimaryKey {
+            counterpartyparticipantid: self.counterpartyparticipantid.clone(),
+            participantid: self.participantid.clone(),
+            participantroleid: self.participantroleid.clone(),
+            periodid: self.periodid,
+            regionid: self.regionid.clone(),
+            settlementdate: self.settlementdate,
+            settlementrunno: self.settlementrunno,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "settlements_wdr_transact_v1_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for SettlementsWdrTransact1 {
+    type Row = SettlementsWdrTransact1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.counterpartyparticipantid == row.counterpartyparticipantid
+            && self.participantid == row.participantid
+            && self.participantroleid == row.participantroleid
+            && self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsWdrTransact1 {
+    type PrimaryKey = SettlementsWdrTransact1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.counterpartyparticipantid == key.counterpartyparticipantid
+            && self.participantid == key.participantid
+            && self.participantroleid == key.participantroleid
+            && self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SettlementsWdrTransact1PrimaryKey {
+    pub counterpartyparticipantid: String,
+    pub participantid: String,
+    pub participantroleid: String,
+    pub periodid: rust_decimal::Decimal,
+    pub regionid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub settlementrunno: rust_decimal::Decimal,
+}
+impl crate::CompareWithRow for SettlementsWdrTransact1PrimaryKey {
+    type Row = SettlementsWdrTransact1;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.counterpartyparticipantid == row.counterpartyparticipantid
+            && self.participantid == row.participantid
+            && self.participantroleid == row.participantroleid
+            && self.periodid == row.periodid
+            && self.regionid == row.regionid
+            && self.settlementdate == row.settlementdate
+            && self.settlementrunno == row.settlementrunno
+    }
+}
+impl crate::CompareWithPrimaryKey for SettlementsWdrTransact1PrimaryKey {
+    type PrimaryKey = SettlementsWdrTransact1PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.counterpartyparticipantid == key.counterpartyparticipantid
+            && self.participantid == key.participantid
+            && self.participantroleid == key.participantroleid
+            && self.periodid == key.periodid
+            && self.regionid == key.regionid
+            && self.settlementdate == key.settlementdate
+            && self.settlementrunno == key.settlementrunno
+    }
+}
+impl crate::PrimaryKey for SettlementsWdrTransact1PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for SettlementsWdrTransact1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "settlementrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0),
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "regionid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantroleid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "counterpartyparticipantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "transactionamount",
+                arrow2::datatypes::DataType::Decimal(18, 8),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut settlementrunno_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut participantroleid_array = Vec::new();
+        let mut counterpartyparticipantid_array = Vec::new();
+        let mut transactionamount_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            settlementrunno_array.push({
+                let mut val = row.settlementrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+            periodid_array.push({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+            regionid_array.push(row.regionid);
+            participantid_array.push(row.participantid);
+            participantroleid_array.push(row.participantroleid);
+            counterpartyparticipantid_array.push(row.counterpartyparticipantid);
+            transactionamount_array.push({
+                row.transactionamount.map(|mut val| {
+                    val.rescale(8);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementrunno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    participantroleid_array,
+                )),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
+                    counterpartyparticipantid_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(transactionamount_array)
+                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
                 ),
             ],
         )

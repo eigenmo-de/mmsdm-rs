@@ -109,10 +109,10 @@ impl crate::ArrowSchema for IrauctionConfigAuction1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("auctiondate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("auctiondate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "description",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -120,7 +120,7 @@ impl crate::ArrowSchema for IrauctionConfigAuction1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -128,7 +128,7 @@ impl crate::ArrowSchema for IrauctionConfigAuction1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -146,32 +146,14 @@ impl crate::ArrowSchema for IrauctionConfigAuction1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             auctionid_array.push(row.auctionid);
-            auctiondate_array.push(row.auctiondate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            notifydate_array.push(row.notifydate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            auctiondate_array.push(row.auctiondate.map(|val| val.timestamp_millis()));
+            notifydate_array.push(row.notifydate.map(|val| val.timestamp_millis()));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
             description_array.push(row.description);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -180,29 +162,29 @@ impl crate::ArrowSchema for IrauctionConfigAuction1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(auctionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(auctiondate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(notifydate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -338,34 +320,34 @@ impl crate::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow2::datatypes::DataType::Decimal(1, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("paymentdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("paymentdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "reconciliationdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "prelimpurchasestmtdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "prelimproceedsstmtdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "finalpurchasestmtdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "finalproceedsstmtdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
         ])
@@ -397,46 +379,20 @@ impl crate::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 val.rescale(0);
                 val.mantissa()
             });
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            notifydate_array.push(row.notifydate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            paymentdate_array.push(row.paymentdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            reconciliationdate_array.push(row.reconciliationdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            prelimpurchasestmtdate_array.push(row.prelimpurchasestmtdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            prelimproceedsstmtdate_array.push(row.prelimproceedsstmtdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            finalpurchasestmtdate_array.push(row.finalpurchasestmtdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            finalproceedsstmtdate_array.push(row.finalproceedsstmtdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
+            notifydate_array.push(row.notifydate.map(|val| val.timestamp_millis()));
+            paymentdate_array.push(row.paymentdate.map(|val| val.timestamp_millis()));
+            reconciliationdate_array.push(row.reconciliationdate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            prelimpurchasestmtdate_array
+                .push(row.prelimpurchasestmtdate.map(|val| val.timestamp_millis()));
+            prelimproceedsstmtdate_array
+                .push(row.prelimproceedsstmtdate.map(|val| val.timestamp_millis()));
+            finalpurchasestmtdate_array
+                .push(row.finalpurchasestmtdate.map(|val| val.timestamp_millis()));
+            finalproceedsstmtdate_array
+                .push(row.finalproceedsstmtdate.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -452,43 +408,43 @@ impl crate::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(notifydate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(paymentdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(reconciliationdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(prelimpurchasestmtdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(prelimproceedsstmtdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(finalpurchasestmtdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(finalproceedsstmtdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -671,13 +627,13 @@ impl crate::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 arrow2::datatypes::DataType::Decimal(17, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("changedate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("changedate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "changedby",
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "auctionfee_sales",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -737,15 +693,9 @@ impl crate::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                     val.mantissa()
                 })
             });
-            changedate_array.push(row.changedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            changedate_array.push(row.changedate.map(|val| val.timestamp_millis()));
             changedby_array.push(row.changedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             auctionfee_sales_array.push({
                 row.auctionfee_sales.map(|mut val| {
                     val.rescale(8);
@@ -789,12 +739,12 @@ impl crate::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(changedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(changedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(auctionfee_sales_array)
@@ -989,14 +939,14 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 arrow2::datatypes::DataType::Decimal(1, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "revenue",
                 arrow2::datatypes::DataType::Decimal(17, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1038,24 +988,15 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
             revenue_array.push({
                 row.revenue.map(|mut val| {
                     val.rescale(5);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1088,11 +1029,11 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(revenue_array)
@@ -1100,7 +1041,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1255,7 +1196,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("status", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -1266,7 +1207,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -1274,7 +1215,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1308,21 +1249,12 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            effectivedate_array.push(row.effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            effectivedate_array.push(row.effectivedate.map(|val| val.timestamp_millis()));
             status_array.push(row.status);
             documentref_array.push(row.documentref);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1345,18 +1277,18 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(documentref_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1532,7 +1464,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                 arrow2::datatypes::DataType::Decimal(17, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1572,10 +1504,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1608,7 +1537,7 @@ impl crate::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1762,20 +1691,20 @@ impl crate::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 arrow2::datatypes::DataType::Decimal(2, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("auctiondate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("auctiondate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "unitallocation",
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("changedate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("changedate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "changedby",
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1813,29 +1742,17 @@ impl crate::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            auctiondate_array.push(row.auctiondate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            notifydate_array.push(row.notifydate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            auctiondate_array.push(row.auctiondate.map(|val| val.timestamp_millis()));
+            notifydate_array.push(row.notifydate.map(|val| val.timestamp_millis()));
             unitallocation_array.push({
                 row.unitallocation.map(|mut val| {
                     val.rescale(8);
                     val.mantissa()
                 })
             });
-            changedate_array.push(row.changedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            changedate_array.push(row.changedate.map(|val| val.timestamp_millis()));
             changedby_array.push(row.changedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1859,11 +1776,11 @@ impl crate::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(auctiondate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(notifydate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(unitallocation_array)
@@ -1871,12 +1788,12 @@ impl crate::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(changedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(changedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1985,7 +1902,7 @@ impl crate::ArrowSchema for SettlementConfigResiduecontractpayments1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1998,10 +1915,7 @@ impl crate::ArrowSchema for SettlementConfigResiduecontractpayments1 {
         for (_, row) in partition {
             contractid_array.push(row.contractid);
             participantid_array.push(row.participantid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2015,7 +1929,7 @@ impl crate::ArrowSchema for SettlementConfigResiduecontractpayments1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2146,7 +2060,7 @@ impl crate::ArrowSchema for IrauctionBidsFileTrk1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "ackfilename",
@@ -2154,7 +2068,7 @@ impl crate::ArrowSchema for IrauctionBidsFileTrk1 {
                 true,
             ),
             arrow2::datatypes::Field::new("status", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "auctionid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2177,19 +2091,11 @@ impl crate::ArrowSchema for IrauctionBidsFileTrk1 {
         for (_, row) in partition {
             contractid_array.push(row.contractid);
             participantid_array.push(row.participantid);
-            loaddate_array.push(
-                i32::try_from(
-                    (row.loaddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            loaddate_array.push(row.loaddate.timestamp_millis());
             filename_array.push(row.filename);
             ackfilename_array.push(row.ackfilename);
             status_array.push(row.status);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             auctionid_array.push(row.auctionid);
         }
 
@@ -2202,14 +2108,14 @@ impl crate::ArrowSchema for IrauctionBidsFileTrk1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(loaddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(ackfilename_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(auctionid_array)),
             ],
@@ -2342,8 +2248,8 @@ impl crate::ArrowSchema for IrauctionResidueBidTrk1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("bidloaddate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("bidloaddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "auctionid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2369,14 +2275,8 @@ impl crate::ArrowSchema for IrauctionResidueBidTrk1 {
                 val.mantissa()
             });
             participantid_array.push(row.participantid);
-            bidloaddate_array.push(row.bidloaddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            bidloaddate_array.push(row.bidloaddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             auctionid_array.push(row.auctionid);
         }
 
@@ -2393,11 +2293,11 @@ impl crate::ArrowSchema for IrauctionResidueBidTrk1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidloaddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(auctionid_array)),
             ],
@@ -2565,10 +2465,10 @@ impl crate::ArrowSchema for IrauctionResidueContracts1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("auctiondate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("notifydate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("auctiondate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "calcmethod",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2576,7 +2476,7 @@ impl crate::ArrowSchema for IrauctionResidueContracts1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -2586,13 +2486,13 @@ impl crate::ArrowSchema for IrauctionResidueContracts1 {
             ),
             arrow2::datatypes::Field::new(
                 "notifypostdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("notifyby", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("postedby", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "description",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2644,42 +2544,18 @@ impl crate::ArrowSchema for IrauctionResidueContracts1 {
                 val.mantissa()
             });
             contractid_array.push(row.contractid);
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            notifydate_array.push(row.notifydate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            auctiondate_array.push(row.auctiondate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
+            notifydate_array.push(row.notifydate.map(|val| val.timestamp_millis()));
+            auctiondate_array.push(row.auctiondate.map(|val| val.timestamp_millis()));
             calcmethod_array.push(row.calcmethod);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            notifypostdate_array.push(row.notifypostdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            notifypostdate_array.push(row.notifypostdate.map(|val| val.timestamp_millis()));
             notifyby_array.push(row.notifyby);
-            postdate_array.push(row.postdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            postdate_array.push(row.postdate.map(|val| val.timestamp_millis()));
             postedby_array.push(row.postedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             description_array.push(row.description);
             auctionid_array.push(row.auctionid);
         }
@@ -2702,39 +2578,39 @@ impl crate::ArrowSchema for IrauctionResidueContracts1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(contractid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(notifydate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(auctiondate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(calcmethod_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(notifypostdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(notifyby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(postdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(auctionid_array)),
@@ -2907,7 +2783,7 @@ impl crate::ArrowSchema for IrauctionResidueConData2 {
                 arrow2::datatypes::DataType::Decimal(17, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "secondary_units_sold",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -2950,10 +2826,7 @@ impl crate::ArrowSchema for IrauctionResidueConData2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             secondary_units_sold_array.push({
                 row.secondary_units_sold.map(|mut val| {
                     val.rescale(8);
@@ -2991,7 +2864,7 @@ impl crate::ArrowSchema for IrauctionResidueConData2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(secondary_units_sold_array)
@@ -3143,7 +3016,7 @@ impl crate::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3175,10 +3048,7 @@ impl crate::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3204,7 +3074,7 @@ impl crate::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3380,7 +3250,7 @@ impl crate::ArrowSchema for IrauctionResidueConFunds1 {
                 arrow2::datatypes::DataType::Decimal(9, 2),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3444,10 +3314,7 @@ impl crate::ArrowSchema for IrauctionResidueConFunds1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3492,7 +3359,7 @@ impl crate::ArrowSchema for IrauctionResidueConFunds1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3644,7 +3511,7 @@ impl crate::ArrowSchema for IrauctionBidsFundsBid1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "optionid",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -3665,7 +3532,7 @@ impl crate::ArrowSchema for IrauctionBidsFundsBid1 {
                 arrow2::datatypes::DataType::Decimal(5, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3683,12 +3550,7 @@ impl crate::ArrowSchema for IrauctionBidsFundsBid1 {
         for (_, row) in partition {
             contractid_array.push(row.contractid);
             participantid_array.push(row.participantid);
-            loaddate_array.push(
-                i32::try_from(
-                    (row.loaddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            loaddate_array.push(row.loaddate.timestamp_millis());
             optionid_array.push({
                 let mut val = row.optionid;
                 val.rescale(0);
@@ -3702,10 +3564,7 @@ impl crate::ArrowSchema for IrauctionBidsFundsBid1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3719,7 +3578,7 @@ impl crate::ArrowSchema for IrauctionBidsFundsBid1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(loaddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(optionid_array)
@@ -3737,7 +3596,7 @@ impl crate::ArrowSchema for IrauctionBidsFundsBid1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3873,7 +3732,7 @@ impl crate::ArrowSchema for IrauctionBidsPriceBid1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "optionid",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -3884,7 +3743,7 @@ impl crate::ArrowSchema for IrauctionBidsPriceBid1 {
                 arrow2::datatypes::DataType::Decimal(17, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "auctionid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3906,12 +3765,7 @@ impl crate::ArrowSchema for IrauctionBidsPriceBid1 {
         for (_, row) in partition {
             contractid_array.push(row.contractid);
             participantid_array.push(row.participantid);
-            loaddate_array.push(
-                i32::try_from(
-                    (row.loaddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            loaddate_array.push(row.loaddate.timestamp_millis());
             optionid_array.push({
                 let mut val = row.optionid;
                 val.rescale(0);
@@ -3923,10 +3777,7 @@ impl crate::ArrowSchema for IrauctionBidsPriceBid1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             auctionid_array.push(row.auctionid);
         }
 
@@ -3939,7 +3790,7 @@ impl crate::ArrowSchema for IrauctionBidsPriceBid1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(loaddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(optionid_array)
@@ -3951,7 +3802,7 @@ impl crate::ArrowSchema for IrauctionBidsPriceBid1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(auctionid_array)),
             ],
@@ -4121,7 +3972,7 @@ impl crate::ArrowSchema for IrauctionResiduePriceFundsBid1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4158,10 +4009,7 @@ impl crate::ArrowSchema for IrauctionResiduePriceFundsBid1 {
                 val.mantissa()
             });
             auctionid_array.push(row.auctionid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4191,7 +4039,7 @@ impl crate::ArrowSchema for IrauctionResiduePriceFundsBid1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(auctionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4360,7 +4208,7 @@ impl crate::ArrowSchema for IrauctionResiduePublicData1 {
                 arrow2::datatypes::DataType::Decimal(17, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4409,10 +4257,7 @@ impl crate::ArrowSchema for IrauctionResiduePublicData1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4449,7 +4294,7 @@ impl crate::ArrowSchema for IrauctionResiduePublicData1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -4575,10 +4420,10 @@ impl crate::ArrowSchema for IrauctionResidueTrk1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("rundate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("rundate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -4586,9 +4431,9 @@ impl crate::ArrowSchema for IrauctionResidueTrk1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("postdate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("postedby", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("status", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "auctionid",
@@ -4618,24 +4463,12 @@ impl crate::ArrowSchema for IrauctionResidueTrk1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            rundate_array.push(row.rundate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            rundate_array.push(row.rundate.map(|val| val.timestamp_millis()));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
-            postdate_array.push(row.postdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            postdate_array.push(row.postdate.map(|val| val.timestamp_millis()));
             postedby_array.push(row.postedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             status_array.push(row.status);
             auctionid_array.push(row.auctionid);
         }
@@ -4650,21 +4483,21 @@ impl crate::ArrowSchema for IrauctionResidueTrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rundate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(postdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(auctionid_array)),
@@ -4791,7 +4624,7 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
             ),
             arrow2::datatypes::Field::new(
                 "provision_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -4806,12 +4639,12 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "finalreturndate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -4821,10 +4654,10 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
             ),
             arrow2::datatypes::Field::new(
                 "deletiondate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -4844,10 +4677,7 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
         for (_, row) in partition {
             cash_security_id_array.push(row.cash_security_id);
             participantid_array.push(row.participantid);
-            provision_date_array.push(row.provision_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            provision_date_array.push(row.provision_date.map(|val| val.timestamp_millis()));
             cash_amount_array.push({
                 row.cash_amount.map(|mut val| {
                     val.rescale(8);
@@ -4855,28 +4685,16 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
                 })
             });
             interest_acct_id_array.push(row.interest_acct_id);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            finalreturndate_array.push(row.finalreturndate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            finalreturndate_array.push(row.finalreturndate.map(|val| val.timestamp_millis()));
             cash_security_returned_array.push({
                 row.cash_security_returned.map(|mut val| {
                     val.rescale(8);
                     val.mantissa()
                 })
             });
-            deletiondate_array.push(row.deletiondate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            deletiondate_array.push(row.deletiondate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -4888,7 +4706,7 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(provision_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(cash_amount_array)
@@ -4899,11 +4717,11 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(finalreturndate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(cash_security_returned_array)
@@ -4911,11 +4729,11 @@ impl crate::ArrowSchema for IrauctionSraCashSecurity1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(deletiondate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -5148,7 +4966,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -5234,10 +5052,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -5296,7 +5111,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -5459,7 +5274,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -5511,10 +5326,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -5548,7 +5360,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6168,7 +5980,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
                 arrow2::datatypes::DataType::Decimal(18, 8),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "proceeds_amount",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -6224,10 +6036,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             proceeds_amount_array.push({
                 row.proceeds_amount.map(|mut val| {
                     val.rescale(8);
@@ -6274,7 +6083,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(proceeds_amount_array)
@@ -6409,8 +6218,8 @@ impl crate::ArrowSchema for IrauctionSraFinancialRuntrk1 {
             arrow2::datatypes::Field::new("sra_quarter", arrow2::datatypes::DataType::Int64, false),
             arrow2::datatypes::Field::new("sra_runno", arrow2::datatypes::DataType::Int64, false),
             arrow2::datatypes::Field::new("runtype", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("rundate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("posteddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("rundate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("posteddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "interest_versionno",
                 arrow2::datatypes::DataType::Int64,
@@ -6421,7 +6230,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 arrow2::datatypes::DataType::Int64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -6442,20 +6251,11 @@ impl crate::ArrowSchema for IrauctionSraFinancialRuntrk1 {
             sra_quarter_array.push(row.sra_quarter);
             sra_runno_array.push(row.sra_runno);
             runtype_array.push(row.runtype);
-            rundate_array.push(row.rundate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            posteddate_array.push(row.posteddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            rundate_array.push(row.rundate.map(|val| val.timestamp_millis()));
+            posteddate_array.push(row.posteddate.map(|val| val.timestamp_millis()));
             interest_versionno_array.push(row.interest_versionno);
             makeup_versionno_array.push(row.makeup_versionno);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6467,11 +6267,11 @@ impl crate::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(runtype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rundate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(posteddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from(
                     interest_versionno_array,
@@ -6479,7 +6279,7 @@ impl crate::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from(makeup_versionno_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6620,7 +6420,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProduct1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new("optionid", arrow2::datatypes::DataType::Int64, false),
             arrow2::datatypes::Field::new(
                 "interconnectorid",
@@ -6647,7 +6447,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProduct1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -6667,12 +6467,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProduct1 {
         for (_, row) in partition {
             auctionid_array.push(row.auctionid);
             participantid_array.push(row.participantid);
-            loaddate_array.push(
-                i32::try_from(
-                    (row.loaddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            loaddate_array.push(row.loaddate.timestamp_millis());
             optionid_array.push(row.optionid);
             interconnectorid_array.push(row.interconnectorid);
             fromregionid_array.push(row.fromregionid);
@@ -6684,10 +6479,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProduct1 {
                 })
             });
             trancheid_array.push(row.trancheid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6699,7 +6491,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProduct1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(loaddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(optionid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -6714,7 +6506,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProduct1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(trancheid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -6842,7 +6634,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProfile1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("loaddate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "ackfilename",
@@ -6854,7 +6646,7 @@ impl crate::ArrowSchema for IrauctionSraOfferProfile1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -6871,19 +6663,11 @@ impl crate::ArrowSchema for IrauctionSraOfferProfile1 {
         for (_, row) in partition {
             auctionid_array.push(row.auctionid);
             participantid_array.push(row.participantid);
-            loaddate_array.push(
-                i32::try_from(
-                    (row.loaddate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            loaddate_array.push(row.loaddate.timestamp_millis());
             filename_array.push(row.filename);
             ackfilename_array.push(row.ackfilename);
             transactionid_array.push(row.transactionid);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -6895,14 +6679,14 @@ impl crate::ArrowSchema for IrauctionSraOfferProfile1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(loaddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(ackfilename_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(transactionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -7024,7 +6808,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "prudential_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7059,13 +6843,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
         let mut cash_security_id_array = Vec::new();
         let mut cash_security_amount_array = Vec::new();
         for (_, row) in partition {
-            prudential_date_array.push(
-                i32::try_from(
-                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            prudential_date_array.push(row.prudential_date.timestamp_millis());
             prudential_runno_array.push(row.prudential_runno);
             participantid_array.push(row.participantid);
             cash_security_id_array.push(row.cash_security_id);
@@ -7082,7 +6860,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
                     prudential_runno_array,
@@ -7212,7 +6990,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "prudential_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7253,13 +7031,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
         let mut prudential_exposure_amount_array = Vec::new();
         let mut trading_margin_array = Vec::new();
         for (_, row) in partition {
-            prudential_date_array.push(
-                i32::try_from(
-                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            prudential_date_array.push(row.prudential_date.timestamp_millis());
             prudential_runno_array.push(row.prudential_runno);
             participantid_array.push(row.participantid);
             trading_limit_array.push({
@@ -7287,7 +7059,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
                     prudential_runno_array,
@@ -7467,7 +7239,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "prudential_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7500,7 +7272,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
             ),
             arrow2::datatypes::Field::new(
                 "offer_submissiontime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -7544,13 +7316,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
         let mut cancellation_volume_array = Vec::new();
         let mut trading_position_array = Vec::new();
         for (_, row) in partition {
-            prudential_date_array.push(
-                i32::try_from(
-                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            prudential_date_array.push(row.prudential_date.timestamp_millis());
             prudential_runno_array.push(row.prudential_runno);
             participantid_array.push(row.participantid);
             sra_year_array.push(row.sra_year);
@@ -7559,10 +7325,8 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
             fromregionid_array.push(row.fromregionid);
             max_tranche_array.push(row.max_tranche);
             auctionid_array.push(row.auctionid);
-            offer_submissiontime_array.push(row.offer_submissiontime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            offer_submissiontime_array
+                .push(row.offer_submissiontime.map(|val| val.timestamp_millis()));
             average_purchase_price_array.push({
                 row.average_purchase_price.map(|mut val| {
                     val.rescale(8);
@@ -7594,7 +7358,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
                     prudential_runno_array,
@@ -7614,7 +7378,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialExposure1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(auctionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offer_submissiontime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(average_purchase_price_array)
@@ -7728,7 +7492,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialRun1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "prudential_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7745,13 +7509,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialRun1 {
         let mut prudential_date_array = Vec::new();
         let mut prudential_runno_array = Vec::new();
         for (_, row) in partition {
-            prudential_date_array.push(
-                i32::try_from(
-                    (row.prudential_date.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            prudential_date_array.push(row.prudential_date.timestamp_millis());
             prudential_runno_array.push(row.prudential_runno);
         }
 
@@ -7760,7 +7518,7 @@ impl crate::ArrowSchema for IrauctionSraPrudentialRun1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(prudential_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
                     prudential_runno_array,
@@ -7869,7 +7627,7 @@ impl crate::ArrowSchema for IrauctionValuationid1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -7882,10 +7640,7 @@ impl crate::ArrowSchema for IrauctionValuationid1 {
         for (_, row) in partition {
             valuationid_array.push(row.valuationid);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -7897,7 +7652,7 @@ impl crate::ArrowSchema for IrauctionValuationid1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

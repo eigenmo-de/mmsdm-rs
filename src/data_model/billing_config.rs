@@ -121,28 +121,28 @@ impl crate::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "preliminarystatementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "finalstatementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("paymentdate", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("paymentdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "revision1_statementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "revision2_statementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
         ])
@@ -172,38 +172,23 @@ impl crate::ArrowSchema for BillingConfigBillingcalendar2 {
                 val.rescale(0);
                 val.mantissa()
             });
-            startdate_array.push(row.startdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            preliminarystatementdate_array.push(row.preliminarystatementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            finalstatementdate_array.push(row.finalstatementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            paymentdate_array.push(row.paymentdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            revision1_statementdate_array.push(row.revision1_statementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            revision2_statementdate_array.push(row.revision2_statementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            startdate_array.push(row.startdate.map(|val| val.timestamp_millis()));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
+            preliminarystatementdate_array.push(
+                row.preliminarystatementdate
+                    .map(|val| val.timestamp_millis()),
+            );
+            finalstatementdate_array.push(row.finalstatementdate.map(|val| val.timestamp_millis()));
+            paymentdate_array.push(row.paymentdate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            revision1_statementdate_array.push(
+                row.revision1_statementdate
+                    .map(|val| val.timestamp_millis()),
+            );
+            revision2_statementdate_array.push(
+                row.revision2_statementdate
+                    .map(|val| val.timestamp_millis()),
+            );
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -219,35 +204,35 @@ impl crate::ArrowSchema for BillingConfigBillingcalendar2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(preliminarystatementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(finalstatementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(paymentdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(revision1_statementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(revision2_statementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -353,7 +338,7 @@ impl crate::ArrowSchema for BillingConfigGstBasClass1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -366,10 +351,7 @@ impl crate::ArrowSchema for BillingConfigGstBasClass1 {
         for (_, row) in partition {
             bas_class_array.push(row.bas_class);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -379,7 +361,7 @@ impl crate::ArrowSchema for BillingConfigGstBasClass1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -496,7 +478,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -514,7 +496,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
                 arrow2::datatypes::DataType::Decimal(8, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -527,12 +509,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
         let mut gst_rate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -545,10 +522,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -556,7 +530,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -569,7 +543,7 @@ impl crate::ArrowSchema for BillingConfigGstRate1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -693,7 +667,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionClass1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -711,7 +685,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionClass1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -724,12 +698,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionClass1 {
         let mut bas_class_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -737,10 +706,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionClass1 {
             });
             transaction_type_array.push(row.transaction_type);
             bas_class_array.push(row.bas_class);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -748,7 +714,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionClass1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -760,7 +726,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionClass1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bas_class_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -876,7 +842,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionType1 {
                 true,
             ),
             arrow2::datatypes::Field::new("gl_tcode", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -893,10 +859,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionType1 {
             description_array.push(row.description);
             gl_financialcode_array.push(row.gl_financialcode);
             gl_tcode_array.push(row.gl_tcode);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -912,7 +875,7 @@ impl crate::ArrowSchema for BillingConfigGstTransactionType1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gl_tcode_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1032,12 +995,12 @@ impl crate::ArrowSchema for BillingConfigSecdepositInterestRate1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1057,19 +1020,8 @@ impl crate::ArrowSchema for BillingConfigSecdepositInterestRate1 {
         let mut interest_rate_array = Vec::new();
         for (_, row) in partition {
             interest_acct_id_array.push(row.interest_acct_id);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            version_datetime_array.push(
-                i32::try_from(
-                    (row.version_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
+            version_datetime_array.push(row.version_datetime.timestamp_millis());
             interest_rate_array.push({
                 row.interest_rate.map(|mut val| {
                     val.rescale(8);
@@ -1086,11 +1038,11 @@ impl crate::ArrowSchema for BillingConfigSecdepositInterestRate1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(interest_rate_array)
@@ -1220,7 +1172,7 @@ impl crate::ArrowSchema for BillingConfigSecdepositProvision1 {
             ),
             arrow2::datatypes::Field::new(
                 "transaction_date",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -1271,10 +1223,7 @@ impl crate::ArrowSchema for BillingConfigSecdepositProvision1 {
         for (_, row) in partition {
             security_deposit_id_array.push(row.security_deposit_id);
             participantid_array.push(row.participantid);
-            transaction_date_array.push(row.transaction_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            transaction_date_array.push(row.transaction_date.map(|val| val.timestamp_millis()));
             maturity_contractyear_array.push({
                 row.maturity_contractyear.map(|mut val| {
                     val.rescale(0);
@@ -1314,7 +1263,7 @@ impl crate::ArrowSchema for BillingConfigSecdepositProvision1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(transaction_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maturity_contractyear_array)

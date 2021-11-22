@@ -109,7 +109,7 @@ impl crate::ArrowSchema for GenericConstraintEmsmaster1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -126,10 +126,7 @@ impl crate::ArrowSchema for GenericConstraintEmsmaster1 {
             spd_type_array.push(row.spd_type);
             description_array.push(row.description);
             grouping_id_array.push(row.grouping_id);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -141,7 +138,7 @@ impl crate::ArrowSchema for GenericConstraintEmsmaster1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(grouping_id_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -301,7 +298,7 @@ impl crate::ArrowSchema for GencondataNull6 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -337,7 +334,7 @@ impl crate::ArrowSchema for GencondataNull6 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -350,7 +347,7 @@ impl crate::ArrowSchema for GencondataNull6 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("dispatch", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "predispatch",
@@ -422,12 +419,7 @@ impl crate::ArrowSchema for GencondataNull6 {
         let mut lor_array = Vec::new();
         let mut force_scada_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -449,10 +441,7 @@ impl crate::ArrowSchema for GencondataNull6 {
                     val.mantissa()
                 })
             });
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
             authorisedby_array.push(row.authorisedby);
             dynamicrhs_array.push({
                 row.dynamicrhs.map(|mut val| {
@@ -460,10 +449,7 @@ impl crate::ArrowSchema for GencondataNull6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             dispatch_array.push(row.dispatch);
             predispatch_array.push(row.predispatch);
             stpasa_array.push(row.stpasa);
@@ -490,7 +476,7 @@ impl crate::ArrowSchema for GencondataNull6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -510,7 +496,7 @@ impl crate::ArrowSchema for GencondataNull6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
@@ -519,7 +505,7 @@ impl crate::ArrowSchema for GencondataNull6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatch_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(predispatch_array)),
@@ -672,7 +658,7 @@ impl crate::ArrowSchema for GenconsetNull1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -687,7 +673,7 @@ impl crate::ArrowSchema for GenconsetNull1 {
             ),
             arrow2::datatypes::Field::new(
                 "genconeffdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -695,7 +681,7 @@ impl crate::ArrowSchema for GenconsetNull1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -711,32 +697,21 @@ impl crate::ArrowSchema for GenconsetNull1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             genconsetid_array.push(row.genconsetid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
                 val.mantissa()
             });
             genconid_array.push(row.genconid);
-            genconeffdate_array.push(row.genconeffdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            genconeffdate_array.push(row.genconeffdate.map(|val| val.timestamp_millis()));
             genconversionno_array.push({
                 row.genconversionno.map(|mut val| {
                     val.rescale(0);
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -747,7 +722,7 @@ impl crate::ArrowSchema for GenconsetNull1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -756,7 +731,7 @@ impl crate::ArrowSchema for GenconsetNull1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(genconid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconeffdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconversionno_array)
@@ -764,7 +739,7 @@ impl crate::ArrowSchema for GenconsetNull1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -891,7 +866,7 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 arrow2::datatypes::DataType::Int64,
                 false,
             ),
-            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("startdate", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "startperiod",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -902,7 +877,7 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("enddate", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "endperiod",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -928,15 +903,15 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "startintervaldatetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "endintervaldatetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -966,22 +941,14 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
         let mut systemnormal_array = Vec::new();
         for (_, row) in partition {
             invocation_id_array.push(row.invocation_id);
-            startdate_array.push(
-                i32::try_from(
-                    (row.startdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            startdate_array.push(row.startdate.timestamp_millis());
             startperiod_array.push({
                 let mut val = row.startperiod;
                 val.rescale(0);
                 val.mantissa()
             });
             genconsetid_array.push(row.genconsetid);
-            enddate_array.push(row.enddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            enddate_array.push(row.enddate.map(|val| val.timestamp_millis()));
             endperiod_array.push({
                 row.endperiod.map(|mut val| {
                     val.rescale(0);
@@ -992,18 +959,11 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
             endauthorisedby_array.push(row.endauthorisedby);
             intervention_array.push(row.intervention);
             asconstrainttype_array.push(row.asconstrainttype);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            startintervaldatetime_array.push(row.startintervaldatetime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            endintervaldatetime_array.push(row.endintervaldatetime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            startintervaldatetime_array
+                .push(row.startintervaldatetime.map(|val| val.timestamp_millis()));
+            endintervaldatetime_array
+                .push(row.endintervaldatetime.map(|val| val.timestamp_millis()));
             systemnormal_array.push(row.systemnormal);
         }
 
@@ -1015,7 +975,7 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(startdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(startperiod_array)
@@ -1026,7 +986,7 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endperiod_array)
@@ -1042,15 +1002,15 @@ impl crate::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startintervaldatetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(endintervaldatetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(systemnormal_array)),
             ],
@@ -1186,7 +1146,7 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1206,10 +1166,10 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("coverage", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "modifications",
@@ -1241,12 +1201,7 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
         let mut outage_array = Vec::new();
         for (_, row) in partition {
             genconsetid_array.push(row.genconsetid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -1254,14 +1209,8 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
             });
             description_array.push(row.description);
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             coverage_array.push(row.coverage);
             modifications_array.push(row.modifications);
             systemnormal_array.push(row.systemnormal);
@@ -1276,7 +1225,7 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1286,11 +1235,11 @@ impl crate::ArrowSchema for GenconsettrkNull2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(coverage_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(modifications_array)),
@@ -1450,7 +1399,7 @@ impl crate::ArrowSchema for GcrhsNull1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1501,7 +1450,7 @@ impl crate::ArrowSchema for GcrhsNull1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1525,12 +1474,7 @@ impl crate::ArrowSchema for GcrhsNull1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             genconid_array.push(row.genconid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -1566,10 +1510,7 @@ impl crate::ArrowSchema for GcrhsNull1 {
             parameterterm1_array.push(row.parameterterm1);
             parameterterm2_array.push(row.parameterterm2);
             parameterterm3_array.push(row.parameterterm3);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -1578,7 +1519,7 @@ impl crate::ArrowSchema for GcrhsNull1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(genconid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -1609,7 +1550,7 @@ impl crate::ArrowSchema for GcrhsNull1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(parameterterm3_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -1727,7 +1668,7 @@ impl crate::ArrowSchema for GeqdescNull2 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("impact", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new("source", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
@@ -1764,10 +1705,7 @@ impl crate::ArrowSchema for GeqdescNull2 {
         for (_, row) in partition {
             equationid_array.push(row.equationid);
             description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             impact_array.push(row.impact);
             source_array.push(row.source);
             limittype_array.push(row.limittype);
@@ -1785,7 +1723,7 @@ impl crate::ArrowSchema for GeqdescNull2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(impact_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(source_array)),
@@ -1938,7 +1876,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1988,7 +1926,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2011,12 +1949,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             equationid_array.push(row.equationid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2051,10 +1984,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
             parameterterm1_array.push(row.parameterterm1);
             parameterterm2_array.push(row.parameterterm2);
             parameterterm3_array.push(row.parameterterm3);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2065,7 +1995,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2095,7 +2025,7 @@ impl crate::ArrowSchema for GeqrhsNull1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(parameterterm3_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2235,7 +2165,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2253,7 +2183,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
         ])
     }
@@ -2270,12 +2200,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
         let mut bidtype_array = Vec::new();
         for (_, row) in partition {
             connectionpointid_array.push(row.connectionpointid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2288,10 +2213,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             bidtype_array.push(row.bidtype);
         }
 
@@ -2303,7 +2225,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2316,7 +2238,7 @@ impl crate::ArrowSchema for SpdcpcNull2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
             ],
@@ -2448,7 +2370,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2466,7 +2388,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -2481,12 +2403,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             interconnectorid_array.push(row.interconnectorid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2499,10 +2416,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2513,7 +2427,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2526,7 +2440,7 @@ impl crate::ArrowSchema for SpdiccNull1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2666,7 +2580,7 @@ impl crate::ArrowSchema for SpdrcNull2 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2684,7 +2598,7 @@ impl crate::ArrowSchema for SpdrcNull2 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
         ])
     }
@@ -2701,12 +2615,7 @@ impl crate::ArrowSchema for SpdrcNull2 {
         let mut bidtype_array = Vec::new();
         for (_, row) in partition {
             regionid_array.push(row.regionid);
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -2719,10 +2628,7 @@ impl crate::ArrowSchema for SpdrcNull2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             bidtype_array.push(row.bidtype);
         }
 
@@ -2732,7 +2638,7 @@ impl crate::ArrowSchema for SpdrcNull2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -2745,7 +2651,7 @@ impl crate::ArrowSchema for SpdrcNull2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
             ],

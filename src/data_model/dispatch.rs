@@ -127,7 +127,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -141,7 +141,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
                 false,
             ),
             arrow2::datatypes::Field::new("rhs", arrow2::datatypes::DataType::Decimal(16, 6), true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "versionno",
                 arrow2::datatypes::DataType::Decimal(3, 0),
@@ -160,13 +160,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
         let mut lastchanged_array = Vec::new();
         let mut versionno_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -179,10 +173,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             versionno_array.push({
                 let mut val = row.versionno;
                 val.rescale(0);
@@ -195,7 +186,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -210,7 +201,7 @@ impl crate::ArrowSchema for PriceloadConstraintrelaxation1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(versionno_array)
@@ -335,7 +326,7 @@ impl crate::ArrowSchema for DispatchBlockedConstraints1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -358,13 +349,7 @@ impl crate::ArrowSchema for DispatchBlockedConstraints1 {
         let mut runno_array = Vec::new();
         let mut constraintid_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -378,7 +363,7 @@ impl crate::ArrowSchema for DispatchBlockedConstraints1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -539,7 +524,7 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -637,7 +622,7 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "switchruninitialstatus",
                 arrow2::datatypes::DataType::Decimal(1, 0),
@@ -684,13 +669,7 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
         let mut switchrunbeststatus_array = Vec::new();
         let mut switchrunbeststatus_int_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -793,10 +772,7 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             switchruninitialstatus_array.push({
                 row.switchruninitialstatus.map(|mut val| {
                     val.rescale(0);
@@ -822,7 +798,7 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -896,7 +872,7 @@ impl crate::ArrowSchema for DispatchCaseSolution2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(switchruninitialstatus_array)
@@ -1067,7 +1043,7 @@ impl crate::ArrowSchema for DispatchConstraint5 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1101,11 +1077,11 @@ impl crate::ArrowSchema for DispatchConstraint5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "genconid_effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -1134,13 +1110,7 @@ impl crate::ArrowSchema for DispatchConstraint5 {
         let mut genconid_versionno_array = Vec::new();
         let mut lhs_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -1171,15 +1141,10 @@ impl crate::ArrowSchema for DispatchConstraint5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             duid_array.push(row.duid);
-            genconid_effectivedate_array.push(row.genconid_effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            genconid_effectivedate_array
+                .push(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
             genconid_versionno_array.push({
                 row.genconid_versionno.map(|mut val| {
                     val.rescale(0);
@@ -1199,7 +1164,7 @@ impl crate::ArrowSchema for DispatchConstraint5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -1230,12 +1195,12 @@ impl crate::ArrowSchema for DispatchConstraint5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_versionno_array)
@@ -1419,7 +1384,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1467,7 +1432,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "exportlimit",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -1552,13 +1517,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
         let mut local_price_adjustment_import_array = Vec::new();
         let mut locally_constrained_import_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -1601,10 +1560,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             exportlimit_array.push({
                 row.exportlimit.map(|mut val| {
                     val.rescale(5);
@@ -1668,7 +1624,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -1707,7 +1663,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(exportlimit_array)
@@ -1759,7 +1715,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
 ///
 /// * Data Set Name: Dispatch
 /// * File Name: Unit Solution
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 /// # Description
 ///  DISPATCHLOAD data is confidential for the current day, showing own details for participant and becomes public after close of business yesterday, and is available to all participants. Source DISPATCHLOAD shows data for every 5 minutes for all units, even zero targets. Volume Expect 40-50,000 records per day. All units are repeated, even zero targets. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled. 1 001 Not stranded, not trapped, is enabled. 3 011 Not stranded, is trapped, is enabled. 4 100 Is stranded, not trapped, not enabled. For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
@@ -1774,7 +1730,7 @@ impl crate::ArrowSchema for DispatchInterconnectorres3 {
 /// * RUNNO
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DispatchUnitSolution2 {
+pub struct DispatchUnitSolution3 {
     /// Market date and time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -1893,20 +1849,20 @@ pub struct DispatchUnitSolution2 {
     /// Minutes for which the unit has been in the current DISPATCHMODE. From NEMDE TRADERSOLUTION element FSTARGETMODETIME attribute.
     pub dispatchmodetime: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for DispatchUnitSolution2 {
-    type PrimaryKey = DispatchUnitSolution2PrimaryKey;
+impl crate::GetTable for DispatchUnitSolution3 {
+    type PrimaryKey = DispatchUnitSolution3PrimaryKey;
     type Partition = (i32, chrono::Month);
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "DISPATCH".into(),
             table_name: Some("UNIT_SOLUTION".into()),
-            version: 2,
+            version: 3,
         }
     }
 
-    fn primary_key(&self) -> DispatchUnitSolution2PrimaryKey {
-        DispatchUnitSolution2PrimaryKey {
+    fn primary_key(&self) -> DispatchUnitSolution3PrimaryKey {
+        DispatchUnitSolution3PrimaryKey {
             duid: self.duid.clone(),
             intervention: self.intervention,
             runno: self.runno,
@@ -1924,14 +1880,14 @@ impl crate::GetTable for DispatchUnitSolution2 {
 
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_unit_solution_v2_{}_{}",
+            "dispatch_unit_solution_v3_{}_{}",
             chrono::Datelike::year(&self.settlementdate),
             chrono::Datelike::month(&self.settlementdate)
         )
     }
 }
-impl crate::CompareWithRow for DispatchUnitSolution2 {
-    type Row = DispatchUnitSolution2;
+impl crate::CompareWithRow for DispatchUnitSolution3 {
+    type Row = DispatchUnitSolution3;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid
@@ -1940,8 +1896,8 @@ impl crate::CompareWithRow for DispatchUnitSolution2 {
             && self.settlementdate == row.settlementdate
     }
 }
-impl crate::CompareWithPrimaryKey for DispatchUnitSolution2 {
-    type PrimaryKey = DispatchUnitSolution2PrimaryKey;
+impl crate::CompareWithPrimaryKey for DispatchUnitSolution3 {
+    type PrimaryKey = DispatchUnitSolution3PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -1951,14 +1907,14 @@ impl crate::CompareWithPrimaryKey for DispatchUnitSolution2 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct DispatchUnitSolution2PrimaryKey {
+pub struct DispatchUnitSolution3PrimaryKey {
     pub duid: String,
     pub intervention: rust_decimal::Decimal,
     pub runno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for DispatchUnitSolution2PrimaryKey {
-    type Row = DispatchUnitSolution2;
+impl crate::CompareWithRow for DispatchUnitSolution3PrimaryKey {
+    type Row = DispatchUnitSolution3;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid
@@ -1967,8 +1923,8 @@ impl crate::CompareWithRow for DispatchUnitSolution2PrimaryKey {
             && self.settlementdate == row.settlementdate
     }
 }
-impl crate::CompareWithPrimaryKey for DispatchUnitSolution2PrimaryKey {
-    type PrimaryKey = DispatchUnitSolution2PrimaryKey;
+impl crate::CompareWithPrimaryKey for DispatchUnitSolution3PrimaryKey {
+    type PrimaryKey = DispatchUnitSolution3PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -1977,14 +1933,14 @@ impl crate::CompareWithPrimaryKey for DispatchUnitSolution2PrimaryKey {
             && self.settlementdate == key.settlementdate
     }
 }
-impl crate::PrimaryKey for DispatchUnitSolution2PrimaryKey {}
+impl crate::PrimaryKey for DispatchUnitSolution3PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for DispatchUnitSolution2 {
+impl crate::ArrowSchema for DispatchUnitSolution3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -2123,7 +2079,7 @@ impl crate::ArrowSchema for DispatchUnitSolution2 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "lowerreg",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -2323,13 +2279,7 @@ impl crate::ArrowSchema for DispatchUnitSolution2 {
         let mut semidispatchcap_array = Vec::new();
         let mut dispatchmodetime_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -2481,10 +2431,7 @@ impl crate::ArrowSchema for DispatchUnitSolution2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             lowerreg_array.push({
                 row.lowerreg.map(|mut val| {
                     val.rescale(5);
@@ -2654,7 +2601,7 @@ impl crate::ArrowSchema for DispatchUnitSolution2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -2766,7 +2713,7 @@ impl crate::ArrowSchema for DispatchUnitSolution2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerreg_array)
@@ -2914,6 +2861,7 @@ pub struct DispatchOffertrk1 {
     #[serde(with = "crate::mms_datetime_opt")]
     pub bidsettlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime_opt")]
     pub bidofferdate: Option<chrono::NaiveDateTime>,
     /// Last date and time record changed
     #[serde(with = "crate::mms_datetime_opt")]
@@ -3004,14 +2952,14 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "bidsettlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -3019,7 +2967,7 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
                 arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3033,24 +2981,12 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
         let mut bidofferdate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             duid_array.push(row.duid);
             bidtype_array.push(row.bidtype);
-            bidsettlementdate_array.push(row.bidsettlementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            bidsettlementdate_array.push(row.bidsettlementdate.map(|val| val.timestamp_millis()));
             bidofferdate_array.push(row.bidofferdate.map(|val| val.timestamp_millis()));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3058,13 +2994,13 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidsettlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidofferdate_array)
@@ -3072,7 +3008,7 @@ impl crate::ArrowSchema for DispatchOffertrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3316,7 +3252,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -3352,7 +3288,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "raise6secrrp",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -3641,13 +3577,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
         let mut ocd_status_array = Vec::new();
         let mut mii_status_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -3690,10 +3620,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             raise6secrrp_array.push({
                 row.raise6secrrp.map(|mut val| {
                     val.rescale(5);
@@ -3956,7 +3883,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -3993,7 +3920,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secrrp_array)
@@ -4178,7 +4105,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
 ///
 /// * Data Set Name: Dispatch
 /// * File Name: Regionsum
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 ///  DISPATCHREGIONSUM is public data, and is available to all participants. Source DISPATCHREGIONSUM updates every 5 minutes. Note For details of calculations about load calculations, refer to Chapter 3 of the "Statement of Opportunities" *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
@@ -4194,7 +4121,7 @@ impl crate::ArrowSchema for DispatchPrice4 {
 /// * RUNNO
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DispatchRegionsum5 {
+pub struct DispatchRegionsum6 {
     /// Market date and time starting at 04:05
     #[serde(with = "crate::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -4427,20 +4354,20 @@ pub struct DispatchRegionsum5 {
     /// Regional aggregated dispatched MW for Wholesale Demand Response (WDR) units
     pub wdr_dispatched: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for DispatchRegionsum5 {
-    type PrimaryKey = DispatchRegionsum5PrimaryKey;
+impl crate::GetTable for DispatchRegionsum6 {
+    type PrimaryKey = DispatchRegionsum6PrimaryKey;
     type Partition = (i32, chrono::Month);
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "DISPATCH".into(),
             table_name: Some("REGIONSUM".into()),
-            version: 5,
+            version: 6,
         }
     }
 
-    fn primary_key(&self) -> DispatchRegionsum5PrimaryKey {
-        DispatchRegionsum5PrimaryKey {
+    fn primary_key(&self) -> DispatchRegionsum6PrimaryKey {
+        DispatchRegionsum6PrimaryKey {
             dispatchinterval: self.dispatchinterval,
             intervention: self.intervention,
             regionid: self.regionid.clone(),
@@ -4459,14 +4386,14 @@ impl crate::GetTable for DispatchRegionsum5 {
 
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_regionsum_v5_{}_{}",
+            "dispatch_regionsum_v6_{}_{}",
             chrono::Datelike::year(&self.settlementdate),
             chrono::Datelike::month(&self.settlementdate)
         )
     }
 }
-impl crate::CompareWithRow for DispatchRegionsum5 {
-    type Row = DispatchRegionsum5;
+impl crate::CompareWithRow for DispatchRegionsum6 {
+    type Row = DispatchRegionsum6;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.dispatchinterval == row.dispatchinterval
@@ -4476,8 +4403,8 @@ impl crate::CompareWithRow for DispatchRegionsum5 {
             && self.settlementdate == row.settlementdate
     }
 }
-impl crate::CompareWithPrimaryKey for DispatchRegionsum5 {
-    type PrimaryKey = DispatchRegionsum5PrimaryKey;
+impl crate::CompareWithPrimaryKey for DispatchRegionsum6 {
+    type PrimaryKey = DispatchRegionsum6PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.dispatchinterval == key.dispatchinterval
@@ -4488,15 +4415,15 @@ impl crate::CompareWithPrimaryKey for DispatchRegionsum5 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct DispatchRegionsum5PrimaryKey {
+pub struct DispatchRegionsum6PrimaryKey {
     pub dispatchinterval: crate::DispatchPeriod,
     pub intervention: rust_decimal::Decimal,
     pub regionid: String,
     pub runno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
-impl crate::CompareWithRow for DispatchRegionsum5PrimaryKey {
-    type Row = DispatchRegionsum5;
+impl crate::CompareWithRow for DispatchRegionsum6PrimaryKey {
+    type Row = DispatchRegionsum6;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.dispatchinterval == row.dispatchinterval
@@ -4506,8 +4433,8 @@ impl crate::CompareWithRow for DispatchRegionsum5PrimaryKey {
             && self.settlementdate == row.settlementdate
     }
 }
-impl crate::CompareWithPrimaryKey for DispatchRegionsum5PrimaryKey {
-    type PrimaryKey = DispatchRegionsum5PrimaryKey;
+impl crate::CompareWithPrimaryKey for DispatchRegionsum6PrimaryKey {
+    type PrimaryKey = DispatchRegionsum6PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.dispatchinterval == key.dispatchinterval
@@ -4517,14 +4444,14 @@ impl crate::CompareWithPrimaryKey for DispatchRegionsum5PrimaryKey {
             && self.settlementdate == key.settlementdate
     }
 }
-impl crate::PrimaryKey for DispatchRegionsum5PrimaryKey {}
+impl crate::PrimaryKey for DispatchRegionsum6PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for DispatchRegionsum5 {
+impl crate::ArrowSchema for DispatchRegionsum6 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -4837,7 +4764,7 @@ impl crate::ArrowSchema for DispatchRegionsum5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "initialsupply",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -5209,13 +5136,7 @@ impl crate::ArrowSchema for DispatchRegionsum5 {
         let mut wdr_available_array = Vec::new();
         let mut wdr_dispatched_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -5576,10 +5497,7 @@ impl crate::ArrowSchema for DispatchRegionsum5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             initialsupply_array.push({
                 row.initialsupply.map(|mut val| {
                     val.rescale(5);
@@ -5887,7 +5805,7 @@ impl crate::ArrowSchema for DispatchRegionsum5 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -6136,7 +6054,7 @@ impl crate::ArrowSchema for DispatchRegionsum5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(initialsupply_array)
@@ -6484,7 +6402,7 @@ impl crate::ArrowSchema for PriceloadConstraintFcasOcd1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("runno", arrow2::datatypes::DataType::Int64, false),
@@ -6499,7 +6417,7 @@ impl crate::ArrowSchema for PriceloadConstraintFcasOcd1 {
                 false,
             ),
             arrow2::datatypes::Field::new("versionno", arrow2::datatypes::DataType::Int64, false),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("rhs", arrow2::datatypes::DataType::Decimal(15, 5), true),
             arrow2::datatypes::Field::new(
                 "marginalvalue",
@@ -6527,21 +6445,12 @@ impl crate::ArrowSchema for PriceloadConstraintFcasOcd1 {
         let mut marginalvalue_array = Vec::new();
         let mut violationdegree_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push(row.runno);
             intervention_array.push(row.intervention);
             constraintid_array.push(row.constraintid);
             versionno_array.push(row.versionno);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             rhs_array.push({
                 row.rhs.map(|mut val| {
                     val.rescale(5);
@@ -6567,7 +6476,7 @@ impl crate::ArrowSchema for PriceloadConstraintFcasOcd1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(runno_array)),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(
@@ -6579,7 +6488,7 @@ impl crate::ArrowSchema for PriceloadConstraintFcasOcd1 {
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rhs_array)
@@ -6762,7 +6671,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -6788,7 +6697,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "genconeffectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -6801,7 +6710,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "base_cost",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -6855,13 +6764,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
         let mut recovery_factor_cmpf_array = Vec::new();
         let mut recovery_factor_crmpf_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -6875,10 +6778,8 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
             genconid_array.push(row.genconid);
             regionid_array.push(row.regionid);
             bidtype_array.push(row.bidtype);
-            genconeffectivedate_array.push(row.genconeffectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            genconeffectivedate_array
+                .push(row.genconeffectivedate.map(|val| val.timestamp_millis()));
             genconversionno_array.push({
                 row.genconversionno.map(|mut val| {
                     val.rescale(0);
@@ -6891,10 +6792,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             base_cost_array.push({
                 row.base_cost.map(|mut val| {
                     val.rescale(8);
@@ -6938,7 +6836,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -6953,7 +6851,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconeffectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconversionno_array)
@@ -6965,7 +6863,7 @@ impl crate::ArrowSchema for DispatchFcasReq2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(base_cost_array)
@@ -7144,7 +7042,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7197,7 +7095,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -7217,13 +7115,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
         let mut to_region_mw_losses_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -7267,10 +7159,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -7278,7 +7167,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -7320,7 +7209,7 @@ impl crate::ArrowSchema for DispatchInterconnection1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -7432,7 +7321,7 @@ impl crate::ArrowSchema for DispatchLocalPrice1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -7457,13 +7346,7 @@ impl crate::ArrowSchema for DispatchLocalPrice1 {
         let mut local_price_adjustment_array = Vec::new();
         let mut locally_constrained_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             duid_array.push(row.duid);
             local_price_adjustment_array.push({
                 row.local_price_adjustment.map(|mut val| {
@@ -7484,7 +7367,7 @@ impl crate::ArrowSchema for DispatchLocalPrice1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
@@ -7536,6 +7419,7 @@ pub struct DispatchMnspbidtrk1 {
     #[serde(with = "crate::mms_datetime_opt")]
     pub offersettlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime_opt")]
     pub offereffectivedate: Option<chrono::NaiveDateTime>,
     /// VersionNo of the bid/offer used
     pub offerversionno: Option<rust_decimal::Decimal>,
@@ -7634,7 +7518,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7650,7 +7534,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
             arrow2::datatypes::Field::new("linkid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "offersettlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -7663,7 +7547,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -7679,13 +7563,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
         let mut offerversionno_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -7693,10 +7571,8 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
             });
             participantid_array.push(row.participantid);
             linkid_array.push(row.linkid);
-            offersettlementdate_array.push(row.offersettlementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            offersettlementdate_array
+                .push(row.offersettlementdate.map(|val| val.timestamp_millis()));
             offereffectivedate_array.push(row.offereffectivedate.map(|val| val.timestamp_millis()));
             offerversionno_array.push({
                 row.offerversionno.map(|mut val| {
@@ -7704,10 +7580,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -7715,7 +7588,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -7727,7 +7600,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offersettlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offereffectivedate_array)
@@ -7739,7 +7612,7 @@ impl crate::ArrowSchema for DispatchMnspbidtrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -7857,7 +7730,7 @@ impl crate::ArrowSchema for DispatchMrScheduleTrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -7865,13 +7738,13 @@ impl crate::ArrowSchema for DispatchMrScheduleTrk1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 false,
             ),
-            arrow2::datatypes::Field::new("mr_date", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("mr_date", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "version_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -7884,26 +7757,11 @@ impl crate::ArrowSchema for DispatchMrScheduleTrk1 {
         let mut version_datetime_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             regionid_array.push(row.regionid);
-            mr_date_array.push(row.mr_date.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            version_datetime_array.push(row.version_datetime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            mr_date_array.push(row.mr_date.map(|val| val.timestamp_millis()));
+            version_datetime_array.push(row.version_datetime.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -7911,20 +7769,20 @@ impl crate::ArrowSchema for DispatchMrScheduleTrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mr_date_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(version_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8079,7 +7937,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -8109,7 +7967,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8126,13 +7984,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
         let mut rrp_old_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             runno_array.push({
                 let mut val = row.runno;
                 val.rescale(0);
@@ -8158,10 +8010,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8169,7 +8018,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(runno_array)
@@ -8192,7 +8041,7 @@ impl crate::ArrowSchema for PriceloadPriceRevision1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8324,7 +8173,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -8387,7 +8236,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8413,13 +8262,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
         let mut operating_mode_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             duid_array.push(row.duid);
             totalcleared_array.push({
                 row.totalcleared.map(|mut val| {
@@ -8486,10 +8329,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
             status_array.push(row.status);
             participant_status_action_array.push(row.participant_status_action);
             operating_mode_array.push(row.operating_mode);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8497,7 +8337,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
@@ -8549,7 +8389,7 @@ impl crate::ArrowSchema for DispatchUnitConformance1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(operating_mode_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8660,7 +8500,7 @@ impl crate::ArrowSchema for DispatchUnitScada1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -8679,13 +8519,7 @@ impl crate::ArrowSchema for DispatchUnitScada1 {
         let mut duid_array = Vec::new();
         let mut scadavalue_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             duid_array.push(row.duid);
             scadavalue_array.push({
                 row.scadavalue.map(|mut val| {
@@ -8700,7 +8534,7 @@ impl crate::ArrowSchema for DispatchUnitScada1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(
@@ -8820,7 +8654,7 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
@@ -8832,7 +8666,7 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "offerdatetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
         ])
@@ -8847,13 +8681,7 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
         let mut forecast_priority_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
             duid_array.push(row.duid);
             origin_array.push(row.origin);
             forecast_priority_array.push({
@@ -8862,10 +8690,7 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
                     val.mantissa()
                 })
             });
-            offerdatetime_array.push(row.offerdatetime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            offerdatetime_array.push(row.offerdatetime.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8873,7 +8698,7 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(origin_array)),
@@ -8883,7 +8708,7 @@ impl crate::ArrowSchema for DispatchIntermittentForecastTrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerdatetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -9031,12 +8856,12 @@ impl crate::ArrowSchema for DispatchNegativeResidue1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "nrm_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -9081,12 +8906,12 @@ impl crate::ArrowSchema for DispatchNegativeResidue1 {
             ),
             arrow2::datatypes::Field::new(
                 "event_activated_di",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
                 "event_deactivated_di",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -9126,19 +8951,8 @@ impl crate::ArrowSchema for DispatchNegativeResidue1 {
         let mut di_violated_count_array = Vec::new();
         let mut nrmconstraint_blocked_flag_array = Vec::new();
         for (_, row) in partition {
-            settlementdate_array.push(
-                i32::try_from(
-                    (row.settlementdate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
-            nrm_datetime_array.push(
-                i32::try_from(
-                    (row.nrm_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            nrm_datetime_array.push(row.nrm_datetime.timestamp_millis());
             directional_interconnectorid_array.push(row.directional_interconnectorid);
             nrm_activated_flag_array.push({
                 row.nrm_activated_flag.map(|mut val| {
@@ -9172,14 +8986,9 @@ impl crate::ArrowSchema for DispatchNegativeResidue1 {
             });
             price_revision_array.push(row.price_revision);
             predispatchseqno_array.push(row.predispatchseqno);
-            event_activated_di_array.push(row.event_activated_di.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            event_deactivated_di_array.push(row.event_deactivated_di.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            event_activated_di_array.push(row.event_activated_di.map(|val| val.timestamp_millis()));
+            event_deactivated_di_array
+                .push(row.event_deactivated_di.map(|val| val.timestamp_millis()));
             di_notbinding_count_array.push({
                 row.di_notbinding_count.map(|mut val| {
                     val.rescale(0);
@@ -9205,11 +9014,11 @@ impl crate::ArrowSchema for DispatchNegativeResidue1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(nrm_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     directional_interconnectorid_array,
@@ -9240,11 +9049,11 @@ impl crate::ArrowSchema for DispatchNegativeResidue1 {
                 )),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(event_activated_di_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(event_deactivated_di_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(di_notbinding_count_array)

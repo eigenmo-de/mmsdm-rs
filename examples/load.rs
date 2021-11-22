@@ -3,7 +3,6 @@ use std::fs;
 use tiberius;
 use tokio::net;
 use tokio_util::compat::TokioAsyncWriteCompatExt;
-use rayon::{IntoParallelRefIterator, iter::ParallelBridge};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -22,15 +21,17 @@ async fn main() -> anyhow::Result<()> {
     println!("TCP connected");
 
     let mut client = tiberius::Client::connect(config, tcp.compat_write()).await?;
-    let paths = fs::read_dir("./data")?.into_iter().map(|entry| entry.map(|e| e.path())).collect::<Result<Vec<_>, _>>()?;
-    paths.into_iter().par_iter() {
+    let paths = fs::read_dir("./data")?
+        .into_iter()
+        .map(|entry| entry.map(|e| e.path()))
+        .collect::<Result<Vec<_>, _>>()?;
+    for path in paths {
         println!("Loading file at path: {:?}", file_path);
         let file = fs::File::open(file_path)?;
         let mut zip = zip::ZipArchive::new(file)?;
         let inner_file = zip.by_index(0)?;
         let aemo = mmsdm::AemoFile::from_reader(inner_file)?;
         dbg!(aemo.file_keys());
-
         aemo.load_data(&mut client, None).await?;
     }
     Ok(())

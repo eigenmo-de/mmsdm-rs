@@ -342,7 +342,7 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "intervention",
                 arrow2::datatypes::DataType::Decimal(2, 0),
@@ -472,10 +472,7 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             intervention_array.push({
                 row.intervention.map(|mut val| {
                     val.rescale(0);
@@ -558,7 +555,7 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
@@ -718,12 +715,12 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "genconid_effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -786,21 +783,11 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            datetime_array.push(row.datetime.timestamp_millis());
             duid_array.push(row.duid);
-            genconid_effectivedate_array.push(row.genconid_effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            genconid_effectivedate_array
+                .push(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
             genconid_versionno_array.push({
                 row.genconid_versionno.map(|mut val| {
                     val.rescale(0);
@@ -848,16 +835,16 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_versionno_array)
@@ -1052,8 +1039,8 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "exportlimit",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -1184,16 +1171,8 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            datetime_array.push(row.datetime.timestamp_millis());
             exportlimit_array.push({
                 row.exportlimit.map(|mut val| {
                     val.rescale(5);
@@ -1293,11 +1272,11 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(exportlimit_array)
@@ -1552,7 +1531,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
                 arrow2::datatypes::DataType::Decimal(2, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "intervention_active",
                 arrow2::datatypes::DataType::Decimal(1, 0),
@@ -1773,7 +1752,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -1847,12 +1826,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
                     val.mantissa()
                 })
             });
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            datetime_array.push(row.datetime.timestamp_millis());
             intervention_active_array.push({
                 row.intervention_active.map(|mut val| {
                     val.rescale(0);
@@ -2117,10 +2091,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -2144,7 +2115,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_active_array)
@@ -2324,7 +2295,7 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -2658,8 +2629,8 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "lowerreg",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -2972,16 +2943,8 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            datetime_array.push(row.datetime.timestamp_millis());
             lowerreg_array.push({
                 row.lowerreg.map(|mut val| {
                     val.rescale(5);
@@ -3218,11 +3181,11 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerreg_array)
@@ -3345,6 +3308,7 @@ pub struct PredispatchOffertrk1 {
     #[serde(with = "crate::mms_datetime_opt")]
     pub bidsettlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime_opt")]
     pub bidofferdate: Option<chrono::NaiveDateTime>,
     /// Period date and time
     #[serde(with = "crate::mms_datetime_opt")]
@@ -3446,7 +3410,7 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "bidsettlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -3454,8 +3418,8 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
                 arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -3475,19 +3439,10 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
             duid_array.push(row.duid);
             bidtype_array.push(row.bidtype);
             periodid_array.push(row.periodid);
-            bidsettlementdate_array.push(row.bidsettlementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            bidsettlementdate_array.push(row.bidsettlementdate.map(|val| val.timestamp_millis()));
             bidofferdate_array.push(row.bidofferdate.map(|val| val.timestamp_millis()));
-            datetime_array.push(row.datetime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            datetime_array.push(row.datetime.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -3502,7 +3457,7 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(periodid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidsettlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidofferdate_array)
@@ -3510,11 +3465,11 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -3778,8 +3733,8 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "raise6secrrp",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -3983,16 +3938,8 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            datetime_array.push(row.datetime.timestamp_millis());
             raise6secrrp_array.push({
                 row.raise6secrrp.map(|mut val| {
                     val.rescale(5);
@@ -4134,11 +4081,11 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secrrp_array)
@@ -4528,8 +4475,8 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "rrpeep29",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -4851,16 +4798,8 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            datetime_array.push(row.datetime.timestamp_millis());
             rrpeep29_array.push({
                 row.rrpeep29.map(|mut val| {
                     val.rescale(5);
@@ -5090,11 +5029,11 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep29_array)
@@ -5172,7 +5111,7 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 ///  PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period. Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load) Source PREDISPATCHREGIONSUM updates every thirty minutes. Note *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
@@ -5185,7 +5124,7 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchRegionSolution5 {
+pub struct PredispatchRegionSolution6 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
@@ -5418,20 +5357,20 @@ pub struct PredispatchRegionSolution5 {
     /// Regional aggregated dispatched MW for Wholesale Demand Response (WDR) units
     pub wdr_dispatched: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for PredispatchRegionSolution5 {
-    type PrimaryKey = PredispatchRegionSolution5PrimaryKey;
+impl crate::GetTable for PredispatchRegionSolution6 {
+    type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "PREDISPATCH".into(),
             table_name: Some("REGION_SOLUTION".into()),
-            version: 5,
+            version: 6,
         }
     }
 
-    fn primary_key(&self) -> PredispatchRegionSolution5PrimaryKey {
-        PredispatchRegionSolution5PrimaryKey {
+    fn primary_key(&self) -> PredispatchRegionSolution6PrimaryKey {
+        PredispatchRegionSolution6PrimaryKey {
             datetime: self.datetime,
             regionid: self.regionid.clone(),
         }
@@ -5440,45 +5379,45 @@ impl crate::GetTable for PredispatchRegionSolution5 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "predispatch_region_solution_v5".to_string()
+        "predispatch_region_solution_v6".to_string()
     }
 }
-impl crate::CompareWithRow for PredispatchRegionSolution5 {
-    type Row = PredispatchRegionSolution5;
+impl crate::CompareWithRow for PredispatchRegionSolution6 {
+    type Row = PredispatchRegionSolution6;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
     }
 }
-impl crate::CompareWithPrimaryKey for PredispatchRegionSolution5 {
-    type PrimaryKey = PredispatchRegionSolution5PrimaryKey;
+impl crate::CompareWithPrimaryKey for PredispatchRegionSolution6 {
+    type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchRegionSolution5PrimaryKey {
+pub struct PredispatchRegionSolution6PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
 }
-impl crate::CompareWithRow for PredispatchRegionSolution5PrimaryKey {
-    type Row = PredispatchRegionSolution5;
+impl crate::CompareWithRow for PredispatchRegionSolution6PrimaryKey {
+    type Row = PredispatchRegionSolution6;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
     }
 }
-impl crate::CompareWithPrimaryKey for PredispatchRegionSolution5PrimaryKey {
-    type PrimaryKey = PredispatchRegionSolution5PrimaryKey;
+impl crate::CompareWithPrimaryKey for PredispatchRegionSolution6PrimaryKey {
+    type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
     }
 }
-impl crate::PrimaryKey for PredispatchRegionSolution5PrimaryKey {}
+impl crate::PrimaryKey for PredispatchRegionSolution6PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for PredispatchRegionSolution5 {
+impl crate::ArrowSchema for PredispatchRegionSolution6 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
@@ -5782,8 +5721,8 @@ impl crate::ArrowSchema for PredispatchRegionSolution5 {
                 arrow2::datatypes::DataType::Decimal(15, 5),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new(
                 "initialsupply",
                 arrow2::datatypes::DataType::Decimal(15, 5),
@@ -6511,16 +6450,8 @@ impl crate::ArrowSchema for PredispatchRegionSolution5 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            datetime_array.push(row.datetime.timestamp_millis());
             initialsupply_array.push({
                 row.initialsupply.map(|mut val| {
                     val.rescale(5);
@@ -7072,11 +7003,11 @@ impl crate::ArrowSchema for PredispatchRegionSolution5 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(initialsupply_array)
@@ -7402,7 +7333,7 @@ impl crate::ArrowSchema for PredispatchScenarioDemand1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("versionno", arrow2::datatypes::DataType::Int64, false),
@@ -7425,12 +7356,7 @@ impl crate::ArrowSchema for PredispatchScenarioDemand1 {
         let mut regionid_array = Vec::new();
         let mut deltamw_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push(row.versionno);
             scenario_array.push(row.scenario);
             regionid_array.push(row.regionid);
@@ -7442,7 +7368,7 @@ impl crate::ArrowSchema for PredispatchScenarioDemand1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(scenario_array)),
@@ -7552,7 +7478,7 @@ impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new("versionno", arrow2::datatypes::DataType::Int64, false),
@@ -7563,10 +7489,10 @@ impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "authoriseddate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -7579,22 +7505,11 @@ impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
-            effectivedate_array.push(
-                i32::try_from(
-                    (row.effectivedate.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            effectivedate_array.push(row.effectivedate.timestamp_millis());
             versionno_array.push(row.versionno);
             authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -7602,17 +7517,17 @@ impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -7790,7 +7705,7 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
             arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "genconeffectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new(
@@ -7803,8 +7718,8 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
                 arrow2::datatypes::DataType::Decimal(16, 6),
                 true,
             ),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "base_cost",
                 arrow2::datatypes::DataType::Decimal(18, 8),
@@ -7877,10 +7792,8 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
             genconid_array.push(row.genconid);
             regionid_array.push(row.regionid);
             bidtype_array.push(row.bidtype);
-            genconeffectivedate_array.push(row.genconeffectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            genconeffectivedate_array
+                .push(row.genconeffectivedate.map(|val| val.timestamp_millis()));
             genconversionno_array.push({
                 row.genconversionno.map(|mut val| {
                     val.rescale(0);
@@ -7893,16 +7806,8 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
                     val.mantissa()
                 })
             });
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            datetime_array.push(row.datetime.timestamp_millis());
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             base_cost_array.push({
                 row.base_cost.map(|mut val| {
                     val.rescale(8);
@@ -7961,7 +7866,7 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconeffectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconversionno_array)
@@ -7973,11 +7878,11 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(base_cost_array)
@@ -8114,7 +8019,7 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
                 arrow2::datatypes::DataType::Date32,
                 false,
             ),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, false),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("periodid", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
@@ -8127,7 +8032,7 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
                 arrow2::datatypes::DataType::Decimal(1, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8143,12 +8048,7 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
         let mut lastchanged_array = Vec::new();
         for (_, row) in partition {
             predispatchseqno_array.push(row.predispatchseqno.start().timestamp_millis());
-            datetime_array.push(
-                i32::try_from(
-                    (row.datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            datetime_array.push(row.datetime.timestamp_millis());
             duid_array.push(row.duid);
             periodid_array.push(row.periodid);
             local_price_adjustment_array.push({
@@ -8163,10 +8063,7 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8178,7 +8075,7 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
@@ -8192,7 +8089,7 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -8233,6 +8130,7 @@ pub struct PredispatchMnspbidtrk1 {
     #[serde(with = "crate::mms_datetime_opt")]
     pub settlementdate: Option<chrono::NaiveDateTime>,
     /// Time this bid was processed and loaded
+    #[serde(with = "crate::mms_datetime_opt")]
     pub offerdate: Option<chrono::NaiveDateTime>,
     /// Version No. for given offer date and settlement date used
     pub versionno: Option<rust_decimal::Decimal>,
@@ -8334,7 +8232,7 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
             ),
             arrow2::datatypes::Field::new(
                 "settlementdate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, true),
@@ -8343,8 +8241,8 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
                 arrow2::datatypes::DataType::Decimal(3, 0),
                 true,
             ),
-            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date32, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("datetime", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -8365,10 +8263,7 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
             linkid_array.push(row.linkid);
             periodid_array.push(row.periodid);
             participantid_array.push(row.participantid);
-            settlementdate_array.push(row.settlementdate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            settlementdate_array.push(row.settlementdate.map(|val| val.timestamp_millis()));
             offerdate_array.push(row.offerdate.map(|val| val.timestamp_millis()));
             versionno_array.push({
                 row.versionno.map(|mut val| {
@@ -8376,14 +8271,8 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
                     val.mantissa()
                 })
             });
-            datetime_array.push(row.datetime.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            datetime_array.push(row.datetime.map(|val| val.timestamp_millis()));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -8397,7 +8286,7 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(settlementdate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerdate_array)
@@ -8409,11 +8298,11 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

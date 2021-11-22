@@ -113,89 +113,6 @@ impl crate::AemoFile {
                 file_key.table_name.as_deref(),
                 file_key.version,
             ) {
-                ("ANCILLIARY_SERVICES", Some("CONTRACTAGC"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "ancillary_services")]
-                    {
-                        let d: Vec<data_model::AncilliaryServicesContractagc1> =
-                            self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertAncilliaryServicesContractagc1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "ancillary_services"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("ANCILLIARY_SERVICES", Some("CONTRACTLOADSHED"), version) if version <= 2_i32 => {
-                    #[cfg(feature = "ancillary_services")]
-                    {
-                        let d: Vec<data_model::AncilliaryServicesContractloadshed2> =
-                            self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertAncilliaryServicesContractloadshed2 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "ancillary_services"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("ANCILLIARY_SERVICES", Some("CONTRACTREACTIVEPOWER"), version)
-                    if version <= 4_i32 =>
-                {
-                    #[cfg(feature = "ancillary_services")]
-                    {
-                        let d: Vec<data_model::AncilliaryServicesContractreactivepower4> =
-                            self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertAncilliaryServicesContractreactivepower4 @P1, @P2").await?;
-                    }
-                    #[cfg(not(feature = "ancillary_services"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("ANCILLIARY_SERVICES", Some("CONTRACTRESTARTSERVICES"), version)
-                    if version <= 2_i32 =>
-                {
-                    #[cfg(feature = "ancillary_services")]
-                    {
-                        let d: Vec<data_model::AncilliaryServicesContractrestartservices2> =
-                            self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertAncilliaryServicesContractrestartservices2 @P1, @P2").await?;
-                    }
-                    #[cfg(not(feature = "ancillary_services"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("ANCILLIARY_SERVICES", Some("CONTRACTRESTARTUNITS"), version)
-                    if version <= 1_i32 =>
-                {
-                    #[cfg(feature = "ancillary_services")]
-                    {
-                        let d: Vec<data_model::AncilliaryServicesContractrestartunits1> =
-                            self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertAncilliaryServicesContractrestartunits1 @P1, @P2").await?;
-                    }
-                    #[cfg(not(feature = "ancillary_services"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
                 ("ASOFFER", Some("OFFERAGCDATA"), version) if version <= 1_i32 => {
                     #[cfg(feature = "asoffer")]
                     {
@@ -304,6 +221,24 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
+                ("BID", Some("BIDDAYOFFER_D"), version) if version <= 2_i32 => {
+                    #[cfg(feature = "bids")]
+                    {
+                        let d: Vec<data_model::BidBiddayofferD2> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertBidBiddayofferD2 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "bids"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
                 ("BIDS", Some("BIDOFFERFILETRK"), version) if version <= 1_i32 => {
                     #[cfg(feature = "bids")]
                     {
@@ -331,6 +266,24 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidsBidofferperiod1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "bids"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("BID", Some("BIDPEROFFER_D"), version) if version <= 2_i32 => {
+                    #[cfg(feature = "bids")]
+                    {
+                        let d: Vec<data_model::BidBidperofferD2> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertBidBidperofferD2 @P1, @P2",
                         )
                         .await?;
                     }
@@ -742,24 +695,6 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("BILLING", Some("IRFM"), version) if version <= 5_i32 => {
-                    #[cfg(feature = "billing_run")]
-                    {
-                        let d: Vec<data_model::BillingIrfm5> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertBillingIrfm5 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "billing_run"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
                 ("BILLING", Some("IRNSPSURPLUS"), version) if version <= 5_i32 => {
                     #[cfg(feature = "billing_run")]
                     {
@@ -904,15 +839,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("BILLING", Some("REGIONFIGURES"), version) if version <= 5_i32 => {
+                ("BILLING", Some("REGIONFIGURES"), version) if version <= 6_i32 => {
                     #[cfg(feature = "billing_run")]
                     {
-                        let d: Vec<data_model::BillingRegionfigures5> = self.get_table()?;
+                        let d: Vec<data_model::BillingRegionfigures6> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertBillingRegionfigures5 @P1, @P2",
+                            "exec mmsdm_proc.InsertBillingRegionfigures6 @P1, @P2",
                         )
                         .await?;
                     }
@@ -1041,24 +976,6 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingDailyEnergySummary1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "billing_run"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("BILLING", Some("DIRECTION_RECONCILIATN"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "billing_run")]
-                    {
-                        let d: Vec<data_model::BillingDirectionReconciliatn1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertBillingDirectionReconciliatn1 @P1, @P2",
                         )
                         .await?;
                     }
@@ -1285,6 +1202,78 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
+                ("BILLING", Some("SUBST_DEMAND"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "billing_run")]
+                    {
+                        let d: Vec<data_model::BillingSubstDemand1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertBillingSubstDemand1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "billing_run"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("BILLING", Some("SUBST_RUN_VERSION"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "billing_run")]
+                    {
+                        let d: Vec<data_model::BillingSubstRunVersion1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertBillingSubstRunVersion1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "billing_run"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("BILLING", Some("WDR"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "billing_run")]
+                    {
+                        let d: Vec<data_model::BillingWdr1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertBillingWdr1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "billing_run"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("BILLING", Some("WDR_DETAIL"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "billing_run")]
+                    {
+                        let d: Vec<data_model::BillingWdrDetail1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertBillingWdrDetail1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "billing_run"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
                 ("BILLING", Some("RESERVETRADERPAYMENT"), version) if version <= 1_i32 => {
                     #[cfg(feature = "billing_run")]
                     {
@@ -1321,33 +1310,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("BILLING", Some("WHITEHOLE"), version) if version <= 5_i32 => {
-                    #[cfg(feature = "billing_run")]
-                    {
-                        let d: Vec<data_model::BillingWhitehole5> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertBillingWhitehole5 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "billing_run"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("OPERATIONAL_DEMAND", Some("ACTUAL"), version) if version <= 2_i32 => {
+                ("OPERATIONAL_DEMAND", Some("ACTUAL"), version) if version <= 3_i32 => {
                     #[cfg(feature = "demand_forecasts")]
                     {
-                        let d: Vec<data_model::OperationalDemandActual2> = self.get_table()?;
+                        let d: Vec<data_model::OperationalDemandActual3> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertOperationalDemandActual2 @P1, @P2",
+                            "exec mmsdm_proc.InsertOperationalDemandActual3 @P1, @P2",
                         )
                         .await?;
                     }
@@ -1375,16 +1346,16 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("DEMAND", Some("INTERMITTENT_CLUSTER_AVAIL"), version) if version <= 1_i32 => {
+                ("DEMAND", Some("INTERMITTENT_CLUSTER_AVAIL"), version) if version <= 2_i32 => {
                     #[cfg(feature = "demand_forecasts")]
                     {
-                        let d: Vec<data_model::DemandIntermittentClusterAvail1> =
+                        let d: Vec<data_model::DemandIntermittentClusterAvail2> =
                             self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertDemandIntermittentClusterAvail1 @P1, @P2",
+                            "exec mmsdm_proc.InsertDemandIntermittentClusterAvail2 @P1, @P2",
                         )
                         .await?;
                     }
@@ -1522,16 +1493,16 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("DEMAND", Some("MTPASA_INTERMITTENT_AVAIL"), version) if version <= 1_i32 => {
+                ("DEMAND", Some("MTPASA_INTERMITTENT_AVAIL"), version) if version <= 2_i32 => {
                     #[cfg(feature = "demand_forecasts")]
                     {
-                        let d: Vec<data_model::DemandMtpasaIntermittentAvail1> =
+                        let d: Vec<data_model::DemandMtpasaIntermittentAvail2> =
                             self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertDemandMtpasaIntermittentAvail1 @P1, @P2",
+                            "exec mmsdm_proc.InsertDemandMtpasaIntermittentAvail2 @P1, @P2",
                         )
                         .await?;
                     }
@@ -1723,15 +1694,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("DISPATCH", Some("UNIT_SOLUTION"), version) if version <= 2_i32 => {
+                ("DISPATCH", Some("UNIT_SOLUTION"), version) if version <= 3_i32 => {
                     #[cfg(feature = "dispatch")]
                     {
-                        let d: Vec<data_model::DispatchUnitSolution2> = self.get_table()?;
+                        let d: Vec<data_model::DispatchUnitSolution3> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertDispatchUnitSolution2 @P1, @P2",
+                            "exec mmsdm_proc.InsertDispatchUnitSolution3 @P1, @P2",
                         )
                         .await?;
                     }
@@ -1777,15 +1748,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("DISPATCH", Some("REGIONSUM"), version) if version <= 5_i32 => {
+                ("DISPATCH", Some("REGIONSUM"), version) if version <= 6_i32 => {
                     #[cfg(feature = "dispatch")]
                     {
-                        let d: Vec<data_model::DispatchRegionsum5> = self.get_table()?;
+                        let d: Vec<data_model::DispatchRegionsum6> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertDispatchRegionsum5 @P1, @P2",
+                            "exec mmsdm_proc.InsertDispatchRegionsum6 @P1, @P2",
                         )
                         .await?;
                     }
@@ -3440,213 +3411,33 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("MTPASA", Some("CASERESULT"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
+                ("METERDATA", Some("WDR_READS"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "meter_data")]
                     {
-                        let d: Vec<data_model::MtpasaCaseresult1> = self.get_table()?;
+                        let d: Vec<data_model::MeterdataWdrReads1> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertMtpasaCaseresult1 @P1, @P2",
+                            "exec mmsdm_proc.InsertMeterdataWdrReads1 @P1, @P2",
                         )
                         .await?;
                     }
-                    #[cfg(not(feature = "mtpasa"))]
+                    #[cfg(not(feature = "meter_data"))]
                     {
                         log::warn!("Unhandled file key {:?}", file_key);
                         continue;
                     }
                 }
-                ("MTPASA", Some("CONSTRAINTRESULT"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaConstraintresult1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaConstraintresult1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("CONSTRAINTSUMMARY"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaConstraintsummary1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaConstraintsummary1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("DUIDAVAILABILITY"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaDuidavailability1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaDuidavailability1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("INTERCONNECTORRESULT"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaInterconnectorresult1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaInterconnectorresult1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("LOLPRESULT"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaLolpresult1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaLolpresult1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("REGIONAVAILABILITY"), version) if version <= 3_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaRegionavailability3> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaRegionavailability3 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("REGIONAVAILTRK"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaRegionavailtrk1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaRegionavailtrk1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("REGIONITERATION"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaRegioniteration1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaRegioniteration1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("REGIONRESULT"), version) if version <= 2_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaRegionresult2> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaRegionresult2 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("MTPASA", Some("REGIONSUMMARY"), version) if version <= 1_i32 => {
-                    #[cfg(feature = "mtpasa")]
-                    {
-                        let d: Vec<data_model::MtpasaRegionsummary1> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertMtpasaRegionsummary1 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "mtpasa"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("NETWORK", Some("EQUIPMENTDETAIL"), version) if version <= 1_i32 => {
+                ("NETWORK", Some("EQUIPMENTDETAIL"), version) if version <= 2_i32 => {
                     #[cfg(feature = "network")]
                     {
-                        let d: Vec<data_model::NetworkEquipmentdetail1> = self.get_table()?;
+                        let d: Vec<data_model::NetworkEquipmentdetail2> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertNetworkEquipmentdetail1 @P1, @P2",
+                            "exec mmsdm_proc.InsertNetworkEquipmentdetail2 @P1, @P2",
                         )
                         .await?;
                     }
@@ -3674,15 +3465,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("NETWORK", Some("OUTAGEDETAIL"), version) if version <= 3_i32 => {
+                ("NETWORK", Some("OUTAGEDETAIL"), version) if version <= 4_i32 => {
                     #[cfg(feature = "network")]
                     {
-                        let d: Vec<data_model::NetworkOutagedetail3> = self.get_table()?;
+                        let d: Vec<data_model::NetworkOutagedetail4> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertNetworkOutagedetail3 @P1, @P2",
+                            "exec mmsdm_proc.InsertNetworkOutagedetail4 @P1, @P2",
                         )
                         .await?;
                     }
@@ -3764,15 +3555,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("NETWORK", Some("SUBSTATIONDETAIL"), version) if version <= 1_i32 => {
+                ("NETWORK", Some("SUBSTATIONDETAIL"), version) if version <= 2_i32 => {
                     #[cfg(feature = "network")]
                     {
-                        let d: Vec<data_model::NetworkSubstationdetail1> = self.get_table()?;
+                        let d: Vec<data_model::NetworkSubstationdetail2> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertNetworkSubstationdetail1 @P1, @P2",
+                            "exec mmsdm_proc.InsertNetworkSubstationdetail2 @P1, @P2",
                         )
                         .await?;
                     }
@@ -3908,15 +3699,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("P5MIN", Some("REGIONSOLUTION"), version) if version <= 6_i32 => {
+                ("P5MIN", Some("REGIONSOLUTION"), version) if version <= 7_i32 => {
                     #[cfg(feature = "p5min")]
                     {
-                        let d: Vec<data_model::P5minRegionsolution6> = self.get_table()?;
+                        let d: Vec<data_model::P5minRegionsolution7> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertP5minRegionsolution6 @P1, @P2",
+                            "exec mmsdm_proc.InsertP5minRegionsolution7 @P1, @P2",
                         )
                         .await?;
                     }
@@ -3962,15 +3753,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("P5MIN", Some("UNITSOLUTION"), version) if version <= 3_i32 => {
+                ("P5MIN", Some("UNITSOLUTION"), version) if version <= 4_i32 => {
                     #[cfg(feature = "p5min")]
                     {
-                        let d: Vec<data_model::P5minUnitsolution3> = self.get_table()?;
+                        let d: Vec<data_model::P5minUnitsolution4> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertP5minUnitsolution3 @P1, @P2",
+                            "exec mmsdm_proc.InsertP5minUnitsolution4 @P1, @P2",
                         )
                         .await?;
                     }
@@ -4050,16 +3841,16 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("PARTICIPANT_REGISTRATION", Some("DUDETAIL"), version) if version <= 3_i32 => {
+                ("PARTICIPANT_REGISTRATION", Some("DUDETAIL"), version) if version <= 4_i32 => {
                     #[cfg(feature = "participant_registration")]
                     {
-                        let d: Vec<data_model::ParticipantRegistrationDudetail3> =
+                        let d: Vec<data_model::ParticipantRegistrationDudetail4> =
                             self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertParticipantRegistrationDudetail3 @P1, @P2",
+                            "exec mmsdm_proc.InsertParticipantRegistrationDudetail4 @P1, @P2",
                         )
                         .await?;
                     }
@@ -4070,13 +3861,13 @@ impl crate::AemoFile {
                     }
                 }
                 ("PARTICIPANT_REGISTRATION", Some("DUDETAILSUMMARY"), version)
-                    if version <= 4_i32 =>
+                    if version <= 5_i32 =>
                 {
                     #[cfg(feature = "participant_registration")]
                     {
-                        let d: Vec<data_model::ParticipantRegistrationDudetailsummary4> =
+                        let d: Vec<data_model::ParticipantRegistrationDudetailsummary5> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationDudetailsummary4 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationDudetailsummary5 @P1, @P2").await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4267,6 +4058,59 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
+                ("PARTICIPANT_REGISTRATION", Some("PMS_GROUP"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "participant_registration")]
+                    {
+                        let d: Vec<data_model::ParticipantRegistrationPmsGroup1> =
+                            self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertParticipantRegistrationPmsGroup1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "participant_registration"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("PARTICIPANT_REGISTRATION", Some("PMS_GROUPNMI"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "participant_registration")]
+                    {
+                        let d: Vec<data_model::ParticipantRegistrationPmsGroupnmi1> =
+                            self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertParticipantRegistrationPmsGroupnmi1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "participant_registration"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("PARTICIPANT_REGISTRATION", Some("PMS_GROUPSERVICE"), version)
+                    if version <= 1_i32 =>
+                {
+                    #[cfg(feature = "participant_registration")]
+                    {
+                        let d: Vec<data_model::ParticipantRegistrationPmsGroupservice1> =
+                            self.get_table()?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationPmsGroupservice1 @P1, @P2").await?;
+                    }
+                    #[cfg(not(feature = "participant_registration"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
                 ("PARTICIPANT_REGISTRATION", Some("STADUALLOC"), version) if version <= 1_i32 => {
                     #[cfg(feature = "participant_registration")]
                     {
@@ -4408,15 +4252,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("PDPASA", Some("REGIONSOLUTION"), version) if version <= 6_i32 => {
+                ("PDPASA", Some("REGIONSOLUTION"), version) if version <= 7_i32 => {
                     #[cfg(feature = "pdpasa")]
                     {
-                        let d: Vec<data_model::PdpasaRegionsolution6> = self.get_table()?;
+                        let d: Vec<data_model::PdpasaRegionsolution7> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertPdpasaRegionsolution6 @P1, @P2",
+                            "exec mmsdm_proc.InsertPdpasaRegionsolution7 @P1, @P2",
                         )
                         .await?;
                     }
@@ -4592,15 +4436,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("PREDISPATCH", Some("REGION_SOLUTION"), version) if version <= 5_i32 => {
+                ("PREDISPATCH", Some("REGION_SOLUTION"), version) if version <= 6_i32 => {
                     #[cfg(feature = "pre_dispatch")]
                     {
-                        let d: Vec<data_model::PredispatchRegionSolution5> = self.get_table()?;
+                        let d: Vec<data_model::PredispatchRegionSolution6> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertPredispatchRegionSolution5 @P1, @P2",
+                            "exec mmsdm_proc.InsertPredispatchRegionSolution6 @P1, @P2",
                         )
                         .await?;
                     }
@@ -5048,6 +4892,44 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
+                ("SETTLEMENTS_CONFIG", Some("WDRRR_CALENDAR"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_config")]
+                    {
+                        let d: Vec<data_model::SettlementsConfigWdrrrCalendar1> =
+                            self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_config"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("SETTLEMENTS_CONFIG", Some("WDR_REIMBURSE_RATE"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_config")]
+                    {
+                        let d: Vec<data_model::SettlementsConfigWdrReimburseRate1> =
+                            self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsConfigWdrReimburseRate1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_config"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
                 ("SETTLEMENTS", Some("DAYTRACK"), version) if version <= 6_i32 => {
                     #[cfg(feature = "settlement_data")]
                     {
@@ -5302,24 +5184,6 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("SETTLEMENTS", Some("LSHEDRECOVERY"), version) if version <= 5_i32 => {
-                    #[cfg(feature = "settlement_data")]
-                    {
-                        let d: Vec<data_model::SettlementsLshedrecovery5> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertSettlementsLshedrecovery5 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "settlement_data"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
                 ("SETTLEMENTS", Some("MARKETFEES"), version) if version <= 6_i32 => {
                     #[cfg(feature = "settlement_data")]
                     {
@@ -5401,24 +5265,6 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRpowerpayment6 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "settlement_data"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("SETTLEMENTS", Some("RPOWERRECOVERY"), version) if version <= 5_i32 => {
-                    #[cfg(feature = "settlement_data")]
-                    {
-                        let d: Vec<data_model::SettlementsRpowerrecovery5> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertSettlementsRpowerrecovery5 @P1, @P2",
                         )
                         .await?;
                     }
@@ -5536,16 +5382,16 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("SETTLEMENTS", Some("SET_FCAS_REGULATION_TRK"), version) if version <= 1_i32 => {
+                ("SETTLEMENTS", Some("SET_FCAS_REGULATION_TRK"), version) if version <= 2_i32 => {
                     #[cfg(feature = "settlement_data")]
                     {
-                        let d: Vec<data_model::SettlementsSetFcasRegulationTrk1> =
+                        let d: Vec<data_model::SettlementsSetFcasRegulationTrk2> =
                             self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertSettlementsSetFcasRegulationTrk1 @P1, @P2",
+                            "exec mmsdm_proc.InsertSettlementsSetFcasRegulationTrk2 @P1, @P2",
                         )
                         .await?;
                     }
@@ -5591,6 +5437,24 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
+                ("SETTLEMENTS", Some("RECOVERY_ENERGY"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_data")]
+                    {
+                        let d: Vec<data_model::SettlementsRecoveryEnergy1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsRecoveryEnergy1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_data"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
                 ("SETTLEMENTS", Some("RUN_PARAMETER"), version) if version <= 5_i32 => {
                     #[cfg(feature = "settlement_data")]
                     {
@@ -5600,6 +5464,78 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRunParameter5 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_data"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("SETTLEMENTS", Some("SUBST_DEMAND"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_data")]
+                    {
+                        let d: Vec<data_model::SettlementsSubstDemand1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsSubstDemand1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_data"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("SETTLEMENTS", Some("SUBST_RUN_VERSION"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_data")]
+                    {
+                        let d: Vec<data_model::SettlementsSubstRunVersion1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsSubstRunVersion1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_data"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("SETTLEMENTS", Some("WDR_RECON_DETAIL"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_data")]
+                    {
+                        let d: Vec<data_model::SettlementsWdrReconDetail1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsWdrReconDetail1 @P1, @P2",
+                        )
+                        .await?;
+                    }
+                    #[cfg(not(feature = "settlement_data"))]
+                    {
+                        log::warn!("Unhandled file key {:?}", file_key);
+                        continue;
+                    }
+                }
+                ("SETTLEMENTS", Some("WDR_TRANSACT"), version) if version <= 1_i32 => {
+                    #[cfg(feature = "settlement_data")]
+                    {
+                        let d: Vec<data_model::SettlementsWdrTransact1> = self.get_table()?;
+                        self.batched_insert(
+                            client,
+                            file_key,
+                            &d,
+                            "exec mmsdm_proc.InsertSettlementsWdrTransact1 @P1, @P2",
                         )
                         .await?;
                     }
@@ -5663,15 +5599,15 @@ impl crate::AemoFile {
                         continue;
                     }
                 }
-                ("STPASA", Some("REGIONSOLUTION"), version) if version <= 6_i32 => {
+                ("STPASA", Some("REGIONSOLUTION"), version) if version <= 7_i32 => {
                     #[cfg(feature = "stpasa_solution")]
                     {
-                        let d: Vec<data_model::StpasaRegionsolution6> = self.get_table()?;
+                        let d: Vec<data_model::StpasaRegionsolution7> = self.get_table()?;
                         self.batched_insert(
                             client,
                             file_key,
                             &d,
-                            "exec mmsdm_proc.InsertStpasaRegionsolution6 @P1, @P2",
+                            "exec mmsdm_proc.InsertStpasaRegionsolution7 @P1, @P2",
                         )
                         .await?;
                     }
@@ -5730,43 +5666,6 @@ impl crate::AemoFile {
                         .await?;
                     }
                     #[cfg(not(feature = "trading_data"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("VOLTAGE_INSTRUCTION", Some("INSTRUCTION"), version) if version <= 2_i32 => {
-                    #[cfg(feature = "voltage_instructions")]
-                    {
-                        let d: Vec<data_model::VoltageInstructionInstruction2> =
-                            self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertVoltageInstructionInstruction2 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "voltage_instructions"))]
-                    {
-                        log::warn!("Unhandled file key {:?}", file_key);
-                        continue;
-                    }
-                }
-                ("VOLTAGE_INSTRUCTION", Some("TRACK"), version) if version <= 2_i32 => {
-                    #[cfg(feature = "voltage_instructions")]
-                    {
-                        let d: Vec<data_model::VoltageInstructionTrack2> = self.get_table()?;
-                        self.batched_insert(
-                            client,
-                            file_key,
-                            &d,
-                            "exec mmsdm_proc.InsertVoltageInstructionTrack2 @P1, @P2",
-                        )
-                        .await?;
-                    }
-                    #[cfg(not(feature = "voltage_instructions"))]
                     {
                         log::warn!("Unhandled file key {:?}", file_key);
                         continue;

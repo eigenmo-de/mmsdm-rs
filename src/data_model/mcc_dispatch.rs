@@ -83,7 +83,7 @@ impl crate::ArrowSchema for MccCasesolution1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![arrow2::datatypes::Field::new(
             "run_datetime",
-            arrow2::datatypes::DataType::Date32,
+            arrow2::datatypes::DataType::Date64,
             false,
         )])
     }
@@ -93,19 +93,14 @@ impl crate::ArrowSchema for MccCasesolution1 {
     ) -> crate::Result<arrow2::record_batch::RecordBatch> {
         let mut run_datetime_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
         }
 
         arrow2::record_batch::RecordBatch::try_new(
             std::sync::Arc::new(Self::arrow_schema()),
             vec![std::sync::Arc::new(
                 arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                    .to(arrow2::datatypes::DataType::Date32),
+                    .to(arrow2::datatypes::DataType::Date64),
             )],
         )
         .map_err(Into::into)
@@ -206,7 +201,7 @@ impl crate::ArrowSchema for MccConstraintsolution1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -231,12 +226,7 @@ impl crate::ArrowSchema for MccConstraintsolution1 {
         let mut rhs_array = Vec::new();
         let mut marginalvalue_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             constraintid_array.push(row.constraintid);
             rhs_array.push({
                 row.rhs.map(|mut val| {
@@ -257,7 +247,7 @@ impl crate::ArrowSchema for MccConstraintsolution1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,

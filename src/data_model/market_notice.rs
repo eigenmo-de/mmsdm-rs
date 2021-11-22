@@ -103,7 +103,7 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticedata1 {
             ),
             arrow2::datatypes::Field::new(
                 "effectivedate",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 true,
             ),
             arrow2::datatypes::Field::new("typeid", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -112,7 +112,7 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 arrow2::datatypes::DataType::LargeUtf8,
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("reason", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
                 "externalreference",
@@ -138,16 +138,10 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            effectivedate_array.push(row.effectivedate.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            effectivedate_array.push(row.effectivedate.map(|val| val.timestamp_millis()));
             typeid_array.push(row.typeid);
             noticetype_array.push(row.noticetype);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             reason_array.push(row.reason);
             externalreference_array.push(row.externalreference);
         }
@@ -161,13 +155,13 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivedate_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(typeid_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(noticetype_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(reason_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -276,7 +270,7 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticetype1 {
                 true,
             ),
             arrow2::datatypes::Field::new("raisedby", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -291,10 +285,7 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticetype1 {
             typeid_array.push(row.typeid);
             description_array.push(row.description);
             raisedby_array.push(row.raisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -305,7 +296,7 @@ impl crate::ArrowSchema for MarketNoticeMarketnoticetype1 {
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(raisedby_array)),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )
@@ -414,7 +405,7 @@ impl crate::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
                 arrow2::datatypes::DataType::Decimal(10, 0),
                 false,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
         ])
     }
 
@@ -431,10 +422,7 @@ impl crate::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
                 val.rescale(0);
                 val.mantissa()
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
         arrow2::record_batch::RecordBatch::try_new(
@@ -449,7 +437,7 @@ impl crate::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
             ],
         )

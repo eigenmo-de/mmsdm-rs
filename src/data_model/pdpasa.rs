@@ -122,7 +122,7 @@ impl crate::ArrowSchema for PdpasaCasesolution3 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -165,7 +165,7 @@ impl crate::ArrowSchema for PdpasaCasesolution3 {
                 arrow2::datatypes::DataType::Decimal(12, 3),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "reliabilitylrcdemandoption",
                 arrow2::datatypes::DataType::Decimal(12, 3),
@@ -237,12 +237,7 @@ impl crate::ArrowSchema for PdpasaCasesolution3 {
         let mut reliability_lrcuigf_option_array = Vec::new();
         let mut outage_lrcuigf_option_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
             pasaversion_array.push(row.pasaversion);
             reservecondition_array.push({
                 row.reservecondition.map(|mut val| {
@@ -286,10 +281,7 @@ impl crate::ArrowSchema for PdpasaCasesolution3 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             reliabilitylrcdemandoption_array.push({
                 row.reliabilitylrcdemandoption.map(|mut val| {
                     val.rescale(3);
@@ -336,7 +328,7 @@ impl crate::ArrowSchema for PdpasaCasesolution3 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(pasaversion_array)),
                 std::sync::Arc::new(
@@ -369,7 +361,7 @@ impl crate::ArrowSchema for PdpasaCasesolution3 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(reliabilitylrcdemandoption_array)
@@ -541,12 +533,12 @@ impl crate::ArrowSchema for PdpasaConstraintsolution1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -569,7 +561,7 @@ impl crate::ArrowSchema for PdpasaConstraintsolution1 {
                 arrow2::datatypes::DataType::Decimal(12, 2),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("runtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "studyregionid",
@@ -592,19 +584,8 @@ impl crate::ArrowSchema for PdpasaConstraintsolution1 {
         let mut runtype_array = Vec::new();
         let mut studyregionid_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             constraintid_array.push(row.constraintid);
             capacityrhs_array.push({
                 row.capacityrhs.map(|mut val| {
@@ -624,10 +605,7 @@ impl crate::ArrowSchema for PdpasaConstraintsolution1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             runtype_array.push(row.runtype);
             studyregionid_array.push(row.studyregionid);
         }
@@ -637,11 +615,11 @@ impl crate::ArrowSchema for PdpasaConstraintsolution1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,
@@ -660,7 +638,7 @@ impl crate::ArrowSchema for PdpasaConstraintsolution1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(runtype_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
@@ -811,12 +789,12 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -849,7 +827,7 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
                 arrow2::datatypes::DataType::Decimal(12, 2),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new("runtype", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "exportlimitconstraintid",
@@ -886,19 +864,8 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
         let mut importlimitconstraintid_array = Vec::new();
         let mut studyregionid_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             interconnectorid_array.push(row.interconnectorid);
             capacitymwflow_array.push({
                 row.capacitymwflow.map(|mut val| {
@@ -930,10 +897,7 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             runtype_array.push(row.runtype);
             exportlimitconstraintid_array.push(row.exportlimitconstraintid);
             importlimitconstraintid_array.push(row.importlimitconstraintid);
@@ -945,11 +909,11 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
@@ -976,7 +940,7 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(runtype_array)),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
@@ -1000,7 +964,7 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Regionsolution
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  PDPASA_REGIONSOLUTION is public so is available to all participants. Source PDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 32000 Notes LRC Determination SURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement. &nbsp; The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions. &nbsp; LOR Determination MAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions. &nbsp; Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
@@ -1015,7 +979,7 @@ impl crate::ArrowSchema for PdpasaInterconnectorsoln1 {
 /// * RUN_DATETIME
 /// * RUNTYPE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PdpasaRegionsolution6 {
+pub struct PdpasaRegionsolution7 {
     /// Case identifier by the time the case was run
     #[serde(with = "crate::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
@@ -1110,20 +1074,20 @@ pub struct PdpasaRegionsolution6 {
     /// Regional aggregated Wholesale Demand Response (WDR) capacity in MW.
     pub wdr_capacity: Option<rust_decimal::Decimal>,
 }
-impl crate::GetTable for PdpasaRegionsolution6 {
-    type PrimaryKey = PdpasaRegionsolution6PrimaryKey;
+impl crate::GetTable for PdpasaRegionsolution7 {
+    type PrimaryKey = PdpasaRegionsolution7PrimaryKey;
     type Partition = ();
 
     fn get_file_key() -> crate::FileKey {
         crate::FileKey {
             data_set_name: "PDPASA".into(),
             table_name: Some("REGIONSOLUTION".into()),
-            version: 6,
+            version: 7,
         }
     }
 
-    fn primary_key(&self) -> PdpasaRegionsolution6PrimaryKey {
-        PdpasaRegionsolution6PrimaryKey {
+    fn primary_key(&self) -> PdpasaRegionsolution7PrimaryKey {
+        PdpasaRegionsolution7PrimaryKey {
             interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
             run_datetime: self.run_datetime,
@@ -1134,11 +1098,11 @@ impl crate::GetTable for PdpasaRegionsolution6 {
     fn partition_suffix(&self) -> Self::Partition {}
 
     fn partition_name(&self) -> String {
-        "pdpasa_regionsolution_v6".to_string()
+        "pdpasa_regionsolution_v7".to_string()
     }
 }
-impl crate::CompareWithRow for PdpasaRegionsolution6 {
-    type Row = PdpasaRegionsolution6;
+impl crate::CompareWithRow for PdpasaRegionsolution7 {
+    type Row = PdpasaRegionsolution7;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime
@@ -1147,8 +1111,8 @@ impl crate::CompareWithRow for PdpasaRegionsolution6 {
             && self.runtype == row.runtype
     }
 }
-impl crate::CompareWithPrimaryKey for PdpasaRegionsolution6 {
-    type PrimaryKey = PdpasaRegionsolution6PrimaryKey;
+impl crate::CompareWithPrimaryKey for PdpasaRegionsolution7 {
+    type PrimaryKey = PdpasaRegionsolution7PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime
@@ -1158,14 +1122,14 @@ impl crate::CompareWithPrimaryKey for PdpasaRegionsolution6 {
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PdpasaRegionsolution6PrimaryKey {
+pub struct PdpasaRegionsolution7PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub run_datetime: chrono::NaiveDateTime,
     pub runtype: String,
 }
-impl crate::CompareWithRow for PdpasaRegionsolution6PrimaryKey {
-    type Row = PdpasaRegionsolution6;
+impl crate::CompareWithRow for PdpasaRegionsolution7PrimaryKey {
+    type Row = PdpasaRegionsolution7;
 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime
@@ -1174,8 +1138,8 @@ impl crate::CompareWithRow for PdpasaRegionsolution6PrimaryKey {
             && self.runtype == row.runtype
     }
 }
-impl crate::CompareWithPrimaryKey for PdpasaRegionsolution6PrimaryKey {
-    type PrimaryKey = PdpasaRegionsolution6PrimaryKey;
+impl crate::CompareWithPrimaryKey for PdpasaRegionsolution7PrimaryKey {
+    type PrimaryKey = PdpasaRegionsolution7PrimaryKey;
 
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime
@@ -1184,19 +1148,19 @@ impl crate::CompareWithPrimaryKey for PdpasaRegionsolution6PrimaryKey {
             && self.runtype == key.runtype
     }
 }
-impl crate::PrimaryKey for PdpasaRegionsolution6PrimaryKey {}
+impl crate::PrimaryKey for PdpasaRegionsolution7PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
-impl crate::ArrowSchema for PdpasaRegionsolution6 {
+impl crate::ArrowSchema for PdpasaRegionsolution7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::new(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
                 "interval_datetime",
-                arrow2::datatypes::DataType::Date32,
+                arrow2::datatypes::DataType::Date64,
                 false,
             ),
             arrow2::datatypes::Field::new(
@@ -1289,7 +1253,7 @@ impl crate::ArrowSchema for PdpasaRegionsolution6 {
                 arrow2::datatypes::DataType::Decimal(12, 2),
                 true,
             ),
-            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date32, true),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
             arrow2::datatypes::Field::new(
                 "aggregatepasaavailability",
                 arrow2::datatypes::DataType::Decimal(12, 0),
@@ -1450,19 +1414,8 @@ impl crate::ArrowSchema for PdpasaRegionsolution6 {
         let mut wdr_pasaavailable_array = Vec::new();
         let mut wdr_capacity_array = Vec::new();
         for (_, row) in partition {
-            run_datetime_array.push(
-                i32::try_from(
-                    (row.run_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days(),
-                )
-                .unwrap(),
-            );
-            interval_datetime_array.push(
-                i32::try_from(
-                    (row.interval_datetime.date() - chrono::NaiveDate::from_ymd(1970, 1, 1))
-                        .num_days(),
-                )
-                .unwrap(),
-            );
+            run_datetime_array.push(row.run_datetime.timestamp_millis());
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
             regionid_array.push(row.regionid);
             demand10_array.push({
                 row.demand10.map(|mut val| {
@@ -1566,10 +1519,7 @@ impl crate::ArrowSchema for PdpasaRegionsolution6 {
                     val.mantissa()
                 })
             });
-            lastchanged_array.push(row.lastchanged.map(|val| {
-                i32::try_from((val.date() - chrono::NaiveDate::from_ymd(1970, 1, 1)).num_days())
-                    .unwrap()
-            }));
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
             aggregatepasaavailability_array.push({
                 row.aggregatepasaavailability.map(|mut val| {
                     val.rescale(0);
@@ -1716,11 +1666,11 @@ impl crate::ArrowSchema for PdpasaRegionsolution6 {
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
                 std::sync::Arc::new(
@@ -1793,7 +1743,7 @@ impl crate::ArrowSchema for PdpasaRegionsolution6 {
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
-                        .to(arrow2::datatypes::DataType::Date32),
+                        .to(arrow2::datatypes::DataType::Date64),
                 ),
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(aggregatepasaavailability_array)
