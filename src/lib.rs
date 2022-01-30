@@ -1,7 +1,7 @@
 //#![deny(clippy::all)]
 //#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, io, iter, num, str};
+use std::{collections, fmt, io, iter, num, result, str, fs};
 
 use chrono::TimeZone;
 
@@ -107,6 +107,10 @@ pub enum Error {
     #[cfg(feature = "save_as_parquet")]
     #[error(transparent)]
     Arrow(#[from] arrow2::error::ArrowError),
+
+
+    #[error(transparent)]
+    Zip(#[from] zip::result::ZipError),
 }
 
 type Result<T> = std::result::Result<T, Error>;
@@ -159,6 +163,8 @@ struct AemoFooter {
     end_of_report: String,
     line_count_inclusive: usize,
 }
+
+
 
 #[derive(Debug, Clone)]
 pub struct AemoFile {
@@ -422,54 +428,6 @@ where
 //     Ok(())
 // }
 
-impl AemoFile {
-    pub fn get_table<T>(&self) -> Result<Vec<T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable,
-    {
-        let latest_version = T::get_file_key();
-        for version in (1..=latest_version.version).rev() {
-            let current_key = latest_version.with_version(version);
-            match self.get_specific_table(&current_key) {
-                Ok(parsed) => {
-                    log::info!("Table found and parsed for file key {}", current_key);
-                    return Ok(parsed);
-                }
-                Err(e) => {
-                    log::warn!(
-                        "For file key {}, version {} was not available: {}",
-                        latest_version,
-                        version,
-                        e,
-                    );
-                }
-            }
-        }
-        Err(Error::MissingFile(latest_version))
-    }
-    pub fn get_specific_table<T>(&self, file_key: &FileKey) -> Result<Vec<T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable,
-    {
-        let subtable = self
-            .data
-            .get(&file_key)
-            .ok_or(Error::MissingFile(file_key.clone()))?;
-
-        subtable
-            .data
-            .iter()
-            .map(|rec| {
-                rec.deserialize(Some(&subtable.headings))
-                    .map_err(|cause| Error::CsvRowDe {
-                        cause,
-                        headings: Some(subtable.headings.clone()),
-                        data: rec.clone(),
-                    })
-            })
-            .collect()
-    }
-}
 
 // Represents a given dispatch period (5 min period)
 // Parsed from YYYYMMDDPPP
@@ -527,20 +485,10 @@ impl std::str::FromStr for DispatchPeriod {
     }
 }
 
-#[allow(dead_code)] // Depending on features this may not be used
-mod dispatch_period {
-    use serde::{de::Error, Deserialize, Deserializer, Serializer};
-
-    pub fn serialize<S>(d: &crate::DispatchPeriod, serializer: S) -> Result<S::Ok, S::Error>
+impl<'de> serde::Deserialize<'de> for DispatchPeriod {
+    fn deserialize<D>(d: D) -> result::Result<crate::DispatchPeriod, D::Error>
     where
-        S: Serializer,
-    {
-        serializer.serialize_str(&d.to_string())
-    }
-
-    pub fn deserialize<'de, D>(d: D) -> Result<crate::DispatchPeriod, D::Error>
-    where
-        D: Deserializer<'de>,
+        D: serde::Deserializer<'de>,
     {
         let s = String::deserialize(d)?;
         //dbg!(&s);
@@ -548,13 +496,24 @@ mod dispatch_period {
             Err(e) => {
                 dbg!(&s[0..7]);
                 dbg!(&e);
-                Err(Error::custom(e))
+                Err(serde::de::Error::custom(e))
             }
             Ok(o) => Ok(o),
         }
         //s.parse().map_err(Error::custom)
     }
 }
+
+impl serde::Serialize for DispatchPeriod {
+    fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+// #[allow(dead_code)] // Depending on features this may not be used
 
 // Represents a given trading period (30 min period)
 // Parsed from YYYYMMDDPP
@@ -609,27 +568,323 @@ impl std::str::FromStr for TradingPeriod {
     }
 }
 
-#[allow(dead_code)] // Depending on features this may not be used
-mod trading_period {
-    use serde::{de::Error, Deserialize, Deserializer, Serializer};
-
-    pub fn serialize<S>(d: &crate::TradingPeriod, serializer: S) -> Result<S::Ok, S::Error>
+impl<'de> serde::Deserialize<'de> for TradingPeriod {
+    fn deserialize<D>(d: D) -> result::Result<crate::TradingPeriod, D::Error>
     where
-        S: Serializer,
-    {
-        serializer.serialize_str(&d.to_string())
-    }
-
-    pub fn deserialize<'de, D>(d: D) -> Result<crate::TradingPeriod, D::Error>
-    where
-        D: Deserializer<'de>,
+        D: serde::Deserializer<'de>,
     {
         let s = String::deserialize(d)?;
-        s.parse().map_err(Error::custom)
+        s.parse().map_err(serde::de::Error::custom)
+    }
+}
+
+impl serde::Serialize for TradingPeriod {
+    fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+#[derive(Debug)]
+pub struct AemoDiskFile
+{
+    pub header: AemoHeader,
+    handle: zip::ZipArchive<fs::File>,
+    keys: collections::HashMap<FileKey, csv::StringRecord>,
+}
+
+pub struct AemoDiskFileIter<'a, T> 
+where 
+T: serde::de::DeserializeOwned + Send + GetTable,
+{
+    // rdr: csv::Reader<zip::read::ZipFile<'a>>,
+    file_key: FileKey,
+    // inner: I, //csv::StringRecordsIter<'a, zip::read::ZipFile<'a>>,
+    // inner: csv::StringRecordsIter<'a, zip::read::ZipFile<'a>>,
+    inner: csv::StringRecordsIntoIter<zip::read::ZipFile<'a>>,
+    _d: std::marker::PhantomData<T>,
+    headings: csv::StringRecord,
+}
+
+impl<'a, T> Iterator for AemoDiskFileIter<'a, T> 
+where 
+T: serde::de::DeserializeOwned + Send + GetTable,
+
+{
+    type Item = Result<T>;
+    fn next(&mut self) -> Option<Self::Item> {
+
+        // we loop here as we may need to scan through multiple records of the underlying iterator
+        // to return one here.
+
+        // optimization: once we start not finding matches after finding at leaast one, we cna always return none.
+        while let Some(val) = self.inner.next() {
+            // record can be safely unwrapped here as we have already checked when creating the AemoDiskFile
+            // we also don't need to check the row length as it has been checked already
+            let record = val.unwrap();
+            if &record[0] == "D"
+                && &self.file_key.data_set_name == &record[1] 
+                && self.file_key.table_name.as_ref().map(|n| n == &record[2]).unwrap_or_else(|| &record[2] == "")
+                && &self.file_key.version.to_string() == &record[3] {
+
+                return Some(record.deserialize(Some(&self.headings))
+                .map_err(|cause| Error::CsvRowDe {
+                    cause,
+                    headings: Some(self.headings.clone()),
+                    data: record.clone(),
+                }) )
+
+            } else {
+                    continue;
+            }
+        }
+        None
+    }
+}
+
+impl AemoDiskFile
+{
+    pub fn get_table<'a, T>(&'a mut self) -> Result<AemoDiskFileIter<'a, T>>
+    where T: serde::de::DeserializeOwned + Send + GetTable + 'static,
+    // I: Iterator<Item=result::Result<csv::StringRecord, csv::Error>>,
+    {
+        let latest_version = T::get_file_key();
+        for version in (1..=latest_version.version).rev() {
+            let current_key = latest_version.with_version(version);
+            if self.keys.contains_key(&current_key) {
+                return self.get_specific_table(current_key);
+            } else {
+                log::warn!(
+                    "For file key {}, version {} was not available",
+                    latest_version,
+                    version,
+                );
+            }
+        }
+        Err(Error::MissingFile(latest_version))
+    }
+
+    pub fn get_specific_table<'a, T>(&'a mut self, file_key: FileKey) ->  Result<AemoDiskFileIter<'a, T >>
+    where T: serde::de::DeserializeOwned + Send + GetTable,
+    // I: Iterator<Item=result::Result<csv::StringRecord, csv::Error>>,
+    {
+        // assert that the key exists
+        let headings = self
+            .keys
+            .get(&file_key)
+            .ok_or(Error::MissingFile(file_key.clone()))?.to_owned();
+        
+        log::info!("Table found and parsed for file key {}", file_key);
+
+
+        let inner_file = self.handle.by_index(0)?;
+
+        Ok(AemoDiskFileIter {
+            headings,
+            file_key,
+
+            inner: csv::ReaderBuilder::new()
+            .has_headers(false)
+            .flexible(true)
+            .from_reader(inner_file).into_records(),
+            _d: std::marker::PhantomData,
+        })
+    
+            
+        // for record in records {
+        //     let record = record?;
+        //     match record.get(0) {
+        //         Some("D") => {
+        //             let row_len = record.len();
+        //             if row_len < 5 {
+        //                 return Err(Error::TooShortRow(row_len));
+        //             }
+        //         }
+        //         Some("I") => {
+        //             let row_len = record.len();
+        //             if row_len   < 5 {
+        //                 return Err(Error::TooShortRow(row_len));
+        //             }
+        //             let key = FileKey {
+        //                 data_set_name: record[1].into(),
+        //                 table_name: match &record[2] {
+        //                     "" => None,
+        //                     otherwise => Some(otherwise.to_string()),
+        //                 },
+        //                 version: record[3].parse()?,
+        //             };
+
+        //             keys.insert(key);
+        //         }
+        //         Some("C") => {
+        //             return None;
+        //         }
+        //         Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
+        //         None => return Err(Error::EmptyRow),
+        //     }
+        // }
+        // subtable
+        //     .data
+        //     .iter()
+        //     .map(|rec| {
+        //         rec.deserialize(Some(&subtable.headings))
+        //             .map_err(|cause| Error::CsvRowDe {
+        //                 cause,
+        //                 headings: Some(subtable.headings.clone()),
+        //                 data: rec.clone(),
+        //             })
+        //     })
+    }
+
+    pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, csv::StringRecord> {
+        self.keys.keys()
+    }
+
+    pub fn contains_file(&self, key: FileKey) -> bool {
+        self.keys.contains_key(&key)
+    }
+
+    /// This assumes that the file is in the standard ZIP format as downloaded
+    /// from nemweb.com.au or FTP server.
+    /// This simply validates the file and stores which subfiles are present
+    /// but doesn't actually parse the data.
+    /// This is more memory efficient than using AemoFile and reading into memory
+    pub fn from_path(path: impl AsRef<std::path::Path>) -> Result<Self> { 
+        // baked in assumption that data is a ZIP and contains only one file.
+        let f = fs::File::open(path.as_ref())?;
+        let mut zip = zip::ZipArchive::new(f)?;
+        let (header, keys) = {
+            let inner_file = zip.by_index(0)?;
+            let mut reader = csv::ReaderBuilder::new()
+                .has_headers(false)
+                .flexible(true)
+                .from_reader(inner_file);
+            let mut records = reader.records();
+            let first = records.next().ok_or(Error::MissingHeaderRecord)??;
+
+            let header: AemoHeader = first.deserialize(None).map_err(|cause| Error::CsvRowDe {
+                cause,
+                headings: None,
+                data: first,
+            })?;
+
+            // placeholder
+            let mut footer: Result<AemoFooter> = Err(Error::MissingFooterRecord);
+            let mut keys: collections::HashMap<FileKey, csv::StringRecord> = collections::HashMap::new();
+
+            let mut num_rows = 1;
+
+            for record in records {
+                let record = record?;
+                match record.get(0) {
+                    Some("D") => {
+                        num_rows += 1;                    
+                        let row_len = record.len();
+                        if row_len < 5 {
+                            return Err(Error::TooShortRow(row_len));
+                        }
+                    }
+                    Some("I") => {
+                        num_rows += 1;
+                        let row_len = record.len();
+                        if row_len   < 5 {
+                            return Err(Error::TooShortRow(row_len));
+                        }
+                        let key = FileKey {
+                            data_set_name: record[1].into(),
+                            table_name: match &record[2] {
+                                "" => None,
+                                otherwise => Some(otherwise.to_string()),
+                            },
+                            version: record[3].parse()?,
+                        };
+                        let lowercased = record.iter().map(|v| v.to_lowercase()).collect();
+
+                        keys.insert(key, lowercased);
+                    }
+                    Some("C") => {
+                        num_rows += 1;
+
+                        footer = record.deserialize(None).map_err(|cause| Error::CsvRowDe {
+                            cause,
+                            headings: None,
+                            data: record,
+                        });
+                    }
+                    Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
+                    None => return Err(Error::EmptyRow),
+                }
+            }
+            
+            let expected_line_count = footer?.line_count_inclusive;
+
+            if num_rows != expected_line_count {
+                return Err(Error::IncorrectLineCount {
+                    got: num_rows,
+                    expected: expected_line_count,
+                });
+            }
+            (header, keys)
+        };
+
+        Ok(AemoDiskFile {
+            header,
+            handle: zip,
+            keys,
+        })
     }
 }
 
 impl AemoFile {
+    pub fn get_table<T>(&self) -> Result<Vec<T>>
+    where
+        T: serde::de::DeserializeOwned + Send + GetTable,
+    {
+        let latest_version = T::get_file_key();
+        for version in (1..=latest_version.version).rev() {
+            let current_key = latest_version.with_version(version);
+            match self.get_specific_table(&current_key) {
+                Ok(parsed) => {
+                    log::info!("Table found and parsed for file key {}", current_key);
+                    return Ok(parsed);
+                }
+                Err(e) => {
+                    log::warn!(
+                        "For file key {}, version {} was not available: {}",
+                        latest_version,
+                        version,
+                        e,
+                    );
+                }
+            }
+        }
+        Err(Error::MissingFile(latest_version))
+    }
+    pub fn get_specific_table<T>(&self, file_key: &FileKey) -> Result<Vec<T>>
+    where
+        T: serde::de::DeserializeOwned + Send + GetTable,
+    {
+        let subtable = self
+            .data
+            .get(&file_key)
+            .ok_or(Error::MissingFile(file_key.clone()))?;
+
+        subtable
+            .data
+            .iter()
+            .map(|rec| {
+                rec.deserialize(Some(&subtable.headings))
+                    .map_err(|cause| Error::CsvRowDe {
+                        cause,
+                        headings: Some(subtable.headings.clone()),
+                        data: rec.clone(),
+                    })
+            })
+            .collect()
+    }
+
     pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Subtable> {
         self.data.keys()
     }
