@@ -20,7 +20,7 @@ impl mms::TableColumns {
             .iter()
             .map(|c| format!("{},", c.get_sql()))
             .collect::<Vec<_>>()
-            .join("\n")
+            .join("\n    ")
     }
     fn get_columns_sql(&self, prefix: Option<&'static str>) -> String {
         self.columns
@@ -118,6 +118,8 @@ create table mmsdm.FileLog (
     sub_type varchar(255) not null,
     version tinyint not null,
     [status] char(1) not null default 'P' check ([status] in ('P','E','C')),
+    rows_inserted bigint not null default 0,
+    total_rows bigint not null,
     message varchar(max) null,
     check ((status != 'E' and message is null) or (status = 'E' and message is not null)),
     unique (to_participant, serial_number, data_set, sub_type, version)
@@ -137,10 +139,13 @@ go
                 let create_table = format!(
                     r#"
 create table mmsdm.{table_name} (
-file_log_id bigint not null,
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     {columns}
     {primary_key}
 )
+go
+
+create nonclustered index Mmsdm{table_name}FileLogId on mmsdm.{table_name}(file_log_id)
 go
                         "#,
                     table_name = pdr_report.sql_table_name(),

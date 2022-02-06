@@ -93,7 +93,7 @@ impl crate::CompareWithPrimaryKey for PriceloadConstraintrelaxation1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PriceloadConstraintrelaxation1PrimaryKey {
     pub constraintid: String,
     pub runno: rust_decimal::Decimal,
@@ -295,7 +295,7 @@ impl crate::CompareWithPrimaryKey for DispatchBlockedConstraints1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchBlockedConstraints1PrimaryKey {
     pub constraintid: String,
     pub runno: rust_decimal::Decimal,
@@ -498,7 +498,7 @@ impl crate::CompareWithPrimaryKey for DispatchCaseSolution2 {
         self.runno == key.runno && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchCaseSolution2PrimaryKey {
     pub runno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
@@ -923,7 +923,6 @@ pub struct DispatchConstraint5 {
     /// Generic Constraint identifier (synonymous with GenConID)
     pub constraintid: String,
     /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
-    #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Manual Intervention flag, which, if set (1), causes predispatch to solve twice.
     pub intervention: rust_decimal::Decimal,
@@ -1006,7 +1005,7 @@ impl crate::CompareWithPrimaryKey for DispatchConstraint5 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchConstraint5PrimaryKey {
     pub constraintid: String,
     pub dispatchinterval: crate::DispatchPeriod,
@@ -1247,7 +1246,6 @@ pub struct DispatchInterconnectorres3 {
     /// Interconnector identifier
     pub interconnectorid: String,
     /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
-    #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Intervention case or not
     pub intervention: rust_decimal::Decimal,
@@ -1347,7 +1345,7 @@ impl crate::CompareWithPrimaryKey for DispatchInterconnectorres3 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchInterconnectorres3PrimaryKey {
     pub dispatchinterval: crate::DispatchPeriod,
     pub interconnectorid: String,
@@ -1741,7 +1739,6 @@ pub struct DispatchUnitSolution3 {
     /// Not used
     pub tradetype: Option<rust_decimal::Decimal>,
     /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
-    #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Intervention flag if intervention run
     pub intervention: rust_decimal::Decimal,
@@ -1906,7 +1903,7 @@ impl crate::CompareWithPrimaryKey for DispatchUnitSolution3 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchUnitSolution3PrimaryKey {
     pub duid: String,
     pub intervention: rust_decimal::Decimal,
@@ -2921,7 +2918,7 @@ impl crate::CompareWithPrimaryKey for DispatchOffertrk1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchOffertrk1PrimaryKey {
     pub bidtype: String,
     pub duid: String,
@@ -3047,7 +3044,6 @@ pub struct DispatchPrice4 {
     /// Region Identifier
     pub regionid: String,
     /// Dispatch interval identifier 001 to 288 in format YYYYMMDDPPP
-    #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Manual intervention flag
     pub intervention: rust_decimal::Decimal,
@@ -3215,7 +3211,7 @@ impl crate::CompareWithPrimaryKey for DispatchPrice4 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchPrice4PrimaryKey {
     pub dispatchinterval: crate::DispatchPeriod,
     pub intervention: rust_decimal::Decimal,
@@ -4130,7 +4126,6 @@ pub struct DispatchRegionsum6 {
     /// Region Identifier
     pub regionid: String,
     /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP.
-    #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Manual Intervention flag
     pub intervention: rust_decimal::Decimal,
@@ -4414,7 +4409,7 @@ impl crate::CompareWithPrimaryKey for DispatchRegionsum6 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchRegionsum6PrimaryKey {
     pub dispatchinterval: crate::DispatchPeriod,
     pub intervention: rust_decimal::Decimal,
@@ -6365,7 +6360,7 @@ impl crate::CompareWithPrimaryKey for PriceloadConstraintFcasOcd1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PriceloadConstraintFcasOcd1PrimaryKey {
     pub constraintid: String,
     pub intervention: i64,
@@ -6631,7 +6626,7 @@ impl crate::CompareWithPrimaryKey for DispatchFcasReq2 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchFcasReq2PrimaryKey {
     pub bidtype: String,
     pub genconid: String,
@@ -6929,7 +6924,6 @@ pub struct DispatchInterconnection1 {
     /// Nominated RegionID to which the energy flows
     pub to_regionid: String,
     /// Dispatch period identifier, from 001 to 288 in format YYYYMMDDPPP
-    #[serde(with = "crate::dispatch_period")]
     pub dispatchinterval: crate::DispatchPeriod,
     /// Inter-Regional Loss Factor. Calculated based on the MWFLOW and the nominal From and To Region losses.  
     pub irlf: Option<rust_decimal::Decimal>,
@@ -7005,7 +6999,7 @@ impl crate::CompareWithPrimaryKey for DispatchInterconnection1 {
             && self.to_regionid == key.to_regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchInterconnection1PrimaryKey {
     pub from_regionid: String,
     pub intervention: rust_decimal::Decimal,
@@ -7295,7 +7289,7 @@ impl crate::CompareWithPrimaryKey for DispatchLocalPrice1 {
         self.duid == key.duid && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchLocalPrice1PrimaryKey {
     pub duid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -7484,7 +7478,7 @@ impl crate::CompareWithPrimaryKey for DispatchMnspbidtrk1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchMnspbidtrk1PrimaryKey {
     pub linkid: String,
     pub participantid: String,
@@ -7704,7 +7698,7 @@ impl crate::CompareWithPrimaryKey for DispatchMrScheduleTrk1 {
         self.regionid == key.regionid && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchMrScheduleTrk1PrimaryKey {
     pub regionid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -7897,7 +7891,7 @@ impl crate::CompareWithPrimaryKey for PriceloadPriceRevision1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PriceloadPriceRevision1PrimaryKey {
     pub bidtype: String,
     pub intervention: rust_decimal::Decimal,
@@ -8147,7 +8141,7 @@ impl crate::CompareWithPrimaryKey for DispatchUnitConformance1 {
         self.duid == key.duid && self.interval_datetime == key.interval_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchUnitConformance1PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -8474,7 +8468,7 @@ impl crate::CompareWithPrimaryKey for DispatchUnitScada1 {
         self.duid == key.duid && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchUnitScada1PrimaryKey {
     pub duid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -8628,7 +8622,7 @@ impl crate::CompareWithPrimaryKey for DispatchIntermittentForecastTrk1 {
         self.duid == key.duid && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchIntermittentForecastTrk1PrimaryKey {
     pub duid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -8825,7 +8819,7 @@ impl crate::CompareWithPrimaryKey for DispatchNegativeResidue1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DispatchNegativeResidue1PrimaryKey {
     pub directional_interconnectorid: String,
     pub nrm_datetime: chrono::NaiveDateTime,

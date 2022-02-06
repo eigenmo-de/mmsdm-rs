@@ -73,7 +73,7 @@ impl crate::CompareWithPrimaryKey for MarketNoticeMarketnoticedata1 {
         self.noticeid == key.noticeid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketNoticeMarketnoticedata1PrimaryKey {
     pub noticeid: rust_decimal::Decimal,
 }
@@ -240,7 +240,7 @@ impl crate::CompareWithPrimaryKey for MarketNoticeMarketnoticetype1 {
         self.typeid == key.typeid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketNoticeMarketnoticetype1PrimaryKey {
     pub typeid: String,
 }
@@ -371,7 +371,7 @@ impl crate::CompareWithPrimaryKey for MarketNoticeParticipantnoticetrk1 {
         self.noticeid == key.noticeid && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketNoticeParticipantnoticetrk1PrimaryKey {
     pub noticeid: rust_decimal::Decimal,
     pub participantid: String,

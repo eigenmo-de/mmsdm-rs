@@ -7,6 +7,7 @@ impl crate::AemoFile {
         &self,
         client: &mut tiberius::Client<S>,
         key: &crate::FileKey,
+        total_rows: i64,
     ) -> crate::Result<i64>
     where
         S: AsyncRead + AsyncWrite + Unpin + Send,
@@ -27,10 +28,11 @@ impl crate::AemoFile {
                 serial_number_2,
                 data_set,
                 sub_type,
-                version
+                version,
+                total_rows
             )
             output inserted.file_log_id
-            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8, @P9, @P10, @P11, @P12);",
+            values (@P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8, @P9, @P10, @P11, @P12, @P13);",
                 &[
                     &self.header.data_source,
                     &self.header.file_name,
@@ -44,6 +46,7 @@ impl crate::AemoFile {
                     &key.data_set_name.as_str(),
                     &key.table_name(),
                     &key.version,
+                    &total_rows,
                 ],
             )
             .await?
@@ -59,34 +62,42 @@ impl crate::AemoFile {
         file_key: &crate::FileKey,
         data: &[D],
         proc: &str,
+        chunk_size: Option<usize>,
     ) -> crate::Result<()>
     where
         S: AsyncRead + AsyncWrite + Unpin + Send,
         D: serde::Serialize,
     {
-        let file_log_id = self.log_file(client, file_key).await?;
+        let total = i64::try_from(data.len())?;
+        let chunk_size = chunk_size.unwrap_or(4_500);
 
-        let total = data.len();
-        let mut current = 0_usize;
-        for chunk in data.chunks(4_500_usize) {
-            current += chunk.len();
+        let file_log_id = self.log_file(client, file_key, total).await?;
+
+        let mut current = 0_i64;
+
+        for chunk in data.chunks(chunk_size) {
             let json = serde_json::to_string(chunk)?;
             if let Err(e) = client.execute(proc, &[&file_log_id, &json]).await {
                 client.execute(
-                    "update mmsdm.FileLog set [status] = 'E', message = @P1 where file_log_id = @P2",
-                    &[&e.to_string(), &file_log_id],
-                ).await?;
+                        "update mmsdm.FileLog set [status] = 'E', rows_inserted = @P1, message = @P2 where file_log_id = @P3",
+                        &[&current, &e.to_string(), &file_log_id],
+                    ).await?;
                 return Err(e.into());
             } else {
+                current += i64::try_from(chunk.len())?;
+                client
+                    .execute(
+                        "update mmsdm.FileLog set rows_inserted = @P1 where file_log_id = @P2",
+                        &[&current, &file_log_id],
+                    )
+                    .await?;
                 log::debug!("Progress: {} out of {} rows saved", current, total);
             }
         }
-        client
-            .execute(
-                "update mmsdm.FileLog set [status] = 'C' where file_log_id = @P1",
-                &[&file_log_id],
-            )
-            .await?;
+        client.execute(
+            "update mmsdm.FileLog set [status] = 'C', rows_inserted = @P1 where file_log_id = @P2",
+            &[&current, &file_log_id],
+        ).await?;
         Ok(())
     }
 
@@ -96,6 +107,7 @@ impl crate::AemoFile {
         &self,
         client: &mut tiberius::Client<S>,
         skip_keys: Option<&collections::HashSet<crate::FileKey>>,
+        chunk_size: Option<usize>,
     ) -> crate::Result<()>
     where
         S: AsyncRead + AsyncWrite + Unpin + Send,
@@ -122,6 +134,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertAsofferOfferagcdata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -140,6 +153,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertAsofferOfferastrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -158,6 +172,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertAsofferOfferlsheddata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -176,6 +191,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertAsofferOfferrestartdata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -194,6 +210,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertAsofferOfferrpowerdata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -212,6 +229,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidsBiddayoffer1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -230,6 +248,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidBiddayofferD2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -248,6 +267,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidsBidofferfiletrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -266,6 +286,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidsBidofferperiod1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -284,6 +305,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidBidperofferD2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -302,6 +324,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidsMnspBidofferperiod1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -320,6 +343,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBidsMnspDayoffer1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -338,6 +362,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertOfferMtpasaOfferdata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -356,6 +381,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertOfferMtpasaOfferfiletrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -374,6 +400,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigBillingcalendar2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -392,6 +419,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigGstBasClass1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -410,6 +438,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigGstRate1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -429,6 +458,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigGstTransactionClass1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -448,6 +478,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigGstTransactionType1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -469,6 +500,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigSecdepositInterestRate1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -488,6 +520,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingConfigSecdepositProvision1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -506,6 +539,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingAspayments6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -524,6 +558,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingAsrecovery7 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -542,6 +577,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingCpdata6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -560,6 +596,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingDaytrk5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -578,6 +615,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingFees5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -596,6 +634,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingFinancialadjustments5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -614,6 +653,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingGendata5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -632,6 +672,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingInterresidues5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -650,6 +691,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIntraresidues5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -668,6 +710,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIraucsurplus5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -686,6 +729,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIraucsurplussum7 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -704,6 +748,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIrnspsurplus5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -722,6 +767,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIrnspsurplussum6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -740,6 +786,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIrpartsurplus5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -758,6 +805,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingIrpartsurplussum7 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -776,6 +824,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingPrioradjustments5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -794,6 +843,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingRealloc5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -812,6 +862,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingReallocDetail5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -830,6 +881,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingRegionexports5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -848,6 +900,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingRegionfigures6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -866,6 +919,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingRegionimports5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -884,6 +938,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingRuntrk5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -902,6 +957,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingApcCompensation2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -920,6 +976,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingApcRecovery2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -939,6 +996,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingBillingCo2ePublication1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -958,6 +1016,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingBillingCo2ePublicationTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -976,6 +1035,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingDailyEnergySummary1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -995,6 +1055,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingBillingDirectionReconOther1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1013,6 +1074,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingEftshortfallAmount1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1031,6 +1093,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingEftshortfallDetail1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1049,6 +1112,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingGstDetail5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1067,6 +1131,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingGstSummary5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1085,6 +1150,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingNmasTstPayments1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1103,6 +1169,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingNmasTstRecovery1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1121,6 +1188,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingNmasTstRecvryRbf1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1139,6 +1207,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingNmasTstRecvryTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1157,6 +1226,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingSecdepositApplication1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1175,6 +1245,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingSecdepInterestPay1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1193,6 +1264,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingSecdepInterestRate1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1211,6 +1283,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingSubstDemand1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1229,6 +1302,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingSubstRunVersion1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1247,6 +1321,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingWdr1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1265,6 +1340,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingWdrDetail1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1283,6 +1359,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingReservetraderpayment1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1301,6 +1378,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertBillingReservetraderrecovery1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1319,6 +1397,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertOperationalDemandActual3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1337,6 +1416,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertOperationalDemandForecast1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1356,6 +1436,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandIntermittentClusterAvail2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1375,6 +1456,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandIntermittentClusterAvailDay1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1393,6 +1475,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandIntermittentDsPred1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1411,6 +1494,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandIntermittentDsRun1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1429,6 +1513,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForecastIntermittentGen1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1447,6 +1532,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForecastIntermittentGenData1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1465,6 +1551,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandIntermittentGenLimit1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1484,6 +1571,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandIntermittentGenLimitDay1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1503,6 +1591,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandMtpasaIntermittentAvail2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1522,6 +1611,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandMtpasaIntermittentLimit1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1540,6 +1630,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandPeriod1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1558,6 +1649,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDemandTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1576,6 +1668,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertRooftopActual2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1594,6 +1687,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertRooftopForecast1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1613,6 +1707,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPriceloadConstraintrelaxation1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1631,6 +1726,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchBlockedConstraints1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1649,6 +1745,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchCaseSolution2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1667,6 +1764,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchConstraint5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1685,6 +1783,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchInterconnectorres3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1703,6 +1802,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchUnitSolution3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1721,6 +1821,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchOffertrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1739,6 +1840,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchPrice4 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1757,6 +1859,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchRegionsum6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1775,6 +1878,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPriceloadConstraintFcasOcd1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1793,6 +1897,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchFcasReq2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1811,6 +1916,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchInterconnection1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1829,6 +1935,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchLocalPrice1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1847,6 +1954,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchMnspbidtrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1865,6 +1973,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchMrScheduleTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1883,6 +1992,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPriceloadPriceRevision1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1901,6 +2011,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchUnitConformance1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1919,6 +2030,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchUnitScada1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1938,6 +2050,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchIntermittentForecastTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1956,6 +2069,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertDispatchNegativeResidue1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1974,6 +2088,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertApApevent1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -1992,6 +2107,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertApApeventregion1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2010,6 +2126,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureIrfmamount1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2028,6 +2145,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureIrfmevents1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2049,6 +2167,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureMarketSuspendRegimeSum1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2070,6 +2189,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureMarketSuspendRegionSum1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2089,6 +2209,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureMarketSuspendSchedule1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2110,6 +2231,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureMarketSuspendScheduleTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2128,6 +2250,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertForceMajeureOverriderrp1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2146,6 +2269,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertApRegionapc1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2164,6 +2288,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertApRegionapcintervals1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2182,6 +2307,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGdInstructGdinstruct1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2200,6 +2326,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGdInstructInstructionsubtype1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2218,6 +2345,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGdInstructInstructiontype1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2236,6 +2364,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGenericConstraintEmsmaster1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2254,6 +2383,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGencondataNull6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2272,6 +2402,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGenconsetNull1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2291,6 +2422,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGenericConstraintGenconsetinvoke2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2309,6 +2441,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGenconsettrkNull2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2327,6 +2460,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGcrhsNull1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2345,6 +2479,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGeqdescNull2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2363,6 +2498,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertGeqrhsNull1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2381,6 +2517,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSpdcpcNull2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2399,6 +2536,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSpdiccNull1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2417,6 +2555,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSpdrcNull2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2435,6 +2574,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuction1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2454,6 +2594,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuctionCalendar2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2475,6 +2616,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuctionIcAllocations2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2496,6 +2638,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuctionRevenueEstimate1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2517,6 +2660,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuctionRevenueTrack1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2536,6 +2680,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuctionRpEstimate1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2555,6 +2700,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionConfigAuctionTranche1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2571,7 +2717,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::SettlementConfigResiduecontractpayments1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigResiduecontractpayments1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigResiduecontractpayments1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "irauction"))]
                     {
@@ -2588,6 +2734,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionBidsFileTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2606,6 +2753,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResidueBidTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2624,6 +2772,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResidueContracts1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2642,6 +2791,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResidueConData2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2661,6 +2811,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResidueConEstimatesTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2679,6 +2830,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResidueConFunds1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2697,6 +2849,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionBidsFundsBid1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2715,6 +2868,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionBidsPriceBid1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2734,6 +2888,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResiduePriceFundsBid1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2752,6 +2907,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResiduePublicData1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2770,6 +2926,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionResidueTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2788,6 +2945,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraCashSecurity1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2807,6 +2965,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraFinancialAucpayDetail1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2826,6 +2985,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraFinancialAucpaySum1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2845,6 +3005,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraFinancialAucMardetail1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2864,6 +3025,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraFinancialAucMargin1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2883,6 +3045,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraFinancialAucReceipts1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2901,6 +3064,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraFinancialRuntrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2919,6 +3083,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraOfferProduct1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2937,6 +3102,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraOfferProfile1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2958,6 +3124,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraPrudentialCashSecurity1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2979,6 +3146,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraPrudentialCompPosition1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -2998,6 +3166,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraPrudentialExposure1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3016,6 +3185,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionSraPrudentialRun1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3034,6 +3204,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertIrauctionValuationid1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3052,6 +3223,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigBidtypes1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3070,6 +3242,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigBidtypestrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3088,6 +3261,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigInterconnector1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3107,6 +3281,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigInterconnectoralloc1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3128,6 +3303,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigInterconnectorconstraint1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3146,6 +3322,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigIntraregionalloc1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3164,6 +3341,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigLossfactormodel1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3182,6 +3360,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigLossmodel1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3201,6 +3380,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigMarketPriceThresholds1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3219,6 +3399,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigRegion1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3238,6 +3419,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigRegionstandingdata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3257,6 +3439,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketConfigTransmissionlossfactor2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3275,6 +3458,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketNoticeMarketnoticedata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3293,6 +3477,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketNoticeMarketnoticetype1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3312,6 +3497,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMarketNoticeParticipantnoticetrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3330,6 +3516,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMccCasesolution1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3348,6 +3535,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMccConstraintsolution1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3366,6 +3554,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMeterdataAggregateReads1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3384,6 +3573,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMeterdataIndividualReads1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3402,6 +3592,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMeterdataInterconnector1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3420,6 +3611,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMeterdataWdrReads1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3438,6 +3630,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkEquipmentdetail2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3456,6 +3649,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkOutageconstraintset1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3474,6 +3668,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkOutagedetail4 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3492,6 +3687,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkOutagestatuscode1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3510,6 +3706,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkRating1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3528,6 +3725,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkRealtimerating1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3546,6 +3744,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkStaticrating1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3564,6 +3763,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertNetworkSubstationdetail2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3582,6 +3782,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minBlockedConstraints1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3600,6 +3801,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minCasesolution2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3618,6 +3820,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minConstraintsolution6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3636,6 +3839,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minInterconnectorsoln4 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3654,6 +3858,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minIntersensitivities1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3672,6 +3877,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minLocalPrice1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3690,6 +3896,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minPricesensitivities1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3708,6 +3915,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minRegionsolution7 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3726,6 +3934,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minScenariodemand1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3744,6 +3953,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minScenariodemandtrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3762,6 +3972,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertP5minUnitsolution4 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3783,6 +3994,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationBidduiddetails1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3799,7 +4011,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationBidduiddetailstrk1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationBidduiddetailstrk1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationBidduiddetailstrk1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -3814,7 +4026,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationDispatchableunit1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationDispatchableunit1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationDispatchableunit1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -3832,6 +4044,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationDualloc1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3851,6 +4064,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationDudetail4 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3867,7 +4081,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationDudetailsummary5> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationDudetailsummary5 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationDudetailsummary5 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -3885,6 +4099,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationGenmeter1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3904,6 +4119,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationGenunits2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3925,6 +4141,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationGenunitsUnit1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3941,7 +4158,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationMnspInterconnector2> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationMnspInterconnector2 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationMnspInterconnector2 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -3956,7 +4173,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationMnspParticipant1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationMnspParticipant1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationMnspParticipant1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -3974,6 +4191,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationParticipant1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -3990,7 +4208,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationParticipantaccount1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantaccount1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantaccount1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4005,7 +4223,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationParticipantcategory1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantcategory1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantcategory1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4020,7 +4238,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationParticipantcategoryalloc1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantcategoryalloc1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantcategoryalloc1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4035,7 +4253,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationParticipantclass1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantclass1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantclass1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4050,7 +4268,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationParticipantcreditdetail1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantcreditdetail1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationParticipantcreditdetail1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4068,6 +4286,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationPmsGroup1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4087,6 +4306,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationPmsGroupnmi1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4103,7 +4323,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationPmsGroupservice1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationPmsGroupservice1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationPmsGroupservice1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4121,6 +4341,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationStadualloc1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4140,6 +4361,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationStation1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4156,7 +4378,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationStationoperatingstatus1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationStationoperatingstatus1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationStationoperatingstatus1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4174,6 +4396,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertParticipantRegistrationStationowner1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4190,7 +4413,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::ParticipantRegistrationStationownertrk1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationStationownertrk1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertParticipantRegistrationStationownertrk1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "participant_registration"))]
                     {
@@ -4207,6 +4430,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPdpasaCasesolution3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4225,6 +4449,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPdpasaConstraintsolution1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4243,6 +4468,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPdpasaInterconnectorsoln1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4261,6 +4487,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPdpasaRegionsolution7 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4280,6 +4507,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchBlockedConstraints1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4298,6 +4526,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchCaseSolution1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4317,6 +4546,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchConstraintSolution5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4336,6 +4566,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchInterconnectorSoln3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4354,6 +4585,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchInterconnectrSens1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4372,6 +4604,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchUnitSolution2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4390,6 +4623,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchOffertrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4408,6 +4642,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchRegionPrices1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4427,6 +4662,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchPricesensitivities1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4445,6 +4681,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchRegionSolution6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4463,6 +4700,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchScenarioDemand1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4481,6 +4719,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchScenarioDemandTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4500,6 +4739,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchRegionfcasrequirement2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4518,6 +4758,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchLocalPrice1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4536,6 +4777,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPredispatchMnspbidtrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4554,6 +4796,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPrudentialCompanyPosition1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4572,6 +4815,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertPrudentialRuntrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4590,6 +4834,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMtpasaReservelimit1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4608,6 +4853,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMtpasaReservelimitRegion1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4626,6 +4872,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertMtpasaReservelimitSet1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4644,6 +4891,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertReserveDataReserve1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4660,7 +4908,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::SettlementConfigAncillaryRecoverySplit1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigAncillaryRecoverySplit1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigAncillaryRecoverySplit1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "settlement_config"))]
                     {
@@ -4677,6 +4925,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketfee1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4696,6 +4945,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketfeedata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4714,6 +4964,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketfeetrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4733,6 +4984,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExcl1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4754,6 +5006,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExclTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4775,6 +5028,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusion1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4796,6 +5050,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusionTrk1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4812,7 +5067,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::SettlementConfigParticipantBandfeeAlloc1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigParticipantBandfeeAlloc1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigParticipantBandfeeAlloc1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "settlement_config"))]
                     {
@@ -4829,6 +5084,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSetcfgReallocation2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4847,6 +5103,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSetcfgReallocationinterval1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4868,6 +5125,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpf1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4884,7 +5142,7 @@ impl crate::AemoFile {
                     {
                         let d: Vec<data_model::SettlementConfigSetcfgParticipantMpftrk1> =
                             self.get_table()?;
-                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpftrk1 @P1, @P2").await?;
+                        self.batched_insert(client, file_key, &d, "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpftrk1 @P1, @P2", chunk_size).await?;
                     }
                     #[cfg(not(feature = "settlement_config"))]
                     {
@@ -4902,6 +5160,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4921,6 +5180,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsConfigWdrReimburseRate1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4939,6 +5199,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsDaytrack6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4957,6 +5218,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsCpdata6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4975,6 +5237,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsCpdataregion5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -4994,6 +5257,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsFcasregionrecovery5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5012,6 +5276,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsGendata6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5030,6 +5295,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsGendataregion5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5049,6 +5315,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsIntraregionresidues5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5067,6 +5334,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsIraucsurplus6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5085,6 +5353,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsIrnspsurplus6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5103,6 +5372,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsIrpartsurplus6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5121,6 +5391,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsIrsurplus6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5139,6 +5410,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsLocalareaenergy1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5157,6 +5429,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsLocalareatni1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5175,6 +5448,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsLshedpayment5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5193,6 +5467,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsMarketfees6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5211,6 +5486,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsReallocations5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5229,6 +5505,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRestartpayment6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5247,6 +5524,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRestartrecovery6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5265,6 +5543,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRpowerpayment6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5283,6 +5562,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsSmallgendata1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5301,6 +5581,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsAncillarySummary5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5319,6 +5600,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsApcCompensation1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5337,6 +5619,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsApcRecovery1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5355,6 +5638,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsFcasPayment5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5373,6 +5657,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsFcasRecovery6 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5392,6 +5677,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsSetFcasRegulationTrk2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5410,6 +5696,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsNmasRecovery2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5428,6 +5715,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsNmasRecoveryRbf1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5446,6 +5734,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRecoveryEnergy1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5464,6 +5753,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsRunParameter5 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5482,6 +5772,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsSubstDemand1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5500,6 +5791,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsSubstRunVersion1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5518,6 +5810,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsWdrReconDetail1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5536,6 +5829,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertSettlementsWdrTransact1 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5554,6 +5848,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertStpasaCasesolution3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5572,6 +5867,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertStpasaConstraintsolution3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5590,6 +5886,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertStpasaInterconnectorsoln3 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5608,6 +5905,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertStpasaRegionsolution7 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5626,6 +5924,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertTradingAverageprice301 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5644,6 +5943,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertTradingInterconnectorres2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }
@@ -5662,6 +5962,7 @@ impl crate::AemoFile {
                             file_key,
                             &d,
                             "exec mmsdm_proc.InsertTradingPrice2 @P1, @P2",
+                            chunk_size,
                         )
                         .await?;
                     }

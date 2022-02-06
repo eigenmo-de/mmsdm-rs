@@ -16,9 +16,9 @@ impl mms::DataType {
                 // we simply ignore the AEMO specified precision and scale
                 // this is because the CSV files often contain values outside these precisions
                 // the decimal128 has 34 significant digits anyway so we may as well use the largest
-                // possible precision. The 16 for scale is the largest amount that has been empirically
+                // possible precision. The 18 for scale is the largest amount that has been empirically
                 // observed, however this balance may need to be updated in future.
-                format!("pyarrow.decimal128(34,16)",)
+                format!("pyarrow.decimal128(34,18)",)
             }
             mms::DataType::Integer { .. } => "pyarrow.int64()".to_string(),
         }

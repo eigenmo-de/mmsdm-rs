@@ -69,7 +69,7 @@ impl crate::CompareWithPrimaryKey for GenericConstraintEmsmaster1 {
         self.spd_id == key.spd_id && self.spd_type == key.spd_type
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GenericConstraintEmsmaster1PrimaryKey {
     pub spd_id: String,
     pub spd_type: String,
@@ -267,7 +267,7 @@ impl crate::CompareWithPrimaryKey for GencondataNull6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GencondataNull6PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub genconid: String,
@@ -619,7 +619,7 @@ impl crate::CompareWithPrimaryKey for GenconsetNull1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GenconsetNull1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub genconid: String,
@@ -838,7 +838,7 @@ impl crate::CompareWithPrimaryKey for GenericConstraintGenconsetinvoke2 {
         self.invocation_id == key.invocation_id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GenericConstraintGenconsetinvoke2PrimaryKey {
     pub invocation_id: i64,
 }
@@ -1110,7 +1110,7 @@ impl crate::CompareWithPrimaryKey for GenconsettrkNull2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GenconsettrkNull2PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub genconsetid: String,
@@ -1357,7 +1357,7 @@ impl crate::CompareWithPrimaryKey for GcrhsNull1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GcrhsNull1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub genconid: String,
@@ -1635,7 +1635,7 @@ impl crate::CompareWithPrimaryKey for GeqdescNull2 {
         self.equationid == key.equationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GeqdescNull2PrimaryKey {
     pub equationid: String,
 }
@@ -1837,7 +1837,7 @@ impl crate::CompareWithPrimaryKey for GeqrhsNull1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GeqrhsNull1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub equationid: String,
@@ -2123,7 +2123,7 @@ impl crate::CompareWithPrimaryKey for SpdcpcNull2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SpdcpcNull2PrimaryKey {
     pub bidtype: String,
     pub connectionpointid: String,
@@ -2331,7 +2331,7 @@ impl crate::CompareWithPrimaryKey for SpdiccNull1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SpdiccNull1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub genconid: String,
@@ -2538,7 +2538,7 @@ impl crate::CompareWithPrimaryKey for SpdrcNull2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SpdrcNull2PrimaryKey {
     pub bidtype: String,
     pub effectivedate: chrono::NaiveDateTime,

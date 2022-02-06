@@ -19,7 +19,6 @@
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchBlockedConstraints1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// Generic Constraint identifier (synonymous with GenConID)
     pub constraintid: String,
@@ -63,7 +62,7 @@ impl crate::CompareWithPrimaryKey for PredispatchBlockedConstraints1 {
         self.constraintid == key.constraintid && self.predispatchseqno == key.predispatchseqno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchBlockedConstraints1PrimaryKey {
     pub constraintid: String,
     pub predispatchseqno: crate::TradingPeriod,
@@ -147,7 +146,6 @@ impl crate::ArrowSchema for PredispatchBlockedConstraints1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchCaseSolution1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// Predispatch run no, normally 1.
     pub runno: rust_decimal::Decimal,
@@ -228,7 +226,7 @@ impl crate::CompareWithPrimaryKey for PredispatchCaseSolution1 {
         self.predispatchseqno == key.predispatchseqno && self.runno == key.runno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchCaseSolution1PrimaryKey {
     pub predispatchseqno: crate::TradingPeriod,
     pub runno: rust_decimal::Decimal,
@@ -588,7 +586,6 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchConstraintSolution5 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -659,7 +656,7 @@ impl crate::CompareWithPrimaryKey for PredispatchConstraintSolution5 {
         self.constraintid == key.constraintid && self.datetime == key.datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchConstraintSolution5PrimaryKey {
     pub constraintid: String,
     pub datetime: chrono::NaiveDateTime,
@@ -881,7 +878,6 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchInterconnectorSoln3 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -969,7 +965,7 @@ impl crate::CompareWithPrimaryKey for PredispatchInterconnectorSoln3 {
         self.datetime == key.datetime && self.interconnectorid == key.interconnectorid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchInterconnectorSoln3PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -1342,7 +1338,6 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchInterconnectrSens1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -1486,7 +1481,7 @@ impl crate::CompareWithPrimaryKey for PredispatchInterconnectrSens1 {
         self.datetime == key.datetime && self.interconnectorid == key.interconnectorid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchInterconnectrSens1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -2324,7 +2319,6 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchUnitSolution2 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -2468,7 +2462,7 @@ impl crate::CompareWithPrimaryKey for PredispatchUnitSolution2 {
         self.datetime == key.datetime && self.duid == key.duid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchUnitSolution2PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub duid: String,
@@ -3296,7 +3290,6 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchOffertrk1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// Dispatchable Unit identifier
     pub duid: String,
@@ -3364,7 +3357,7 @@ impl crate::CompareWithPrimaryKey for PredispatchOffertrk1 {
             && self.predispatchseqno == key.predispatchseqno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchOffertrk1PrimaryKey {
     pub bidtype: String,
     pub duid: String,
@@ -3498,7 +3491,6 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionPrices1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -3606,7 +3598,7 @@ impl crate::CompareWithPrimaryKey for PredispatchRegionPrices1 {
         self.datetime == key.datetime && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchRegionPrices1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -4146,7 +4138,6 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchPricesensitivities1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -4290,7 +4281,7 @@ impl crate::CompareWithPrimaryKey for PredispatchPricesensitivities1 {
         self.datetime == key.datetime && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchPricesensitivities1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -5126,7 +5117,6 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionSolution6 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// LP Solver Pre-Dispatch run no, typically 1. It increments if the case is re-run.
     pub runno: Option<rust_decimal::Decimal>,
@@ -5396,7 +5386,7 @@ impl crate::CompareWithPrimaryKey for PredispatchRegionSolution6 {
         self.datetime == key.datetime && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchRegionSolution6PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -7299,7 +7289,7 @@ impl crate::CompareWithPrimaryKey for PredispatchScenarioDemand1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchScenarioDemand1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub regionid: String,
@@ -7452,7 +7442,7 @@ impl crate::CompareWithPrimaryKey for PredispatchScenarioDemandTrk1 {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchScenarioDemandTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: i64,
@@ -7644,7 +7634,7 @@ impl crate::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2 {
             && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchRegionfcasrequirement2PrimaryKey {
     pub bidtype: String,
     pub datetime: chrono::NaiveDateTime,
@@ -7934,7 +7924,6 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchLocalPrice1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    #[serde(with = "crate::trading_period")]
     pub predispatchseqno: crate::TradingPeriod,
     /// The unique identifier for the interval within this study
     #[serde(with = "crate::mms_datetime")]
@@ -7990,7 +7979,7 @@ impl crate::CompareWithPrimaryKey for PredispatchLocalPrice1 {
         self.datetime == key.datetime && self.duid == key.duid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchLocalPrice1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub duid: String,
@@ -8185,7 +8174,7 @@ impl crate::CompareWithPrimaryKey for PredispatchMnspbidtrk1 {
             && self.predispatchseqno == key.predispatchseqno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchMnspbidtrk1PrimaryKey {
     pub linkid: String,
     pub periodid: String,

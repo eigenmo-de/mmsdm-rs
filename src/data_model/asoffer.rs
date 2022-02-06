@@ -98,7 +98,7 @@ impl crate::CompareWithPrimaryKey for AsofferOfferagcdata1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct AsofferOfferagcdata1PrimaryKey {
     pub contractid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -387,7 +387,7 @@ impl crate::CompareWithPrimaryKey for AsofferOfferastrk1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct AsofferOfferastrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -572,7 +572,7 @@ impl crate::CompareWithPrimaryKey for AsofferOfferlsheddata1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct AsofferOfferlsheddata1PrimaryKey {
     pub contractid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -810,7 +810,7 @@ impl crate::CompareWithPrimaryKey for AsofferOfferrestartdata1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct AsofferOfferrestartdata1PrimaryKey {
     pub contractid: String,
     pub offerdate: chrono::NaiveDateTime,
@@ -1040,7 +1040,7 @@ impl crate::CompareWithPrimaryKey for AsofferOfferrpowerdata1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct AsofferOfferrpowerdata1PrimaryKey {
     pub contractid: String,
     pub effectivedate: chrono::NaiveDateTime,

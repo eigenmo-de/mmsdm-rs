@@ -93,7 +93,7 @@ impl crate::CompareWithPrimaryKey for NetworkEquipmentdetail2 {
             && self.validfrom == key.validfrom
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkEquipmentdetail2PrimaryKey {
     pub elementid: rust_decimal::Decimal,
     pub equipmentid: String,
@@ -293,7 +293,7 @@ impl crate::CompareWithPrimaryKey for NetworkOutageconstraintset1 {
         self.genconsetid == key.genconsetid && self.outageid == key.outageid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkOutageconstraintset1PrimaryKey {
     pub genconsetid: String,
     pub outageid: rust_decimal::Decimal,
@@ -499,7 +499,7 @@ impl crate::CompareWithPrimaryKey for NetworkOutagedetail4 {
             && self.substationid == key.substationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkOutagedetail4PrimaryKey {
     pub elementid: rust_decimal::Decimal,
     pub equipmentid: String,
@@ -827,7 +827,7 @@ impl crate::CompareWithPrimaryKey for NetworkOutagestatuscode1 {
         self.outagestatuscode == key.outagestatuscode
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkOutagestatuscode1PrimaryKey {
     pub outagestatuscode: String,
 }
@@ -975,7 +975,7 @@ impl crate::CompareWithPrimaryKey for NetworkRating1 {
         self.spd_id == key.spd_id && self.validfrom == key.validfrom
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkRating1PrimaryKey {
     pub spd_id: String,
     pub validfrom: chrono::NaiveDateTime,
@@ -1170,7 +1170,7 @@ impl crate::CompareWithPrimaryKey for NetworkRealtimerating1 {
         self.settlementdate == key.settlementdate && self.spd_id == key.spd_id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkRealtimerating1PrimaryKey {
     pub settlementdate: chrono::NaiveDateTime,
     pub spd_id: String,
@@ -1340,7 +1340,7 @@ impl crate::CompareWithPrimaryKey for NetworkStaticrating1 {
             && self.validfrom == key.validfrom
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkStaticrating1PrimaryKey {
     pub applicationid: String,
     pub equipmentid: String,
@@ -1559,7 +1559,7 @@ impl crate::CompareWithPrimaryKey for NetworkSubstationdetail2 {
         self.substationid == key.substationid && self.validfrom == key.validfrom
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct NetworkSubstationdetail2PrimaryKey {
     pub substationid: String,
     pub validfrom: chrono::NaiveDateTime,

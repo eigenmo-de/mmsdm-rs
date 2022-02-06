@@ -416,7 +416,7 @@ pub fn run() -> anyhow::Result<()> {
                             &format!("pub {}", col.field_name()),
                             "crate::DispatchPeriod",
                         );
-                        field.annotation(vec!["#[serde(with = \"crate::dispatch_period\")]"]);
+                        // field.annotation(vec!["#[serde(with = \"crate::dispatch_period\")]"]);
                         field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     } else if col.comment.contains("YYYYMMDDPP") {
@@ -425,7 +425,7 @@ pub fn run() -> anyhow::Result<()> {
                             &format!("pub {}", col.field_name()),
                             "crate::TradingPeriod",
                         );
-                        field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
+                        // field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
                         field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
                     } else if matches!(col.data_type, mms::DataType::Date | mms::DataType::DateTime)
@@ -586,6 +586,7 @@ pub fn run() -> anyhow::Result<()> {
                     .derive("PartialEq")
                     .derive("Eq")
                     .derive("PartialOrd")
+                    .derive("serde::Serialize")
                     .derive("Ord");
 
                 for pk_col_name in table.primary_key_columns.cols.iter() {

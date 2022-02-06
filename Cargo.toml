@@ -15,6 +15,10 @@ members = [
 ]
 
 [[example]]
+name = "parquet_fs"
+required-features = ["save_as_parquet", "dispatch", "sled", "bincode"]
+
+[[example]]
 name = "parquet"
 required-features = ["save_as_parquet", "dispatch"]
 
@@ -63,6 +67,13 @@ optional = true
 version = "0.3"
 optional = true
 
+[dependencies.bincode]
+version = "1.3.3"
+optional = true
+
+[dependencies.sled]
+version = "0.34.7"
+optional = true
 
 [dev-dependencies]
 anyhow = "1"
@@ -78,6 +89,7 @@ futures = "0.3"
 rayon = "1.5"
 once_cell = "1.3"
 bytes = "1"
+
 
 [features]
 sql_server = ["tiberius", "futures"]

@@ -146,7 +146,7 @@ impl crate::CompareWithPrimaryKey for BidsBiddayoffer1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BidsBiddayoffer1PrimaryKey {
     pub bidtype: String,
     pub duid: String,
@@ -584,6 +584,539 @@ impl crate::ArrowSchema for BidsBiddayoffer1 {
 }
 /// # Summary
 ///
+/// ## BIDDAYOFFER_D
+///  _BIDDAYOFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for the<br>intervals identified. BIDDAYOFFER_D is the parent table to BIDPEROFFER_D._
+///
+/// * Data Set Name: Bid
+/// * File Name: Biddayoffer D
+/// * Data Version: 2
+///
+/// # Description
+///  BIDDAYOFFER_D data is made public after 4am the next day. Source BIDDAYOFFER_D updates as ancillary service bids are processed. BIDDAYOFFER_D shows latest accepted energy and ancillary service bids. Volume Summary - approximately 1,000 rows per day
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * DUID
+/// * SETTLEMENTDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BidBiddayofferD2 {
+    /// Market date for which the bid applied
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier
+    pub duid: String,
+    /// Bid Type Identifier
+    pub bidtype: String,
+    /// Market date for which the bid was submitted.
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub bidsettlementdate: Option<chrono::NaiveDateTime>,
+    /// Offer date and time
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub offerdate: Option<chrono::NaiveDateTime>,
+    /// Version No. for given offer date
+    pub versionno: Option<rust_decimal::Decimal>,
+    /// Unique participant identifier
+    pub participantid: Option<String>,
+    /// Maximum energy available from Energy Constrained Plant. (Energy Bids Only)
+    pub dailyenergyconstraint: Option<rust_decimal::Decimal>,
+    /// Explanation for all rebids and inflexibilities
+    pub rebidexplanation: Option<String>,
+    /// Price for Availability Band 1
+    pub priceband1: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 2
+    pub priceband2: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 3
+    pub priceband3: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 4
+    pub priceband4: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 5
+    pub priceband5: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 6
+    pub priceband6: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 7
+    pub priceband7: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 8
+    pub priceband8: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 9
+    pub priceband9: Option<rust_decimal::Decimal>,
+    /// Price for Availability Band 10
+    pub priceband10: Option<rust_decimal::Decimal>,
+    /// Minimum MW load fast start plant
+    pub minimumload: Option<rust_decimal::Decimal>,
+    /// Time to synchronise in minutes (Energy Bids Only)
+    pub t1: Option<rust_decimal::Decimal>,
+    /// Time to minimum load in minutes (Energy Bids Only)
+    pub t2: Option<rust_decimal::Decimal>,
+    /// Time at minimum load in minutes (Energy Bids Only)
+    pub t3: Option<rust_decimal::Decimal>,
+    /// Time to shutdown in minutes (Energy Bids Only)
+    pub t4: Option<rust_decimal::Decimal>,
+    /// ON/OFF for loads (Energy Bids Only)
+    pub normalstatus: Option<String>,
+    /// Last date and time record changed
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Mandatory Restriction Scaling Factor
+    pub mr_factor: Option<rust_decimal::Decimal>,
+    /// Daily if processed before BidCutOff of previous day, otherwise REBID
+    pub entrytype: Option<String>,
+}
+impl crate::GetTable for BidBiddayofferD2 {
+    type PrimaryKey = BidBiddayofferD2PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "BID".into(),
+            table_name: Some("BIDDAYOFFER_D".into()),
+            version: 2,
+        }
+    }
+
+    fn primary_key(&self) -> BidBiddayofferD2PrimaryKey {
+        BidBiddayofferD2PrimaryKey {
+            bidtype: self.bidtype.clone(),
+            duid: self.duid.clone(),
+            settlementdate: self.settlementdate,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "bid_biddayoffer_d_v2_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for BidBiddayofferD2 {
+    type Row = BidBiddayofferD2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype
+            && self.duid == row.duid
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for BidBiddayofferD2 {
+    type PrimaryKey = BidBiddayofferD2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype
+            && self.duid == key.duid
+            && self.settlementdate == key.settlementdate
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BidBiddayofferD2PrimaryKey {
+    pub bidtype: String,
+    pub duid: String,
+    pub settlementdate: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for BidBiddayofferD2PrimaryKey {
+    type Row = BidBiddayofferD2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype
+            && self.duid == row.duid
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for BidBiddayofferD2PrimaryKey {
+    type PrimaryKey = BidBiddayofferD2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype
+            && self.duid == key.duid
+            && self.settlementdate == key.settlementdate
+    }
+}
+impl crate::PrimaryKey for BidBiddayofferD2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BidBiddayofferD2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "bidsettlementdate",
+                arrow2::datatypes::DataType::Date64,
+                true,
+            ),
+            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "participantid",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "dailyenergyconstraint",
+                arrow2::datatypes::DataType::Decimal(12, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rebidexplanation",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband1",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband2",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband3",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband4",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband5",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband6",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband7",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband8",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband9",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "priceband10",
+                arrow2::datatypes::DataType::Decimal(9, 2),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "minimumload",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("t1", arrow2::datatypes::DataType::Decimal(22, 0), true),
+            arrow2::datatypes::Field::new("t2", arrow2::datatypes::DataType::Decimal(22, 0), true),
+            arrow2::datatypes::Field::new("t3", arrow2::datatypes::DataType::Decimal(22, 0), true),
+            arrow2::datatypes::Field::new("t4", arrow2::datatypes::DataType::Decimal(22, 0), true),
+            arrow2::datatypes::Field::new(
+                "normalstatus",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new(
+                "mr_factor",
+                arrow2::datatypes::DataType::Decimal(16, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "entrytype",
+                arrow2::datatypes::DataType::LargeUtf8,
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut duid_array = Vec::new();
+        let mut bidtype_array = Vec::new();
+        let mut bidsettlementdate_array = Vec::new();
+        let mut offerdate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut dailyenergyconstraint_array = Vec::new();
+        let mut rebidexplanation_array = Vec::new();
+        let mut priceband1_array = Vec::new();
+        let mut priceband2_array = Vec::new();
+        let mut priceband3_array = Vec::new();
+        let mut priceband4_array = Vec::new();
+        let mut priceband5_array = Vec::new();
+        let mut priceband6_array = Vec::new();
+        let mut priceband7_array = Vec::new();
+        let mut priceband8_array = Vec::new();
+        let mut priceband9_array = Vec::new();
+        let mut priceband10_array = Vec::new();
+        let mut minimumload_array = Vec::new();
+        let mut t1_array = Vec::new();
+        let mut t2_array = Vec::new();
+        let mut t3_array = Vec::new();
+        let mut t4_array = Vec::new();
+        let mut normalstatus_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut mr_factor_array = Vec::new();
+        let mut entrytype_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            duid_array.push(row.duid);
+            bidtype_array.push(row.bidtype);
+            bidsettlementdate_array.push(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+            offerdate_array.push(row.offerdate.map(|val| val.timestamp_millis()));
+            versionno_array.push({
+                row.versionno.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            participantid_array.push(row.participantid);
+            dailyenergyconstraint_array.push({
+                row.dailyenergyconstraint.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            rebidexplanation_array.push(row.rebidexplanation);
+            priceband1_array.push({
+                row.priceband1.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband2_array.push({
+                row.priceband2.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband3_array.push({
+                row.priceband3.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband4_array.push({
+                row.priceband4.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband5_array.push({
+                row.priceband5.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband6_array.push({
+                row.priceband6.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband7_array.push({
+                row.priceband7.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband8_array.push({
+                row.priceband8.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband9_array.push({
+                row.priceband9.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            priceband10_array.push({
+                row.priceband10.map(|mut val| {
+                    val.rescale(2);
+                    val.mantissa()
+                })
+            });
+            minimumload_array.push({
+                row.minimumload.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            t1_array.push({
+                row.t1.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            t2_array.push({
+                row.t2.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            t3_array.push({
+                row.t3.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            t4_array.push({
+                row.t4.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            normalstatus_array.push(row.normalstatus);
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            mr_factor_array.push({
+                row.mr_factor.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            entrytype_array.push(row.entrytype);
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bidsettlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(offerdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(dailyenergyconstraint_array)
+                        .to(arrow2::datatypes::DataType::Decimal(12, 6)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
+                    rebidexplanation_array,
+                )),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband1_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband2_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband3_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband4_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband5_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband6_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband7_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband8_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband9_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(priceband10_array)
+                        .to(arrow2::datatypes::DataType::Decimal(9, 2)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(minimumload_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(t1_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(t2_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(t3_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(t4_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(normalstatus_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mr_factor_array)
+                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entrytype_array)),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## BIDOFFERFILETRK
 ///  _BIDOFFERFILETRK shows an audit trail of all files submitted containing ENERGY/FCAS/MNSP bid, including corrupt bids and rebids._
 ///
@@ -671,7 +1204,7 @@ impl crate::CompareWithPrimaryKey for BidsBidofferfiletrk1 {
         self.offerdate == key.offerdate && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BidsBidofferfiletrk1PrimaryKey {
     pub offerdate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -933,7 +1466,7 @@ impl crate::CompareWithPrimaryKey for BidsBidofferperiod1 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BidsBidofferperiod1PrimaryKey {
     pub bidtype: String,
     pub duid: String,
@@ -1312,6 +1845,606 @@ impl crate::ArrowSchema for BidsBidofferperiod1 {
 }
 /// # Summary
 ///
+/// ## BIDPEROFFER_D
+///  _BIDPEROFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for the<br>intervals identified. BIDPEROFFER_D is the child to BIDDAYOFFER_D._
+///
+/// * Data Set Name: Bid
+/// * File Name: Bidperoffer D
+/// * Data Version: 2
+///
+/// # Description
+///  BIDPEROFFER_D is public data, so is available to all participants. Source BIDPEROFFER_D updates daily shortly after 4am.  See also BIDPEROFFER.
+///
+/// # Notes
+///  * (Visibility) Data in this table is: Public
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * DUID
+/// * INTERVAL_DATETIME
+/// * SETTLEMENTDATE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BidBidperofferD2 {
+    /// Market date for which the bid applied
+    #[serde(with = "crate::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// Dispatchable Unit identifier
+    pub duid: String,
+    /// Bid Type Identifier
+    pub bidtype: String,
+    /// Market date for which the bid was submitted
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub bidsettlementdate: Option<chrono::NaiveDateTime>,
+    /// Offer date and time
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub offerdate: Option<chrono::NaiveDateTime>,
+    /// The trading interval period identifier (1-48)
+    pub periodid: Option<rust_decimal::Decimal>,
+    /// Version number of offer
+    pub versionno: Option<rust_decimal::Decimal>,
+    /// Maximum availability for this BidType in this period
+    pub maxavail: Option<rust_decimal::Decimal>,
+    /// Fixed unit output MW (Energy Bids Only).  A value of zero means no fixed load so the unit is dispatched according to bid and market (rather than zero fixed load)
+    pub fixedload: Option<rust_decimal::Decimal>,
+    /// MW/min for raise (Energy Bids Only)
+    pub rocup: Option<rust_decimal::Decimal>,
+    /// MW/Min for lower (Energy Bids Only)
+    pub rocdown: Option<rust_decimal::Decimal>,
+    /// Minimum Energy Output (MW) at which this ancillary service becomes available (AS Only)
+    pub enablementmin: Option<rust_decimal::Decimal>,
+    /// Maximum Energy Output (MW) at which this ancillary service can be supplied (AS Only)
+    pub enablementmax: Option<rust_decimal::Decimal>,
+    /// Minimum Energy Output (MW) at which the unit can provide the full availability (MAXAVAIL) for this ancillary service (AS Only)
+    pub lowbreakpoint: Option<rust_decimal::Decimal>,
+    /// Maximum Energy Output (MW) at which the unit can provide the full availability (MAXAVAIL) for this ancillary service (AS Only)
+    pub highbreakpoint: Option<rust_decimal::Decimal>,
+    /// Availability at price band 1
+    pub bandavail1: Option<rust_decimal::Decimal>,
+    /// Availability at price band 2
+    pub bandavail2: Option<rust_decimal::Decimal>,
+    /// Availability at price band 3
+    pub bandavail3: Option<rust_decimal::Decimal>,
+    /// Availability at price band 4
+    pub bandavail4: Option<rust_decimal::Decimal>,
+    /// Availability at price band 5
+    pub bandavail5: Option<rust_decimal::Decimal>,
+    /// Availability at price band 6
+    pub bandavail6: Option<rust_decimal::Decimal>,
+    /// Availability at price band 7
+    pub bandavail7: Option<rust_decimal::Decimal>,
+    /// Availability at price band 8
+    pub bandavail8: Option<rust_decimal::Decimal>,
+    /// Availability at price band 9
+    pub bandavail9: Option<rust_decimal::Decimal>,
+    /// Availability at price band 10
+    pub bandavail10: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
+    #[serde(with = "crate::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Allows for future use for energy bids, being the physical plant capability including any capability potentially available within 24 hours
+    pub pasaavailability: Option<rust_decimal::Decimal>,
+    /// Date and Time of the dispatch interval to which the offer applied
+    #[serde(with = "crate::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Mandatory Restriction Offer amount
+    pub mr_capacity: Option<rust_decimal::Decimal>,
+}
+impl crate::GetTable for BidBidperofferD2 {
+    type PrimaryKey = BidBidperofferD2PrimaryKey;
+    type Partition = (i32, chrono::Month);
+
+    fn get_file_key() -> crate::FileKey {
+        crate::FileKey {
+            data_set_name: "BID".into(),
+            table_name: Some("BIDPEROFFER_D".into()),
+            version: 2,
+        }
+    }
+
+    fn primary_key(&self) -> BidBidperofferD2PrimaryKey {
+        BidBidperofferD2PrimaryKey {
+            bidtype: self.bidtype.clone(),
+            duid: self.duid.clone(),
+            interval_datetime: self.interval_datetime,
+            settlementdate: self.settlementdate,
+        }
+    }
+
+    fn partition_suffix(&self) -> Self::Partition {
+        (
+            chrono::Datelike::year(&self.settlementdate),
+            num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate))
+                .unwrap(),
+        )
+    }
+
+    fn partition_name(&self) -> String {
+        format!(
+            "bid_bidperoffer_d_v2_{}_{}",
+            chrono::Datelike::year(&self.settlementdate),
+            chrono::Datelike::month(&self.settlementdate)
+        )
+    }
+}
+impl crate::CompareWithRow for BidBidperofferD2 {
+    type Row = BidBidperofferD2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype
+            && self.duid == row.duid
+            && self.interval_datetime == row.interval_datetime
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for BidBidperofferD2 {
+    type PrimaryKey = BidBidperofferD2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype
+            && self.duid == key.duid
+            && self.interval_datetime == key.interval_datetime
+            && self.settlementdate == key.settlementdate
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BidBidperofferD2PrimaryKey {
+    pub bidtype: String,
+    pub duid: String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub settlementdate: chrono::NaiveDateTime,
+}
+impl crate::CompareWithRow for BidBidperofferD2PrimaryKey {
+    type Row = BidBidperofferD2;
+
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype
+            && self.duid == row.duid
+            && self.interval_datetime == row.interval_datetime
+            && self.settlementdate == row.settlementdate
+    }
+}
+impl crate::CompareWithPrimaryKey for BidBidperofferD2PrimaryKey {
+    type PrimaryKey = BidBidperofferD2PrimaryKey;
+
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype
+            && self.duid == key.duid
+            && self.interval_datetime == key.interval_datetime
+            && self.settlementdate == key.settlementdate
+    }
+}
+impl crate::PrimaryKey for BidBidperofferD2PrimaryKey {}
+#[cfg(feature = "save_as_parquet")]
+impl crate::ArrowSchema for BidBidperofferD2 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::new(vec![
+            arrow2::datatypes::Field::new(
+                "settlementdate",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
+            arrow2::datatypes::Field::new(
+                "bidsettlementdate",
+                arrow2::datatypes::DataType::Date64,
+                true,
+            ),
+            arrow2::datatypes::Field::new("offerdate", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new(
+                "periodid",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "versionno",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "maxavail",
+                arrow2::datatypes::DataType::Decimal(12, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "fixedload",
+                arrow2::datatypes::DataType::Decimal(12, 6),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rocup",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "rocdown",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "enablementmin",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "enablementmax",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "lowbreakpoint",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "highbreakpoint",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail1",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail2",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail3",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail4",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail5",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail6",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail7",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail8",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail9",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "bandavail10",
+                arrow2::datatypes::DataType::Decimal(22, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new("lastchanged", arrow2::datatypes::DataType::Date64, true),
+            arrow2::datatypes::Field::new(
+                "pasaavailability",
+                arrow2::datatypes::DataType::Decimal(12, 0),
+                true,
+            ),
+            arrow2::datatypes::Field::new(
+                "interval_datetime",
+                arrow2::datatypes::DataType::Date64,
+                false,
+            ),
+            arrow2::datatypes::Field::new(
+                "mr_capacity",
+                arrow2::datatypes::DataType::Decimal(6, 0),
+                true,
+            ),
+        ])
+    }
+
+    fn partition_to_record_batch(
+        partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
+    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+        let mut settlementdate_array = Vec::new();
+        let mut duid_array = Vec::new();
+        let mut bidtype_array = Vec::new();
+        let mut bidsettlementdate_array = Vec::new();
+        let mut offerdate_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut maxavail_array = Vec::new();
+        let mut fixedload_array = Vec::new();
+        let mut rocup_array = Vec::new();
+        let mut rocdown_array = Vec::new();
+        let mut enablementmin_array = Vec::new();
+        let mut enablementmax_array = Vec::new();
+        let mut lowbreakpoint_array = Vec::new();
+        let mut highbreakpoint_array = Vec::new();
+        let mut bandavail1_array = Vec::new();
+        let mut bandavail2_array = Vec::new();
+        let mut bandavail3_array = Vec::new();
+        let mut bandavail4_array = Vec::new();
+        let mut bandavail5_array = Vec::new();
+        let mut bandavail6_array = Vec::new();
+        let mut bandavail7_array = Vec::new();
+        let mut bandavail8_array = Vec::new();
+        let mut bandavail9_array = Vec::new();
+        let mut bandavail10_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        let mut pasaavailability_array = Vec::new();
+        let mut interval_datetime_array = Vec::new();
+        let mut mr_capacity_array = Vec::new();
+        for (_, row) in partition {
+            settlementdate_array.push(row.settlementdate.timestamp_millis());
+            duid_array.push(row.duid);
+            bidtype_array.push(row.bidtype);
+            bidsettlementdate_array.push(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+            offerdate_array.push(row.offerdate.map(|val| val.timestamp_millis()));
+            periodid_array.push({
+                row.periodid.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            versionno_array.push({
+                row.versionno.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            maxavail_array.push({
+                row.maxavail.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            fixedload_array.push({
+                row.fixedload.map(|mut val| {
+                    val.rescale(6);
+                    val.mantissa()
+                })
+            });
+            rocup_array.push({
+                row.rocup.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            rocdown_array.push({
+                row.rocdown.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            enablementmin_array.push({
+                row.enablementmin.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            enablementmax_array.push({
+                row.enablementmax.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lowbreakpoint_array.push({
+                row.lowbreakpoint.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            highbreakpoint_array.push({
+                row.highbreakpoint.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail1_array.push({
+                row.bandavail1.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail2_array.push({
+                row.bandavail2.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail3_array.push({
+                row.bandavail3.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail4_array.push({
+                row.bandavail4.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail5_array.push({
+                row.bandavail5.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail6_array.push({
+                row.bandavail6.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail7_array.push({
+                row.bandavail7.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail8_array.push({
+                row.bandavail8.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail9_array.push({
+                row.bandavail9.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            bandavail10_array.push({
+                row.bandavail10.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
+            pasaavailability_array.push({
+                row.pasaavailability.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+            interval_datetime_array.push(row.interval_datetime.timestamp_millis());
+            mr_capacity_array.push({
+                row.mr_capacity.map(|mut val| {
+                    val.rescale(0);
+                    val.mantissa()
+                })
+            });
+        }
+
+        arrow2::record_batch::RecordBatch::try_new(
+            std::sync::Arc::new(Self::arrow_schema()),
+            vec![
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bidsettlementdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(offerdate_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(periodid_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(versionno_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(maxavail_array)
+                        .to(arrow2::datatypes::DataType::Decimal(12, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(fixedload_array)
+                        .to(arrow2::datatypes::DataType::Decimal(12, 6)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rocup_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(rocdown_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(enablementmin_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(enablementmax_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lowbreakpoint_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(highbreakpoint_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail1_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail2_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail3_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail4_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail5_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail6_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail7_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail8_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail9_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(bandavail10_array)
+                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(lastchanged_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(pasaavailability_array)
+                        .to(arrow2::datatypes::DataType::Decimal(12, 0)),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                        .to(arrow2::datatypes::DataType::Date64),
+                ),
+                std::sync::Arc::new(
+                    arrow2::array::PrimitiveArray::from(mr_capacity_array)
+                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
+                ),
+            ],
+        )
+        .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## MNSP_BIDOFFERPERIOD
 ///  _MNSP_BIDOFFERPERIOD shows availability for 5-minute periods for a specific Bid and LinkID for the given Trading Date and period. MNSP_BIDOFFERPERIOD is a child to MNSP_DAYOFFER and links to BIDOFFERFILETRK for 5MS Bids._
 ///
@@ -1418,7 +2551,7 @@ impl crate::CompareWithPrimaryKey for BidsMnspBidofferperiod1 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BidsMnspBidofferperiod1PrimaryKey {
     pub linkid: String,
     pub offerdatetime: chrono::NaiveDateTime,
@@ -1856,7 +2989,7 @@ impl crate::CompareWithPrimaryKey for BidsMnspDayoffer1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BidsMnspDayoffer1PrimaryKey {
     pub linkid: String,
     pub offerdate: chrono::NaiveDateTime,
@@ -2301,7 +3434,7 @@ impl crate::CompareWithPrimaryKey for OfferMtpasaOfferdata1 {
             && self.unitid == key.unitid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct OfferMtpasaOfferdata1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub offerdatetime: chrono::NaiveDateTime,
@@ -2493,7 +3626,7 @@ impl crate::CompareWithPrimaryKey for OfferMtpasaOfferfiletrk1 {
         self.offerdatetime == key.offerdatetime && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct OfferMtpasaOfferfiletrk1PrimaryKey {
     pub offerdatetime: chrono::NaiveDateTime,
     pub participantid: String,

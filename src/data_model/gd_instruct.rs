@@ -89,7 +89,7 @@ impl crate::CompareWithPrimaryKey for GdInstructGdinstruct1 {
         self.id == key.id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GdInstructGdinstruct1PrimaryKey {
     pub id: rust_decimal::Decimal,
 }
@@ -326,7 +326,7 @@ impl crate::CompareWithPrimaryKey for GdInstructInstructionsubtype1 {
             && self.instructiontypeid == key.instructiontypeid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GdInstructInstructionsubtype1PrimaryKey {
     pub instructionsubtypeid: String,
     pub instructiontypeid: String,
@@ -472,7 +472,7 @@ impl crate::CompareWithPrimaryKey for GdInstructInstructiontype1 {
         self.instructiontypeid == key.instructiontypeid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GdInstructInstructiontype1PrimaryKey {
     pub instructiontypeid: String,
 }

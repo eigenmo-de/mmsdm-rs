@@ -91,7 +91,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationBidduiddetails1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationBidduiddetails1PrimaryKey {
     pub bidtype: String,
     pub duid: String,
@@ -343,7 +343,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationBidduiddetailstrk1 
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
     pub duid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -513,7 +513,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationDispatchableunit1 {
         self.duid == key.duid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationDispatchableunit1PrimaryKey {
     pub duid: String,
 }
@@ -655,7 +655,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationDualloc1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationDualloc1PrimaryKey {
     pub duid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -861,7 +861,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetail4 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationDudetail4PrimaryKey {
     pub duid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -1231,7 +1231,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary5 {
         self.duid == key.duid && self.start_date == key.start_date
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationDudetailsummary5PrimaryKey {
     pub duid: String,
     pub start_date: chrono::NaiveDateTime,
@@ -1609,7 +1609,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationGenmeter1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationGenmeter1PrimaryKey {
     pub applydate: chrono::NaiveDateTime,
     pub meterid: String,
@@ -1887,7 +1887,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationGenunits2 {
         self.gensetid == key.gensetid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationGenunits2PrimaryKey {
     pub gensetid: String,
 }
@@ -2208,7 +2208,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationGenunitsUnit1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationGenunitsUnit1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub gensetid: String,
@@ -2472,7 +2472,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationMnspInterconnector2
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationMnspInterconnector2PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub linkid: String,
@@ -2771,7 +2771,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationMnspParticipant1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationMnspParticipant1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -2947,7 +2947,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationParticipant1 {
         self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationParticipant1PrimaryKey {
     pub participantid: String,
 }
@@ -3130,7 +3130,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationParticipantaccount1
         self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationParticipantaccount1PrimaryKey {
     pub participantid: String,
 }
@@ -3387,7 +3387,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationParticipantcategory
         self.participantcategoryid == key.participantcategoryid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationParticipantcategory1PrimaryKey {
     pub participantcategoryid: String,
 }
@@ -3522,7 +3522,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationParticipantcategory
             && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {
     pub participantcategoryid: String,
     pub participantid: String,
@@ -3658,7 +3658,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationParticipantclass1 {
         self.participantclassid == key.participantclassid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationParticipantclass1PrimaryKey {
     pub participantclassid: String,
 }
@@ -3799,7 +3799,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationParticipantcreditde
         self.effectivedate == key.effectivedate && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationParticipantcreditdetail1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -3969,7 +3969,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroup1 {
         self.groupid == key.groupid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationPmsGroup1PrimaryKey {
     pub groupid: rust_decimal::Decimal,
 }
@@ -4136,7 +4136,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupnmi1 {
         self.groupnmiid == key.groupnmiid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationPmsGroupnmi1PrimaryKey {
     pub groupnmiid: rust_decimal::Decimal,
 }
@@ -4443,7 +4443,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupservice1 {
         self.groupserviceid == key.groupserviceid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationPmsGroupservice1PrimaryKey {
     pub groupserviceid: rust_decimal::Decimal,
 }
@@ -4707,7 +4707,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationStadualloc1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationStadualloc1PrimaryKey {
     pub duid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -4883,7 +4883,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationStation1 {
         self.stationid == key.stationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationStation1PrimaryKey {
     pub stationid: String,
 }
@@ -5068,7 +5068,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationStationoperatingsta
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationStationoperatingstatus1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub stationid: String,
@@ -5261,7 +5261,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationStationowner1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationStationowner1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -5443,7 +5443,7 @@ impl crate::CompareWithPrimaryKey for ParticipantRegistrationStationownertrk1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ParticipantRegistrationStationownertrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,

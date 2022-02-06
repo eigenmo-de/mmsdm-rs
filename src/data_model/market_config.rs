@@ -85,7 +85,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigBidtypes1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigBidtypes1PrimaryKey {
     pub bidtype: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -294,7 +294,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigBidtypestrk1 {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigBidtypestrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
@@ -459,7 +459,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigInterconnector1 {
         self.interconnectorid == key.interconnectorid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigInterconnector1PrimaryKey {
     pub interconnectorid: String,
 }
@@ -631,7 +631,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigInterconnectoralloc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -874,7 +874,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigInterconnectorconstraint1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -1295,7 +1295,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigIntraregionalloc1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigIntraregionalloc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -1496,7 +1496,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigLossfactormodel1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigLossfactormodel1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -1701,7 +1701,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigLossmodel1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigLossmodel1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub interconnectorid: String,
@@ -1924,7 +1924,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1 {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigMarketPriceThresholds1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
@@ -2133,7 +2133,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigRegion1 {
         self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigRegion1PrimaryKey {
     pub regionid: String,
 }
@@ -2294,7 +2294,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigRegionstandingdata1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigRegionstandingdata1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub regionid: String,
@@ -2529,7 +2529,7 @@ impl crate::CompareWithPrimaryKey for MarketConfigTransmissionlossfactor2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MarketConfigTransmissionlossfactor2PrimaryKey {
     pub connectionpointid: String,
     pub effectivedate: chrono::NaiveDateTime,

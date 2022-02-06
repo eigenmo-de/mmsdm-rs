@@ -80,7 +80,7 @@ impl crate::CompareWithPrimaryKey for MtpasaReservelimit1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MtpasaReservelimit1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub reservelimitid: String,
@@ -271,7 +271,7 @@ impl crate::CompareWithPrimaryKey for MtpasaReservelimitRegion1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MtpasaReservelimitRegion1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub regionid: String,
@@ -462,7 +462,7 @@ impl crate::CompareWithPrimaryKey for MtpasaReservelimitSet1 {
         self.effectivedate == key.effectivedate && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MtpasaReservelimitSet1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub version_datetime: chrono::NaiveDateTime,
@@ -686,7 +686,7 @@ impl crate::CompareWithPrimaryKey for ReserveDataReserve1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ReserveDataReserve1PrimaryKey {
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,

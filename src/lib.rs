@@ -1,7 +1,7 @@
 //#![deny(clippy::all)]
 //#![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, io, iter, num, result, str, fs};
+use std::{collections, fmt, fs, io, iter, num, result, str};
 
 use chrono::TimeZone;
 
@@ -108,9 +108,11 @@ pub enum Error {
     #[error(transparent)]
     Arrow(#[from] arrow2::error::ArrowError),
 
-
     #[error(transparent)]
     Zip(#[from] zip::result::ZipError),
+
+    #[error(transparent)]
+    ConvertToInt(#[from] num::TryFromIntError),
 }
 
 type Result<T> = std::result::Result<T, Error>;
@@ -159,12 +161,10 @@ impl AemoHeader {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct AemoFooter {
-    record_type: char,
+    record_type: RecordType,
     end_of_report: String,
     line_count_inclusive: usize,
 }
-
-
 
 #[derive(Debug, Clone)]
 pub struct AemoFile {
@@ -428,7 +428,6 @@ where
 //     Ok(())
 // }
 
-
 // Represents a given dispatch period (5 min period)
 // Parsed from YYYYMMDDPPP
 #[derive(Debug, Clone, Copy, Ord, PartialEq, Eq, PartialOrd)]
@@ -588,34 +587,29 @@ impl serde::Serialize for TradingPeriod {
 }
 
 #[derive(Debug)]
-pub struct AemoDiskFile
-{
+pub struct AemoDiskFile {
     pub header: AemoHeader,
     handle: zip::ZipArchive<fs::File>,
     keys: collections::HashMap<FileKey, csv::StringRecord>,
 }
 
-pub struct AemoDiskFileIter<'a, T> 
-where 
-T: serde::de::DeserializeOwned + Send + GetTable,
+pub struct AemoDiskFileIter<'a, T>
+where
+    T: serde::de::DeserializeOwned + Send + GetTable,
 {
-    // rdr: csv::Reader<zip::read::ZipFile<'a>>,
     file_key: FileKey,
-    // inner: I, //csv::StringRecordsIter<'a, zip::read::ZipFile<'a>>,
-    // inner: csv::StringRecordsIter<'a, zip::read::ZipFile<'a>>,
     inner: csv::StringRecordsIntoIter<zip::read::ZipFile<'a>>,
     _d: std::marker::PhantomData<T>,
     headings: csv::StringRecord,
+    found_records: bool,
 }
 
-impl<'a, T> Iterator for AemoDiskFileIter<'a, T> 
-where 
-T: serde::de::DeserializeOwned + Send + GetTable,
-
+impl<'a, T> Iterator for AemoDiskFileIter<'a, T>
+where
+    T: serde::de::DeserializeOwned + Send + GetTable,
 {
     type Item = Result<T>;
     fn next(&mut self) -> Option<Self::Item> {
-
         // we loop here as we may need to scan through multiple records of the underlying iterator
         // to return one here.
 
@@ -625,30 +619,39 @@ T: serde::de::DeserializeOwned + Send + GetTable,
             // we also don't need to check the row length as it has been checked already
             let record = val.unwrap();
             if &record[0] == "D"
-                && &self.file_key.data_set_name == &record[1] 
-                && self.file_key.table_name.as_ref().map(|n| n == &record[2]).unwrap_or_else(|| &record[2] == "")
-                && &self.file_key.version.to_string() == &record[3] {
-
-                return Some(record.deserialize(Some(&self.headings))
-                .map_err(|cause| Error::CsvRowDe {
-                    cause,
-                    headings: Some(self.headings.clone()),
-                    data: record.clone(),
-                }) )
-
+                && &self.file_key.data_set_name == &record[1]
+                && self
+                    .file_key
+                    .table_name
+                    .as_ref()
+                    .map(|n| n == &record[2])
+                    .unwrap_or_else(|| &record[2] == "")
+                && &self.file_key.version.to_string() == &record[3]
+            {
+                self.found_records = true;
+                return Some(record.deserialize(Some(&self.headings)).map_err(|cause| {
+                    Error::CsvRowDe {
+                        cause,
+                        headings: Some(self.headings.clone()),
+                        data: record.clone(),
+                    }
+                }));
             } else {
+                if self.found_records {
+                    return None;
+                } else {
                     continue;
+                }
             }
         }
         None
     }
 }
 
-impl AemoDiskFile
-{
+impl AemoDiskFile {
     pub fn get_table<'a, T>(&'a mut self) -> Result<AemoDiskFileIter<'a, T>>
-    where T: serde::de::DeserializeOwned + Send + GetTable + 'static,
-    // I: Iterator<Item=result::Result<csv::StringRecord, csv::Error>>,
+    where
+        T: serde::de::DeserializeOwned + Send + GetTable + 'static,
     {
         let latest_version = T::get_file_key();
         for version in (1..=latest_version.version).rev() {
@@ -666,18 +669,21 @@ impl AemoDiskFile
         Err(Error::MissingFile(latest_version))
     }
 
-    pub fn get_specific_table<'a, T>(&'a mut self, file_key: FileKey) ->  Result<AemoDiskFileIter<'a, T >>
-    where T: serde::de::DeserializeOwned + Send + GetTable,
-    // I: Iterator<Item=result::Result<csv::StringRecord, csv::Error>>,
+    pub fn get_specific_table<'a, T>(
+        &'a mut self,
+        file_key: FileKey,
+    ) -> Result<AemoDiskFileIter<'a, T>>
+    where
+        T: serde::de::DeserializeOwned + Send + GetTable,
     {
         // assert that the key exists
         let headings = self
             .keys
             .get(&file_key)
-            .ok_or(Error::MissingFile(file_key.clone()))?.to_owned();
-        
-        log::info!("Table found and parsed for file key {}", file_key);
+            .ok_or(Error::MissingFile(file_key.clone()))?
+            .to_owned();
 
+        log::info!("Table found and parsed for file key {}", file_key);
 
         let inner_file = self.handle.by_index(0)?;
 
@@ -686,56 +692,13 @@ impl AemoDiskFile
             file_key,
 
             inner: csv::ReaderBuilder::new()
-            .has_headers(false)
-            .flexible(true)
-            .from_reader(inner_file).into_records(),
+                .has_headers(false)
+                .flexible(true)
+                .from_reader(inner_file)
+                .into_records(),
             _d: std::marker::PhantomData,
+            found_records: false,
         })
-    
-            
-        // for record in records {
-        //     let record = record?;
-        //     match record.get(0) {
-        //         Some("D") => {
-        //             let row_len = record.len();
-        //             if row_len < 5 {
-        //                 return Err(Error::TooShortRow(row_len));
-        //             }
-        //         }
-        //         Some("I") => {
-        //             let row_len = record.len();
-        //             if row_len   < 5 {
-        //                 return Err(Error::TooShortRow(row_len));
-        //             }
-        //             let key = FileKey {
-        //                 data_set_name: record[1].into(),
-        //                 table_name: match &record[2] {
-        //                     "" => None,
-        //                     otherwise => Some(otherwise.to_string()),
-        //                 },
-        //                 version: record[3].parse()?,
-        //             };
-
-        //             keys.insert(key);
-        //         }
-        //         Some("C") => {
-        //             return None;
-        //         }
-        //         Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
-        //         None => return Err(Error::EmptyRow),
-        //     }
-        // }
-        // subtable
-        //     .data
-        //     .iter()
-        //     .map(|rec| {
-        //         rec.deserialize(Some(&subtable.headings))
-        //             .map_err(|cause| Error::CsvRowDe {
-        //                 cause,
-        //                 headings: Some(subtable.headings.clone()),
-        //                 data: rec.clone(),
-        //             })
-        //     })
     }
 
     pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, csv::StringRecord> {
@@ -751,7 +714,7 @@ impl AemoDiskFile
     /// This simply validates the file and stores which subfiles are present
     /// but doesn't actually parse the data.
     /// This is more memory efficient than using AemoFile and reading into memory
-    pub fn from_path(path: impl AsRef<std::path::Path>) -> Result<Self> { 
+    pub fn from_path(path: impl AsRef<std::path::Path>) -> Result<Self> {
         // baked in assumption that data is a ZIP and contains only one file.
         let f = fs::File::open(path.as_ref())?;
         let mut zip = zip::ZipArchive::new(f)?;
@@ -772,7 +735,8 @@ impl AemoDiskFile
 
             // placeholder
             let mut footer: Result<AemoFooter> = Err(Error::MissingFooterRecord);
-            let mut keys: collections::HashMap<FileKey, csv::StringRecord> = collections::HashMap::new();
+            let mut keys: collections::HashMap<FileKey, csv::StringRecord> =
+                collections::HashMap::new();
 
             let mut num_rows = 1;
 
@@ -780,7 +744,7 @@ impl AemoDiskFile
                 let record = record?;
                 match record.get(0) {
                     Some("D") => {
-                        num_rows += 1;                    
+                        num_rows += 1;
                         let row_len = record.len();
                         if row_len < 5 {
                             return Err(Error::TooShortRow(row_len));
@@ -789,7 +753,7 @@ impl AemoDiskFile
                     Some("I") => {
                         num_rows += 1;
                         let row_len = record.len();
-                        if row_len   < 5 {
+                        if row_len < 5 {
                             return Err(Error::TooShortRow(row_len));
                         }
                         let key = FileKey {
@@ -817,7 +781,7 @@ impl AemoDiskFile
                     None => return Err(Error::EmptyRow),
                 }
             }
-            
+
             let expected_line_count = footer?.line_count_inclusive;
 
             if num_rows != expected_line_count {

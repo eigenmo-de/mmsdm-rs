@@ -72,7 +72,7 @@ impl crate::CompareWithPrimaryKey for TradingAverageprice301 {
         self.perioddate == key.perioddate && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct TradingAverageprice301PrimaryKey {
     pub perioddate: chrono::NaiveDateTime,
     pub regionid: String,
@@ -271,7 +271,7 @@ impl crate::CompareWithPrimaryKey for TradingInterconnectorres2 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct TradingInterconnectorres2PrimaryKey {
     pub interconnectorid: String,
     pub periodid: rust_decimal::Decimal,
@@ -561,7 +561,7 @@ impl crate::CompareWithPrimaryKey for TradingPrice2 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct TradingPrice2PrimaryKey {
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,

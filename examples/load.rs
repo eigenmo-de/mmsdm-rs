@@ -26,13 +26,13 @@ async fn main() -> anyhow::Result<()> {
         .map(|entry| entry.map(|e| e.path()))
         .collect::<Result<Vec<_>, _>>()?;
     for path in paths {
-        println!("Loading file at path: {:?}", file_path);
-        let file = fs::File::open(file_path)?;
+        println!("Loading file at path: {:?}", path);
+        let file = fs::File::open(path)?;
         let mut zip = zip::ZipArchive::new(file)?;
         let inner_file = zip.by_index(0)?;
         let aemo = mmsdm::AemoFile::from_reader(inner_file)?;
         dbg!(aemo.file_keys());
-        aemo.load_data(&mut client, None).await?;
+        aemo.load_data(&mut client, None, Some(10_000)).await?;
     }
     Ok(())
 }

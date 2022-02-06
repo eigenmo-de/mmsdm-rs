@@ -87,7 +87,7 @@ impl crate::CompareWithPrimaryKey for SettlementsDaytrack6 {
         self.expostrunno == key.expostrunno && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsDaytrack6PrimaryKey {
     pub expostrunno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
@@ -364,7 +364,7 @@ impl crate::CompareWithPrimaryKey for SettlementsCpdata6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsCpdata6PrimaryKey {
     pub mda: String,
     pub participantid: String,
@@ -904,7 +904,7 @@ impl crate::CompareWithPrimaryKey for SettlementsCpdataregion5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsCpdataregion5PrimaryKey {
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,
@@ -1226,7 +1226,7 @@ impl crate::CompareWithPrimaryKey for SettlementsFcasregionrecovery5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsFcasregionrecovery5PrimaryKey {
     pub bidtype: String,
     pub periodid: rust_decimal::Decimal,
@@ -1539,7 +1539,7 @@ impl crate::CompareWithPrimaryKey for SettlementsGendata6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsGendata6PrimaryKey {
     pub duid: String,
     pub gensetid: String,
@@ -2084,7 +2084,7 @@ impl crate::CompareWithPrimaryKey for SettlementsGendataregion5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsGendataregion5PrimaryKey {
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,
@@ -2436,7 +2436,7 @@ impl crate::CompareWithPrimaryKey for SettlementsIntraregionresidues5 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsIntraregionresidues5PrimaryKey {
     pub periodid: i64,
     pub regionid: String,
@@ -2704,7 +2704,7 @@ impl crate::CompareWithPrimaryKey for SettlementsIraucsurplus6 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsIraucsurplus6PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -3051,7 +3051,7 @@ impl crate::CompareWithPrimaryKey for SettlementsIrnspsurplus6 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsIrnspsurplus6PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -3398,7 +3398,7 @@ impl crate::CompareWithPrimaryKey for SettlementsIrpartsurplus6 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsIrpartsurplus6PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -3733,7 +3733,7 @@ impl crate::CompareWithPrimaryKey for SettlementsIrsurplus6 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsIrsurplus6PrimaryKey {
     pub interconnectorid: String,
     pub periodid: rust_decimal::Decimal,
@@ -4033,7 +4033,7 @@ impl crate::CompareWithPrimaryKey for SettlementsLocalareaenergy1 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsLocalareaenergy1PrimaryKey {
     pub localareaid: String,
     pub periodid: rust_decimal::Decimal,
@@ -4304,7 +4304,7 @@ impl crate::CompareWithPrimaryKey for SettlementsLocalareatni1 {
             && self.tni == key.tni
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsLocalareatni1PrimaryKey {
     pub localareaid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -4536,7 +4536,7 @@ impl crate::CompareWithPrimaryKey for SettlementsLshedpayment5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsLshedpayment5PrimaryKey {
     pub contractid: String,
     pub participantid: String,
@@ -5008,7 +5008,7 @@ impl crate::CompareWithPrimaryKey for SettlementsMarketfees6 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsMarketfees6PrimaryKey {
     pub marketfeeid: String,
     pub participantcategoryid: String,
@@ -5310,7 +5310,7 @@ impl crate::CompareWithPrimaryKey for SettlementsReallocations5 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsReallocations5PrimaryKey {
     pub participantid: String,
     pub periodid: rust_decimal::Decimal,
@@ -5594,7 +5594,7 @@ impl crate::CompareWithPrimaryKey for SettlementsRestartpayment6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsRestartpayment6PrimaryKey {
     pub contractid: String,
     pub participantid: String,
@@ -5970,7 +5970,7 @@ impl crate::CompareWithPrimaryKey for SettlementsRestartrecovery6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsRestartrecovery6PrimaryKey {
     pub participantid: String,
     pub periodid: rust_decimal::Decimal,
@@ -6402,7 +6402,7 @@ impl crate::CompareWithPrimaryKey for SettlementsRpowerpayment6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsRpowerpayment6PrimaryKey {
     pub contractid: String,
     pub participantid: String,
@@ -6949,7 +6949,7 @@ impl crate::CompareWithPrimaryKey for SettlementsSmallgendata1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsSmallgendata1PrimaryKey {
     pub connectionpointid: String,
     pub participantid: String,
@@ -7268,7 +7268,7 @@ impl crate::CompareWithPrimaryKey for SettlementsAncillarySummary5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsAncillarySummary5PrimaryKey {
     pub paymenttype: String,
     pub periodid: rust_decimal::Decimal,
@@ -7512,7 +7512,7 @@ impl crate::CompareWithPrimaryKey for SettlementsApcCompensation1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsApcCompensation1PrimaryKey {
     pub apeventid: i64,
     pub claimid: i64,
@@ -7731,7 +7731,7 @@ impl crate::CompareWithPrimaryKey for SettlementsApcRecovery1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsApcRecovery1PrimaryKey {
     pub apeventid: i64,
     pub claimid: i64,
@@ -7979,7 +7979,7 @@ impl crate::CompareWithPrimaryKey for SettlementsFcasPayment5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsFcasPayment5PrimaryKey {
     pub duid: String,
     pub periodid: rust_decimal::Decimal,
@@ -8351,7 +8351,7 @@ impl crate::CompareWithPrimaryKey for SettlementsFcasRecovery6 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsFcasRecovery6PrimaryKey {
     pub participantid: String,
     pub periodid: rust_decimal::Decimal,
@@ -8824,7 +8824,7 @@ impl crate::CompareWithPrimaryKey for SettlementsSetFcasRegulationTrk2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsSetFcasRegulationTrk2PrimaryKey {
     pub constraintid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -9157,7 +9157,7 @@ impl crate::CompareWithPrimaryKey for SettlementsNmasRecovery2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsNmasRecovery2PrimaryKey {
     pub contractid: String,
     pub participantid: String,
@@ -9564,7 +9564,7 @@ impl crate::CompareWithPrimaryKey for SettlementsNmasRecoveryRbf1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsNmasRecoveryRbf1PrimaryKey {
     pub contractid: String,
     pub paymenttype: String,
@@ -9861,7 +9861,7 @@ impl crate::CompareWithPrimaryKey for SettlementsRecoveryEnergy1 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsRecoveryEnergy1PrimaryKey {
     pub participantid: String,
     pub periodid: rust_decimal::Decimal,
@@ -10221,7 +10221,7 @@ impl crate::CompareWithPrimaryKey for SettlementsRunParameter5 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsRunParameter5PrimaryKey {
     pub parameterid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -10408,7 +10408,7 @@ impl crate::CompareWithPrimaryKey for SettlementsSubstDemand1 {
             && self.tni == key.tni
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsSubstDemand1PrimaryKey {
     pub participantid: String,
     pub settlementdate: chrono::NaiveDateTime,
@@ -10607,7 +10607,7 @@ impl crate::CompareWithPrimaryKey for SettlementsSubstRunVersion1 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsSubstRunVersion1PrimaryKey {
     pub referencesettlementdate: chrono::NaiveDateTime,
     pub referencesettlementrunno: rust_decimal::Decimal,
@@ -10831,7 +10831,7 @@ impl crate::CompareWithPrimaryKey for SettlementsWdrReconDetail1 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsWdrReconDetail1PrimaryKey {
     pub nmi: String,
     pub periodid: rust_decimal::Decimal,
@@ -11232,7 +11232,7 @@ impl crate::CompareWithPrimaryKey for SettlementsWdrTransact1 {
             && self.settlementrunno == key.settlementrunno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsWdrTransact1PrimaryKey {
     pub counterpartyparticipantid: String,
     pub participantid: String,

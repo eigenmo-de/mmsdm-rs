@@ -72,7 +72,7 @@ impl crate::CompareWithPrimaryKey for OperationalDemandActual3 {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct OperationalDemandActual3PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -252,7 +252,7 @@ impl crate::CompareWithPrimaryKey for OperationalDemandForecast1 {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct OperationalDemandForecast1PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -464,7 +464,7 @@ impl crate::CompareWithPrimaryKey for DemandIntermittentClusterAvail2 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandIntermittentClusterAvail2PrimaryKey {
     pub clusterid: String,
     pub duid: String,
@@ -677,7 +677,7 @@ impl crate::CompareWithPrimaryKey for DemandIntermittentClusterAvailDay1 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandIntermittentClusterAvailDay1PrimaryKey {
     pub clusterid: String,
     pub duid: String,
@@ -861,7 +861,7 @@ impl crate::CompareWithPrimaryKey for DemandIntermittentDsPred1 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandIntermittentDsPred1PrimaryKey {
     pub duid: String,
     pub forecast_priority: rust_decimal::Decimal,
@@ -1140,7 +1140,7 @@ impl crate::CompareWithPrimaryKey for DemandIntermittentDsRun1 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandIntermittentDsRun1PrimaryKey {
     pub duid: String,
     pub forecast_priority: rust_decimal::Decimal,
@@ -1389,7 +1389,7 @@ impl crate::CompareWithPrimaryKey for ForecastIntermittentGen1 {
         self.duid == key.duid && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForecastIntermittentGen1PrimaryKey {
     pub duid: String,
     pub run_datetime: chrono::NaiveDateTime,
@@ -1576,7 +1576,7 @@ impl crate::CompareWithPrimaryKey for ForecastIntermittentGenData1 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForecastIntermittentGenData1PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -1801,7 +1801,7 @@ impl crate::CompareWithPrimaryKey for DemandIntermittentGenLimit1 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandIntermittentGenLimit1PrimaryKey {
     pub duid: String,
     pub offerdatetime: chrono::NaiveDateTime,
@@ -1978,7 +1978,7 @@ impl crate::CompareWithPrimaryKey for DemandIntermittentGenLimitDay1 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandIntermittentGenLimitDay1PrimaryKey {
     pub duid: String,
     pub offerdatetime: chrono::NaiveDateTime,
@@ -2172,7 +2172,7 @@ impl crate::CompareWithPrimaryKey for DemandMtpasaIntermittentAvail2 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandMtpasaIntermittentAvail2PrimaryKey {
     pub clusterid: String,
     pub duid: String,
@@ -2377,7 +2377,7 @@ impl crate::CompareWithPrimaryKey for DemandMtpasaIntermittentLimit1 {
             && self.tradingdate == key.tradingdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandMtpasaIntermittentLimit1PrimaryKey {
     pub duid: String,
     pub offerdatetime: chrono::NaiveDateTime,
@@ -2591,7 +2591,7 @@ impl crate::CompareWithPrimaryKey for DemandPeriod1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandPeriod1PrimaryKey {
     pub offerdate: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
@@ -2872,7 +2872,7 @@ impl crate::CompareWithPrimaryKey for DemandTrk1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct DemandTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub offerdate: chrono::NaiveDateTime,
@@ -3073,7 +3073,7 @@ impl crate::CompareWithPrimaryKey for RooftopActual2 {
             && self.r#type == key.r#type
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct RooftopActual2PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -3262,7 +3262,7 @@ impl crate::CompareWithPrimaryKey for RooftopForecast1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct RooftopForecast1PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,

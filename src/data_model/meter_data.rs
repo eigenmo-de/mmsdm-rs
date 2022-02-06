@@ -112,7 +112,7 @@ impl crate::CompareWithPrimaryKey for MeterdataAggregateReads1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MeterdataAggregateReads1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
     pub connectionpointid: String,
@@ -386,7 +386,7 @@ impl crate::CompareWithPrimaryKey for MeterdataIndividualReads1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MeterdataIndividualReads1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
     pub meter_id: String,
@@ -658,7 +658,7 @@ impl crate::CompareWithPrimaryKey for MeterdataInterconnector1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MeterdataInterconnector1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
     pub interconnectorid: String,
@@ -910,7 +910,7 @@ impl crate::CompareWithPrimaryKey for MeterdataWdrReads1 {
             && self.settlementdate == key.settlementdate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MeterdataWdrReads1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
     pub market_id: String,

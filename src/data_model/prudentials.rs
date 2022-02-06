@@ -104,7 +104,7 @@ impl crate::CompareWithPrimaryKey for PrudentialCompanyPosition1 {
             && self.runno == key.runno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PrudentialCompanyPosition1PrimaryKey {
     pub company_id: String,
     pub prudential_date: chrono::NaiveDateTime,
@@ -491,7 +491,7 @@ impl crate::CompareWithPrimaryKey for PrudentialRuntrk1 {
         self.prudential_date == key.prudential_date && self.runno == key.runno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PrudentialRuntrk1PrimaryKey {
     pub prudential_date: chrono::NaiveDateTime,
     pub runno: i64,

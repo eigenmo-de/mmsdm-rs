@@ -17,17 +17,17 @@ fn main() -> anyhow::Result<()> {
             let inner_file = zip.by_index(0)?;
             let aemo = mmsdm::AemoFile::from_reader(inner_file)?;
             dbg!(aemo.file_keys());
-            let dispatch: Vec<_> = aemo.get_table::<data_model::DispatchUnitSolution2>()?;
+            let dispatch: Vec<_> = aemo.get_table::<data_model::DispatchUnitSolution3>()?;
             dbg!(dispatch.len());
             partitions = mmsdm::merge_with_partitions(partitions, &dispatch);
             dbg!(partitions.len());
         }
     }
-    for (partition_key, partition) in partitions {
-        dbg!(partition_key);
-        let record_batch = mmsdm::ArrowSchema::partition_to_record_batch(partition)?;
-        dbg!(record_batch.schema());
-        dbg!(record_batch.num_rows());
-    }
+    // for (partition_key, partition) in partitions {
+    //     dbg!(partition_key);
+    //     let record_batch = mmsdm::ArrowSchema::partition_to_record_batch(partition)?;
+    //     dbg!(record_batch.schema());
+    //     dbg!(record_batch.num_rows());
+    // }
     Ok(())
 }

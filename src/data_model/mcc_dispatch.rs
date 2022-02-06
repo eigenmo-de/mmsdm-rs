@@ -59,7 +59,7 @@ impl crate::CompareWithPrimaryKey for MccCasesolution1 {
         self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MccCasesolution1PrimaryKey {
     pub run_datetime: chrono::NaiveDateTime,
 }
@@ -175,7 +175,7 @@ impl crate::CompareWithPrimaryKey for MccConstraintsolution1 {
         self.constraintid == key.constraintid && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct MccConstraintsolution1PrimaryKey {
     pub constraintid: String,
     pub run_datetime: chrono::NaiveDateTime,

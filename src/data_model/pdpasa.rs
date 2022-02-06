@@ -97,7 +97,7 @@ impl crate::CompareWithPrimaryKey for PdpasaCasesolution3 {
         self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PdpasaCasesolution3PrimaryKey {
     pub run_datetime: chrono::NaiveDateTime,
 }
@@ -496,7 +496,7 @@ impl crate::CompareWithPrimaryKey for PdpasaConstraintsolution1 {
             && self.studyregionid == key.studyregionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PdpasaConstraintsolution1PrimaryKey {
     pub constraintid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -752,7 +752,7 @@ impl crate::CompareWithPrimaryKey for PdpasaInterconnectorsoln1 {
             && self.studyregionid == key.studyregionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PdpasaInterconnectorsoln1PrimaryKey {
     pub interconnectorid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -1121,7 +1121,7 @@ impl crate::CompareWithPrimaryKey for PdpasaRegionsolution7 {
             && self.runtype == key.runtype
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PdpasaRegionsolution7PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,

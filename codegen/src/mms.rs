@@ -26,8 +26,6 @@ impl Report {
         (self.name == "HISTORICAL")
         || (self.name == "CONFIGURATION")
         // temporary
-        || (self.name == "BIDS" && self.sub_type == "BIDPEROFFER_D")
-        || (self.name == "BIDS" && self.sub_type == "BIDDAYOFFER_D")
         || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_RUN")
         || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_PRED")
         || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCCOMPENSATION")

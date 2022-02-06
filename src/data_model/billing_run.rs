@@ -122,7 +122,7 @@ impl crate::CompareWithPrimaryKey for BillingAspayments6 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingAspayments6PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub connectionpointid: String,
@@ -674,7 +674,7 @@ impl crate::CompareWithPrimaryKey for BillingAsrecovery7 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingAsrecovery7PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -1442,7 +1442,7 @@ impl crate::CompareWithPrimaryKey for BillingCpdata6 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingCpdata6PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub connectionpointid: String,
@@ -1752,7 +1752,7 @@ impl crate::CompareWithPrimaryKey for BillingDaytrk5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingDaytrk5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -1980,7 +1980,7 @@ impl crate::CompareWithPrimaryKey for BillingFees5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingFees5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -2263,7 +2263,7 @@ impl crate::CompareWithPrimaryKey for BillingFinancialadjustments5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingFinancialadjustments5PrimaryKey {
     pub adjustmentitem: String,
     pub billrunno: rust_decimal::Decimal,
@@ -2553,7 +2553,7 @@ impl crate::CompareWithPrimaryKey for BillingGendata5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingGendata5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub connectionpointid: String,
@@ -2857,7 +2857,7 @@ impl crate::CompareWithPrimaryKey for BillingInterresidues5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingInterresidues5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -3134,7 +3134,7 @@ impl crate::CompareWithPrimaryKey for BillingIntraresidues5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIntraresidues5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -3412,7 +3412,7 @@ impl crate::CompareWithPrimaryKey for BillingIraucsurplus5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIraucsurplus5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -3746,7 +3746,7 @@ impl crate::CompareWithPrimaryKey for BillingIraucsurplussum7 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIraucsurplussum7PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -4139,7 +4139,7 @@ impl crate::CompareWithPrimaryKey for BillingIrnspsurplus5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIrnspsurplus5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -4469,7 +4469,7 @@ impl crate::CompareWithPrimaryKey for BillingIrnspsurplussum6 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIrnspsurplussum6PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -4832,7 +4832,7 @@ impl crate::CompareWithPrimaryKey for BillingIrpartsurplus5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIrpartsurplus5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -5182,7 +5182,7 @@ impl crate::CompareWithPrimaryKey for BillingIrpartsurplussum7 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingIrpartsurplussum7PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -5583,7 +5583,7 @@ impl crate::CompareWithPrimaryKey for BillingPrioradjustments5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingPrioradjustments5PrimaryKey {
     pub adjbillrunno: rust_decimal::Decimal,
     pub adjcontractyear: rust_decimal::Decimal,
@@ -5958,7 +5958,7 @@ impl crate::CompareWithPrimaryKey for BillingRealloc5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingRealloc5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -6194,7 +6194,7 @@ impl crate::CompareWithPrimaryKey for BillingReallocDetail5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingReallocDetail5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -6443,7 +6443,7 @@ impl crate::CompareWithPrimaryKey for BillingRegionexports5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingRegionexports5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -6735,7 +6735,7 @@ impl crate::CompareWithPrimaryKey for BillingRegionfigures6 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingRegionfigures6PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -7148,7 +7148,7 @@ impl crate::CompareWithPrimaryKey for BillingRegionimports5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingRegionimports5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -7438,7 +7438,7 @@ impl crate::CompareWithPrimaryKey for BillingRuntrk5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingRuntrk5PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -7744,7 +7744,7 @@ impl crate::CompareWithPrimaryKey for BillingApcCompensation2 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingApcCompensation2PrimaryKey {
     pub apeventid: i64,
     pub billrunno: i64,
@@ -7983,7 +7983,7 @@ impl crate::CompareWithPrimaryKey for BillingApcRecovery2 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingApcRecovery2PrimaryKey {
     pub apeventid: i64,
     pub billrunno: i64,
@@ -8265,7 +8265,7 @@ impl crate::CompareWithPrimaryKey for BillingBillingCo2ePublication1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingBillingCo2ePublication1PrimaryKey {
     pub contractyear: i64,
     pub regionid: String,
@@ -8468,7 +8468,7 @@ impl crate::CompareWithPrimaryKey for BillingBillingCo2ePublicationTrk1 {
         self.contractyear == key.contractyear && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingBillingCo2ePublicationTrk1PrimaryKey {
     pub contractyear: i64,
     pub weekno: i64,
@@ -8642,7 +8642,7 @@ impl crate::CompareWithPrimaryKey for BillingDailyEnergySummary1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingDailyEnergySummary1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -8933,7 +8933,7 @@ impl crate::CompareWithPrimaryKey for BillingBillingDirectionReconOther1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingBillingDirectionReconOther1PrimaryKey {
     pub billrunno: i64,
     pub contractyear: i64,
@@ -9287,7 +9287,7 @@ impl crate::CompareWithPrimaryKey for BillingEftshortfallAmount1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingEftshortfallAmount1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -9568,7 +9568,7 @@ impl crate::CompareWithPrimaryKey for BillingEftshortfallDetail1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingEftshortfallDetail1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -9799,7 +9799,7 @@ impl crate::CompareWithPrimaryKey for BillingGstDetail5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingGstDetail5PrimaryKey {
     pub bas_class: String,
     pub billrunno: rust_decimal::Decimal,
@@ -10058,7 +10058,7 @@ impl crate::CompareWithPrimaryKey for BillingGstSummary5 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingGstSummary5PrimaryKey {
     pub bas_class: String,
     pub billrunno: rust_decimal::Decimal,
@@ -10304,7 +10304,7 @@ impl crate::CompareWithPrimaryKey for BillingNmasTstPayments1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingNmasTstPayments1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -10569,7 +10569,7 @@ impl crate::CompareWithPrimaryKey for BillingNmasTstRecovery1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingNmasTstRecovery1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -10989,7 +10989,7 @@ impl crate::CompareWithPrimaryKey for BillingNmasTstRecvryRbf1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingNmasTstRecvryRbf1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -11252,7 +11252,7 @@ impl crate::CompareWithPrimaryKey for BillingNmasTstRecvryTrk1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingNmasTstRecvryTrk1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -11478,7 +11478,7 @@ impl crate::CompareWithPrimaryKey for BillingSecdepositApplication1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingSecdepositApplication1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -11691,7 +11691,7 @@ impl crate::CompareWithPrimaryKey for BillingSecdepInterestPay1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingSecdepInterestPay1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -11947,7 +11947,7 @@ impl crate::CompareWithPrimaryKey for BillingSecdepInterestRate1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingSecdepInterestRate1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -12186,7 +12186,7 @@ impl crate::CompareWithPrimaryKey for BillingSubstDemand1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingSubstDemand1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -12416,7 +12416,7 @@ impl crate::CompareWithPrimaryKey for BillingSubstRunVersion1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingSubstRunVersion1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -12621,7 +12621,7 @@ impl crate::CompareWithPrimaryKey for BillingWdr1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingWdr1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -12859,7 +12859,7 @@ impl crate::CompareWithPrimaryKey for BillingWdrDetail1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingWdrDetail1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
@@ -13126,7 +13126,7 @@ impl crate::CompareWithPrimaryKey for BillingReservetraderpayment1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingReservetraderpayment1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: String,
@@ -13390,7 +13390,7 @@ impl crate::CompareWithPrimaryKey for BillingReservetraderrecovery1 {
             && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingReservetraderrecovery1PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,

@@ -81,7 +81,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuction1 {
         self.auctionid == key.auctionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuction1PrimaryKey {
     pub auctionid: String,
 }
@@ -286,7 +286,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuctionCalendar2 {
         self.contractyear == key.contractyear && self.quarter == key.quarter
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuctionCalendar2PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
@@ -552,7 +552,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuctionIcAllocations2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuctionIcAllocations2PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub fromregionid: String,
@@ -863,7 +863,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuctionRevenueEstimate1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub fromregionid: String,
@@ -1142,7 +1142,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuctionRevenueTrack1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuctionRevenueTrack1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
@@ -1391,7 +1391,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuctionRpEstimate1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuctionRpEstimate1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub fromregionid: String,
@@ -1639,7 +1639,7 @@ impl crate::CompareWithPrimaryKey for IrauctionConfigAuctionTranche1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionConfigAuctionTranche1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
@@ -1868,7 +1868,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigResiduecontractpayments1 {
         self.contractid == key.contractid && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigResiduecontractpayments1PrimaryKey {
     pub contractid: String,
     pub participantid: String,
@@ -2021,7 +2021,7 @@ impl crate::CompareWithPrimaryKey for IrauctionBidsFileTrk1 {
             && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionBidsFileTrk1PrimaryKey {
     pub auctionid: String,
     pub loaddate: chrono::NaiveDateTime,
@@ -2204,7 +2204,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResidueBidTrk1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResidueBidTrk1PrimaryKey {
     pub auctionid: String,
     pub participantid: String,
@@ -2416,7 +2416,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResidueContracts1 {
             && self.tranche == key.tranche
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResidueContracts1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
@@ -2713,7 +2713,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResidueConData2 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResidueConData2PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -2959,7 +2959,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResidueConEstimatesTrk1 {
             && self.valuationid == key.valuationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResidueConEstimatesTrk1PrimaryKey {
     pub contractid: String,
     pub contractyear: rust_decimal::Decimal,
@@ -3171,7 +3171,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResidueConFunds1 {
             && self.interconnectorid == key.interconnectorid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResidueConFunds1PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -3463,7 +3463,7 @@ impl crate::CompareWithPrimaryKey for IrauctionBidsFundsBid1 {
             && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionBidsFundsBid1PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -3690,7 +3690,7 @@ impl crate::CompareWithPrimaryKey for IrauctionBidsPriceBid1 {
             && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionBidsPriceBid1PrimaryKey {
     pub auctionid: String,
     pub loaddate: chrono::NaiveDateTime,
@@ -3902,7 +3902,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResiduePriceFundsBid1 {
             && self.linkedbidflag == key.linkedbidflag
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResiduePriceFundsBid1PrimaryKey {
     pub auctionid: String,
     pub contractid: String,
@@ -4136,7 +4136,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResiduePublicData1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResiduePublicData1PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -4386,7 +4386,7 @@ impl crate::CompareWithPrimaryKey for IrauctionResidueTrk1 {
         self.auctionid == key.auctionid && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionResidueTrk1PrimaryKey {
     pub auctionid: String,
     pub versionno: rust_decimal::Decimal,
@@ -4589,7 +4589,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraCashSecurity1 {
         self.cash_security_id == key.cash_security_id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraCashSecurity1PrimaryKey {
     pub cash_security_id: String,
 }
@@ -4857,7 +4857,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraFinancialAucpayDetail1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraFinancialAucpayDetail1PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -5209,7 +5209,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraFinancialAucpaySum1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraFinancialAucpaySum1PrimaryKey {
     pub participantid: String,
     pub sra_quarter: i64,
@@ -5455,7 +5455,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraFinancialAucMardetail1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraFinancialAucMardetail1PrimaryKey {
     pub cash_security_id: String,
     pub participantid: String,
@@ -5657,7 +5657,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraFinancialAucMargin1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraFinancialAucMargin1PrimaryKey {
     pub participantid: String,
     pub sra_quarter: i64,
@@ -5901,7 +5901,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraFinancialAucReceipts1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraFinancialAucReceipts1PrimaryKey {
     pub contractid: String,
     pub fromregionid: String,
@@ -6185,7 +6185,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraFinancialRuntrk1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraFinancialRuntrk1PrimaryKey {
     pub sra_quarter: i64,
     pub sra_runno: i64,
@@ -6378,7 +6378,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraOfferProduct1 {
             && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraOfferProduct1PrimaryKey {
     pub auctionid: String,
     pub loaddate: chrono::NaiveDateTime,
@@ -6595,7 +6595,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraOfferProfile1 {
             && self.participantid == key.participantid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraOfferProfile1PrimaryKey {
     pub auctionid: String,
     pub loaddate: chrono::NaiveDateTime,
@@ -6774,7 +6774,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraPrudentialCashSecurity1 {
             && self.prudential_runno == key.prudential_runno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraPrudentialCashSecurity1PrimaryKey {
     pub cash_security_id: String,
     pub participantid: String,
@@ -6959,7 +6959,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraPrudentialCompPosition1 {
             && self.prudential_runno == key.prudential_runno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraPrudentialCompPosition1PrimaryKey {
     pub participantid: String,
     pub prudential_date: chrono::NaiveDateTime,
@@ -7196,7 +7196,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraPrudentialExposure1 {
             && self.sra_year == key.sra_year
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraPrudentialExposure1PrimaryKey {
     pub fromregionid: String,
     pub interconnectorid: String,
@@ -7466,7 +7466,7 @@ impl crate::CompareWithPrimaryKey for IrauctionSraPrudentialRun1 {
         self.prudential_date == key.prudential_date && self.prudential_runno == key.prudential_runno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionSraPrudentialRun1PrimaryKey {
     pub prudential_date: chrono::NaiveDateTime,
     pub prudential_runno: i64,
@@ -7594,7 +7594,7 @@ impl crate::CompareWithPrimaryKey for IrauctionValuationid1 {
         self.valuationid == key.valuationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct IrauctionValuationid1PrimaryKey {
     pub valuationid: String,
 }

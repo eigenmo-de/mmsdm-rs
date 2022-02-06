@@ -83,7 +83,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigAncillaryRecoverySplit1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigAncillaryRecoverySplit1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub paymenttype: String,
@@ -271,7 +271,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketfee1 {
         self.marketfeeid == key.marketfeeid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketfee1PrimaryKey {
     pub marketfeeid: String,
 }
@@ -453,7 +453,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketfeedata1 {
             && self.marketfeeversionno == key.marketfeeversionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketfeedata1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeid: String,
@@ -632,7 +632,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketfeetrk1 {
         self.effectivedate == key.effectivedate && self.marketfeeversionno == key.marketfeeversionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketfeetrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeversionno: rust_decimal::Decimal,
@@ -805,7 +805,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExcl1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketFeeCatExcl1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeid: String,
@@ -973,7 +973,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExclTrk1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeid: String,
@@ -1141,7 +1141,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusion1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketFeeExclusion1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeid: String,
@@ -1325,7 +1325,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusionTrk1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -1524,7 +1524,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigParticipantBandfeeAlloc1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeid: String,
@@ -1747,7 +1747,7 @@ impl crate::CompareWithPrimaryKey for SetcfgReallocation2 {
         self.reallocationid == key.reallocationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SetcfgReallocation2PrimaryKey {
     pub reallocationid: String,
 }
@@ -1983,7 +1983,7 @@ impl crate::CompareWithPrimaryKey for SetcfgReallocationinterval1 {
         self.periodid == key.periodid && self.reallocationid == key.reallocationid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SetcfgReallocationinterval1PrimaryKey {
     pub periodid: i64,
     pub reallocationid: String,
@@ -2164,7 +2164,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpf1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigSetcfgParticipantMpf1PrimaryKey {
     pub connectionpointid: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -2373,7 +2373,7 @@ impl crate::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpftrk1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: String,
@@ -2563,7 +2563,7 @@ impl crate::CompareWithPrimaryKey for SettlementsConfigWdrrrCalendar1 {
             && self.wdrrrperiod == key.wdrrrperiod
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsConfigWdrrrCalendar1PrimaryKey {
     pub regionid: String,
     pub version_datetime: chrono::NaiveDateTime,
@@ -2739,7 +2739,7 @@ impl crate::CompareWithPrimaryKey for SettlementsConfigWdrReimburseRate1 {
             && self.wdrrrperiod == key.wdrrrperiod
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct SettlementsConfigWdrReimburseRate1PrimaryKey {
     pub regionid: String,
     pub version_datetime: chrono::NaiveDateTime,

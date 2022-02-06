@@ -87,7 +87,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigBillingcalendar2 {
         self.contractyear == key.contractyear && self.weekno == key.weekno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigBillingcalendar2PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub weekno: rust_decimal::Decimal,
@@ -305,7 +305,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigGstBasClass1 {
         self.bas_class == key.bas_class
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigGstBasClass1PrimaryKey {
     pub bas_class: String,
 }
@@ -447,7 +447,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigGstRate1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigGstRate1PrimaryKey {
     pub bas_class: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -633,7 +633,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigGstTransactionClass1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigGstTransactionClass1PrimaryKey {
     pub bas_class: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -803,7 +803,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigGstTransactionType1 {
         self.transaction_type == key.transaction_type
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigGstTransactionType1PrimaryKey {
     pub transaction_type: String,
 }
@@ -959,7 +959,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigSecdepositInterestRate1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigSecdepositInterestRate1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub interest_acct_id: String,
@@ -1134,7 +1134,7 @@ impl crate::CompareWithPrimaryKey for BillingConfigSecdepositProvision1 {
             && self.security_deposit_id == key.security_deposit_id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct BillingConfigSecdepositProvision1PrimaryKey {
     pub participantid: String,
     pub security_deposit_id: String,

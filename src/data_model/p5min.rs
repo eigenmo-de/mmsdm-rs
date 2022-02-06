@@ -63,7 +63,7 @@ impl crate::CompareWithPrimaryKey for P5minBlockedConstraints1 {
         self.constraintid == key.constraintid && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minBlockedConstraints1PrimaryKey {
     pub constraintid: String,
     pub run_datetime: chrono::NaiveDateTime,
@@ -224,7 +224,7 @@ impl crate::CompareWithPrimaryKey for P5minCasesolution2 {
         self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minCasesolution2PrimaryKey {
     pub run_datetime: chrono::NaiveDateTime,
 }
@@ -643,7 +643,7 @@ impl crate::CompareWithPrimaryKey for P5minConstraintsolution6 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minConstraintsolution6PrimaryKey {
     pub constraintid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -946,7 +946,7 @@ impl crate::CompareWithPrimaryKey for P5minInterconnectorsoln4 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minInterconnectorsoln4PrimaryKey {
     pub interconnectorid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -1466,7 +1466,7 @@ impl crate::CompareWithPrimaryKey for P5minIntersensitivities1 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minIntersensitivities1PrimaryKey {
     pub interconnectorid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -2348,7 +2348,7 @@ impl crate::CompareWithPrimaryKey for P5minLocalPrice1 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minLocalPrice1PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,
@@ -2619,7 +2619,7 @@ impl crate::CompareWithPrimaryKey for P5minPricesensitivities1 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minPricesensitivities1PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -3699,7 +3699,7 @@ impl crate::CompareWithPrimaryKey for P5minRegionsolution7 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minRegionsolution7PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
@@ -5456,7 +5456,7 @@ impl crate::CompareWithPrimaryKey for P5minScenariodemand1 {
             && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minScenariodemand1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub regionid: String,
@@ -5638,7 +5638,7 @@ impl crate::CompareWithPrimaryKey for P5minScenariodemandtrk1 {
         self.effectivedate == key.effectivedate && self.version_datetime == key.version_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minScenariodemandtrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub version_datetime: chrono::NaiveDateTime,
@@ -5851,7 +5851,7 @@ impl crate::CompareWithPrimaryKey for P5minUnitsolution4 {
             && self.run_datetime == key.run_datetime
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minUnitsolution4PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,

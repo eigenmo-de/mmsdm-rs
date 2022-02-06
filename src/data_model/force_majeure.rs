@@ -79,7 +79,7 @@ impl crate::CompareWithPrimaryKey for ApApevent1 {
         self.apeventid == key.apeventid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ApApevent1PrimaryKey {
     pub apeventid: rust_decimal::Decimal,
 }
@@ -295,7 +295,7 @@ impl crate::CompareWithPrimaryKey for ApApeventregion1 {
         self.apeventid == key.apeventid && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ApApeventregion1PrimaryKey {
     pub apeventid: rust_decimal::Decimal,
     pub regionid: String,
@@ -596,7 +596,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureIrfmamount1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureIrfmamount1PrimaryKey {
     pub irfmid: String,
     pub periodid: rust_decimal::Decimal,
@@ -803,7 +803,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureIrfmevents1 {
         self.irfmid == key.irfmid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureIrfmevents1PrimaryKey {
     pub irfmid: String,
 }
@@ -982,7 +982,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureMarketSuspendRegimeSum1 {
             && self.suspension_id == key.suspension_id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureMarketSuspendRegimeSum1PrimaryKey {
     pub regionid: String,
     pub start_interval: chrono::NaiveDateTime,
@@ -1160,7 +1160,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureMarketSuspendRegionSum1 {
         self.regionid == key.regionid && self.suspension_id == key.suspension_id
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureMarketSuspendRegionSum1PrimaryKey {
     pub regionid: String,
     pub suspension_id: String,
@@ -1364,7 +1364,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureMarketSuspendSchedule1 {
             && self.regionid == key.regionid
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureMarketSuspendSchedule1PrimaryKey {
     pub day_type: String,
     pub effectivedate: chrono::NaiveDateTime,
@@ -1681,7 +1681,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureMarketSuspendScheduleTrk1 {
         self.effectivedate == key.effectivedate
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureMarketSuspendScheduleTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
 }
@@ -1866,7 +1866,7 @@ impl crate::CompareWithPrimaryKey for ForceMajeureOverriderrp1 {
             && self.startperiod == key.startperiod
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ForceMajeureOverriderrp1PrimaryKey {
     pub regionid: String,
     pub startdate: chrono::NaiveDateTime,
@@ -2090,7 +2090,7 @@ impl crate::CompareWithPrimaryKey for ApRegionapc1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ApRegionapc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub regionid: String,
@@ -2287,7 +2287,7 @@ impl crate::CompareWithPrimaryKey for ApRegionapcintervals1 {
             && self.versionno == key.versionno
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct ApRegionapcintervals1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
