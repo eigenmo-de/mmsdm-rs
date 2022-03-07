@@ -3,3 +3,6 @@
 .cargo-registry
 codegen/target
 __pycache__
+Cargo.lock
+mmsdm*.json
+table_mapping*.csv

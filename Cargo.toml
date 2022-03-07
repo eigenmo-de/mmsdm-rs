@@ -31,40 +31,40 @@ name = "download_and_parse"
 required-features = ["dispatch"]
 
 [dependencies]
-log = "0.4"
-zip = "0.5"
-csv = "1.1"
-chrono-tz = "0.5"
-thiserror = "1"
-rust_decimal = "1"
-serde_json = "1"
-num-traits = "0.2"
-cfg-if = "1"
+log = "0.4.14"
+zip = "0.5.13"
+csv = "1.1.6"
+chrono-tz = "0.6.1"
+thiserror = "1.0.30"
+rust_decimal = "1.22.0"
+serde_json = "1.0.79"
+num-traits = "0.2.14"
+cfg-if = "1.0.0"
 
 [dependencies.serde]
-version = "1"
+version = "1.0.136"
 features = ["derive"]
 
 [dependencies.chrono]
-version = "0.4"
+version = "0.4.19"
 features = ["serde"]
 
 [dependencies.arrow2]
-version = "0.6"
+version = "0.6.2"
 features = ["io_csv", "io_csv_read"]
 optional = true
 
 [dependencies.parquet2]
-version = "0.5"
+version = "0.5.2"
 optional = true
 
 [dependencies.tiberius]
-version = "0.6"
+version = "0.7.1"
 features = ["rust_decimal", "chrono"]
 optional = true
 
 [dependencies.futures]
-version = "0.3"
+version = "0.3.21"
 optional = true
 
 [dependencies.bincode]
