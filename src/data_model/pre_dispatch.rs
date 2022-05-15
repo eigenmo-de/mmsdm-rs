@@ -85,7 +85,7 @@ impl crate::PrimaryKey for PredispatchBlockedConstraints1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchBlockedConstraints1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -99,9 +99,9 @@ impl crate::ArrowSchema for PredispatchBlockedConstraints1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut constraintid_array = Vec::new();
         for (_, row) in partition {
@@ -109,16 +109,16 @@ impl crate::ArrowSchema for PredispatchBlockedConstraints1 {
             constraintid_array.push(row.constraintid);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -249,7 +249,7 @@ impl crate::PrimaryKey for PredispatchCaseSolution1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchCaseSolution1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -349,9 +349,9 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut solutionstatus_array = Vec::new();
@@ -479,86 +479,87 @@ impl crate::ArrowSchema for PredispatchCaseSolution1 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(runno_array)
+                    arrow2::array::PrimitiveArray::from_vec(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(solutionstatus_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(spdversion_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(spdversion_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(nonphysicallosses_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalobjective_array)
                         .to(arrow2::datatypes::DataType::Decimal(27, 10)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalareagenviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalinterconnectorviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalgenericviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalramprateviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalunitmwcapacityviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(total5minviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalregviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(total6secviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(total60secviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalasprofileviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalenergyconstrviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalenergyofferviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -679,7 +680,7 @@ impl crate::PrimaryKey for PredispatchConstraintSolution5PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchConstraintSolution5 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -729,9 +730,9 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut constraintid_array = Vec::new();
@@ -799,58 +800,60 @@ impl crate::ArrowSchema for PredispatchConstraintSolution5 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     constraintid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rhs_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginalvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(violationdegree_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconid_versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lhs_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -988,7 +991,7 @@ impl crate::PrimaryKey for PredispatchInterconnectorSoln3PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -1095,9 +1098,9 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -1227,91 +1230,94 @@ impl crate::ArrowSchema for PredispatchInterconnectorSoln3 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(meteredmwflow_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwlosses_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginalvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(violationdegree_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(exportlimit_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(importlimit_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginalloss_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(exportgenconid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(importgenconid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(exportgenconid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(importgenconid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(fcasexportlimit_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(fcasimportlimit_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(local_price_adjustment_export_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(locally_constrained_export_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(local_price_adjustment_import_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(locally_constrained_import_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1504,7 +1510,7 @@ impl crate::PrimaryKey for PredispatchInterconnectrSens1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -1751,9 +1757,9 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -2089,209 +2095,210 @@ impl crate::ArrowSchema for PredispatchInterconnectrSens1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_active_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow1_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow2_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow3_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow4_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow5_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow6_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow7_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow8_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow9_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow10_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow11_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow12_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow13_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow14_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow15_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow16_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow17_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow18_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow19_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow20_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow21_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow22_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow23_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow24_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow25_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow26_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow27_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow28_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow29_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow30_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow31_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow32_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow33_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow34_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow35_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow36_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow37_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow38_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow39_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow40_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow41_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow42_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mwflow43_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2485,7 +2492,7 @@ impl crate::PrimaryKey for PredispatchUnitSolution2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchUnitSolution2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -2728,9 +2735,9 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut duid_array = Vec::new();
@@ -3061,206 +3068,208 @@ impl crate::ArrowSchema for PredispatchUnitSolution2 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(tradetype_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     connectionpointid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(agcstatus_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(dispatchmode_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(initialmw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalcleared_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5min_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60sec_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6sec_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5min_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60sec_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6sec_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rampdownrate_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rampuprate_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(downepf_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(upepf_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginal5minvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginal60secvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginal6secvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginalvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(violation5mindegree_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(violation60secdegree_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(violation6secdegree_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(violationdegree_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerreg_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raisereg_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(availability_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregflags_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(semidispatchcap_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3388,7 +3397,7 @@ impl crate::PrimaryKey for PredispatchOffertrk1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchOffertrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -3416,9 +3425,9 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut bidtype_array = Vec::new();
@@ -3438,32 +3447,35 @@ impl crate::ArrowSchema for PredispatchOffertrk1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(periodid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidsettlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(bidofferdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3621,7 +3633,7 @@ impl crate::PrimaryKey for PredispatchRegionPrices1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchRegionPrices1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -3770,9 +3782,9 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -3982,135 +3994,137 @@ impl crate::ArrowSchema for PredispatchRegionPrices1 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp1_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep1_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp2_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep2_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp3_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep3_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp4_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep4_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp5_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep5_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp6_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep6_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp7_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep7_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrp8_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(eep8_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregrrp_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -4304,7 +4318,7 @@ impl crate::PrimaryKey for PredispatchPricesensitivities1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchPricesensitivities1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -4551,9 +4565,9 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -4889,207 +4903,209 @@ impl crate::ArrowSchema for PredispatchPricesensitivities1 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep1_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep2_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep3_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep4_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep5_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep6_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep7_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep8_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep9_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep10_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep11_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep12_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep13_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep14_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep15_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep16_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep17_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep18_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep19_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep20_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep21_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep22_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep23_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep24_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep25_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep26_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep27_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep28_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep29_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep30_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep31_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep32_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep33_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep34_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep35_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_active_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep36_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep37_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep38_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep39_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep40_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep41_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep42_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(rrpeep43_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -5409,7 +5425,7 @@ impl crate::PrimaryKey for PredispatchRegionSolution6PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchRegionSolution6 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -5971,9 +5987,9 @@ impl crate::ArrowSchema for PredispatchRegionSolution6 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -6750,459 +6766,461 @@ impl crate::ArrowSchema for PredispatchRegionSolution6 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totaldemand_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(availablegeneration_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(availableload_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(demandforecast_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(dispatchablegeneration_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(dispatchableload_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(netinterchange_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(excessgeneration_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5mindispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minlocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minlocalprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minlocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minsupplyprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secdispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60seclocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60seclocalprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60seclocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secsupplyprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secdispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6seclocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6seclocalprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6seclocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secsupplyprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5mindispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minlocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minlocalprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minlocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minsupplyprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secdispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60seclocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60seclocalprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60seclocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secsupplyprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secdispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6seclocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6seclocalprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6seclocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secsupplyprice_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(initialsupply_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(clearedsupply_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerreglocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerreglocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raisereglocaldispatch_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raisereglocalreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregreq_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minlocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raisereglocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60seclocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6seclocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minlocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerreglocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60seclocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6seclocalviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secviolation_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise6secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise60secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raise5minactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(raiseregactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower6secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower60secactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lower5minactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lowerregactualavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(decavailability_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lorsurplus_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lrcsurplus_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(totalintermittentgeneration_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(demand_and_nonschedgen_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(uigf_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(semischedule_clearedmw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(semischedule_compliancemw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ss_solar_uigf_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ss_wind_uigf_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ss_solar_clearedmw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ss_wind_clearedmw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ss_solar_compliancemw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(ss_wind_compliancemw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(wdr_initialmw_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(wdr_available_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(wdr_dispatched_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -7320,7 +7338,7 @@ impl crate::PrimaryKey for PredispatchScenarioDemand1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchScenarioDemand1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -7337,9 +7355,9 @@ impl crate::ArrowSchema for PredispatchScenarioDemand1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut scenario_array = Vec::new();
@@ -7353,17 +7371,21 @@ impl crate::ArrowSchema for PredispatchScenarioDemand1 {
             deltamw_array.push(row.deltamw);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(scenario_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(deltamw_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(scenario_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(deltamw_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -7465,7 +7487,7 @@ impl crate::PrimaryKey for PredispatchScenarioDemandTrk1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -7486,9 +7508,9 @@ impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut authorisedby_array = Vec::new();
@@ -7502,23 +7524,25 @@ impl crate::ArrowSchema for PredispatchScenarioDemandTrk1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_slice(versionno_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -7665,7 +7689,7 @@ impl crate::PrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -7743,9 +7767,9 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut runno_array = Vec::new();
         let mut intervention_array = Vec::new();
@@ -7836,68 +7860,72 @@ impl crate::ArrowSchema for PredispatchRegionfcasrequirement2 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     predispatchseqno_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(runno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(intervention_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(genconid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(genconid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconeffectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(genconversionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(marginalvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(base_cost_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(adjusted_cost_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(estimated_cmpf_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(estimated_crmpf_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(recovery_factor_cmpf_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(recovery_factor_crmpf_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -8002,7 +8030,7 @@ impl crate::PrimaryKey for PredispatchLocalPrice1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchLocalPrice1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::Date32,
@@ -8025,9 +8053,9 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut datetime_array = Vec::new();
         let mut duid_array = Vec::new();
@@ -8055,31 +8083,33 @@ impl crate::ArrowSchema for PredispatchLocalPrice1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(predispatchseqno_array)
+                    arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
                         .to(arrow2::datatypes::DataType::Date32),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(local_price_adjustment_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(locally_constrained_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -8202,7 +8232,7 @@ impl crate::PrimaryKey for PredispatchMnspbidtrk1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "predispatchseqno",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -8235,9 +8265,9 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut predispatchseqno_array = Vec::new();
         let mut linkid_array = Vec::new();
         let mut periodid_array = Vec::new();
@@ -8264,35 +8294,38 @@ impl crate::ArrowSchema for PredispatchMnspbidtrk1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     predispatchseqno_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(periodid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(periodid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(settlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(offerdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)

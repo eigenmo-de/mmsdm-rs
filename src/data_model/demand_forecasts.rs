@@ -95,7 +95,7 @@ impl crate::PrimaryKey for OperationalDemandActual3PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for OperationalDemandActual3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "interval_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -121,9 +121,9 @@ impl crate::ArrowSchema for OperationalDemandActual3 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut interval_datetime_array = Vec::new();
         let mut regionid_array = Vec::new();
         let mut operational_demand_array = Vec::new();
@@ -149,27 +149,29 @@ impl crate::ArrowSchema for OperationalDemandActual3 {
             wdr_estimate_array.push(row.wdr_estimate);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(operational_demand_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(operational_demand_adjustment_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_estimate_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_estimate_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -275,7 +277,7 @@ impl crate::PrimaryKey for OperationalDemandForecast1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for OperationalDemandForecast1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "interval_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -306,9 +308,9 @@ impl crate::ArrowSchema for OperationalDemandForecast1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut interval_datetime_array = Vec::new();
         let mut regionid_array = Vec::new();
         let mut load_date_array = Vec::new();
@@ -341,34 +343,35 @@ impl crate::ArrowSchema for OperationalDemandForecast1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(load_date_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(operational_demand_poe10_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(operational_demand_poe50_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(operational_demand_poe90_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -498,7 +501,7 @@ impl crate::PrimaryKey for DemandIntermittentClusterAvail2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandIntermittentClusterAvail2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "tradingdate",
                 arrow2::datatypes::DataType::Date64,
@@ -533,9 +536,9 @@ impl crate::ArrowSchema for DemandIntermittentClusterAvail2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut tradingdate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -567,31 +570,33 @@ impl crate::ArrowSchema for DemandIntermittentClusterAvail2 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(clusterid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(clusterid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(elements_unavailable_array)
                         .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(elements_available_array)
                         .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -708,7 +713,7 @@ impl crate::PrimaryKey for DemandIntermittentClusterAvailDay1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandIntermittentClusterAvailDay1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "tradingdate",
                 arrow2::datatypes::DataType::Date64,
@@ -728,9 +733,9 @@ impl crate::ArrowSchema for DemandIntermittentClusterAvailDay1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut tradingdate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -742,19 +747,21 @@ impl crate::ArrowSchema for DemandIntermittentClusterAvailDay1 {
             clusterid_array.push(row.clusterid);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(clusterid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(clusterid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -898,7 +905,7 @@ impl crate::PrimaryKey for DemandIntermittentDsPred1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandIntermittentDsPred1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -944,9 +951,9 @@ impl crate::ArrowSchema for DemandIntermittentDsPred1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut run_datetime_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -994,43 +1001,45 @@ impl crate::ArrowSchema for DemandIntermittentDsPred1 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(origin_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(origin_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(forecast_priority_array)
+                    arrow2::array::PrimitiveArray::from_vec(forecast_priority_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(forecast_mean_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(forecast_poe10_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(forecast_poe50_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(forecast_poe90_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1174,7 +1183,7 @@ impl crate::PrimaryKey for DemandIntermittentDsRun1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandIntermittentDsRun1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -1223,9 +1232,9 @@ impl crate::ArrowSchema for DemandIntermittentDsRun1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut run_datetime_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -1270,43 +1279,49 @@ impl crate::ArrowSchema for DemandIntermittentDsRun1 {
             transaction_id_array.push(row.transaction_id);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(origin_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(origin_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(forecast_priority_array)
+                    arrow2::array::PrimitiveArray::from_vec(forecast_priority_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(comments_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(comments_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(model_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(model_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(participant_timestamp_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(suppressed_aemo_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(suppressed_participant_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(transaction_id_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(transaction_id_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1412,7 +1427,7 @@ impl crate::PrimaryKey for ForecastIntermittentGen1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ForecastIntermittentGen1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -1438,9 +1453,9 @@ impl crate::ArrowSchema for ForecastIntermittentGen1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut run_datetime_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut start_interval_datetime_array = Vec::new();
@@ -1461,30 +1476,31 @@ impl crate::ArrowSchema for ForecastIntermittentGen1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(start_interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(start_interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(end_interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(end_interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1604,7 +1620,7 @@ impl crate::PrimaryKey for ForecastIntermittentGenData1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ForecastIntermittentGenData1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "run_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -1640,9 +1656,9 @@ impl crate::ArrowSchema for ForecastIntermittentGenData1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut run_datetime_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut interval_datetime_array = Vec::new();
@@ -1682,38 +1698,39 @@ impl crate::ArrowSchema for ForecastIntermittentGenData1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(run_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powermean_array)
                         .to(arrow2::datatypes::DataType::Decimal(9, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powerpoe50_array)
                         .to(arrow2::datatypes::DataType::Decimal(9, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powerpoelow_array)
                         .to(arrow2::datatypes::DataType::Decimal(9, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powerpoehigh_array)
                         .to(arrow2::datatypes::DataType::Decimal(9, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1832,7 +1849,7 @@ impl crate::PrimaryKey for DemandIntermittentGenLimit1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandIntermittentGenLimit1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "tradingdate",
                 arrow2::datatypes::DataType::Date64,
@@ -1853,9 +1870,9 @@ impl crate::ArrowSchema for DemandIntermittentGenLimit1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut tradingdate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -1873,23 +1890,25 @@ impl crate::ArrowSchema for DemandIntermittentGenLimit1 {
             uppermwlimit_array.push(row.uppermwlimit);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uppermwlimit_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uppermwlimit_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2006,7 +2025,7 @@ impl crate::PrimaryKey for DemandIntermittentGenLimitDay1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandIntermittentGenLimitDay1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "tradingdate",
                 arrow2::datatypes::DataType::Date64,
@@ -2037,9 +2056,9 @@ impl crate::ArrowSchema for DemandIntermittentGenLimitDay1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut tradingdate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -2057,29 +2076,31 @@ impl crate::ArrowSchema for DemandIntermittentGenLimitDay1 {
             authorisedbyparticipantid_array.push(row.authorisedbyparticipantid);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     authorisedbyuser_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     authorisedbyparticipantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2203,7 +2224,7 @@ impl crate::PrimaryKey for DemandMtpasaIntermittentAvail2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandMtpasaIntermittentAvail2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "tradingdate",
                 arrow2::datatypes::DataType::Date64,
@@ -2234,9 +2255,9 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentAvail2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut tradingdate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -2264,31 +2285,33 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentAvail2 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(clusterid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(clusterid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(elements_unavailable_array)
                         .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(elements_available_array)
                         .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2405,7 +2428,7 @@ impl crate::PrimaryKey for DemandMtpasaIntermittentLimit1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandMtpasaIntermittentLimit1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "tradingdate",
                 arrow2::datatypes::DataType::Date64,
@@ -2432,9 +2455,9 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentLimit1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut tradingdate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut offerdatetime_array = Vec::new();
@@ -2452,29 +2475,31 @@ impl crate::ArrowSchema for DemandMtpasaIntermittentLimit1 {
             authorisedbyparticipantid_array.push(row.authorisedbyparticipantid);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(tradingdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdatetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uppermwlimit_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uppermwlimit_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     authorisedbyuser_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     authorisedbyparticipantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2625,7 +2650,7 @@ impl crate::PrimaryKey for DemandPeriod1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandPeriod1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -2676,9 +2701,9 @@ impl crate::ArrowSchema for DemandPeriod1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut settlementdate_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -2732,50 +2757,51 @@ impl crate::ArrowSchema for DemandPeriod1 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(resdemand_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(demand90probability_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(demand10probability_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mr_schedule_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2903,7 +2929,7 @@ impl crate::PrimaryKey for DemandTrk1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for DemandTrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -2935,9 +2961,9 @@ impl crate::ArrowSchema for DemandTrk1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut regionid_array = Vec::new();
         let mut offerdate_array = Vec::new();
@@ -2961,32 +2987,35 @@ impl crate::ArrowSchema for DemandTrk1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(offerdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(offerdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3101,7 +3130,7 @@ impl crate::PrimaryKey for RooftopActual2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for RooftopActual2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "interval_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -3123,9 +3152,9 @@ impl crate::ArrowSchema for RooftopActual2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut interval_datetime_array = Vec::new();
         let mut r#type_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -3151,27 +3180,29 @@ impl crate::ArrowSchema for RooftopActual2 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(r#type_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(r#type_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(power_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(qi_array)
                         .to(arrow2::datatypes::DataType::Decimal(2, 1)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3290,7 +3321,7 @@ impl crate::PrimaryKey for RooftopForecast1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for RooftopForecast1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "version_datetime",
                 arrow2::datatypes::DataType::Date64,
@@ -3330,9 +3361,9 @@ impl crate::ArrowSchema for RooftopForecast1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut version_datetime_array = Vec::new();
         let mut regionid_array = Vec::new();
         let mut interval_datetime_array = Vec::new();
@@ -3372,38 +3403,39 @@ impl crate::ArrowSchema for RooftopForecast1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(version_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(interval_datetime_array)
+                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powermean_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powerpoe50_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powerpoelow_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(powerpoehigh_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)

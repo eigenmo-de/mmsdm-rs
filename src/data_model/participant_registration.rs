@@ -122,7 +122,7 @@ impl crate::PrimaryKey for ParticipantRegistrationBidduiddetails1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
@@ -164,9 +164,9 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut duid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -219,43 +219,45 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxcapacity_array)
                         .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(minenablementlevel_array)
                         .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxenablementlevel_array)
                         .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxlowerangle_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxupperangle_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -371,7 +373,7 @@ impl crate::PrimaryKey for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
@@ -397,9 +399,9 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut duid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -419,27 +421,29 @@ impl crate::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -535,7 +539,7 @@ impl crate::PrimaryKey for ParticipantRegistrationDispatchableunit1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("duname", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new("unittype", arrow2::datatypes::DataType::LargeUtf8, true),
@@ -543,9 +547,9 @@ impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut duid_array = Vec::new();
         let mut duname_array = Vec::new();
         let mut unittype_array = Vec::new();
@@ -557,16 +561,19 @@ impl crate::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duname_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(unittype_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duname_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(unittype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -686,7 +693,7 @@ impl crate::PrimaryKey for ParticipantRegistrationDualloc1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -707,9 +714,9 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut duid_array = Vec::new();
@@ -727,23 +734,25 @@ impl crate::ArrowSchema for ParticipantRegistrationDualloc1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -889,7 +898,7 @@ impl crate::PrimaryKey for ParticipantRegistrationDudetail4PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationDudetail4 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -990,9 +999,9 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail4 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut duid_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -1062,64 +1071,72 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetail4 {
             dispatchsubtype_array.push(row.dispatchsubtype);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     connectionpointid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(voltlevel_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(voltlevel_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(registeredcapacity_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(agccapability_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(agccapability_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxcapacity_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(starttype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(normallyonflag_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(starttype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(normallyonflag_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     physicaldetailsflag_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     spinningreserveflag_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     intermittentflag_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     semi_schedule_flag_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxrateofchangeup_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxrateofchangedown_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchsubtype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchsubtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1254,7 +1271,7 @@ impl crate::PrimaryKey for ParticipantRegistrationDudetailsummary5PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("start_date", arrow2::datatypes::DataType::Date64, false),
             arrow2::datatypes::Field::new("end_date", arrow2::datatypes::DataType::Date64, false),
@@ -1343,9 +1360,9 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut duid_array = Vec::new();
         let mut start_date_array = Vec::new();
         let mut end_date_array = Vec::new();
@@ -1436,68 +1453,76 @@ impl crate::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
             dispatchsubtype_array.push(row.dispatchsubtype);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(start_date_array)
+                    arrow2::array::PrimitiveArray::from_vec(start_date_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(end_date_array)
+                    arrow2::array::PrimitiveArray::from_vec(end_date_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     connectionpointid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(transmissionlossfactor_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(starttype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(starttype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(distributionlossfactor_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(minimum_energy_price_array)
                         .to(arrow2::datatypes::DataType::Decimal(9, 2)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maximum_energy_price_array)
                         .to(arrow2::datatypes::DataType::Decimal(9, 2)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(schedule_type_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(schedule_type_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(min_ramp_rate_up_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(min_ramp_rate_down_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(max_ramp_rate_up_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(max_ramp_rate_down_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(is_aggregated_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchsubtype_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchsubtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1637,7 +1662,7 @@ impl crate::PrimaryKey for ParticipantRegistrationGenmeter1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("meterid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new("gensetid", arrow2::datatypes::DataType::LargeUtf8, true),
             arrow2::datatypes::Field::new(
@@ -1689,9 +1714,9 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut meterid_array = Vec::new();
         let mut gensetid_array = Vec::new();
         let mut connectionpointid_array = Vec::new();
@@ -1736,54 +1761,60 @@ impl crate::ArrowSchema for ParticipantRegistrationGenmeter1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(meterid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensetid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(meterid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensetid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     connectionpointid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(metertype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(meterclass_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(metertype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(meterclass_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(voltagelevel_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(applydate_array)
+                    arrow2::array::PrimitiveArray::from_vec(applydate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(comdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(decomdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -1909,7 +1940,7 @@ impl crate::PrimaryKey for ParticipantRegistrationGenunits2PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "gensetid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2000,9 +2031,9 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut gensetid_array = Vec::new();
         let mut stationid_array = Vec::new();
         let mut setlossfactor_array = Vec::new();
@@ -2069,50 +2100,61 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunits2 {
             co2e_data_source_array.push(row.co2e_data_source);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(setlossfactor_array)
                         .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(cdindicator_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(agcflag_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(spinningflag_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(cdindicator_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(agcflag_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(spinningflag_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(voltlevel_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(registeredcapacity_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(starttype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mktgeneratorind_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(normalstatus_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dispatchtype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(starttype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mktgeneratorind_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(normalstatus_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxcapacity_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensettype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensetname_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensettype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gensetname_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(co2e_emissions_factor_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     co2e_energy_source_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     co2e_data_source_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2239,7 +2281,7 @@ impl crate::PrimaryKey for ParticipantRegistrationGenunitsUnit1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "gensetid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2284,9 +2326,9 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut gensetid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -2332,41 +2374,42 @@ impl crate::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(gensetid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     unit_grouping_label_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(unit_count_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(unit_size_array)
                         .to(arrow2::datatypes::DataType::Decimal(8, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(unit_max_size_array)
                         .to(arrow2::datatypes::DataType::Decimal(8, 3)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(aggregation_flag_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2500,7 +2543,7 @@ impl crate::PrimaryKey for ParticipantRegistrationMnspInterconnector2PrimaryKey 
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("linkid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
@@ -2563,9 +2606,9 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut linkid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -2633,56 +2676,60 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
             });
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(linkid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     interconnectorid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(fromregion_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(toregion_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(fromregion_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(toregion_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maxcapacity_array)
                         .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(tlf_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 7)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lhsfactor_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 7)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(meterflowconstant_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 7)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(from_region_tlf_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 7)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(to_region_tlf_array)
                         .to(arrow2::datatypes::DataType::Decimal(12, 7)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2802,7 +2849,7 @@ impl crate::PrimaryKey for ParticipantRegistrationMnspParticipant1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "interconnectorid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2827,9 +2874,9 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut interconnectorid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -2847,27 +2894,27 @@ impl crate::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -2969,7 +3016,7 @@ impl crate::PrimaryKey for ParticipantRegistrationParticipant1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationParticipant1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "participantid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -2996,9 +3043,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipant1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut participantid_array = Vec::new();
         let mut participantclassid_array = Vec::new();
         let mut name_array = Vec::new();
@@ -3016,23 +3063,27 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipant1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     participantclassid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(name_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(acn_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(primarybusiness_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(name_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(acn_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(primarybusiness_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3152,7 +3203,7 @@ impl crate::PrimaryKey for ParticipantRegistrationParticipantaccount1PrimaryKey 
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "accountname",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3219,9 +3270,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut accountname_array = Vec::new();
         let mut participantid_array = Vec::new();
         let mut accountnumber_array = Vec::new();
@@ -3275,47 +3326,54 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
             abn_array.push(row.abn);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(accountname_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(accountname_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(accountnumber_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(bankname_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(accountnumber_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(bankname_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(banknumber_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(branchname_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(branchname_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(branchnumber_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(bsbnumber_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(bsbnumber_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(nemmcocreditaccountnumber_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(nemmcodebitaccountnumber_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(abn_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(abn_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3409,7 +3467,7 @@ impl crate::PrimaryKey for ParticipantRegistrationParticipantcategory1PrimaryKey
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "participantcategoryid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3424,9 +3482,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut participantcategoryid_array = Vec::new();
         let mut description_array = Vec::new();
         let mut lastchanged_array = Vec::new();
@@ -3436,17 +3494,18 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantcategoryid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3547,7 +3606,7 @@ impl crate::PrimaryKey for ParticipantRegistrationParticipantcategoryalloc1Prima
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "participantcategoryid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3562,9 +3621,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut participantcategoryid_array = Vec::new();
         let mut participantid_array = Vec::new();
         let mut lastchanged_array = Vec::new();
@@ -3574,19 +3633,19 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantcategoryid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3680,7 +3739,7 @@ impl crate::PrimaryKey for ParticipantRegistrationParticipantclass1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "participantclassid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -3695,9 +3754,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut participantclassid_array = Vec::new();
         let mut description_array = Vec::new();
         let mut lastchanged_array = Vec::new();
@@ -3707,17 +3766,18 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantclass1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantclassid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3822,7 +3882,7 @@ impl crate::PrimaryKey for ParticipantRegistrationParticipantcreditdetail1Primar
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -3852,9 +3912,9 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut participantid_array = Vec::new();
         let mut creditlimit_array = Vec::new();
@@ -3875,29 +3935,30 @@ impl crate::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(creditlimit_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -3991,7 +4052,7 @@ impl crate::PrimaryKey for ParticipantRegistrationPmsGroup1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationPmsGroup1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "groupid",
                 arrow2::datatypes::DataType::Decimal(20, 0),
@@ -4002,9 +4063,9 @@ impl crate::ArrowSchema for ParticipantRegistrationPmsGroup1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut groupid_array = Vec::new();
         let mut createddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
@@ -4018,21 +4079,21 @@ impl crate::ArrowSchema for ParticipantRegistrationPmsGroup1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(groupid_array)
+                    arrow2::array::PrimitiveArray::from_vec(groupid_array)
                         .to(arrow2::datatypes::DataType::Decimal(20, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(createddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -4158,7 +4219,7 @@ impl crate::PrimaryKey for ParticipantRegistrationPmsGroupnmi1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "groupnmiid",
                 arrow2::datatypes::DataType::Decimal(20, 0),
@@ -4215,9 +4276,9 @@ impl crate::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut groupnmiid_array = Vec::new();
         let mut groupid_array = Vec::new();
         let mut versionfrom_array = Vec::new();
@@ -4284,64 +4345,68 @@ impl crate::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(groupnmiid_array)
+                    arrow2::array::PrimitiveArray::from_vec(groupnmiid_array)
                         .to(arrow2::datatypes::DataType::Decimal(20, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(groupid_array)
                         .to(arrow2::datatypes::DataType::Decimal(20, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(versionfrom_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(versionto_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(nmi_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(sitename_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(nmi_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(sitename_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(nerrgrouppremises_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     baselinemethodologyid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mrc_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 3)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mrcreason_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(retailcustomer_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mrcreason_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(retailcustomer_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(suspended_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(unavailable_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(approveddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -4465,7 +4530,7 @@ impl crate::PrimaryKey for ParticipantRegistrationPmsGroupservice1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "groupserviceid",
                 arrow2::datatypes::DataType::Decimal(20, 0),
@@ -4513,9 +4578,9 @@ impl crate::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut groupserviceid_array = Vec::new();
         let mut groupid_array = Vec::new();
         let mut versionfrom_array = Vec::new();
@@ -4570,55 +4635,61 @@ impl crate::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(groupserviceid_array)
+                    arrow2::array::PrimitiveArray::from_vec(groupserviceid_array)
                         .to(arrow2::datatypes::DataType::Decimal(20, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(groupid_array)
                         .to(arrow2::datatypes::DataType::Decimal(20, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(versionfrom_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(versionto_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(startdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(enddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(market_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(servicetype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entitytype_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entityid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(market_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(servicetype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entitytype_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(entityid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(mrc_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 3)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mrcreason_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(mrcreason_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(maximumrampratepermin_array)
                         .to(arrow2::datatypes::DataType::Decimal(10, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(region_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(region_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(approveddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -4738,7 +4809,7 @@ impl crate::PrimaryKey for ParticipantRegistrationStadualloc1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, false),
             arrow2::datatypes::Field::new(
                 "effectivedate",
@@ -4759,9 +4830,9 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut duid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut stationid_array = Vec::new();
@@ -4779,23 +4850,25 @@ impl crate::ArrowSchema for ParticipantRegistrationStadualloc1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(duid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -4905,7 +4978,7 @@ impl crate::PrimaryKey for ParticipantRegistrationStation1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationStation1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "stationid",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -4932,9 +5005,9 @@ impl crate::ArrowSchema for ParticipantRegistrationStation1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut stationid_array = Vec::new();
         let mut stationname_array = Vec::new();
         let mut address1_array = Vec::new();
@@ -4960,25 +5033,34 @@ impl crate::ArrowSchema for ParticipantRegistrationStation1 {
             connectionpointid_array.push(row.connectionpointid);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationname_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address1_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address2_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address3_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address4_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(city_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(state_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postcode_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationname_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address1_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address2_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address3_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(address4_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(city_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(state_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(postcode_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     connectionpointid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -5096,7 +5178,7 @@ impl crate::PrimaryKey for ParticipantRegistrationStationoperatingstatus1Primary
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -5127,9 +5209,9 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut stationid_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -5151,28 +5233,31 @@ impl crate::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(status_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -5292,7 +5377,7 @@ impl crate::PrimaryKey for ParticipantRegistrationStationowner1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -5317,9 +5402,9 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut participantid_array = Vec::new();
         let mut stationid_array = Vec::new();
@@ -5337,25 +5422,26 @@ impl crate::ArrowSchema for ParticipantRegistrationStationowner1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(stationid_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -5471,7 +5557,7 @@ impl crate::PrimaryKey for ParticipantRegistrationStationownertrk1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "effectivedate",
                 arrow2::datatypes::DataType::Date64,
@@ -5501,9 +5587,9 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut effectivedate_array = Vec::new();
         let mut participantid_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -5523,29 +5609,30 @@ impl crate::ArrowSchema for ParticipantRegistrationStationownertrk1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(effectivedate_array)
+                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     participantid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(versionno_array)
+                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(authoriseddate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)

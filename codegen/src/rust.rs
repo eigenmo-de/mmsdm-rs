@@ -138,12 +138,12 @@ impl mms::TableColumn {
     fn as_arrow_array_constructor(&self) -> String {
         match (&self.data_type, self.mandatory) {
             (_, _) if self.comment.contains("YYYYMMDDPPP") => format!(
-                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
             ),
             (_, _) if self.comment.contains("YYYYMMDDPP") => format!(
-                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
             ),
@@ -168,17 +168,17 @@ impl mms::TableColumn {
             ),
 
             (mms::DataType::Date | mms::DataType::DateTime, true) => format!(
-                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
             ),
             (mms::DataType::Decimal { .. }, true) => format!(
-                "arrow2::array::PrimitiveArray::from_slice({}).to({})",
+                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
             ),
             (mms::DataType::Integer { .. }, true) => format!(
-                "arrow2::array::PrimitiveArray::from_slice({})",
+                "arrow2::array::PrimitiveArray::from_vec({})",
                 self.as_arrow_array_name()
             ),
             (mms::DataType::Date | mms::DataType::DateTime, false) => format!(
@@ -202,7 +202,7 @@ impl mms::TableColumn {
 impl mms::TableColumns {
     fn as_arrow_schema(&self) -> String {
         format!(
-            "arrow2::datatypes::Schema::new(vec![
+            "arrow2::datatypes::Schema::from(vec![
     {fields}
 ])",
             fields = self
@@ -441,6 +441,19 @@ pub fn run() -> anyhow::Result<()> {
                         };
                         field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
+                    // } else if matches!(col.data_type, mms::DataType::Decimal { .. })
+                    // {
+                    //     let mut field = codegen::Field::new(
+                    //         &format!("pub {}", col.field_name()),
+                    //         &col.to_rust_type(),
+                    //     );
+                    //     if col.mandatory {
+                    //         field.annotation(vec!["#[serde(with = \"rust_decimal::serde::str\")]"]);
+                    //     } else {
+                    //         field.annotation(vec!["#[serde(with = \"crate::decimal_opt\")]"]);
+                    //     };
+                    //     field.doc(vec![&col.comment.replace('\t', "")]);
+                    //     current_struct.push_field(field);
                     } else {
                         let mut field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
@@ -687,8 +700,10 @@ pub fn run() -> anyhow::Result<()> {
                 arrow_schema.line(&table.columns.as_arrow_schema());
                 arrow_trait.push_fn(arrow_schema);
 
-                let mut partition_to_batch = codegen::Function::new("partition_to_record_batch");
-                partition_to_batch.ret("crate::Result<arrow2::record_batch::RecordBatch>");
+                let mut partition_to_batch = codegen::Function::new("partition_to_chunk");
+                partition_to_batch.ret(
+                    "crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>",
+                );
                 partition_to_batch.arg(
                     "partition",
                     "std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>",
@@ -711,14 +726,14 @@ pub fn run() -> anyhow::Result<()> {
                 partition_to_batch.line(
                     "}
 
-arrow2::record_batch::RecordBatch::try_new(
-    std::sync::Arc::new(Self::arrow_schema()),
+arrow2::chunk::Chunk::try_new(
+    //std::sync::Arc::new(Self::arrow_schema()),
     vec![",
                 );
 
                 for col in &table.columns.columns {
                     partition_to_batch.line(&format!(
-                        "        std::sync::Arc::new({}),",
+                        "        std::sync::Arc::new({}) as std::sync::Arc<dyn arrow2::array::Array>,",
                         col.as_arrow_array_constructor()
                     ));
                 }

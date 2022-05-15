@@ -152,7 +152,7 @@ impl crate::PrimaryKey for MeterdataAggregateReads1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for MeterdataAggregateReads1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "case_id",
                 arrow2::datatypes::DataType::Decimal(15, 0),
@@ -194,9 +194,9 @@ impl crate::ArrowSchema for MeterdataAggregateReads1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut case_id_array = Vec::new();
         let mut settlementdate_array = Vec::new();
         let mut connectionpointid_array = Vec::new();
@@ -236,41 +236,43 @@ impl crate::ArrowSchema for MeterdataAggregateReads1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(case_id_array)
+                    arrow2::array::PrimitiveArray::from_vec(case_id_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     connectionpointid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     meter_type_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(frmp_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(lr_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(frmp_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(lr_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(importvalue_array)
+                    arrow2::array::PrimitiveArray::from_vec(importvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(exportvalue_array)
+                    arrow2::array::PrimitiveArray::from_vec(exportvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -420,7 +422,7 @@ impl crate::PrimaryKey for MeterdataIndividualReads1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for MeterdataIndividualReads1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "case_id",
                 arrow2::datatypes::DataType::Decimal(15, 0),
@@ -472,9 +474,9 @@ impl crate::ArrowSchema for MeterdataIndividualReads1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut case_id_array = Vec::new();
         let mut settlementdate_array = Vec::new();
         let mut meter_id_array = Vec::new();
@@ -518,45 +520,48 @@ impl crate::ArrowSchema for MeterdataIndividualReads1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(case_id_array)
+                    arrow2::array::PrimitiveArray::from_vec(case_id_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(meter_id_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(meter_id_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     meter_id_suffix_array,
-                )),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(frmp_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(lr_array)),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(frmp_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(lr_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     connectionpointid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     meter_type_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(importvalue_array)
+                    arrow2::array::PrimitiveArray::from_vec(importvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(exportvalue_array)
+                    arrow2::array::PrimitiveArray::from_vec(exportvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -689,7 +694,7 @@ impl crate::PrimaryKey for MeterdataInterconnector1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for MeterdataInterconnector1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "case_id",
                 arrow2::datatypes::DataType::Decimal(15, 0),
@@ -724,9 +729,9 @@ impl crate::ArrowSchema for MeterdataInterconnector1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut case_id_array = Vec::new();
         let mut settlementdate_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -762,36 +767,36 @@ impl crate::ArrowSchema for MeterdataInterconnector1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp_millis()));
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(case_id_array)
+                    arrow2::array::PrimitiveArray::from_vec(case_id_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
                     interconnectorid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(importvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(exportvalue_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(lastchanged_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)
@@ -944,7 +949,7 @@ impl crate::PrimaryKey for MeterdataWdrReads1PrimaryKey {}
 #[cfg(feature = "save_as_parquet")]
 impl crate::ArrowSchema for MeterdataWdrReads1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::new(vec![
+        arrow2::datatypes::Schema::from(vec![
             arrow2::datatypes::Field::new(
                 "market_id",
                 arrow2::datatypes::DataType::LargeUtf8,
@@ -1006,9 +1011,9 @@ impl crate::ArrowSchema for MeterdataWdrReads1 {
         ])
     }
 
-    fn partition_to_record_batch(
+    fn partition_to_chunk(
         partition: std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>,
-    ) -> crate::Result<arrow2::record_batch::RecordBatch> {
+    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
         let mut market_id_array = Vec::new();
         let mut case_id_array = Vec::new();
         let mut settlementdate_array = Vec::new();
@@ -1068,46 +1073,52 @@ impl crate::ArrowSchema for MeterdataWdrReads1 {
             baselinecalculationid_array.push(row.baselinecalculationid);
         }
 
-        arrow2::record_batch::RecordBatch::try_new(
-            std::sync::Arc::new(Self::arrow_schema()),
+        arrow2::chunk::Chunk::try_new(
+            //std::sync::Arc::new(Self::arrow_schema()),
             vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(market_id_array)),
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(market_id_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(case_id_array)
+                    arrow2::array::PrimitiveArray::from_vec(case_id_array)
                         .to(arrow2::datatypes::DataType::Decimal(15, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(settlementdate_array)
+                    arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
                         .to(arrow2::datatypes::DataType::Date64),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(meter_id_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(tni_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(frmp_array)),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(drsp_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(meter_id_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(tni_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(frmp_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(drsp_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_slice(periodid_array)
+                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
                         .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(meteredquantityimport_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(meteredquantityexport_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(baselinequantity_array)
                         .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ),
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(qualityflag_array)),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
+                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(qualityflag_array))
+                    as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(
                     arrow2::array::PrimitiveArray::from(isnoncompliant_array)
                         .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ),
+                ) as std::sync::Arc<dyn arrow2::array::Array>,
                 std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
                     baselinecalculationid_array,
-                )),
+                )) as std::sync::Arc<dyn arrow2::array::Array>,
             ],
         )
         .map_err(Into::into)

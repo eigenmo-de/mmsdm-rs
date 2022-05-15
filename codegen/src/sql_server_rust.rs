@@ -34,7 +34,7 @@ pub fn run() -> anyhow::Result<()> {
         r#"
 use std::collections;
 use crate::data_model;
-use futures::{AsyncRead, AsyncWrite};
+use futures_util::{AsyncRead, AsyncWrite};
 
 impl crate::AemoFile {
     async fn log_file<S>(&self, client: &mut tiberius::Client<S>, key: &crate::FileKey, total_rows: i64) -> crate::Result<i64> 

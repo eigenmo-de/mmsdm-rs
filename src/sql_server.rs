@@ -1,5 +1,5 @@
 use crate::data_model;
-use futures::{AsyncRead, AsyncWrite};
+use futures_util::{AsyncRead, AsyncWrite};
 use std::collections;
 
 impl crate::AemoFile {

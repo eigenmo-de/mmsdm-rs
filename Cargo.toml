@@ -16,11 +16,11 @@ members = [
 
 [[example]]
 name = "parquet_fs"
-required-features = ["save_as_parquet", "dispatch", "sled", "bincode"]
+required-features = ["arrow", "dispatch"]
 
 [[example]]
 name = "parquet"
-required-features = ["save_as_parquet", "dispatch"]
+required-features = ["arrow", "dispatch"]
 
 [[example]]
 name = "load"
@@ -29,50 +29,71 @@ required-features = ["sql_server", "dispatch", "settlement_data"]
 [[example]]
 name = "download_and_parse"
 required-features = ["dispatch"]
+ 
 
-[dependencies]
-log = "0.4.14"
-zip = "0.5.13"
-csv = "1.1.6"
-chrono-tz = "0.6.1"
-thiserror = "1.0.30"
-rust_decimal = "1.22.0"
-serde_json = "1.0.79"
-num-traits = "0.2.14"
-cfg-if = "1.0.0"
+[dependencies.log]
+version = "0.4.14"
+default-features = false
+features = []
+
+[dependencies.zip]
+version = "0.5.13"
+default-features = false
+features = []
+
+[dependencies.csv]
+version = "1.1.6"
+default-features = false
+features = []
+
+[dependencies.chrono-tz]
+version = "0.6.1"
+default-features = false
+features = []
+
+[dependencies.thiserror]
+version = "1.0.30"
+default-features = false
+features = []
+
+[dependencies.rust_decimal]
+version = "1.23.1"
+default-features = false
+features = ["std", "serde"]
+
+[dependencies.serde_json]
+version = "1.0.79"
+default-features = false
+features = ["std"]
+
+[dependencies.num-traits]
+version = "0.2.14"
+default-features = false
+features = []
 
 [dependencies.serde]
 version = "1.0.136"
 features = ["derive"]
+default-features = false
 
 [dependencies.chrono]
 version = "0.4.19"
-features = ["serde"]
+features = ["serde", "std"]
+default-features = false
 
 [dependencies.arrow2]
-version = "0.6.2"
-features = ["io_csv", "io_csv_read"]
+version = "0.11.2"
 optional = true
-
-[dependencies.parquet2]
-version = "0.5.2"
-optional = true
+default-features = false
 
 [dependencies.tiberius]
-version = "0.7.1"
-features = ["rust_decimal", "chrono"]
+version = "0.9.0"
+features = ["rust_decimal", "tds73", "chrono"]
+default-features = false
 optional = true
 
-[dependencies.futures]
+[dependencies.futures-util]
 version = "0.3.21"
-optional = true
-
-[dependencies.bincode]
-version = "1.3.3"
-optional = true
-
-[dependencies.sled]
-version = "0.34.7"
 optional = true
 
 [dev-dependencies]
@@ -89,11 +110,13 @@ futures = "0.3"
 rayon = "1.5"
 once_cell = "1.3"
 bytes = "1"
+bincode = "1.3.3"
+sled = "0.34.7"
 
 
 [features]
-sql_server = ["tiberius", "futures"]
-save_as_parquet = ["parquet2", "arrow2"]
+sql_server = ["tiberius", "futures-util"]
+arrow = ["arrow2"]
 ancillary_services = []
 asoffer = []
 bids = []

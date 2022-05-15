@@ -12,9 +12,31 @@ impl mms::PkColumns {
             .collect::<Vec<_>>();
         format!("primary key ([{}])", cols.join("],["))
     }
+
+    fn merge_check(&self) -> String {
+        use heck::SnakeCase;
+        let mut sql = String::new();
+        for (idx, col) in self.cols.iter().enumerate() {
+            let col = col.to_snake_case();
+            if idx == 0 {
+                sql.push_str(&format!("    tgt.[{0}] = src.[{0}]\n", col));
+            } else {
+                sql.push_str(&format!("    and tgt.[{0}] = src.[{0}]\n", col));
+            }
+        }
+        sql
+    }
 }
 
 impl mms::TableColumns {
+    fn merge_update(&self) -> String {
+        self.columns
+            .iter()
+            .map(|c| format!("tgt.[{0}] = src.[{0}]", c.field_name()))
+            .collect::<Vec<_>>()
+            .join(",\n        ")
+    }
+
     fn get_sql(&self) -> String {
         self.columns
             .iter()
@@ -33,14 +55,14 @@ impl mms::TableColumns {
                 }
             })
             .collect::<Vec<_>>()
-            .join(",\n")
+            .join(",\n        ")
     }
     fn get_column_schema(&self) -> String {
         self.columns
             .iter()
             .map(|c| format!("[{}] {}", c.field_name(), c.data_type.as_sql_type()))
             .collect::<Vec<_>>()
-            .join(",\n")
+            .join(",\n        ")
     }
 }
 
@@ -156,8 +178,57 @@ go
 
                 table_str.push_str(&create_table);
 
-                let insert_proc = format!(
-                    r#"
+                if table
+                    .columns
+                    .columns
+                    .iter()
+                    .any(|col| col.name.to_lowercase() == "lastchanged")
+                {
+                    let merge_proc = format!(
+                        r#"
+create or alter procedure mmsdm_proc.Insert{target_table}
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.{target_table} as tgt 
+using (
+    select 
+        {select_columns_d}
+    from openjson(@data) with (
+        {column_schema}
+    ) d
+) as src 
+on (
+{merge_check}
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        {update_columns}
+when not matched
+    then insert (
+        file_log_id,
+        {insert_columns}
+    ) values (
+        @file_log_id,
+        {select_columns_src}
+    );
+    
+end
+go"#,
+                        target_table = pdr_report.sql_table_name(),
+                        merge_check = table.primary_key_columns.merge_check(),
+                        insert_columns = table.columns.get_columns_sql(None),
+                        select_columns_d = table.columns.get_columns_sql(Some("d")),
+                        select_columns_src = table.columns.get_columns_sql(Some("src")),
+                        update_columns = table.columns.merge_update(),
+                        column_schema = table.columns.get_column_schema(),
+                    );
+                    proc_str.push_str(&merge_proc);
+                } else {
+                    let insert_proc = format!(
+                        r#"
 create or alter procedure mmsdm_proc.Insert{target_table}
     @file_log_id bigint,
     @data nvarchar(max)
@@ -174,12 +245,13 @@ from openjson(@data) with (
 ) d
 end
 go"#,
-                    target_table = pdr_report.sql_table_name(),
-                    insert_columns = table.columns.get_columns_sql(None),
-                    select_columns = table.columns.get_columns_sql(Some("d")),
-                    column_schema = table.columns.get_column_schema(),
-                );
-                proc_str.push_str(&insert_proc);
+                        target_table = pdr_report.sql_table_name(),
+                        insert_columns = table.columns.get_columns_sql(None),
+                        select_columns = table.columns.get_columns_sql(Some("d")),
+                        column_schema = table.columns.get_column_schema(),
+                    );
+                    proc_str.push_str(&insert_proc);
+                }
             }
         }
     }
