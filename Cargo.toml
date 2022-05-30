@@ -12,6 +12,7 @@ resolver = "2"
 members = [
     "codegen",
     "xtask",
+    "crates/*",
 ]
 
 [[example]]
@@ -29,7 +30,10 @@ required-features = ["sql_server", "dispatch", "settlement_data"]
 [[example]]
 name = "download_and_parse"
 required-features = ["dispatch"]
- 
+
+[dependencies.mmsdm_core]
+# version = "0.3.0"
+path = "./crates/mmsdm_core"
 
 [dependencies.log]
 version = "0.4.14"
@@ -39,7 +43,7 @@ features = []
 [dependencies.zip]
 version = "0.5.13"
 default-features = false
-features = []
+features = ["deflate"]
 
 [dependencies.csv]
 version = "1.1.6"
@@ -96,6 +100,157 @@ optional = true
 version = "0.3.21"
 optional = true
 
+[dependencies.mmsdm_ancillary_services]
+# version = "0.1.0"
+path = "./crates/ancillary_services"
+optional = true 
+
+[dependencies.mmsdm_asoffer]
+# version = "0.1.0"
+path = "./crates/asoffer"
+optional = true 
+
+[dependencies.mmsdm_bids]
+# version = "0.1.0"
+path = "./crates/bids"
+optional = true 
+
+[dependencies.mmsdm_billing_config]
+# version = "0.1.0"
+path = "./crates/billing_config"
+optional = true 
+
+[dependencies.mmsdm_billing_run]
+# version = "0.1.0"
+path = "./crates/billing_run"
+optional = true 
+
+[dependencies.mmsdm_configuration]
+# version = "0.1.0"
+path = "./crates/configuration"
+optional = true 
+
+[dependencies.mmsdm_demand_forecasts]
+# version = "0.1.0"
+path = "./crates/demand_forecasts"
+optional = true 
+
+[dependencies.mmsdm_dispatch]
+# version = "0.1.0"
+path = "./crates/dispatch"
+optional = true 
+
+[dependencies.mmsdm_force_majeure]
+# version = "0.1.0"
+path = "./crates/force_majeure"
+optional = true 
+
+[dependencies.mmsdm_gd_instruct]
+# version = "0.1.0"
+path = "./crates/gd_instruct"
+optional = true 
+
+[dependencies.mmsdm_generic_constraint]
+# version = "0.1.0"
+path = "./crates/generic_constraint"
+optional = true 
+
+[dependencies.mmsdm_historical]
+# version = "0.1.0"
+path = "./crates/historical"
+optional = true 
+
+[dependencies.mmsdm_irauction]
+# version = "0.1.0"
+path = "./crates/irauction"
+optional = true 
+
+[dependencies.mmsdm_market_config]
+# version = "0.1.0"
+path = "./crates/market_config"
+optional = true 
+
+[dependencies.mmsdm_market_notice]
+# version = "0.1.0"
+path = "./crates/market_notice"
+optional = true 
+
+[dependencies.mmsdm_mcc_dispatch]
+# version = "0.1.0"
+path = "./crates/mcc_dispatch"
+optional = true 
+
+[dependencies.mmsdm_meter_data]
+# version = "0.1.0"
+path = "./crates/meter_data"
+optional = true 
+
+[dependencies.mmsdm_mtpasa]
+# version = "0.1.0"
+path = "./crates/mtpasa"
+optional = true 
+
+[dependencies.mmsdm_network]
+# version = "0.1.0"
+path = "./crates/network"
+optional = true 
+
+[dependencies.mmsdm_p5min]
+# version = "0.1.0"
+path = "./crates/p5min"
+optional = true 
+
+[dependencies.mmsdm_participant_registration]
+# version = "0.1.0"
+path = "./crates/participant_registration"
+optional = true 
+
+[dependencies.mmsdm_pdpasa]
+# version = "0.1.0"
+path = "./crates/pdpasa"
+optional = true 
+
+[dependencies.mmsdm_pre_dispatch]
+# version = "0.1.0"
+path = "./crates/pre_dispatch"
+optional = true 
+
+[dependencies.mmsdm_prudentials]
+# version = "0.1.0"
+path = "./crates/prudentials"
+optional = true 
+
+[dependencies.mmsdm_reserve_data]
+# version = "0.1.0"
+path = "./crates/reserve_data"
+optional = true 
+
+[dependencies.mmsdm_settlement_config]
+# version = "0.1.0"
+path = "./crates/settlement_config"
+optional = true 
+
+[dependencies.mmsdm_settlement_data]
+# version = "0.1.0"
+path = "./crates/settlement_data"
+optional = true 
+
+[dependencies.mmsdm_stpasa_solution]
+# version = "0.1.0"
+path = "./crates/stpasa_solution"
+optional = true 
+
+[dependencies.mmsdm_trading_data]
+# version = "0.1.0"
+path = "./crates/trading_data"
+optional = true 
+
+[dependencies.mmsdm_voltage_instructions]
+# version = "0.1.0"
+path = "./crates/voltage_instructions"
+optional = true 
+
+
 [dev-dependencies]
 anyhow = "1"
 tiberius = { version = "0.6", features = ["rust_decimal"] }
@@ -116,37 +271,69 @@ sled = "0.34.7"
 
 [features]
 sql_server = ["tiberius", "futures-util"]
-arrow = ["arrow2"]
-ancillary_services = []
-asoffer = []
-bids = []
-billing_config = []
-billing_run = []
-configuration = []
-demand_forecasts = []
-dispatch = []
-force_majeure = []
-gd_instruct = []
-generic_constraint = []
-historical = []
-irauction = []
-market_config = []
-market_notice = []
-mcc_dispatch = []
-meter_data = []
-mrevent = []
-mtpasa = []
-network = []
-p5min = []
-participant_registration = []
-pdpasa = []
-pre_dispatch = []
-prudentials = []
-reserve_data = []
-settlement_config = []
-settlement_data = []
-stpasa_solution = []
-trading_data = []
-voltage_instructions = []
-mmsdm = ["ancillary_services","asoffer","bids","billing_config","billing_run","configuration","demand_forecasts","dispatch","force_majeure","gd_instruct","generic_constraint","historical","irauction","market_config","market_notice","mcc_dispatch","meter_data","mrevent","mtpasa","network","p5min","participant_registration","pdpasa","pre_dispatch","prudentials","reserve_data","settlement_config","settlement_data","stpasa_solution","trading_data","voltage_instructions"]
+arrow = [
+    "arrow2", 
+    "mmsdm_core/arrow2",
+    "mmsdm_ancillary_services?/arrow2",
+    "mmsdm_asoffer?/arrow2",
+    "mmsdm_bids?/arrow2",
+    "mmsdm_billing_config?/arrow2",
+    "mmsdm_billing_run?/arrow2",
+    "mmsdm_configuration?/arrow2",
+    "mmsdm_demand_forecasts?/arrow2",
+    "mmsdm_dispatch?/arrow2",
+    "mmsdm_force_majeure?/arrow2",
+    "mmsdm_gd_instruct?/arrow2",
+    "mmsdm_generic_constraint?/arrow2",
+    "mmsdm_historical?/arrow2",
+    "mmsdm_irauction?/arrow2",
+    "mmsdm_market_config?/arrow2",
+    "mmsdm_market_notice?/arrow2",
+    "mmsdm_mcc_dispatch?/arrow2",
+    "mmsdm_meter_data?/arrow2",
+    "mmsdm_mtpasa?/arrow2",
+    "mmsdm_network?/arrow2",
+    "mmsdm_p5min?/arrow2",
+    "mmsdm_participant_registration?/arrow2",
+    "mmsdm_pdpasa?/arrow2",
+    "mmsdm_pre_dispatch?/arrow2",
+    "mmsdm_prudentials?/arrow2",
+    "mmsdm_reserve_data?/arrow2",
+    "mmsdm_settlement_config?/arrow2",
+    "mmsdm_settlement_data?/arrow2",
+    "mmsdm_stpasa_solution?/arrow2",
+    "mmsdm_trading_data?/arrow2",
+    "mmsdm_voltage_instructions?/arrow2",
+]
+ancillary_services = ["mmsdm_ancillary_services"]
+asoffer = ["mmsdm_asoffer"]
+bids = ["mmsdm_bids"]
+billing_config = ["mmsdm_billing_config"]
+billing_run = ["mmsdm_billing_run"]
+configuration = ["mmsdm_configuration"]
+demand_forecasts = ["mmsdm_demand_forecasts"]
+dispatch = ["mmsdm_dispatch"]
+force_majeure = ["mmsdm_force_majeure"]
+gd_instruct = ["mmsdm_gd_instruct"]
+generic_constraint = ["mmsdm_generic_constraint"]
+historical = ["mmsdm_historical"]
+irauction = ["mmsdm_irauction"]
+market_config = ["mmsdm_market_config"]
+market_notice = ["mmsdm_market_notice"]
+mcc_dispatch = ["mmsdm_mcc_dispatch"]
+meter_data = ["mmsdm_meter_data"]
+mtpasa = ["mmsdm_mtpasa"]
+network = ["mmsdm_network"]
+p5min = ["mmsdm_p5min"]
+participant_registration = ["mmsdm_participant_registration"]
+pdpasa = ["mmsdm_pdpasa"]
+pre_dispatch = ["mmsdm_pre_dispatch"]
+prudentials = ["mmsdm_prudentials"]
+reserve_data = ["mmsdm_reserve_data"]
+settlement_config = ["mmsdm_settlement_config"]
+settlement_data = ["mmsdm_settlement_data"]
+stpasa_solution = ["mmsdm_stpasa_solution"]
+trading_data = ["mmsdm_trading_data"]
+voltage_instructions = ["mmsdm_voltage_instructions"]
+mmsdm = ["ancillary_services","asoffer","bids","billing_config","billing_run","configuration","demand_forecasts","dispatch","force_majeure","gd_instruct","generic_constraint","historical","irauction","market_config","market_notice","mcc_dispatch","meter_data","mtpasa","network","p5min","participant_registration","pdpasa","pre_dispatch","prudentials","reserve_data","settlement_config","settlement_data","stpasa_solution","trading_data","voltage_instructions"]
 default = []

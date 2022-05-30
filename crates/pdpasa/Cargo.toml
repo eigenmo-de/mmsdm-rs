@@ -1,0 +1,75 @@
+[package]
+name = "mmsdm_pdpasa"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/eigenmo-de/mmsdm-rs"
+description = "Parse and Transform MMSDM data"
+resolver = "2"
+
+[dependencies.log]
+version = "0.4.14"
+default-features = false
+features = []
+
+[dependencies.zip]
+version = "0.5.13"
+default-features = false
+features = []
+
+[dependencies.csv]
+version = "1.1.6"
+default-features = false
+features = []
+
+[dependencies.chrono-tz]
+version = "0.6.1"
+default-features = false
+features = []
+
+[dependencies.thiserror]
+version = "1.0.30"
+default-features = false
+features = []
+
+[dependencies.rust_decimal]
+version = "1.23.1"
+default-features = false
+features = ["std", "serde"]
+
+[dependencies.serde_json]
+version = "1.0.79"
+default-features = false
+features = ["std"]
+
+[dependencies.num-traits]
+version = "0.2.14"
+default-features = false
+features = []
+
+[dependencies.serde]
+version = "1.0.136"
+features = ["derive"]
+default-features = false
+
+[dependencies.chrono]
+version = "0.4.19"
+features = ["serde", "std"]
+default-features = false
+
+[dependencies.arrow2]
+version = "0.11.2"
+optional = true
+default-features = false
+
+[dependencies.futures-util]
+version = "0.3.21"
+optional = true
+
+[dependencies.mmsdm_core]
+# version = "0.3.0"
+path = "../mmsdm_core"
+
+[features]
+arrow = ["arrow2", "mmsdm_core/arrow2"]
+default = []

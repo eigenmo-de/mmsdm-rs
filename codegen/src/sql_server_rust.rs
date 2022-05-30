@@ -37,7 +37,7 @@ use crate::data_model;
 use futures_util::{AsyncRead, AsyncWrite};
 
 impl crate::AemoFile {
-    async fn log_file<S>(&self, client: &mut tiberius::Client<S>, key: &crate::FileKey, total_rows: i64) -> crate::Result<i64> 
+    async fn log_file<S>(&self, client: &mut tiberius::Client<S>, key: &mmsdm_core::FileKey, total_rows: i64) -> crate::Result<i64> 
     where
         S: AsyncRead + AsyncWrite + Unpin + Send,
     {
@@ -77,13 +77,13 @@ impl crate::AemoFile {
                 &total_rows,
             ],
         ).await?.into_row().await?;
-        let row = first_row.ok_or(crate::Error::CreateFileLogError)?;
-        row.try_get(0)?.ok_or(crate::Error::CreateFileLogError)
+        let row = first_row.ok_or(mmsdm_core::Error::CreateFileLogError)?;
+        row.try_get(0)?.ok_or(mmsdm_core::Error::CreateFileLogError.into())
 
     }
 
 
-    async fn batched_insert<S, D>(&self, client: &mut tiberius::Client<S>, file_key: &crate::FileKey, data: &[D], proc: &str, chunk_size: Option<usize>) -> crate::Result<()>
+    async fn batched_insert<S, D>(&self, client: &mut tiberius::Client<S>, file_key: &mmsdm_core::FileKey, data: &[D], proc: &str, chunk_size: Option<usize>) -> crate::Result<()>
     where
         S: AsyncRead + AsyncWrite + Unpin + Send,
         D: serde::Serialize,
@@ -126,7 +126,7 @@ impl crate::AemoFile {
 
 /// This function is meant to be used in conjunction with the iterator over
 /// the data contained within the AemoFile struct
-pub async fn load_data<S>(&self, client: &mut tiberius::Client<S>, skip_keys: Option<&collections::HashSet<crate::FileKey>>, chunk_size: Option<usize>) -> crate::Result<()>
+pub async fn load_data<S>(&self, client: &mut tiberius::Client<S>, skip_keys: Option<&collections::HashSet<mmsdm_core::FileKey>>, chunk_size: Option<usize>) -> crate::Result<()>
 where
 S: AsyncRead + AsyncWrite + Unpin + Send,
 {

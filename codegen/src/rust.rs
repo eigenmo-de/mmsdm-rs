@@ -19,7 +19,7 @@ impl mms::DataType {
             mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Char => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Date | mms::DataType::DateTime => {
-                "arrow2::datatypes::DataType::Date64".to_string()
+                "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)".to_string()
             }
             mms::DataType::Decimal { precision, scale } => format!(
                 "arrow2::datatypes::DataType::Decimal({},{})",
@@ -44,9 +44,9 @@ impl mms::TableColumn {
     }
     fn to_rust_type(&self) -> String {
         let formatted_type = if self.comment.contains("YYYYMMDDPPP") {
-            "crate::DispatchPeriod".to_string()
+            "mmsdm_core::DispatchPeriod".to_string()
         } else if self.comment.contains("YYYYMMDDPP") {
-            "crate::TradingPeriod".to_string()
+            "mmsdm_core::TradingPeriod".to_string()
         } else {
             self.data_type.as_rust_type()
         };
@@ -65,10 +65,8 @@ impl mms::TableColumn {
         }
     }
     fn as_arrow_type(&self) -> String {
-        if self.comment.contains("YYYYMMDDPPP") {
-            "arrow2::datatypes::DataType::Date64".to_string()
-        } else if self.comment.contains("YYYYMMDDPP") {
-            "arrow2::datatypes::DataType::Date32".to_string()
+        if self.comment.contains("YYYYMMDDPPP") || self.comment.contains("YYYYMMDDPP") {
+            "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)".to_string()
         } else {
             self.data_type.as_arrow_type()
         }
@@ -87,17 +85,17 @@ impl mms::TableColumn {
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
             (_, _) if self.comment.contains("YYYYMMDDPPP") => {
-                format!("row.{}.start().timestamp_millis()", self.rust_field_name())
+                format!("row.{}.start().timestamp()", self.rust_field_name())
             }
             (_, _) if self.comment.contains("YYYYMMDDPP") => {
-                format!("row.{}.start().timestamp_millis()", self.rust_field_name())
+                format!("row.{}.start().timestamp()", self.rust_field_name())
             }
-            // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp_millis())", self.rust_field_name()),
-            // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.map(|val| val.start().timestamp_millis())", self.rust_field_name()),
+            // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp())", self.rust_field_name()),
+            // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.map(|val| val.start().timestamp())", self.rust_field_name()),
             (mms::DataType::Varchar { .. }, true) => format!("row.{}", self.rust_field_name()),
             (mms::DataType::Char, true) => format!("row.{}.to_string()", self.rust_field_name()),
             (mms::DataType::Date | mms::DataType::DateTime, true) => {
-                format!("row.{}.timestamp_millis()", self.rust_field_name())
+                format!("row.{}.timestamp()", self.rust_field_name())
             }
             (mms::DataType::Decimal { scale, .. }, true) => format!(
                 "{{
@@ -114,7 +112,7 @@ impl mms::TableColumn {
                 format!("row.{}.map(|val| val.to_string())", self.rust_field_name())
             }
             (mms::DataType::Date | mms::DataType::DateTime, false) => format!(
-                "row.{}.map(|val| val.timestamp_millis())",
+                "row.{}.map(|val| val.timestamp())",
                 self.rust_field_name()
             ),
             (mms::DataType::Decimal { scale, .. }, false) => format!(
@@ -337,7 +335,7 @@ impl pdr::Report {
     }
     pub fn get_rust_file_key_literal(&self) -> String {
         format!(
-            r#"crate::FileKey {{
+            r#"mmsdm_core::FileKey {{
     data_set_name: "{data_set}".into(),
     table_name: Some("{table}".into()),
     version: {version},
@@ -414,7 +412,7 @@ pub fn run() -> anyhow::Result<()> {
                         // parse as DispatchPeriod
                         let mut field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
-                            "crate::DispatchPeriod",
+                            "mmsdm_core::DispatchPeriod",
                         );
                         // field.annotation(vec!["#[serde(with = \"crate::dispatch_period\")]"]);
                         field.doc(vec![&col.comment.replace('\t', "")]);
@@ -423,7 +421,7 @@ pub fn run() -> anyhow::Result<()> {
                         // parse as TradingPeriod
                         let mut field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
-                            "crate::TradingPeriod",
+                            "mmsdm_core::TradingPeriod",
                         );
                         // field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
                         field.doc(vec![&col.comment.replace('\t', "")]);
@@ -435,9 +433,9 @@ pub fn run() -> anyhow::Result<()> {
                             &col.to_rust_type(),
                         );
                         if col.mandatory {
-                            field.annotation(vec!["#[serde(with = \"crate::mms_datetime\")]"]);
+                            field.annotation(vec!["#[serde(with = \"mmsdm_core::mms_datetime\")]"]);
                         } else {
-                            field.annotation(vec!["#[serde(with = \"crate::mms_datetime_opt\")]"]);
+                            field.annotation(vec!["#[serde(with = \"mmsdm_core::mms_datetime_opt\")]"]);
                         };
                         field.doc(vec![&col.comment.replace('\t', "")]);
                         current_struct.push_field(field);
@@ -466,10 +464,10 @@ pub fn run() -> anyhow::Result<()> {
                 current_struct.fmt(&mut fmtr)?;
 
                 let mut current_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
-                current_impl.impl_trait("crate::GetTable");
+                current_impl.impl_trait("mmsdm_core::GetTable");
 
                 let mut get_file_key = codegen::Function::new("get_file_key");
-                get_file_key.ret("crate::FileKey");
+                get_file_key.ret("mmsdm_core::FileKey");
 
                 get_file_key.line(&pdr_report.get_rust_file_key_literal());
 
@@ -516,8 +514,8 @@ pub fn run() -> anyhow::Result<()> {
                     .iter()
                     .any(|c| c.to_lowercase() == "settlementdate")
                 {
-                    current_impl.associate_type("Partition", "(i32, chrono::Month)");
-                    partition_suffix.line(r#"(chrono::Datelike::year(&self.settlementdate), num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate)).unwrap())"#);
+                    current_impl.associate_type("Partition", "mmsdm_core::YearMonth");
+                    partition_suffix.line(r#"mmsdm_core::YearMonth { year: chrono::Datelike::year(&self.settlementdate), month: num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate)).unwrap() }"#);
                 } else {
                     current_impl.associate_type("Partition", "()");
                     // partition_suffix.line("()");
@@ -553,7 +551,7 @@ pub fn run() -> anyhow::Result<()> {
 
                 let mut compare_with_row_impl =
                     codegen::Impl::new(pdr_report.get_rust_struct_name());
-                compare_with_row_impl.impl_trait("crate::CompareWithRow");
+                compare_with_row_impl.impl_trait("mmsdm_core::CompareWithRow");
                 compare_with_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
                 let mut compare_with_other = codegen::Function::new("compare_with_row");
                 compare_with_other.ret("bool");
@@ -573,7 +571,7 @@ pub fn run() -> anyhow::Result<()> {
 
                 let mut compare_with_pk_impl =
                     codegen::Impl::new(pdr_report.get_rust_struct_name());
-                compare_with_pk_impl.impl_trait("crate::CompareWithPrimaryKey");
+                compare_with_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
                 compare_with_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
                 let mut compare_with_key = codegen::Function::new("compare_with_key");
                 compare_with_key.ret("bool");
@@ -622,14 +620,14 @@ pub fn run() -> anyhow::Result<()> {
                         // parse as DispatchPeriod
                         let field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
-                            "crate::DispatchPeriod",
+                            "mmsdm_core::DispatchPeriod",
                         );
                         pk_struct.push_field(field);
                     } else if col.comment.contains("YYYYMMDDPP") {
                         // parse as TradingPeriod
                         let field = codegen::Field::new(
                             &format!("pub {}", col.field_name()),
-                            "crate::TradingPeriod",
+                            "mmsdm_core::TradingPeriod",
                         );
                         pk_struct.push_field(field);
                     } else if col.data_type == mms::DataType::Date {
@@ -650,7 +648,7 @@ pub fn run() -> anyhow::Result<()> {
                 pk_struct.fmt(&mut fmtr)?;
 
                 let mut pk_compare_row_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
-                pk_compare_row_impl.impl_trait("crate::CompareWithRow");
+                pk_compare_row_impl.impl_trait("mmsdm_core::CompareWithRow");
                 pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
                 let mut compare_with_row = codegen::Function::new("compare_with_row");
                 compare_with_row.ret("bool");
@@ -669,7 +667,7 @@ pub fn run() -> anyhow::Result<()> {
                 pk_compare_row_impl.fmt(&mut fmtr)?;
 
                 let mut pk_compare_pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
-                pk_compare_pk_impl.impl_trait("crate::CompareWithPrimaryKey");
+                pk_compare_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
                 pk_compare_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
                 let mut compare_with_other_pk = codegen::Function::new("compare_with_key");
                 compare_with_other_pk.ret("bool");
@@ -688,12 +686,12 @@ pub fn run() -> anyhow::Result<()> {
                 pk_compare_pk_impl.fmt(&mut fmtr)?;
 
                 let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
-                pk_trait.impl_trait("crate::PrimaryKey");
+                pk_trait.impl_trait("mmsdm_core::PrimaryKey");
                 pk_trait.fmt(&mut fmtr)?;
 
                 let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_struct_name());
-                arrow_trait.impl_trait("crate::ArrowSchema");
-                arrow_trait.r#macro("#[cfg(feature = \"save_as_parquet\")]");
+                arrow_trait.impl_trait("mmsdm_core::ArrowSchema");
+                arrow_trait.r#macro("#[cfg(feature = \"arrow\")]");
 
                 let mut arrow_schema = codegen::Function::new("arrow_schema");
                 arrow_schema.ret("arrow2::datatypes::Schema");
@@ -702,11 +700,11 @@ pub fn run() -> anyhow::Result<()> {
 
                 let mut partition_to_batch = codegen::Function::new("partition_to_chunk");
                 partition_to_batch.ret(
-                    "crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>",
+                    "mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>",
                 );
                 partition_to_batch.arg(
                     "partition",
-                    "std::collections::BTreeMap<<Self as crate::GetTable>::PrimaryKey, Self>",
+                    "impl Iterator<Item=Self>",
                 );
 
                 // partition_to_batch.line("use std::convert::TryFrom;");
@@ -718,7 +716,7 @@ pub fn run() -> anyhow::Result<()> {
                     ));
                 }
 
-                partition_to_batch.line("for (_, row) in partition {");
+                partition_to_batch.line("for row in partition {");
 
                 for col in &table.columns.columns {
                     partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
@@ -751,8 +749,92 @@ arrow2::chunk::Chunk::try_new(
                 dbg!(mms_report);
             }
         }
+        std::process::Command::new("mkdir")
+            .arg("-p")
+            .arg(format!("crates/{}/src", data_set.to_snake_case()))
+            .status().unwrap();
         fs::write(
-            format!("src/data_model/{}.rs", data_set.to_snake_case()),
+            format!("crates/{}/Cargo.toml", data_set.to_snake_case()),
+            format!(r#"[package]
+name = "mmsdm_{data_set}"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/eigenmo-de/mmsdm-rs"
+description = "Parse and Transform MMSDM data"
+resolver = "2"
+
+[dependencies.log]
+version = "0.4.14"
+default-features = false
+features = []
+
+[dependencies.zip]
+version = "0.5.13"
+default-features = false
+features = []
+
+[dependencies.csv]
+version = "1.1.6"
+default-features = false
+features = []
+
+[dependencies.chrono-tz]
+version = "0.6.1"
+default-features = false
+features = []
+
+[dependencies.thiserror]
+version = "1.0.30"
+default-features = false
+features = []
+
+[dependencies.rust_decimal]
+version = "1.23.1"
+default-features = false
+features = ["std", "serde"]
+
+[dependencies.serde_json]
+version = "1.0.79"
+default-features = false
+features = ["std"]
+
+[dependencies.num-traits]
+version = "0.2.14"
+default-features = false
+features = []
+
+[dependencies.serde]
+version = "1.0.136"
+features = ["derive"]
+default-features = false
+
+[dependencies.chrono]
+version = "0.4.19"
+features = ["serde", "std"]
+default-features = false
+
+[dependencies.arrow2]
+version = "0.11.2"
+optional = true
+default-features = false
+
+[dependencies.futures-util]
+version = "0.3.21"
+optional = true
+
+[dependencies.mmsdm_core]
+# version = "0.3.0"
+path = "../mmsdm_core"
+
+[features]
+arrow = ["arrow2", "mmsdm_core/arrow2"]
+default = []"#,
+            data_set =  data_set.to_snake_case(),
+            ),
+        )?;        
+        fs::write(
+            format!("crates/{}/src/lib.rs", data_set.to_snake_case()),
             fmt_str,
         )?;
     }
@@ -815,7 +897,7 @@ fn lowercase_and_escape(col_name: &str) -> String {
 //         let mut scadavalue_array = Vec::new();
 
 //         for (_, row) in ptn {
-//             settlementdate_array.push(u64::try_from(row.settlementdate.timestamp_millis()).unwrap());
+//             settlementdate_array.push(u64::try_from(row.settlementdate.timestamp()).unwrap());
 //             duid_array.push(row.duid);
 //             let mut rescaled = row.scadavalue.unwrap_or_default();
 //             rescaled.rescale(6);
