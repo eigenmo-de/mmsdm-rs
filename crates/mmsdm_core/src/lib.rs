@@ -1,13 +1,12 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, io, iter, result, str, fs};
+use std::{collections, fmt, fs, io, iter, result, str};
 
 use chrono::TimeZone;
 
 mod error;
 pub use error::*;
-
 
 #[cfg(feature = "sql_server")]
 pub mod sql_server;
@@ -72,7 +71,6 @@ pub struct AemoFooter {
     pub end_of_report: String,
     pub line_count_inclusive: usize,
 }
-
 
 #[derive(Debug, Clone)]
 pub struct Subtable {
@@ -204,11 +202,16 @@ pub trait LatestRow: GetTable + CompareWithRow<Row = Self> {
     fn latest_row(&mut self, row: Self) -> Self;
 }
 
+#[cfg(feature = "sql_server")]
+pub trait SaveToSqlServer: GetTable {
+    const SQL_EXEC: &'static str;
+}
+
 #[cfg(feature = "arrow")]
 pub trait ArrowSchema: GetTable {
     fn arrow_schema() -> arrow2::datatypes::Schema;
     fn partition_to_chunk(
-        partition: impl Iterator<Item=Self>,
+        partition: impl Iterator<Item = Self>,
     ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>;
 }
 
@@ -494,7 +497,6 @@ impl serde::Serialize for TradingPeriod {
     }
 }
 
-
 // Following the pattern from: https://serde.rs/custom-date-format.html
 // To allow use with serde(with = "")
 pub mod mms_datetime {
@@ -656,23 +658,20 @@ mod tests {
     }
 }
 
-
-
 #[derive(Debug, Clone)]
-pub struct AemoFile {
+pub struct MemoryFile {
     pub header: AemoHeader,
     pub data: collections::HashMap<FileKey, Subtable>,
 }
 
-
 #[derive(Debug)]
-pub struct AemoDiskFile {
+pub struct DiskFile {
     pub header: AemoHeader,
     handle: zip::ZipArchive<fs::File>,
     keys: collections::HashMap<FileKey, csv::StringRecord>,
 }
 
-pub struct AemoDiskFileIter<'a, T>
+pub struct FileIter<'a, T>
 where
     T: serde::de::DeserializeOwned + Send + GetTable,
 {
@@ -683,7 +682,7 @@ where
     found_records: bool,
 }
 
-impl<'a, T> Iterator for AemoDiskFileIter<'a, T>
+impl<'a, T> Iterator for FileIter<'a, T>
 where
     T: serde::de::DeserializeOwned + Send + GetTable,
 {
@@ -725,16 +724,62 @@ where
     }
 }
 
+pub type AemoDiskFile = DiskFile;
+pub type AemoFile = MemoryFile;
 
-impl AemoDiskFile {
-    pub fn get_table<T>(&'_ mut self) -> Result<AemoDiskFileIter<'_, T>>
+pub enum MmsFile<'a> {
+    Disk(&'a mut DiskFile),
+    Memory(&'a mut MemoryFile),
+}
+
+impl<'a> MmsFile<'a> {
+    pub fn file_keys(&self) -> collections::HashSet<FileKey> {
+        match self {
+            MmsFile::Disk(d) => d.keys.keys().cloned().collect(),
+            MmsFile::Memory(m) => m.data.keys().cloned().collect(),
+        }
+    }
+    pub fn get_table<T>(&mut self) -> Result<Vec<T>>
+    where
+        T: serde::de::DeserializeOwned + Send + GetTable + 'static,
+    {
+        match self {
+            MmsFile::Disk(d) => d.get_table()?.collect(),
+            MmsFile::Memory(m) => m.get_table(),
+        }
+    }
+    pub fn header(&self) -> &AemoHeader {
+        match self {
+            MmsFile::Disk(d) => &d.header,
+            MmsFile::Memory(m) => &m.header,
+        }
+    }
+}
+
+impl<'a> From<&'a mut DiskFile> for MmsFile<'a> {
+    fn from(d: &'a mut DiskFile) -> Self {
+        MmsFile::Disk(d)
+    }
+}
+impl<'a> From<&'a mut MemoryFile> for MmsFile<'a> {
+    fn from(m: &'a mut MemoryFile) -> Self {
+        MmsFile::Memory(m)
+    }
+}
+
+impl DiskFile {
+    pub fn contains_file(&self, key: &FileKey) -> bool {
+        self.keys.contains_key(key)
+    }
+
+    pub fn get_table<T>(&'_ mut self) -> Result<FileIter<'_, T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable + 'static,
     {
         let latest_version = T::get_file_key();
         for version in (1..=latest_version.version).rev() {
             let current_key = latest_version.with_version(version);
-            if self.keys.contains_key(&current_key) {
+            if self.contains_file(&current_key) {
                 return self.get_specific_table(current_key);
             } else {
                 log::warn!(
@@ -746,11 +791,7 @@ impl AemoDiskFile {
         }
         Err(Error::MissingFile(latest_version))
     }
-
-    pub fn get_specific_table<T>(
-        &'_ mut self,
-        file_key: FileKey,
-    ) -> Result<AemoDiskFileIter<'_, T>>
+    pub fn get_specific_table<T>(&'_ mut self, file_key: FileKey) -> Result<FileIter<'_, T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable,
     {
@@ -765,7 +806,7 @@ impl AemoDiskFile {
 
         let inner_file = self.handle.by_index(0)?;
 
-        Ok(AemoDiskFileIter {
+        Ok(FileIter {
             headings,
             file_key,
 
@@ -777,14 +818,6 @@ impl AemoDiskFile {
             _d: std::marker::PhantomData,
             found_records: false,
         })
-    }
-
-    pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, csv::StringRecord> {
-        self.keys.keys()
-    }
-
-    pub fn contains_file(&self, key: FileKey) -> bool {
-        self.keys.contains_key(&key)
     }
 
     /// This assumes that the file is in the standard ZIP format as downloaded
@@ -818,7 +851,7 @@ impl AemoDiskFile {
 
             let mut num_rows = 1;
 
-        for record in records {
+            for record in records {
                 let record = record?;
                 match record.get(0) {
                     Some("D") => {
@@ -854,7 +887,7 @@ impl AemoDiskFile {
                             headings: None,
                             data: record,
                         });
-                }
+                    }
                     Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
                     None => return Err(Error::EmptyRow),
                 }
@@ -879,7 +912,7 @@ impl AemoDiskFile {
     }
 }
 
-impl AemoFile {
+impl MemoryFile {
     pub fn get_table<T>(&self) -> Result<Vec<T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable,

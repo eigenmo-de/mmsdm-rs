@@ -75,5 +75,5 @@ optional = true
 
 [features]
 arrow = ["arrow2"]
-sql_server = ["tiberius"]
+sql_server = ["tiberius", "futures-util"]
 default = []

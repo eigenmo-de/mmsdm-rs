@@ -62,6 +62,12 @@ version = "0.11.2"
 optional = true
 default-features = false
 
+[dependencies.tiberius]
+version = "0.9.0"
+features = ["rust_decimal", "tds73", "chrono"]
+default-features = false
+optional = true
+
 [dependencies.futures-util]
 version = "0.3.21"
 optional = true
@@ -72,4 +78,5 @@ path = "../mmsdm_core"
 
 [features]
 arrow = ["arrow2", "mmsdm_core/arrow2"]
+sql_server = ["tiberius", "futures-util", "mmsdm_core/sql_server"]
 default = []

@@ -19,7 +19,8 @@ impl mms::DataType {
             mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Char => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
             mms::DataType::Date | mms::DataType::DateTime => {
-                "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)".to_string()
+                "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)"
+                    .to_string()
             }
             mms::DataType::Decimal { precision, scale } => format!(
                 "arrow2::datatypes::DataType::Decimal({},{})",
@@ -66,7 +67,8 @@ impl mms::TableColumn {
     }
     fn as_arrow_type(&self) -> String {
         if self.comment.contains("YYYYMMDDPPP") || self.comment.contains("YYYYMMDDPP") {
-            "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)".to_string()
+            "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)"
+                .to_string()
         } else {
             self.data_type.as_arrow_type()
         }
@@ -111,10 +113,9 @@ impl mms::TableColumn {
             (mms::DataType::Char, false) => {
                 format!("row.{}.map(|val| val.to_string())", self.rust_field_name())
             }
-            (mms::DataType::Date | mms::DataType::DateTime, false) => format!(
-                "row.{}.map(|val| val.timestamp())",
-                self.rust_field_name()
-            ),
+            (mms::DataType::Date | mms::DataType::DateTime, false) => {
+                format!("row.{}.map(|val| val.timestamp())", self.rust_field_name())
+            }
             (mms::DataType::Decimal { scale, .. }, false) => format!(
                 "{{
                 row.{}.map(|mut val| {{
@@ -352,13 +353,11 @@ impl pdr::Report {
     }
 }
 
-
-fn codegen_part_a(
+fn codegen_struct(
     pdr_report: &pdr::Report,
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-
     let mut current_struct = codegen::Struct::new(&pdr_report.get_rust_struct_name());
     current_struct
         .vis("pub")
@@ -393,12 +392,9 @@ fn codegen_part_a(
             // field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
             field.doc(vec![&col.comment.replace('\t', "")]);
             current_struct.push_field(field);
-        } else if matches!(col.data_type, mms::DataType::Date | mms::DataType::DateTime)
-        {
-            let mut field = codegen::Field::new(
-                &format!("pub {}", col.field_name()),
-                &col.to_rust_type(),
-            );
+        } else if matches!(col.data_type, mms::DataType::Date | mms::DataType::DateTime) {
+            let mut field =
+                codegen::Field::new(&format!("pub {}", col.field_name()), &col.to_rust_type());
             if col.mandatory {
                 field.annotation(vec!["#[serde(with = \"mmsdm_core::mms_datetime\")]"]);
             } else {
@@ -420,16 +416,22 @@ fn codegen_part_a(
         //     field.doc(vec![&col.comment.replace('\t', "")]);
         //     current_struct.push_field(field);
         } else {
-            let mut field = codegen::Field::new(
-                &format!("pub {}", col.field_name()),
-                &col.to_rust_type(),
-            );
+            let mut field =
+                codegen::Field::new(&format!("pub {}", col.field_name()), &col.to_rust_type());
             field.doc(vec![&col.comment.replace('\t', "")]);
             current_struct.push_field(field);
         };
     }
     current_struct.fmt(fmtr)?;
 
+    Ok(())
+}
+
+fn codegen_impl_get_table(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
     let mut current_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
     current_impl.impl_trait("mmsdm_core::GetTable");
 
@@ -515,47 +517,14 @@ fn codegen_part_a(
     current_impl.push_fn(partition_name);
 
     current_impl.fmt(fmtr)?;
+    Ok(())
+}
 
-    let mut compare_with_row_impl =
-        codegen::Impl::new(pdr_report.get_rust_struct_name());
-    compare_with_row_impl.impl_trait("mmsdm_core::CompareWithRow");
-    compare_with_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
-    let mut compare_with_other = codegen::Function::new("compare_with_row");
-    compare_with_other.ret("bool");
-    compare_with_other.arg_ref_self();
-    compare_with_other.arg("row", "&Self::Row");
-    compare_with_other.line(
-        &table
-            .primary_key_columns
-            .cols
-            .iter()
-            .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
-            .collect::<Vec<String>>()
-            .join("\n&& "),
-    );
-    compare_with_row_impl.push_fn(compare_with_other);
-    compare_with_row_impl.fmt(fmtr)?;
-
-    let mut compare_with_pk_impl =
-        codegen::Impl::new(pdr_report.get_rust_struct_name());
-    compare_with_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
-    compare_with_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
-    let mut compare_with_key = codegen::Function::new("compare_with_key");
-    compare_with_key.ret("bool");
-    compare_with_key.line(
-        &table
-            .primary_key_columns
-            .cols
-            .iter()
-            .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
-            .collect::<Vec<String>>()
-            .join("\n&& "),
-    );
-    compare_with_key.arg_ref_self();
-    compare_with_key.arg("key", "&Self::PrimaryKey");
-    compare_with_pk_impl.push_fn(compare_with_key);
-    compare_with_pk_impl.fmt(fmtr)?;
-
+fn codegen_pk(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
     let mut pk_struct = codegen::Struct::new(&pdr_report.get_rust_pk_name());
     pk_struct
         .vis("pub")
@@ -604,16 +573,86 @@ fn codegen_part_a(
         //     );
         //     pk_struct.push_field(field);
         } else {
-            let field = codegen::Field::new(
-                &format!("pub {}", col.field_name()),
-                &col.to_rust_type(),
-            );
+            let field =
+                codegen::Field::new(&format!("pub {}", col.field_name()), &col.to_rust_type());
             pk_struct.push_field(field);
         };
     }
 
     pk_struct.fmt(fmtr)?;
 
+    Ok(())
+}
+
+fn codegen_impl_pk(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
+    let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    pk_trait.impl_trait("mmsdm_core::PrimaryKey");
+    pk_trait.fmt(fmtr)?;
+    Ok(())
+}
+
+fn codegen_impl_compare_with_row_on_struct(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
+    let mut compare_with_row_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+    compare_with_row_impl.impl_trait("mmsdm_core::CompareWithRow");
+    compare_with_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
+    let mut compare_with_other = codegen::Function::new("compare_with_row");
+    compare_with_other.ret("bool");
+    compare_with_other.arg_ref_self();
+    compare_with_other.arg("row", "&Self::Row");
+    compare_with_other.line(
+        &table
+            .primary_key_columns
+            .cols
+            .iter()
+            .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
+            .collect::<Vec<String>>()
+            .join("\n&& "),
+    );
+    compare_with_row_impl.push_fn(compare_with_other);
+    compare_with_row_impl.fmt(fmtr)?;
+
+    Ok(())
+}
+
+fn codegen_impl_compare_with_pk_on_struct(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
+    let mut compare_with_pk_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+    compare_with_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
+    compare_with_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
+    let mut compare_with_key = codegen::Function::new("compare_with_key");
+    compare_with_key.ret("bool");
+    compare_with_key.line(
+        &table
+            .primary_key_columns
+            .cols
+            .iter()
+            .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
+            .collect::<Vec<String>>()
+            .join("\n&& "),
+    );
+    compare_with_key.arg_ref_self();
+    compare_with_key.arg("key", "&Self::PrimaryKey");
+    compare_with_pk_impl.push_fn(compare_with_key);
+    compare_with_pk_impl.fmt(fmtr)?;
+    Ok(())
+}
+
+fn codegen_impl_compare_with_row_on_pk(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
     let mut pk_compare_row_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
     pk_compare_row_impl.impl_trait("mmsdm_core::CompareWithRow");
     pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
@@ -632,7 +671,14 @@ fn codegen_part_a(
     );
     pk_compare_row_impl.push_fn(compare_with_row);
     pk_compare_row_impl.fmt(fmtr)?;
+    Ok(())
+}
 
+fn codegen_impl_compare_with_pk_on_pk(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
     let mut pk_compare_pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
     pk_compare_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
     pk_compare_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
@@ -652,10 +698,14 @@ fn codegen_part_a(
     pk_compare_pk_impl.push_fn(compare_with_other_pk);
     pk_compare_pk_impl.fmt(fmtr)?;
 
-    let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
-    pk_trait.impl_trait("mmsdm_core::PrimaryKey");
-    pk_trait.fmt(fmtr)?;
+    Ok(())
+}
 
+fn codegen_impl_arrow_schema(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
+) -> anyhow::Result<()> {
     let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_struct_name());
     arrow_trait.impl_trait("mmsdm_core::ArrowSchema");
     arrow_trait.r#macro("#[cfg(feature = \"arrow\")]");
@@ -666,13 +716,9 @@ fn codegen_part_a(
     arrow_trait.push_fn(arrow_schema);
 
     let mut partition_to_batch = codegen::Function::new("partition_to_chunk");
-    partition_to_batch.ret(
-        "mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>",
-    );
-    partition_to_batch.arg(
-        "partition",
-        "impl Iterator<Item=Self>",
-    );
+    partition_to_batch
+        .ret("mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>");
+    partition_to_batch.arg("partition", "impl Iterator<Item=Self>");
 
     // partition_to_batch.line("use std::convert::TryFrom;");
 
@@ -714,16 +760,27 @@ vec![",
     Ok(())
 }
 
-
-fn prepare_data_set_crate(
-    data_set: &str,
+fn codegen_impl_save_to_sql_server(
+    pdr_report: &pdr::Report,
+    table: &mms::TablePage,
+    fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
+    let mut current_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
 
+    current_impl.impl_trait("");
+
+    current_impl.fmt(fmtr)?;
+
+    Ok(())
+}
+
+fn prepare_data_set_crate(data_set: &str) -> anyhow::Result<()> {
     std::fs::create_dir_all(format!("crates/{}/src", data_set.to_snake_case()))?;
 
-fs::write(
-    format!("crates/{}/Cargo.toml", data_set.to_snake_case()),
-    format!(r#"[package]
+    fs::write(
+        format!("crates/{}/Cargo.toml", data_set.to_snake_case()),
+        format!(
+            r#"[package]
 name = "mmsdm_{data_set}"
 version = "0.1.0"
 edition = "2021"
@@ -803,11 +860,11 @@ path = "../mmsdm_core"
 
 [features]
 arrow = ["arrow2", "mmsdm_core/arrow2"]
-sql_server = ["tiberius", "mmsdm_core/sql_server"]
+sql_server = ["tiberius", "futures-util", "mmsdm_core/sql_server"]
 default = []"#,
-    data_set =  data_set.to_snake_case(),
-    ),
-)?;        
+            data_set = data_set.to_snake_case(),
+        ),
+    )?;
     Ok(())
 }
 
@@ -837,14 +894,13 @@ pub fn run() -> anyhow::Result<()> {
     }
     // abv
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
-    
+
     for (data_set, tables) in local_info.into_iter() {
         prepare_data_set_crate(&data_set)?;
 
         let mut fmt_str = String::new();
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
-        for (table_key, table) in tables.into_iter() {
-
+        for (table_key, table) in tables.clone().into_iter() {
             let mms_report = mms::Report {
                 name: data_set.clone(),
                 sub_type: table_key,
@@ -855,9 +911,91 @@ pub fn run() -> anyhow::Result<()> {
             }
 
             match map.get(&mms_report) {
-                Some(pdr_report) => codegen_part_a(pdr_report, &table, &mut fmtr)?,
+                Some(pdr_report) => {
+                    codegen_struct(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_get_table(pdr_report, &table, &mut fmtr)?;
+
+                    codegen_pk(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_pk(pdr_report, &table, &mut fmtr)?;
+
+                    codegen_impl_compare_with_row_on_struct(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_compare_with_pk_on_struct(pdr_report, &table, &mut fmtr)?;
+
+                    codegen_impl_compare_with_row_on_pk(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_compare_with_pk_on_pk(pdr_report, &table, &mut fmtr)?;
+
+                    codegen_impl_arrow_schema(pdr_report, &table, &mut fmtr)?;
+                }
                 None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
             }
+        }
+
+        let mut apply_all_fn = codegen::Function::new("save");
+        apply_all_fn
+            .vis("pub")
+            .set_async(true)
+            .attr(r#"cfg(feature = "sql_server")"#)
+            .generic("'a")
+            .generic("S")
+            .bound(
+                "S",
+                "futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send",
+            )
+            .arg("mms_file", "&mut mmsdm_core::MmsFile<'a>")
+            .arg("file_key", "&mmsdm_core::FileKey")
+            .arg("client", "&mut tiberius::Client<S>")
+            .arg("chunk_size", "Option<usize>")
+            .ret("mmsdm_core::Result<()>")
+            .line(
+                r#"match (
+    file_key.table_name.as_deref(),
+    file_key.version,
+) {"#,
+            );
+        let mut rendered_match_arms = 0;
+        for (table_key, _) in tables.into_iter() {
+            let mms_report = mms::Report {
+                name: data_set.clone(),
+                sub_type: table_key,
+            };
+
+            if mms_report.should_skip() {
+                continue;
+            }
+
+            match map.get(&mms_report) {
+                Some(pdr_report) => {
+                    apply_all_fn.line(format!(
+r#"    ({table_name}, version) if version <= {version}_i32 => {{
+        let d: Vec<{local_name}> = mms_file.get_table()?;
+        mmsdm_core::sql_server::batched_insert(client, file_key, mms_file.header(), &d, "exec mmsdm_proc.Insert{db_name} @P1, @P2", chunk_size).await?;
+    }}"#,
+                        // data_set_name = pdr_report.name,
+                        table_name = if let Some(sub_type) = &pdr_report.sub_type {
+                            format!("Some(\"{}\")", sub_type)
+                        } else {
+                            "None".to_string()
+                        },
+                        version = pdr_report.version,
+                        local_name = pdr_report.get_rust_struct_name(),
+                        db_name = pdr_report.sql_table_name(),
+                    ));
+                    rendered_match_arms += 1;
+                }
+                None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
+            }
+        }
+        apply_all_fn.line(
+            r#"    _ => {
+        log::error!("Unexpected file key {:?}", file_key);
+    }
+}
+Ok(())"#,
+        );
+        if rendered_match_arms > 0 {
+            apply_all_fn.fmt(false, &mut fmtr)?;
+        } else {
+            eprintln!("No match arms rendered for data set {data_set}");
         }
 
         fs::write(
