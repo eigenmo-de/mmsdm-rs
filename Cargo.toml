@@ -1,7 +1,6 @@
 [package]
 name = "mmsdm"
 version = "0.3.0"
-authors = ["Eric Sheppard <eric@sheppard.cloud>", "Nayika Sheppard <nayika@eigenmo.de>"]
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/eigenmo-de/mmsdm-rs"
@@ -273,37 +272,37 @@ sled = "0.34.7"
 sql_server = ["tiberius", "futures-util"]
 arrow = [
     "arrow2", 
-    "mmsdm_core/arrow2",
-    "mmsdm_ancillary_services?/arrow2",
-    "mmsdm_asoffer?/arrow2",
-    "mmsdm_bids?/arrow2",
-    "mmsdm_billing_config?/arrow2",
-    "mmsdm_billing_run?/arrow2",
-    "mmsdm_configuration?/arrow2",
-    "mmsdm_demand_forecasts?/arrow2",
-    "mmsdm_dispatch?/arrow2",
-    "mmsdm_force_majeure?/arrow2",
-    "mmsdm_gd_instruct?/arrow2",
-    "mmsdm_generic_constraint?/arrow2",
-    "mmsdm_historical?/arrow2",
-    "mmsdm_irauction?/arrow2",
-    "mmsdm_market_config?/arrow2",
-    "mmsdm_market_notice?/arrow2",
-    "mmsdm_mcc_dispatch?/arrow2",
-    "mmsdm_meter_data?/arrow2",
-    "mmsdm_mtpasa?/arrow2",
-    "mmsdm_network?/arrow2",
-    "mmsdm_p5min?/arrow2",
-    "mmsdm_participant_registration?/arrow2",
-    "mmsdm_pdpasa?/arrow2",
-    "mmsdm_pre_dispatch?/arrow2",
-    "mmsdm_prudentials?/arrow2",
-    "mmsdm_reserve_data?/arrow2",
-    "mmsdm_settlement_config?/arrow2",
-    "mmsdm_settlement_data?/arrow2",
-    "mmsdm_stpasa_solution?/arrow2",
-    "mmsdm_trading_data?/arrow2",
-    "mmsdm_voltage_instructions?/arrow2",
+    "mmsdm_core/arrow",
+    "mmsdm_ancillary_services?/arrow",
+    "mmsdm_asoffer?/arrow",
+    "mmsdm_bids?/arrow",
+    "mmsdm_billing_config?/arrow",
+    "mmsdm_billing_run?/arrow",
+    "mmsdm_configuration?/arrow",
+    "mmsdm_demand_forecasts?/arrow",
+    "mmsdm_dispatch?/arrow",
+    "mmsdm_force_majeure?/arrow",
+    "mmsdm_gd_instruct?/arrow",
+    "mmsdm_generic_constraint?/arrow",
+    "mmsdm_historical?/arrow",
+    "mmsdm_irauction?/arrow",
+    "mmsdm_market_config?/arrow",
+    "mmsdm_market_notice?/arrow",
+    "mmsdm_mcc_dispatch?/arrow",
+    "mmsdm_meter_data?/arrow",
+    "mmsdm_mtpasa?/arrow",
+    "mmsdm_network?/arrow",
+    "mmsdm_p5min?/arrow",
+    "mmsdm_participant_registration?/arrow",
+    "mmsdm_pdpasa?/arrow",
+    "mmsdm_pre_dispatch?/arrow",
+    "mmsdm_prudentials?/arrow",
+    "mmsdm_reserve_data?/arrow",
+    "mmsdm_settlement_config?/arrow",
+    "mmsdm_settlement_data?/arrow",
+    "mmsdm_stpasa_solution?/arrow",
+    "mmsdm_trading_data?/arrow",
+    "mmsdm_voltage_instructions?/arrow",
 ]
 ancillary_services = ["mmsdm_ancillary_services"]
 asoffer = ["mmsdm_asoffer"]
@@ -335,5 +334,36 @@ settlement_data = ["mmsdm_settlement_data"]
 stpasa_solution = ["mmsdm_stpasa_solution"]
 trading_data = ["mmsdm_trading_data"]
 voltage_instructions = ["mmsdm_voltage_instructions"]
-mmsdm = ["ancillary_services","asoffer","bids","billing_config","billing_run","configuration","demand_forecasts","dispatch","force_majeure","gd_instruct","generic_constraint","historical","irauction","market_config","market_notice","mcc_dispatch","meter_data","mtpasa","network","p5min","participant_registration","pdpasa","pre_dispatch","prudentials","reserve_data","settlement_config","settlement_data","stpasa_solution","trading_data","voltage_instructions"]
-default = []
+mmsdm = [
+    "ancillary_services",
+    "asoffer",
+    "bids",
+    "billing_config",
+    "billing_run",
+    "configuration",
+    "demand_forecasts",
+    "dispatch",
+    "force_majeure",
+    "gd_instruct",
+    "generic_constraint",
+    "historical",
+    "irauction",
+    "market_config",
+    "market_notice",
+    "mcc_dispatch",
+    "meter_data",
+    "mtpasa",
+    "network",
+    "p5min",
+    "participant_registration",
+    "pdpasa",
+    "pre_dispatch",
+    "prudentials",
+    "reserve_data",
+    "settlement_config",
+    "settlement_data",
+    "stpasa_solution",
+    "trading_data",
+    "voltage_instructions",
+]
+default = ["mmsdm", "arrow"]

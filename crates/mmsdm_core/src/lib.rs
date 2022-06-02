@@ -52,7 +52,7 @@ impl AemoHeader {
     /// a name close but not exact to the original name
     pub fn get_filename(&self) -> String {
         format!(
-            "{}_{}_{}{}_{}.CSV",
+            "{}_{}_{}{}_{:016}.CSV",
             self.to_participant,
             self.file_name,
             self.effective_date.format("%Y%m%d"),
