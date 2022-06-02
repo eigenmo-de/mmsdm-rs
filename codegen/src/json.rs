@@ -21,13 +21,21 @@ pub async fn run() -> anyhow::Result<()> {
     let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
 
     let mut headers = reqwest::header::HeaderMap::new();
-    headers.insert(reqwest::header::ACCEPT, reqwest::header::HeaderValue::from_static("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
-    let client = reqwest::ClientBuilder::new().user_agent("Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0").default_headers(headers).build()?;
+    headers.insert(
+        reqwest::header::ACCEPT,
+        reqwest::header::HeaderValue::from_static(
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        ),
+    );
+    let client = reqwest::ClientBuilder::new()
+        .user_agent("Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0")
+        .default_headers(headers)
+        .build()?;
     let body = client.get(url).send().await?.text().await?;
     dbg!(&body);
     let doc = scraper::Html::parse_document(&body);
 
-    let mut info: mms::Packages = collections::HashMap::new();
+    let mut info: mms::Packages = collections::BTreeMap::new();
     let mut current_package = None;
 
     // All the links down the left side of the page
@@ -72,7 +80,6 @@ pub async fn run() -> anyhow::Result<()> {
                 let inner_url = format!("{}/{}.htm", BASE_URL, link_val);
 
                 let res = client.get(&inner_url).send().await?;
-
 
                 if res.status().as_u16() == 200 {
                     let body = res.text().await?;

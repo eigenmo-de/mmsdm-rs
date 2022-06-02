@@ -1,11 +1,9 @@
 use structopt::StructOpt;
 
 mod json;
+mod python;
 mod rust;
-//mod python;
 //mod parquet;
-// mod clickhouse_rust;
-// mod clickhouse_tables;
 mod mms;
 mod pdr;
 mod sql_server_rust;
@@ -19,15 +17,12 @@ enum AemoCodegen {
     SqlServerTables,
     SqlServerRustPart,
     Python,
-    ClickhouseTables,
-    ClickhouseRustPart,
-    Parquet,
 }
+
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerRustPart => {
-            // todo!();
             sql_server_rust::run().unwrap();
         }
         AemoCodegen::SqlServerTables => {
@@ -40,20 +35,7 @@ async fn main() -> Result<(), anyhow::Error> {
             json::run().await?;
         }
         AemoCodegen::Python => {
-            todo!();
-            //python::run();
-        }
-        AemoCodegen::ClickhouseTables => {
-            // clickhouse_tables::run()?;
-            todo!();
-        }
-        AemoCodegen::ClickhouseRustPart => {
-            todo!();
-            //clickhouse_rust::run();
-        }
-        AemoCodegen::Parquet => {
-            todo!();
-            //parquet::run();
+            python::run()?;
         }
     }
     Ok(())

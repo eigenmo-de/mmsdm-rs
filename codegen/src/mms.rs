@@ -20,7 +20,23 @@ pub struct Report {
     pub sub_type: String,
 }
 
-pub type Packages = collections::HashMap<String, collections::HashMap<String, TablePage>>;
+impl Report {
+    pub fn should_skip(&self) -> bool {
+        // skip historical dataset - there are no table definitions anyway
+        (self.name == "HISTORICAL")
+        || (self.name == "CONFIGURATION")
+        // temporary
+        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_RUN")
+        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_PRED")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCCOMPENSATION")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCRECOVERY")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_RECOVERY")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_PAYMENT")
+        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRESERVERECOVERY")
+    }
+}
+
+pub type Packages = collections::BTreeMap<String, collections::BTreeMap<String, TablePage>>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TablePage {

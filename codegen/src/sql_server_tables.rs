@@ -3,25 +3,46 @@ use std::{collections, fs, str};
 use crate::{mms, pdr};
 
 impl mms::PkColumns {
-    fn _get_sql(&self) -> String {
+    fn get_sql(&self) -> String {
         use heck::SnakeCase;
         let cols = self
             .cols
             .iter()
             .map(|c| c.to_snake_case())
             .collect::<Vec<_>>();
-        //format!("primary key ({})", cols.join(","))
-        format!("unique ([{}])", cols.join("],["))
+        format!("primary key ([{}])", cols.join("],["))
+    }
+
+    fn merge_check(&self) -> String {
+        use heck::SnakeCase;
+        let mut sql = String::new();
+        for (idx, col) in self.cols.iter().enumerate() {
+            let col = col.to_snake_case();
+            if idx == 0 {
+                sql.push_str(&format!("    tgt.[{0}] = src.[{0}]\n", col));
+            } else {
+                sql.push_str(&format!("    and tgt.[{0}] = src.[{0}]\n", col));
+            }
+        }
+        sql
     }
 }
 
 impl mms::TableColumns {
+    fn merge_update(&self) -> String {
+        self.columns
+            .iter()
+            .map(|c| format!("tgt.[{0}] = src.[{0}]", c.field_name()))
+            .collect::<Vec<_>>()
+            .join(",\n        ")
+    }
+
     fn get_sql(&self) -> String {
         self.columns
             .iter()
             .map(|c| format!("{},", c.get_sql()))
             .collect::<Vec<_>>()
-            .join("\n")
+            .join("\n    ")
     }
     fn get_columns_sql(&self, prefix: Option<&'static str>) -> String {
         self.columns
@@ -34,14 +55,14 @@ impl mms::TableColumns {
                 }
             })
             .collect::<Vec<_>>()
-            .join(",\n")
+            .join(",\n        ")
     }
     fn get_column_schema(&self) -> String {
         self.columns
             .iter()
             .map(|c| format!("[{}] {}", c.field_name(), c.data_type.as_sql_type()))
             .collect::<Vec<_>>()
-            .join(",\n")
+            .join(",\n        ")
     }
 }
 
@@ -107,17 +128,23 @@ go
 create table mmsdm.FileLog (
     file_log_id bigint identity(1,1) not null primary key,
     data_source varchar(255) not null,
+    file_name varchar(255) not null,
     from_participant varchar(255) not null,
     to_participant varchar(255) not null,
-    effective_date datetime,
+    effective_date date,
+    effective_time time,
     serial_number bigint not null,
+    file_name_2 varchar(255) null,
+    serial_number_2 bigint null,
     data_set varchar(255) not null,
     sub_type varchar(255) not null,
     version tinyint not null,
     [status] char(1) not null default 'P' check ([status] in ('P','E','C')),
+    rows_inserted bigint not null default 0,
+    total_rows bigint not null,
     message varchar(max) null,
     check ((status != 'E' and message is null) or (status = 'E' and message is not null)),
-    unique (serial_number, data_set, sub_type, version)
+    unique (to_participant, serial_number, data_set, sub_type, version)
 )
 go
             "#
@@ -134,24 +161,74 @@ go
                 let create_table = format!(
                     r#"
 create table mmsdm.{table_name} (
-file_log_id bigint not null foreign key references mmsdm.FileLog(file_log_id) on delete cascade,
-{columns}
-{primary_key}
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    {columns}
+    {primary_key}
 )
 go
-create clustered columnstore index cci_{table_name} on mmsdm.{table_name};
+
+create nonclustered index Mmsdm{table_name}FileLogId on mmsdm.{table_name}(file_log_id)
 go
                         "#,
                     table_name = pdr_report.sql_table_name(),
                     columns = table.columns.get_sql(),
-                    //primary_key = table.primary_key_columns.get_sql(),
-                    primary_key = ""
+                    primary_key = table.primary_key_columns.get_sql(),
+                    // primary_key = ""
                 );
 
                 table_str.push_str(&create_table);
 
-                let insert_proc = format!(
-                    r#"
+                if table
+                    .columns
+                    .columns
+                    .iter()
+                    .any(|col| col.name.to_lowercase() == "lastchanged")
+                {
+                    let merge_proc = format!(
+                        r#"
+create or alter procedure mmsdm_proc.Insert{target_table}
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.{target_table} as tgt 
+using (
+    select 
+        {select_columns_d}
+    from openjson(@data) with (
+        {column_schema}
+    ) d
+) as src 
+on (
+{merge_check}
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        {update_columns}
+when not matched
+    then insert (
+        file_log_id,
+        {insert_columns}
+    ) values (
+        @file_log_id,
+        {select_columns_src}
+    );
+    
+end
+go"#,
+                        target_table = pdr_report.sql_table_name(),
+                        merge_check = table.primary_key_columns.merge_check(),
+                        insert_columns = table.columns.get_columns_sql(None),
+                        select_columns_d = table.columns.get_columns_sql(Some("d")),
+                        select_columns_src = table.columns.get_columns_sql(Some("src")),
+                        update_columns = table.columns.merge_update(),
+                        column_schema = table.columns.get_column_schema(),
+                    );
+                    proc_str.push_str(&merge_proc);
+                } else {
+                    let insert_proc = format!(
+                        r#"
 create or alter procedure mmsdm_proc.Insert{target_table}
     @file_log_id bigint,
     @data nvarchar(max)
@@ -168,12 +245,13 @@ from openjson(@data) with (
 ) d
 end
 go"#,
-                    target_table = pdr_report.sql_table_name(),
-                    insert_columns = table.columns.get_columns_sql(None),
-                    select_columns = table.columns.get_columns_sql(Some("d")),
-                    column_schema = table.columns.get_column_schema(),
-                );
-                proc_str.push_str(&insert_proc);
+                        target_table = pdr_report.sql_table_name(),
+                        insert_columns = table.columns.get_columns_sql(None),
+                        select_columns = table.columns.get_columns_sql(Some("d")),
+                        column_schema = table.columns.get_column_schema(),
+                    );
+                    proc_str.push_str(&insert_proc);
+                }
             }
         }
     }

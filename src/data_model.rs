@@ -1,185 +1,89 @@
 #[cfg(feature = "ancillary_services")]
-mod ancillary_services;
-
-#[cfg(feature = "ancillary_services")]
-pub use ancillary_services::*;
+pub use mmsdm_ancillary_services::*;
 
 #[cfg(feature = "asoffer")]
-mod asoffer;
-
-#[cfg(feature = "asoffer")]
-pub use asoffer::*;
+pub use mmsdm_asoffer::*;
 
 #[cfg(feature = "bids")]
-mod bids;
-
-#[cfg(feature = "bids")]
-pub use bids::*;
+pub use mmsdm_bids::*;
 
 #[cfg(feature = "billing_config")]
-mod billing_config;
-
-#[cfg(feature = "billing_config")]
-pub use billing_config::*;
+pub use mmsdm_billing_config::*;
 
 #[cfg(feature = "billing_run")]
-mod billing_run;
-
-#[cfg(feature = "billing_run")]
-pub use billing_run::*;
+pub use mmsdm_billing_run::*;
 
 #[cfg(feature = "configuration")]
-mod configuration;
-
-#[cfg(feature = "configuration")]
-pub use configuration::*;
+pub use mmsdm_configuration::*;
 
 #[cfg(feature = "demand_forecasts")]
-mod demand_forecasts;
-
-#[cfg(feature = "demand_forecasts")]
-pub use demand_forecasts::*;
+pub use mmsdm_demand_forecasts::*;
 
 #[cfg(feature = "dispatch")]
-mod dispatch;
-
-#[cfg(feature = "dispatch")]
-pub use dispatch::*;
+pub use mmsdm_dispatch::*;
 
 #[cfg(feature = "force_majeure")]
-mod force_majeure;
-
-#[cfg(feature = "force_majeure")]
-pub use force_majeure::*;
+pub use mmsdm_force_majeure::*;
 
 #[cfg(feature = "gd_instruct")]
-mod gd_instruct;
-
-#[cfg(feature = "gd_instruct")]
-pub use gd_instruct::*;
+pub use mmsdm_gd_instruct::*;
 
 #[cfg(feature = "generic_constraint")]
-mod generic_constraint;
-
-#[cfg(feature = "generic_constraint")]
-pub use generic_constraint::*;
+pub use mmsdm_generic_constraint::*;
 
 #[cfg(feature = "historical")]
-mod historical;
-
-#[cfg(feature = "historical")]
-pub use historical::*;
+pub use mmsdm_historical::*;
 
 #[cfg(feature = "irauction")]
-mod irauction;
-
-#[cfg(feature = "irauction")]
-pub use irauction::*;
+pub use mmsdm_irauction::*;
 
 #[cfg(feature = "market_config")]
-mod market_config;
-
-#[cfg(feature = "market_config")]
-pub use market_config::*;
+pub use mmsdm_market_config::*;
 
 #[cfg(feature = "market_notice")]
-mod market_notice;
-
-#[cfg(feature = "market_notice")]
-pub use market_notice::*;
+pub use mmsdm_market_notice::*;
 
 #[cfg(feature = "mcc_dispatch")]
-mod mcc_dispatch;
-
-#[cfg(feature = "mcc_dispatch")]
-pub use mcc_dispatch::*;
+pub use mmsdm_mcc_dispatch::*;
 
 #[cfg(feature = "meter_data")]
-mod meter_data;
-
-#[cfg(feature = "meter_data")]
-pub use meter_data::*;
-
-#[cfg(feature = "mrevent")]
-mod mrevent;
-
-#[cfg(feature = "mrevent")]
-pub use mrevent::*;
+pub use mmsdm_meter_data::*;
 
 #[cfg(feature = "mtpasa")]
-mod mtpasa;
-
-#[cfg(feature = "mtpasa")]
-pub use mtpasa::*;
+pub use mmsdm_mtpasa::*;
 
 #[cfg(feature = "network")]
-mod network;
-
-#[cfg(feature = "network")]
-pub use network::*;
+pub use mmsdm_network::*;
 
 #[cfg(feature = "p5min")]
-mod p5min;
-
-#[cfg(feature = "p5min")]
-pub use p5min::*;
+pub use mmsdm_p5min::*;
 
 #[cfg(feature = "participant_registration")]
-mod participant_registration;
-
-#[cfg(feature = "participant_registration")]
-pub use participant_registration::*;
+pub use mmsdm_participant_registration::*;
 
 #[cfg(feature = "pdpasa")]
-mod pdpasa;
-
-#[cfg(feature = "pdpasa")]
-pub use pdpasa::*;
+pub use mmsdm_pdpasa::*;
 
 #[cfg(feature = "pre_dispatch")]
-mod pre_dispatch;
-
-#[cfg(feature = "pre_dispatch")]
-pub use pre_dispatch::*;
+pub use mmsdm_pre_dispatch::*;
 
 #[cfg(feature = "prudentials")]
-mod prudentials;
-
-#[cfg(feature = "prudentials")]
-pub use prudentials::*;
+pub use mmsdm_prudentials::*;
 
 #[cfg(feature = "reserve_data")]
-mod reserve_data;
-
-#[cfg(feature = "reserve_data")]
-pub use reserve_data::*;
+pub use mmsdm_reserve_data::*;
 
 #[cfg(feature = "settlement_config")]
-mod settlement_config;
-
-#[cfg(feature = "settlement_config")]
-pub use settlement_config::*;
+pub use mmsdm_settlement_config::*;
 
 #[cfg(feature = "settlement_data")]
-mod settlement_data;
-
-#[cfg(feature = "settlement_data")]
-pub use settlement_data::*;
+pub use mmsdm_settlement_data::*;
 
 #[cfg(feature = "stpasa_solution")]
-mod stpasa_solution;
-
-#[cfg(feature = "stpasa_solution")]
-pub use stpasa_solution::*;
+pub use mmsdm_stpasa_solution::*;
 
 #[cfg(feature = "trading_data")]
-mod trading_data;
-
-#[cfg(feature = "trading_data")]
-pub use trading_data::*;
+pub use mmsdm_trading_data::*;
 
 #[cfg(feature = "voltage_instructions")]
-mod voltage_instructions;
-
-#[cfg(feature = "voltage_instructions")]
-pub use voltage_instructions::*;
+pub use mmsdm_voltage_instructions::*;
