@@ -32,25 +32,17 @@ pub fn run() -> anyhow::Result<()> {
     let mut fmt_str = String::new();
     fmt_str.push_str(
         r#"
-use std::collections;
-use crate::data_model;
-use futures_util::{AsyncRead, AsyncWrite};
-
-/// This function is meant to be used in conjunction with the iterator over
-/// the data contained within the AemoFile struct
 #[cfg(feature = "sql_server")]
 pub async fn save_all<'a, S>(file: impl Into<mmsdm_core::MmsFile<'a>>, skip_keys: Option<&std::collections::HashSet<mmsdm_core::FileKey>>, client: &mut tiberius::Client<S>, chunk_size: Option<usize>) -> mmsdm_core::Result<()>
 where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 {
     let mut mms_file = file.into();
     for file_key in mms_file.file_keys() {
-        if skip_keys.map(|set| set.contains(file_key)).unwrap_or(false) {
+        if skip_keys.map(|set| set.contains(&file_key)).unwrap_or(false) {
             log::info!("Skippping file key {} as it is in the list of keys to skip", file_key);                            
             continue;                                                                                                      
         }   
-        match (
-            file_key.data_set_name.as_str(),
-        ) {
+        match file_key.data_set_name.as_str() {
 "#,);
     let mut data_map = collections::BTreeMap::new();
 
@@ -78,7 +70,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             r#"            "{options}" => {{
                 #[cfg(feature = "{feature}")]
                 {{
-                    data_model::{feature}::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_{feature}::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }}
                 #[cfg(not(feature = "{feature}"))]
                 {{
@@ -86,7 +78,11 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }}
             }}
 "#,
-            options = matches.into_iter().collect::<Vec<String>>().join("\" | \""),
+            options = if feature == "irauction" {
+                matches.into_iter().filter(|o| o != "SETTLEMENT_CONFIG").collect::<Vec<String>>().join("\" | \"")
+            } else {
+                matches.into_iter().collect::<Vec<String>>().join("\" | \"")
+            },
         );
         fmt_str.push_str(&block);
     }

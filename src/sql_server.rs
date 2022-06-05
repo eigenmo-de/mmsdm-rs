@@ -1,27 +1,19 @@
 
-use std::collections;
-use crate::data_model;
-use futures_util::{AsyncRead, AsyncWrite};
-
-/// This function is meant to be used in conjunction with the iterator over
-/// the data contained within the AemoFile struct
 #[cfg(feature = "sql_server")]
 pub async fn save_all<'a, S>(file: impl Into<mmsdm_core::MmsFile<'a>>, skip_keys: Option<&std::collections::HashSet<mmsdm_core::FileKey>>, client: &mut tiberius::Client<S>, chunk_size: Option<usize>) -> mmsdm_core::Result<()>
 where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 {
     let mut mms_file = file.into();
     for file_key in mms_file.file_keys() {
-        if skip_keys.map(|set| set.contains(file_key)).unwrap_or(false) {
+        if skip_keys.map(|set| set.contains(&file_key)).unwrap_or(false) {
             log::info!("Skippping file key {} as it is in the list of keys to skip", file_key);                            
             continue;                                                                                                      
         }   
-        match (
-            file_key.data_set_name.as_str(),
-        ) {
+        match file_key.data_set_name.as_str() {
             "ASOFFER" => {
                 #[cfg(feature = "asoffer")]
                 {
-                    data_model::asoffer::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_asoffer::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "asoffer"))]
                 {
@@ -31,7 +23,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "BID" | "BIDS" | "OFFER" => {
                 #[cfg(feature = "bids")]
                 {
-                    data_model::bids::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_bids::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "bids"))]
                 {
@@ -41,7 +33,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "BILLING_CONFIG" => {
                 #[cfg(feature = "billing_config")]
                 {
-                    data_model::billing_config::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_billing_config::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "billing_config"))]
                 {
@@ -51,7 +43,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "BILLING" => {
                 #[cfg(feature = "billing_run")]
                 {
-                    data_model::billing_run::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_billing_run::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "billing_run"))]
                 {
@@ -61,7 +53,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "DEMAND" | "FORECAST" | "OPERATIONAL_DEMAND" | "ROOFTOP" => {
                 #[cfg(feature = "demand_forecasts")]
                 {
-                    data_model::demand_forecasts::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_demand_forecasts::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "demand_forecasts"))]
                 {
@@ -71,7 +63,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "DISPATCH" | "PRICELOAD" => {
                 #[cfg(feature = "dispatch")]
                 {
-                    data_model::dispatch::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_dispatch::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "dispatch"))]
                 {
@@ -81,7 +73,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "AP" | "FORCE_MAJEURE" => {
                 #[cfg(feature = "force_majeure")]
                 {
-                    data_model::force_majeure::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_force_majeure::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "force_majeure"))]
                 {
@@ -91,7 +83,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "GD_INSTRUCT" => {
                 #[cfg(feature = "gd_instruct")]
                 {
-                    data_model::gd_instruct::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_gd_instruct::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "gd_instruct"))]
                 {
@@ -101,17 +93,17 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "GCRHS" | "GENCONDATA" | "GENCONSET" | "GENCONSETTRK" | "GENERIC_CONSTRAINT" | "GEQDESC" | "GEQRHS" | "SPDCPC" | "SPDICC" | "SPDRC" => {
                 #[cfg(feature = "generic_constraint")]
                 {
-                    data_model::generic_constraint::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_generic_constraint::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "generic_constraint"))]
                 {
                     log::warn!("File key {:?} is not handled as the feature generic_constraint is not activated", file_key);
                 }
             }
-            "IRAUCTION" | "IRAUCTION_BIDS" | "IRAUCTION_CONFIG" | "SETTLEMENT_CONFIG" => {
+            "IRAUCTION" | "IRAUCTION_BIDS" | "IRAUCTION_CONFIG" => {
                 #[cfg(feature = "irauction")]
                 {
-                    data_model::irauction::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_irauction::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "irauction"))]
                 {
@@ -121,7 +113,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "MARKET_CONFIG" => {
                 #[cfg(feature = "market_config")]
                 {
-                    data_model::market_config::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_market_config::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "market_config"))]
                 {
@@ -131,7 +123,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "MARKET_NOTICE" => {
                 #[cfg(feature = "market_notice")]
                 {
-                    data_model::market_notice::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_market_notice::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "market_notice"))]
                 {
@@ -141,7 +133,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "MCC" => {
                 #[cfg(feature = "mcc_dispatch")]
                 {
-                    data_model::mcc_dispatch::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_mcc_dispatch::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "mcc_dispatch"))]
                 {
@@ -151,7 +143,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "METERDATA" => {
                 #[cfg(feature = "meter_data")]
                 {
-                    data_model::meter_data::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_meter_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "meter_data"))]
                 {
@@ -161,7 +153,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "NETWORK" => {
                 #[cfg(feature = "network")]
                 {
-                    data_model::network::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_network::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "network"))]
                 {
@@ -171,7 +163,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "P5MIN" => {
                 #[cfg(feature = "p5min")]
                 {
-                    data_model::p5min::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_p5min::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "p5min"))]
                 {
@@ -181,7 +173,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "PARTICIPANT_REGISTRATION" => {
                 #[cfg(feature = "participant_registration")]
                 {
-                    data_model::participant_registration::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_participant_registration::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "participant_registration"))]
                 {
@@ -191,7 +183,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "PDPASA" => {
                 #[cfg(feature = "pdpasa")]
                 {
-                    data_model::pdpasa::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_pdpasa::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "pdpasa"))]
                 {
@@ -201,7 +193,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "PREDISPATCH" => {
                 #[cfg(feature = "pre_dispatch")]
                 {
-                    data_model::pre_dispatch::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_pre_dispatch::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "pre_dispatch"))]
                 {
@@ -211,7 +203,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "PRUDENTIAL" => {
                 #[cfg(feature = "prudentials")]
                 {
-                    data_model::prudentials::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_prudentials::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "prudentials"))]
                 {
@@ -221,7 +213,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "MTPASA" | "RESERVE_DATA" => {
                 #[cfg(feature = "reserve_data")]
                 {
-                    data_model::reserve_data::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_reserve_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "reserve_data"))]
                 {
@@ -231,7 +223,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "SETCFG" | "SETTLEMENTS_CONFIG" | "SETTLEMENT_CONFIG" => {
                 #[cfg(feature = "settlement_config")]
                 {
-                    data_model::settlement_config::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_settlement_config::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "settlement_config"))]
                 {
@@ -241,7 +233,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "SETTLEMENTS" => {
                 #[cfg(feature = "settlement_data")]
                 {
-                    data_model::settlement_data::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_settlement_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "settlement_data"))]
                 {
@@ -251,7 +243,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "STPASA" => {
                 #[cfg(feature = "stpasa_solution")]
                 {
-                    data_model::stpasa_solution::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_stpasa_solution::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "stpasa_solution"))]
                 {
@@ -261,7 +253,7 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "TRADING" => {
                 #[cfg(feature = "trading_data")]
                 {
-                    data_model::trading_data::save(mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_trading_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
                 }
                 #[cfg(not(feature = "trading_data"))]
                 {
