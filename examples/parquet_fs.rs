@@ -1,23 +1,26 @@
-use mmsdm::{data_model, GetTable, ArrowSchema};
+use mmsdm::{data_model, ArrowSchema, GetTable};
 use std::{collections, fs::File};
 
 use arrow2::{
     chunk::Chunk,
-    datatypes::{Field, Schema, DataType},
+    datatypes::{DataType, Field, Schema},
     error::Result,
     io::parquet::write::{
-        CompressionOptions, Encoding, FileWriter, RowGroupIterator, Version,
-        WriteOptions,
+        CompressionOptions, Encoding, FileWriter, RowGroupIterator, Version, WriteOptions,
     },
 };
 
 fn main() -> anyhow::Result<()> {
     // let db = sled::Config::new().path("./parquet-fs.db").open()?;
 
-    let mut handle = mmsdm::AemoDiskFile::from_path("./data/PUBLIC_DVD_DISPATCHLOAD_202110010000.zip")?;
+    let mut handle =
+        mmsdm::AemoDiskFile::from_path("./data/PUBLIC_DVD_DISPATCHLOAD_202110010000.zip")?;
 
     dbg!(handle.file_keys());
-    let partitions = handle.get_table::<data_model::DispatchUnitSolution3>()?.map(|r| r.unwrap().partition_suffix()).collect::<collections::HashSet<_>>();
+    let partitions = handle
+        .get_table::<data_model::DispatchUnitSolution3>()?
+        .map(|r| r.unwrap().partition_suffix())
+        .collect::<collections::HashSet<_>>();
     dbg!(partitions);
     // let dispatch = handle.get_table::<data_model::DispatchUnitSolution3>()?;
     // for (num, row) in dispatch.enumerate() {
@@ -45,41 +48,49 @@ fn main() -> anyhow::Result<()> {
     //     dbg!(chunk.len());
     // }
 
+    let partition = handle
+        .get_table::<data_model::DispatchUnitSolution3>()?
+        .map(|r| r.unwrap());
+    let chunk = mmsdm_core::ArrowSchema::partition_to_chunk(partition)?;
+    for col in chunk.columns() {
+        dbg!(col.data_type());
+    }
+    dbg!(chunk.len());
 
-        let partition = handle.get_table::<data_model::DispatchUnitSolution3>()?.map(|r| r.unwrap());
-        let chunk = mmsdm_core::ArrowSchema::partition_to_chunk(partition)?;
-        for col in chunk.columns() {
-            dbg!(col.data_type());
-        }
-        dbg!(chunk.len());
+    // as per example at: https://github.com/jorgecarleitao/arrow2/blob/main/examples/parquet_write.rs
+    let options = WriteOptions {
+        write_statistics: true,
+        compression: CompressionOptions::Snappy,
+        version: Version::V2,
+    };
 
+    let encodings = data_model::DispatchUnitSolution3::arrow_schema()
+        .fields
+        .iter()
+        .map(|f| match f.data_type {
+            _ => Encoding::Plain,
+        })
+        .collect();
 
+    let row_groups = RowGroupIterator::try_new(
+        std::iter::once(Ok(chunk)),
+        &data_model::DispatchUnitSolution3::arrow_schema(),
+        options,
+        encodings,
+    )?;
 
-        // as per example at: https://github.com/jorgecarleitao/arrow2/blob/main/examples/parquet_write.rs
-        let options = WriteOptions {
-            write_statistics: true,
-            compression: CompressionOptions::Snappy,
-            version: Version::V2,
-        };
-        
-        let encodings = data_model::DispatchUnitSolution3::arrow_schema()
-            .fields
-            .iter()
-            .map(|f| match f.data_type {
-                _=> Encoding::Plain,
-            })
-            .collect();
-    
-        let row_groups = RowGroupIterator::try_new(std::iter::once(Ok(chunk)), &data_model::DispatchUnitSolution3::arrow_schema(), options, encodings)?;
-    
-        let file = File::create("./PUBLIC_DVD_DISPATCHLOAD_202110010000.parquet")?;
-    
-        let mut writer = FileWriter::try_new(file, data_model::DispatchUnitSolution3::arrow_schema(), options)?;
-    
-        writer.start()?;
-        for group in row_groups {
-            writer.write(group?)?;
-        }
-        let _size = writer.end(None)?;
-        Ok(())
+    let file = File::create("./PUBLIC_DVD_DISPATCHLOAD_202110010000.parquet")?;
+
+    let mut writer = FileWriter::try_new(
+        file,
+        data_model::DispatchUnitSolution3::arrow_schema(),
+        options,
+    )?;
+
+    writer.start()?;
+    for group in row_groups {
+        writer.write(group?)?;
+    }
+    let _size = writer.end(None)?;
+    Ok(())
 }

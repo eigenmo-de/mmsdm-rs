@@ -252,8 +252,6 @@ optional = true
 
 [dev-dependencies]
 anyhow = "1"
-tiberius = { version = "0.6", features = ["rust_decimal"] }
-serde_json = "1"
 env_logger = "0.8"
 tokio = { version = "1", features = ["full"]  }
 tokio-util = { version = "0.6", features = ["compat"]  }
@@ -269,7 +267,41 @@ sled = "0.34.7"
 
 
 [features]
-sql_server = ["tiberius", "futures-util"]
+sql_server = [
+    "tiberius", 
+    "futures-util",
+    "mmsdm_core/sql_server",
+    "mmsdm_ancillary_services?/sql_server",
+    "mmsdm_asoffer?/sql_server",
+    "mmsdm_bids?/sql_server",
+    "mmsdm_billing_config?/sql_server",
+    "mmsdm_billing_run?/sql_server",
+    "mmsdm_configuration?/sql_server",
+    "mmsdm_demand_forecasts?/sql_server",
+    "mmsdm_dispatch?/sql_server",
+    "mmsdm_force_majeure?/sql_server",
+    "mmsdm_gd_instruct?/sql_server",
+    "mmsdm_generic_constraint?/sql_server",
+    "mmsdm_historical?/sql_server",
+    "mmsdm_irauction?/sql_server",
+    "mmsdm_market_config?/sql_server",
+    "mmsdm_market_notice?/sql_server",
+    "mmsdm_mcc_dispatch?/sql_server",
+    "mmsdm_meter_data?/sql_server",
+    "mmsdm_mtpasa?/sql_server",
+    "mmsdm_network?/sql_server",
+    "mmsdm_p5min?/sql_server",
+    "mmsdm_participant_registration?/sql_server",
+    "mmsdm_pdpasa?/sql_server",
+    "mmsdm_pre_dispatch?/sql_server",
+    "mmsdm_prudentials?/sql_server",
+    "mmsdm_reserve_data?/sql_server",
+    "mmsdm_settlement_config?/sql_server",
+    "mmsdm_settlement_data?/sql_server",
+    "mmsdm_stpasa_solution?/sql_server",
+    "mmsdm_trading_data?/sql_server",
+    "mmsdm_voltage_instructions?/sql_server",
+]
 arrow = [
     "arrow2", 
     "mmsdm_core/arrow",
