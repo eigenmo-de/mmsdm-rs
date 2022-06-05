@@ -1,14 +1,25 @@
-
 #[cfg(feature = "sql_server")]
-pub async fn save_all<'a, S>(file: impl Into<mmsdm_core::MmsFile<'a>>, skip_keys: Option<&std::collections::HashSet<mmsdm_core::FileKey>>, client: &mut tiberius::Client<S>, chunk_size: Option<usize>) -> mmsdm_core::Result<()>
-where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
+pub async fn save_all<'a, S>(
+    file: impl Into<mmsdm_core::MmsFile<'a>>,
+    skip_keys: Option<&std::collections::HashSet<mmsdm_core::FileKey>>,
+    client: &mut tiberius::Client<S>,
+    chunk_size: Option<usize>,
+) -> mmsdm_core::Result<()>
+where
+    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 {
     let mut mms_file = file.into();
     for file_key in mms_file.file_keys() {
-        if skip_keys.map(|set| set.contains(&file_key)).unwrap_or(false) {
-            log::info!("Skippping file key {} as it is in the list of keys to skip", file_key);                            
-            continue;                                                                                                      
-        }   
+        if skip_keys
+            .map(|set| set.contains(&file_key))
+            .unwrap_or(false)
+        {
+            log::info!(
+                "Skippping file key {} as it is in the list of keys to skip",
+                file_key
+            );
+            continue;
+        }
         match file_key.data_set_name.as_str() {
             "ASOFFER" => {
                 #[cfg(feature = "asoffer")]
@@ -17,7 +28,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "asoffer"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature asoffer is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature asoffer is not activated",
+                        file_key
+                    );
                 }
             }
             "BID" | "BIDS" | "OFFER" => {
@@ -27,13 +41,17 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "bids"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature bids is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature bids is not activated",
+                        file_key
+                    );
                 }
             }
             "BILLING_CONFIG" => {
                 #[cfg(feature = "billing_config")]
                 {
-                    mmsdm_billing_config::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_billing_config::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "billing_config"))]
                 {
@@ -47,13 +65,17 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "billing_run"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature billing_run is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature billing_run is not activated",
+                        file_key
+                    );
                 }
             }
             "DEMAND" | "FORECAST" | "OPERATIONAL_DEMAND" | "ROOFTOP" => {
                 #[cfg(feature = "demand_forecasts")]
                 {
-                    mmsdm_demand_forecasts::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_demand_forecasts::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "demand_forecasts"))]
                 {
@@ -67,7 +89,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "dispatch"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature dispatch is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature dispatch is not activated",
+                        file_key
+                    );
                 }
             }
             "AP" | "FORCE_MAJEURE" => {
@@ -87,13 +112,18 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "gd_instruct"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature gd_instruct is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature gd_instruct is not activated",
+                        file_key
+                    );
                 }
             }
-            "GCRHS" | "GENCONDATA" | "GENCONSET" | "GENCONSETTRK" | "GENERIC_CONSTRAINT" | "GEQDESC" | "GEQRHS" | "SPDCPC" | "SPDICC" | "SPDRC" => {
+            "GCRHS" | "GENCONDATA" | "GENCONSET" | "GENCONSETTRK" | "GENERIC_CONSTRAINT"
+            | "GEQDESC" | "GEQRHS" | "SPDCPC" | "SPDICC" | "SPDRC" => {
                 #[cfg(feature = "generic_constraint")]
                 {
-                    mmsdm_generic_constraint::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_generic_constraint::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "generic_constraint"))]
                 {
@@ -107,7 +137,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "irauction"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature irauction is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature irauction is not activated",
+                        file_key
+                    );
                 }
             }
             "MARKET_CONFIG" => {
@@ -137,7 +170,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "mcc_dispatch"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature mcc_dispatch is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature mcc_dispatch is not activated",
+                        file_key
+                    );
                 }
             }
             "METERDATA" => {
@@ -147,7 +183,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "meter_data"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature meter_data is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature meter_data is not activated",
+                        file_key
+                    );
                 }
             }
             "NETWORK" => {
@@ -157,7 +196,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "network"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature network is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature network is not activated",
+                        file_key
+                    );
                 }
             }
             "P5MIN" => {
@@ -167,13 +209,22 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "p5min"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature p5min is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature p5min is not activated",
+                        file_key
+                    );
                 }
             }
             "PARTICIPANT_REGISTRATION" => {
                 #[cfg(feature = "participant_registration")]
                 {
-                    mmsdm_participant_registration::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_participant_registration::save(
+                        &mut mms_file,
+                        &file_key,
+                        client,
+                        chunk_size,
+                    )
+                    .await?;
                 }
                 #[cfg(not(feature = "participant_registration"))]
                 {
@@ -187,7 +238,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "pdpasa"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature pdpasa is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature pdpasa is not activated",
+                        file_key
+                    );
                 }
             }
             "PREDISPATCH" => {
@@ -197,7 +251,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "pre_dispatch"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature pre_dispatch is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature pre_dispatch is not activated",
+                        file_key
+                    );
                 }
             }
             "PRUDENTIAL" => {
@@ -207,7 +264,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "prudentials"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature prudentials is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature prudentials is not activated",
+                        file_key
+                    );
                 }
             }
             "MTPASA" | "RESERVE_DATA" => {
@@ -217,13 +277,17 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "reserve_data"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature reserve_data is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature reserve_data is not activated",
+                        file_key
+                    );
                 }
             }
             "SETCFG" | "SETTLEMENTS_CONFIG" | "SETTLEMENT_CONFIG" => {
                 #[cfg(feature = "settlement_config")]
                 {
-                    mmsdm_settlement_config::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_settlement_config::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "settlement_config"))]
                 {
@@ -233,7 +297,8 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "SETTLEMENTS" => {
                 #[cfg(feature = "settlement_data")]
                 {
-                    mmsdm_settlement_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_settlement_data::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "settlement_data"))]
                 {
@@ -243,7 +308,8 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             "STPASA" => {
                 #[cfg(feature = "stpasa_solution")]
                 {
-                    mmsdm_stpasa_solution::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_stpasa_solution::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "stpasa_solution"))]
                 {
@@ -257,7 +323,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
                 }
                 #[cfg(not(feature = "trading_data"))]
                 {
-                    log::warn!("File key {:?} is not handled as the feature trading_data is not activated", file_key);
+                    log::warn!(
+                        "File key {:?} is not handled as the feature trading_data is not activated",
+                        file_key
+                    );
                 }
             }
 
@@ -266,5 +335,5 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             }
         }
     }
-Ok(())
+    Ok(())
 }

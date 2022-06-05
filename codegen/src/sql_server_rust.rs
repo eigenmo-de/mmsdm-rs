@@ -79,7 +79,11 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
             }}
 "#,
             options = if feature == "irauction" {
-                matches.into_iter().filter(|o| o != "SETTLEMENT_CONFIG").collect::<Vec<String>>().join("\" | \"")
+                matches
+                    .into_iter()
+                    .filter(|o| o != "SETTLEMENT_CONFIG")
+                    .collect::<Vec<String>>()
+                    .join("\" | \"")
             } else {
                 matches.into_iter().collect::<Vec<String>>().join("\" | \"")
             },
