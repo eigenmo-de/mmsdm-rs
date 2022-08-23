@@ -84,7 +84,7 @@ pub enum Error {
 
     #[cfg(feature = "arrow")]
     #[error(transparent)]
-    Arrow(#[from] arrow2::error::ArrowError),
+    Arrow(#[from] arrow2::error::Error),
 
     #[error(transparent)]
     Zip(#[from] zip::result::ZipError),

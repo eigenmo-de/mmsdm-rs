@@ -795,7 +795,7 @@ default-features = false
 features = []
 
 [dependencies.zip]
-version = "0.5.13"
+version = "0.6.2"
 default-features = false
 features = []
 
@@ -840,7 +840,7 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.11.2"
+version = "0.13.1"
 optional = true
 default-features = false
 
@@ -859,7 +859,7 @@ optional = true
 path = "../mmsdm_core"
 
 [features]
-arrow = ["arrow2", "mmsdm_core/arrow2"]
+arrow = ["arrow2", "mmsdm_core/arrow"]
 sql_server = ["tiberius", "futures-util", "mmsdm_core/sql_server"]
 default = []"#,
             data_set = data_set.to_snake_case(),
