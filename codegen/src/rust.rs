@@ -835,7 +835,7 @@ features = ["derive"]
 default-features = false
 
 [dependencies.chrono]
-version = "0.4.19"
+version = "0.4.22"
 features = ["serde", "std"]
 default-features = false
 
@@ -845,7 +845,7 @@ optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.9.0"
+version = "0.10.0"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true
