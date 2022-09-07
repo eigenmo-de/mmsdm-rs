@@ -63,7 +63,7 @@ optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.10.0"
+version = "0.11.0"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true
