@@ -25,14 +25,25 @@ impl Report {
         // skip historical dataset - there are no table definitions anyway
         (self.name == "HISTORICAL")
         || (self.name == "CONFIGURATION")
-        // temporary
+        // all the below seems to be missing
+        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTAGC")
+        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTLOADSHED")
+        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTREACTIVEPOWER")
+        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTRESTARTSERVICES")
+        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTRESTARTUNITS")
         || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_RUN")
         || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_PRED")
         || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCCOMPENSATION")
         || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCRECOVERY")
         || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_RECOVERY")
         || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_PAYMENT")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGIRFM")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_DIRECTION_RECONCILIATN")
+        || (self.name == "BILLING_RUN" && self.sub_type == "BILLWHITEHOLE")
         || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRESERVERECOVERY")
+        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETLSHEDRECOVERY")
+        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRPOWERRECOVERY")
+        || (self.name == "VOLTAGE_INSTRUCTIONS")
     }
 }
 
@@ -69,7 +80,7 @@ impl TablePage {
                 element_ref::ElementRef::wrap(h3.next_sibling().unwrap().next_sibling().unwrap())
                     .unwrap();
             if detail_type != "Index" {
-                details.insert(detail_type.replace(" ", ""), detail_table);
+                details.insert(detail_type.replace(' ', ""), detail_table);
             }
         }
 
@@ -90,7 +101,7 @@ impl TablePage {
         let mut first_column_set = details
             .get("Content")
             .ok_or_else(|| anyhow!("Missing required field Content"))
-            .and_then(|t| TableColumns::from_html(t))?;
+            .and_then(TableColumns::from_html)?;
 
         for extra in extra_columns {
             first_column_set.add_columns(extra);
@@ -132,8 +143,8 @@ impl TableSummary {
             .next()
             .ok_or_else(|| anyhow!("No content in summary table name"))?
             .inner_html()
-            .replace(" ", "")
-            .replace("\n", "");
+            .replace(' ', "")
+            .replace('\n', "");
         let comment_el = cells
             .nth(1)
             .ok_or_else(|| anyhow!("Comment cell missing from summary table"))?;
@@ -142,7 +153,7 @@ impl TableSummary {
             .next()
             .ok_or_else(|| anyhow!("No content in summary table comment cell"))?
             .inner_html()
-            .replace("\n", "");
+            .replace('\n', "");
         Ok(TableSummary { name, comment })
     }
 }
@@ -157,7 +168,7 @@ impl PkColumns {
         let cols = tab
             .select(&P)
             .skip(1)
-            .map(|er| er.inner_html().replace("\n", ""))
+            .map(|er| er.inner_html().replace('\n', ""))
             .collect();
         Ok(PkColumns { cols })
     }
@@ -205,9 +216,9 @@ pub struct TableNote {
 impl TableNote {
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNote> {
         let mut cells = tab.select(&P);
-        let name = cells.next().unwrap().inner_html().replace("\n", "");
-        let comment = cells.next().unwrap().inner_html().replace("\n", "");
-        let value = cells.next().unwrap().inner_html().replace("\n", "");
+        let name = cells.next().unwrap().inner_html().replace('\n', "");
+        let comment = cells.next().unwrap().inner_html().replace('\n', "");
+        let value = cells.next().unwrap().inner_html().replace('\n', "");
         Ok(TableNote {
             name,
             comment,
@@ -246,20 +257,20 @@ pub struct TableColumn {
 impl TableColumn {
     pub fn field_name(&self) -> String {
         use heck::SnakeCase;
-        format!("{}", self.name.to_snake_case())
+        self.name.to_snake_case()
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumn> {
         let mut cells = tab.select(&P);
-        let name = cells.next().unwrap().inner_html().replace("\n", "");
+        let name = cells.next().unwrap().inner_html().replace('\n', "");
         let data_type = cells
             .next()
             .unwrap()
             .inner_html()
-            .replace("\n", "")
-            .replace(" ", "")
+            .replace('\n', "")
+            .replace(' ', "")
             .parse()?;
-        let mandatory = cells.next().unwrap().inner_html().starts_with("X");
-        let comment = cells.next().unwrap().inner_html().replace("\n", "");
+        let mandatory = cells.next().unwrap().inner_html().starts_with('X');
+        let comment = cells.next().unwrap().inner_html().replace('\n', "");
         Ok(TableColumn {
             name,
             data_type,
@@ -314,7 +325,7 @@ impl DataType {
 impl str::FromStr for DataType {
     type Err = anyhow::Error;
     fn from_str(s: &str) -> anyhow::Result<DataType> {
-        let input = s.replace(" ", "").to_lowercase();
+        let input = s.replace(' ', "").to_lowercase();
         let set = regex::RegexSet::new(&[
             r"date",
             r"char\(1\)",

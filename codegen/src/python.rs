@@ -1,7 +1,4 @@
-use anyhow::anyhow;
-use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
-use serde::{Deserialize, Serialize};
-use std::{collections, fs, iter, str, string};
+use std::{collections, fs, str};
 
 use crate::{mms, pdr};
 
@@ -18,7 +15,7 @@ impl mms::DataType {
                 // the decimal128 has 34 significant digits anyway so we may as well use the largest
                 // possible precision. The 18 for scale is the largest amount that has been empirically
                 // observed, however this balance may need to be updated in future.
-                format!("pyarrow.decimal128(34,18)",)
+                "pyarrow.decimal128(34,18)".to_string()
             }
             mms::DataType::Integer { .. } => "pyarrow.int64()".to_string(),
         }
@@ -57,9 +54,9 @@ pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open("mmsdm.json")?;
     let mapping = fs::read_to_string("table_mapping.csv").unwrap();
     let mut map = collections::HashMap::new();
-    for row in mapping.split("\n").skip(1) {
+    for row in mapping.split('\n').skip(1) {
         if row.contains(',') {
-            let pieces = row.split(",").collect::<Vec<&str>>();
+            let pieces = row.split(',').collect::<Vec<&str>>();
             let mms = mms::Report {
                 name: pieces[0].to_string(),
                 sub_type: pieces[1].to_string(),
@@ -167,7 +164,7 @@ import pyarrow.csv as pc
                 let sub_type = pdr_report
                     .sub_type
                     .clone()
-                    .unwrap_or("null".to_string())
+                    .unwrap_or_else(|| "null".to_string())
                     .to_lowercase();
                 let schema_fn_name = format!("{}_{}_v{}", data_set, sub_type, pdr_report.version);
                 // the include_columns and include_missing_columns ensures that when we have less than expected columns
@@ -200,7 +197,7 @@ def {fn_name}(file_path):
     "#,
     );
 
-    fmt_str.push_str("\n");
+    fmt_str.push('\n');
     fmt_str.push_str(&extract_str);
 
     fs::write("python/mmsdm/data_model.py", fmt_str)?;

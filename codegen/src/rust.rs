@@ -2,6 +2,7 @@ use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
 use std::{collections, fs, str};
 
 use crate::{mms, pdr};
+use serde::Deserialize;
 
 impl mms::DataType {
     fn as_rust_type(&self) -> String {
@@ -53,7 +54,7 @@ impl mms::TableColumn {
         };
 
         if self.mandatory {
-            format!("{}", formatted_type)
+            formatted_type
         } else {
             format!("Option<{}>", formatted_type)
         }
@@ -361,7 +362,7 @@ fn codegen_struct(
     let mut current_struct = codegen::Struct::new(&pdr_report.get_rust_struct_name());
     current_struct
         .vis("pub")
-        .doc(&table.get_rust_doc(&pdr_report))
+        .doc(&table.get_rust_doc(pdr_report))
         .derive("Debug")
         .derive("Clone")
         .derive("PartialEq")
@@ -584,11 +585,7 @@ fn codegen_pk(
     Ok(())
 }
 
-fn codegen_impl_pk(
-    pdr_report: &pdr::Report,
-    table: &mms::TablePage,
-    fmtr: &mut codegen::Formatter,
-) -> anyhow::Result<()> {
+fn codegen_impl_pk(pdr_report: &pdr::Report, fmtr: &mut codegen::Formatter) -> anyhow::Result<()> {
     let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
     pk_trait.impl_trait("mmsdm_core::PrimaryKey");
     pk_trait.fmt(fmtr)?;
@@ -760,17 +757,8 @@ vec![",
     Ok(())
 }
 
-fn codegen_impl_save_to_sql_server(
-    pdr_report: &pdr::Report,
-    table: &mms::TablePage,
-    fmtr: &mut codegen::Formatter,
-) -> anyhow::Result<()> {
-    let mut current_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
-
-    current_impl.impl_trait("");
-
-    current_impl.fmt(fmtr)?;
-
+fn remove_data_set_crate(data_set: &str) -> anyhow::Result<()> {
+    std::fs::remove_dir_all(format!("crates/{}", data_set.to_snake_case()))?;
     Ok(())
 }
 
@@ -868,34 +856,62 @@ default = []"#,
     Ok(())
 }
 
-pub fn run() -> anyhow::Result<()> {
-    let rdr = fs::File::open("mmsdm.json")?;
-    let mapping = fs::read_to_string("table_mapping.csv").unwrap();
-    let mut map = collections::HashMap::new();
-    for row in mapping.split("\n").skip(1) {
-        if row.contains(',') {
-            let pieces = row.split(",").collect::<Vec<&str>>();
-            let mms = mms::Report {
-                name: pieces[0].to_string(),
-                sub_type: pieces[1].to_string(),
-            };
-            let pdr = pdr::Report {
-                name: pieces[2].to_string(),
-                sub_type: match pieces[3] {
-                    "" => None,
-                    otherwise => Some(otherwise.to_string()),
-                },
-                version: pieces[4].parse().unwrap(),
-                transaction_type: pieces[5].to_string(),
-                row_filter: pieces[6].to_string(),
-            };
-            map.insert(mms, pdr);
+pub const VERSION: &str = "5.1";
+
+#[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[allow(dead_code)]
+pub struct TableMapping {
+    row: usize,
+    mmsdm_package_name: String, //	Package name as per the MMS Data Model documentation	DISPATCH
+    mmsdm_table_name: String,   //	Table name as per the MMS Data Model documentation	DISPATCHPRICE
+    file_identifier: String, //	File identifier as per the MMS Data Subscriptions web page	DISPATCHIS
+    file_name: String, //	File name. Note parameters in the table below	<#VISIBILITY_ID>_DISPATCHIS_<#CASE_DATETIME>_<#EVENT_QUEUE_ID>.CSV
+    pdr_record_type: String, //	PDR Loader record type (File configuration) as shown in Replication Manager	DISPATCHIS
+    pdr_report_name: String, //	PDR Loader report name (CSV Record configuration) as shown in Replication Manager	DISPATCH
+    pdr_report_sub_type: Option<String>, //	PDR Loader report sub type (CSV Record configuration) as shown in Replication Manager	PRICE
+    pdr_report_version: u8, //	PDR Loader report version (CSV Record configuration) as shown in Replication Manager	2
+    pdr_report_transaction_type: String, //	PDR Loader report transaction type - data loading action	INSERT-UPDATE
+    pdr_report_row_filter_type: String, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+}
+
+impl TableMapping {
+    pub fn mms(&self) -> mms::Report {
+        mms::Report {
+            name: self.mmsdm_package_name.clone(),
+            sub_type: self.mmsdm_table_name.clone(),
         }
     }
+    pub fn pdr(&self) -> pdr::Report {
+        pdr::Report {
+            name: self.pdr_report_name.clone(),
+            sub_type: self.pdr_report_sub_type.clone(),
+            version: self.pdr_report_version,
+            transaction_type: self.pdr_report_transaction_type.clone(),
+            row_filter: self.pdr_report_row_filter_type.clone(),
+        }
+    }
+}
+
+pub fn run() -> anyhow::Result<()> {
+    let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
+    let mut mapping = csv::Reader::from_path(format!("table_mapping_v{VERSION}.csv"))?;
+    let mut map = collections::HashMap::new();
+
+    for row in mapping.deserialize::<TableMapping>() {
+        let row = row?;
+        map.insert(row.mms(), row.pdr());
+    }
+
     // abv
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
 
-    for (data_set, tables) in local_info.into_iter() {
+    for (mut data_set, tables) in local_info.into_iter() {
+        dbg!(&data_set);
+        if data_set == "MTPASA" {
+            // dbg!(&tables);
+            data_set.push_str("_SOLUTION");
+        }
         prepare_data_set_crate(&data_set)?;
 
         let mut fmt_str = String::new();
@@ -916,7 +932,7 @@ pub fn run() -> anyhow::Result<()> {
                     codegen_impl_get_table(pdr_report, &table, &mut fmtr)?;
 
                     codegen_pk(pdr_report, &table, &mut fmtr)?;
-                    codegen_impl_pk(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_pk(pdr_report, &mut fmtr)?;
 
                     codegen_impl_compare_with_row_on_struct(pdr_report, &table, &mut fmtr)?;
                     codegen_impl_compare_with_pk_on_struct(pdr_report, &table, &mut fmtr)?;
@@ -994,14 +1010,18 @@ Ok(())"#,
         );
         if rendered_match_arms > 0 {
             apply_all_fn.fmt(false, &mut fmtr)?;
+
+            let parsed = syn::parse_file(&fmt_str)?;
+            let formatted = prettyplease::unparse(&parsed);
+
+            fs::write(
+                format!("crates/{}/src/lib.rs", data_set.to_snake_case()),
+                formatted,
+            )?;
         } else {
             eprintln!("No match arms rendered for data set {data_set}");
+            remove_data_set_crate(&data_set)?;
         }
-
-        fs::write(
-            format!("crates/{}/src/lib.rs", data_set.to_snake_case()),
-            fmt_str,
-        )?;
     }
 
     Ok(())

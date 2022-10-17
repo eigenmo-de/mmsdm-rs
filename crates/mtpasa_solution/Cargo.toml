@@ -1,5 +1,5 @@
 [package]
-name = "mmsdm_ancillary_services"
+name = "mmsdm_mtpasa_solution"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
