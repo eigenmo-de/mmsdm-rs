@@ -39,7 +39,6 @@ pub struct SettlementConfigAncillaryRecoverySplit1 {
 impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit1 {
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -47,7 +46,6 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigAncillaryRecoverySplit1PrimaryKey {
         SettlementConfigAncillaryRecoverySplit1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -56,9 +54,7 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_ancillary_recovery_split_v1".to_string()
     }
@@ -73,80 +69,59 @@ pub struct SettlementConfigAncillaryRecoverySplit1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigAncillaryRecoverySplit1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigAncillaryRecoverySplit1 {
     type Row = SettlementConfigAncillaryRecoverySplit1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.paymenttype == row.paymenttype
-            && self.service == row.service
-            && self.versionno == row.versionno
+        self.effectivedate == row.effectivedate && self.paymenttype == row.paymenttype
+            && self.service == row.service && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigAncillaryRecoverySplit1 {
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.paymenttype == key.paymenttype
-            && self.service == key.service
-            && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.paymenttype == key.paymenttype
+            && self.service == key.service && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigAncillaryRecoverySplit1PrimaryKey {
     type Row = SettlementConfigAncillaryRecoverySplit1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.paymenttype == row.paymenttype
-            && self.service == row.service
-            && self.versionno == row.versionno
+        self.effectivedate == row.effectivedate && self.paymenttype == row.paymenttype
+            && self.service == row.service && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigAncillaryRecoverySplit1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigAncillaryRecoverySplit1PrimaryKey {
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.paymenttype == key.paymenttype
-            && self.service == key.service
-            && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.paymenttype == key.paymenttype
+            && self.service == key.service && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new("service", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new(
-                "paymenttype",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "customer_portion",
-                arrow2::datatypes::DataType::Decimal(8, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("service",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("paymenttype",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("customer_portion",
+                arrow2::datatypes::DataType::Decimal(8, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut service_array = Vec::new();
@@ -155,55 +130,47 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             service_array.push(row.service);
             paymenttype_array.push(row.paymenttype);
-            customer_portion_array.push({
-                row.customer_portion.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            customer_portion_array
+                .push({
+                    row.customer_portion
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(service_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    paymenttype_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(customer_portion_array)
-                        .to(arrow2::datatypes::DataType::Decimal(8, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(service_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(paymenttype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(customer_portion_array)
+                    .to(arrow2::datatypes::DataType::Decimal(8, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -247,7 +214,6 @@ pub struct SettlementConfigMarketfee1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketfee1 {
     type PrimaryKey = SettlementConfigMarketfee1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -255,15 +221,12 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfee1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketfee1PrimaryKey {
         SettlementConfigMarketfee1PrimaryKey {
             marketfeeid: self.marketfeeid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_marketfee_v1".to_string()
     }
@@ -275,28 +238,24 @@ pub struct SettlementConfigMarketfee1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketfee1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketfee1 {
     type Row = SettlementConfigMarketfee1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.marketfeeid == row.marketfeeid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1 {
     type PrimaryKey = SettlementConfigMarketfee1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.marketfeeid == key.marketfeeid
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketfee1PrimaryKey {
     type Row = SettlementConfigMarketfee1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.marketfeeid == row.marketfeeid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketfee1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.marketfeeid == key.marketfeeid
     }
@@ -304,49 +263,32 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1PrimaryKey 
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeeperiod",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeetype",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "description",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new("gl_tcode", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "gl_financialcode",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "fee_class",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("marketfeeperiod",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("marketfeetype",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("description",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("gl_tcode",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("gl_financialcode",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("fee_class",
+                arrow2::datatypes::DataType::LargeUtf8, true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut marketfeeid_array = Vec::new();
         let mut marketfeeperiod_array = Vec::new();
         let mut marketfeetype_array = Vec::new();
@@ -365,35 +307,34 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
             gl_financialcode_array.push(row.gl_financialcode);
             fee_class_array.push(row.fee_class);
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    marketfeeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(marketfeeperiod_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(marketfeetype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(gl_tcode_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    gl_financialcode_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(fee_class_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(marketfeeperiod_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(marketfeetype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(description_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(gl_tcode_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(gl_financialcode_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(fee_class_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -434,7 +375,6 @@ pub struct SettlementConfigMarketfeedata1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -442,7 +382,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketfeedata1PrimaryKey {
         SettlementConfigMarketfeedata1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -450,9 +389,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
             marketfeeversionno: self.marketfeeversionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_marketfeedata_v1".to_string()
     }
@@ -466,75 +403,56 @@ pub struct SettlementConfigMarketfeedata1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketfeedata1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeedata1 {
     type Row = SettlementConfigMarketfeedata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.marketfeeversionno == row.marketfeeversionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeedata1 {
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.marketfeeversionno == key.marketfeeversionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeedata1PrimaryKey {
     type Row = SettlementConfigMarketfeedata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.marketfeeversionno == row.marketfeeversionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeedata1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.marketfeeversionno == key.marketfeeversionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeeversionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeevalue",
-                arrow2::datatypes::DataType::Decimal(22, 8),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("marketfeeversionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("marketfeevalue",
+                arrow2::datatypes::DataType::Decimal(22, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut marketfeeid_array = Vec::new();
         let mut marketfeeversionno_array = Vec::new();
         let mut effectivedate_array = Vec::new();
@@ -542,52 +460,43 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             marketfeeid_array.push(row.marketfeeid);
-            marketfeeversionno_array.push({
-                let mut val = row.marketfeeversionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            effectivedate_array.push(row.effectivedate.timestamp());
-            marketfeevalue_array.push({
-                row.marketfeevalue.map(|mut val| {
-                    val.rescale(8);
+            marketfeeversionno_array
+                .push({
+                    let mut val = row.marketfeeversionno;
+                    val.rescale(0);
                     val.mantissa()
-                })
-            });
+                });
+            effectivedate_array.push(row.effectivedate.timestamp());
+            marketfeevalue_array
+                .push({
+                    row.marketfeevalue
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    marketfeeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(marketfeeversionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(marketfeevalue_array)
-                        .to(arrow2::datatypes::DataType::Decimal(22, 8)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(marketfeeversionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marketfeevalue_array)
+                    .to(arrow2::datatypes::DataType::Decimal(22, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -628,7 +537,6 @@ pub struct SettlementConfigMarketfeetrk1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -636,16 +544,13 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketfeetrk1PrimaryKey {
         SettlementConfigMarketfeetrk1PrimaryKey {
             effectivedate: self.effectivedate,
             marketfeeversionno: self.marketfeeversionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_marketfeetrk_v1".to_string()
     }
@@ -658,118 +563,93 @@ pub struct SettlementConfigMarketfeetrk1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketfeetrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeetrk1 {
     type Row = SettlementConfigMarketfeetrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeversionno == row.marketfeeversionno
+        self.effectivedate == row.effectivedate
+            && self.marketfeeversionno == row.marketfeeversionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeetrk1 {
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeversionno == key.marketfeeversionno
+        self.effectivedate == key.effectivedate
+            && self.marketfeeversionno == key.marketfeeversionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeetrk1PrimaryKey {
     type Row = SettlementConfigMarketfeetrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeversionno == row.marketfeeversionno
+        self.effectivedate == row.effectivedate
+            && self.marketfeeversionno == row.marketfeeversionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeetrk1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeversionno == key.marketfeeversionno
+        self.effectivedate == key.effectivedate
+            && self.marketfeeversionno == key.marketfeeversionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "marketfeeversionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("marketfeeversionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut marketfeeversionno_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut authorisedby_array = Vec::new();
         let mut authoriseddate_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for row in partition {
-            marketfeeversionno_array.push({
-                let mut val = row.marketfeeversionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            marketfeeversionno_array
+                .push({
+                    let mut val = row.marketfeeversionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             effectivedate_array.push(row.effectivedate.timestamp());
             authorisedby_array.push(row.authorisedby);
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(marketfeeversionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(marketfeeversionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -808,7 +688,6 @@ pub struct SettlementConfigMarketFeeCatExcl1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
     type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -816,7 +695,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketFeeCatExcl1PrimaryKey {
         SettlementConfigMarketFeeCatExcl1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -825,9 +703,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
             version_datetime: self.version_datetime,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_cat_excl_v1".to_string()
     }
@@ -842,40 +718,32 @@ pub struct SettlementConfigMarketFeeCatExcl1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeCatExcl1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExcl1 {
     type Row = SettlementConfigMarketFeeCatExcl1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.participant_categoryid == row.participant_categoryid
             && self.version_datetime == row.version_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExcl1 {
     type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.participant_categoryid == key.participant_categoryid
             && self.version_datetime == key.version_datetime
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExcl1PrimaryKey {
     type Row = SettlementConfigMarketFeeCatExcl1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.participant_categoryid == row.participant_categoryid
             && self.version_datetime == row.version_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExcl1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.participant_categoryid == key.participant_categoryid
             && self.version_datetime == key.version_datetime
     }
@@ -883,33 +751,24 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExcl1Prim
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participant_categoryid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("version_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("participant_categoryid",
+                arrow2::datatypes::DataType::LargeUtf8, false)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut marketfeeid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut version_datetime_array = Vec::new();
@@ -920,35 +779,23 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
             version_datetime_array.push(row.version_datetime.timestamp());
             participant_categoryid_array.push(row.participant_categoryid);
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    marketfeeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(version_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participant_categoryid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participant_categoryid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -987,7 +834,6 @@ pub struct SettlementConfigMarketFeeCatExclTrk1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -995,7 +841,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
         SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1003,9 +848,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
             version_datetime: self.version_datetime,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_cat_excl_trk_v1".to_string()
     }
@@ -1019,70 +862,55 @@ pub struct SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExclTrk1 {
     type Row = SettlementConfigMarketFeeCatExclTrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.version_datetime == row.version_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExclTrk1 {
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.version_datetime == key.version_datetime
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
     type Row = SettlementConfigMarketFeeCatExclTrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.version_datetime == key.version_datetime
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("version_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut marketfeeid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut version_datetime_array = Vec::new();
@@ -1093,38 +921,23 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
             version_datetime_array.push(row.version_datetime.timestamp());
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    marketfeeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(version_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1166,7 +979,6 @@ pub struct SettlementConfigMarketFeeExclusion1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -1174,7 +986,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketFeeExclusion1PrimaryKey {
         SettlementConfigMarketFeeExclusion1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1183,9 +994,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_exclusion_v1".to_string()
     }
@@ -1200,79 +1009,57 @@ pub struct SettlementConfigMarketFeeExclusion1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeExclusion1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusion1 {
     type Row = SettlementConfigMarketFeeExclusion1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusion1 {
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusion1PrimaryKey {
     type Row = SettlementConfigMarketFeeExclusion1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusion1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeExclusion1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut participantid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -1281,45 +1068,35 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
         for row in partition {
             participantid_array.push(row.participantid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             marketfeeid_array.push(row.marketfeeid);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    marketfeeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1363,7 +1140,6 @@ pub struct SettlementConfigMarketFeeExclusionTrk1 {
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -1371,7 +1147,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
         SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1379,9 +1154,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_market_fee_exclusion_trk_v1".to_string()
     }
@@ -1395,80 +1168,59 @@ pub struct SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusionTrk1 {
     type Row = SettlementConfigMarketFeeExclusionTrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusionTrk1 {
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
     type Row = SettlementConfigMarketFeeExclusionTrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut participantid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -1478,53 +1230,39 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
         for row in partition {
             participantid_array.push(row.participantid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             authorisedby_array.push(row.authorisedby);
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1571,7 +1309,6 @@ pub struct SettlementConfigParticipantBandfeeAlloc1 {
 impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
     type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -1579,7 +1316,6 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
         SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1589,9 +1325,7 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_participant_bandfee_alloc_v1".to_string()
     }
@@ -1607,93 +1341,65 @@ pub struct SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigParticipantBandfeeAlloc1 {
     type Row = SettlementConfigParticipantBandfeeAlloc1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigParticipantBandfeeAlloc1 {
     type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.participantcategoryid == key.participantcategoryid
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
     type Row = SettlementConfigParticipantBandfeeAlloc1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.marketfeeid == row.marketfeeid
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
             && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
     type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
             && self.participantcategoryid == key.participantcategoryid
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantcategoryid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketfeevalue",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("marketfeeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("participantcategoryid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("marketfeevalue",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut participantid_array = Vec::new();
         let mut marketfeeid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
@@ -1705,58 +1411,49 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
             participantid_array.push(row.participantid);
             marketfeeid_array.push(row.marketfeeid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            participantcategoryid_array.push(row.participantcategoryid);
-            marketfeevalue_array.push({
-                row.marketfeevalue.map(|mut val| {
-                    val.rescale(5);
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
                     val.mantissa()
-                })
-            });
+                });
+            participantcategoryid_array.push(row.participantcategoryid);
+            marketfeevalue_array
+                .push({
+                    row.marketfeevalue
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    marketfeeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantcategoryid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(marketfeevalue_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantcategoryid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marketfeevalue_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1816,7 +1513,6 @@ pub struct SetcfgReallocation2 {
 impl mmsdm_core::GetTable for SetcfgReallocation2 {
     type PrimaryKey = SetcfgReallocation2PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETCFG".into(),
@@ -1824,15 +1520,12 @@ impl mmsdm_core::GetTable for SetcfgReallocation2 {
             version: 2,
         }
     }
-
     fn primary_key(&self) -> SetcfgReallocation2PrimaryKey {
         SetcfgReallocation2PrimaryKey {
             reallocationid: self.reallocationid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "setcfg_reallocation_v2".to_string()
     }
@@ -1844,28 +1537,24 @@ pub struct SetcfgReallocation2PrimaryKey {
 impl mmsdm_core::PrimaryKey for SetcfgReallocation2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SetcfgReallocation2 {
     type Row = SetcfgReallocation2;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.reallocationid == row.reallocationid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2 {
     type PrimaryKey = SetcfgReallocation2PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.reallocationid == key.reallocationid
     }
 }
 impl mmsdm_core::CompareWithRow for SetcfgReallocation2PrimaryKey {
     type Row = SetcfgReallocation2;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.reallocationid == row.reallocationid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2PrimaryKey {
     type PrimaryKey = SetcfgReallocation2PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.reallocationid == key.reallocationid
     }
@@ -1873,80 +1562,46 @@ impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2PrimaryKey {
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "reallocationid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "creditparticipantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "debitparticipantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "agreementtype",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "creditreference",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "debitreference",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "current_stepid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("daytype", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "reallocation_type",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "calendarid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "intervallength",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("reallocationid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("creditparticipantid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("debitparticipantid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("agreementtype",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("creditreference",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("debitreference",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("startdate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("enddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("current_stepid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("daytype",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("reallocation_type",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("calendarid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("intervallength",
+                arrow2::datatypes::DataType::Decimal(3, 0), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut reallocationid_array = Vec::new();
         let mut creditparticipantid_array = Vec::new();
         let mut debitparticipantid_array = Vec::new();
@@ -1977,68 +1632,63 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
             daytype_array.push(row.daytype);
             reallocation_type_array.push(row.reallocation_type);
             calendarid_array.push(row.calendarid);
-            intervallength_array.push({
-                row.intervallength.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            intervallength_array
+                .push({
+                    row.intervallength
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    reallocationid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    creditparticipantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    debitparticipantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(agreementtype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(creditreference_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(debitreference_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(current_stepid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(daytype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    reallocation_type_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(calendarid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(intervallength_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(reallocationid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(creditparticipantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(debitparticipantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(agreementtype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(creditreference_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(debitreference_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(current_stepid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(daytype_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(reallocation_type_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(calendarid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervallength_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2076,7 +1726,6 @@ pub struct SetcfgReallocationinterval1 {
 impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETCFG".into(),
@@ -2084,16 +1733,13 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SetcfgReallocationinterval1PrimaryKey {
         SetcfgReallocationinterval1PrimaryKey {
             periodid: self.periodid,
             reallocationid: self.reallocationid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "setcfg_reallocationinterval_v1".to_string()
     }
@@ -2106,28 +1752,24 @@ pub struct SetcfgReallocationinterval1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SetcfgReallocationinterval1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SetcfgReallocationinterval1 {
     type Row = SetcfgReallocationinterval1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.periodid == row.periodid && self.reallocationid == row.reallocationid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1 {
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.periodid == key.periodid && self.reallocationid == key.reallocationid
     }
 }
 impl mmsdm_core::CompareWithRow for SetcfgReallocationinterval1PrimaryKey {
     type Row = SetcfgReallocationinterval1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.periodid == row.periodid && self.reallocationid == row.reallocationid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1PrimaryKey {
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.periodid == key.periodid && self.reallocationid == key.reallocationid
     }
@@ -2135,30 +1777,26 @@ impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1PrimaryKey
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "reallocationid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("periodid", arrow2::datatypes::DataType::Int64, false),
-            arrow2::datatypes::Field::new(
-                "value",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new("nrp", arrow2::datatypes::DataType::Decimal(15, 5), true),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("reallocationid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::Int64, false),
+                arrow2::datatypes::Field::new("value",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("nrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut reallocationid_array = Vec::new();
         let mut periodid_array = Vec::new();
         let mut value_array = Vec::new();
@@ -2167,46 +1805,43 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
         for row in partition {
             reallocationid_array.push(row.reallocationid);
             periodid_array.push(row.periodid);
-            value_array.push({
-                row.value.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            value_array
+                .push({
+                    row.value
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            nrp_array.push({
-                row.nrp.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            nrp_array
+                .push({
+                    row.nrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    reallocationid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(value_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(nrp_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(reallocationid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(value_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(nrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2253,7 +1888,6 @@ pub struct SettlementConfigSetcfgParticipantMpf1 {
 impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -2261,7 +1895,6 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigSetcfgParticipantMpf1PrimaryKey {
         SettlementConfigSetcfgParticipantMpf1PrimaryKey {
             connectionpointid: self.connectionpointid.clone(),
@@ -2271,9 +1904,7 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_setcfg_participant_mpf_v1".to_string()
     }
@@ -2289,89 +1920,69 @@ pub struct SettlementConfigSetcfgParticipantMpf1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigSetcfgParticipantMpf1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpf1 {
     type Row = SettlementConfigSetcfgParticipantMpf1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.connectionpointid == row.connectionpointid
             && self.effectivedate == row.effectivedate
             && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpf1 {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.connectionpointid == key.connectionpointid
             && self.effectivedate == key.effectivedate
             && self.participantcategoryid == key.participantcategoryid
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpf1PrimaryKey {
     type Row = SettlementConfigSetcfgParticipantMpf1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.connectionpointid == row.connectionpointid
             && self.effectivedate == row.effectivedate
             && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpf1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigSetcfgParticipantMpf1PrimaryKey {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.connectionpointid == key.connectionpointid
             && self.effectivedate == key.effectivedate
             && self.participantcategoryid == key.participantcategoryid
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantcategoryid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "connectionpointid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("mpf", arrow2::datatypes::DataType::Decimal(15, 5), true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("participantcategoryid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("connectionpointid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("mpf",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut participantid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -2382,59 +1993,50 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
         for row in partition {
             participantid_array.push(row.participantid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             participantcategoryid_array.push(row.participantcategoryid);
             connectionpointid_array.push(row.connectionpointid);
-            mpf_array.push({
-                row.mpf.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            mpf_array
+                .push({
+                    row.mpf
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantcategoryid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    connectionpointid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(mpf_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantcategoryid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(connectionpointid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mpf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2478,7 +2080,6 @@ pub struct SettlementConfigSetcfgParticipantMpftrk1 {
 impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -2486,7 +2087,6 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
         SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -2494,9 +2094,7 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlement_config_setcfg_participant_mpftrk_v1".to_string()
     }
@@ -2510,80 +2108,59 @@ pub struct SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpftrk1 {
     type Row = SettlementConfigSetcfgParticipantMpftrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpftrk1 {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
     type Row = SettlementConfigSetcfgParticipantMpftrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut participantid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -2593,53 +2170,39 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
         for row in partition {
             participantid_array.push(row.participantid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             authorisedby_array.push(row.authorisedby);
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2683,7 +2246,6 @@ pub struct SettlementsConfigWdrrrCalendar1 {
 impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
     type PrimaryKey = SettlementsConfigWdrrrCalendar1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENTS_CONFIG".into(),
@@ -2691,7 +2253,6 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementsConfigWdrrrCalendar1PrimaryKey {
         SettlementsConfigWdrrrCalendar1PrimaryKey {
             regionid: self.regionid.clone(),
@@ -2699,9 +2260,7 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
             wdrrrperiod: self.wdrrrperiod.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlements_config_wdrrr_calendar_v1".to_string()
     }
@@ -2715,80 +2274,58 @@ pub struct SettlementsConfigWdrrrCalendar1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementsConfigWdrrrCalendar1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementsConfigWdrrrCalendar1 {
     type Row = SettlementsConfigWdrrrCalendar1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid
-            && self.version_datetime == row.version_datetime
+        self.regionid == row.regionid && self.version_datetime == row.version_datetime
             && self.wdrrrperiod == row.wdrrrperiod
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrrrCalendar1 {
     type PrimaryKey = SettlementsConfigWdrrrCalendar1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid
-            && self.version_datetime == key.version_datetime
+        self.regionid == key.regionid && self.version_datetime == key.version_datetime
             && self.wdrrrperiod == key.wdrrrperiod
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementsConfigWdrrrCalendar1PrimaryKey {
     type Row = SettlementsConfigWdrrrCalendar1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid
-            && self.version_datetime == row.version_datetime
+        self.regionid == row.regionid && self.version_datetime == row.version_datetime
             && self.wdrrrperiod == row.wdrrrperiod
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrrrCalendar1PrimaryKey {
     type PrimaryKey = SettlementsConfigWdrrrCalendar1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid
-            && self.version_datetime == key.version_datetime
+        self.regionid == key.regionid && self.version_datetime == key.version_datetime
             && self.wdrrrperiod == key.wdrrrperiod
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "wdrrrperiod",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("wdrrrperiod",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("version_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("startdate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("enddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut wdrrrperiod_array = Vec::new();
         let mut regionid_array = Vec::new();
         let mut version_datetime_array = Vec::new();
@@ -2803,44 +2340,29 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
             enddate_array.push(row.enddate.map(|val| val.timestamp()));
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    wdrrrperiod_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(version_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(wdrrrperiod_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2882,7 +2404,6 @@ pub struct SettlementsConfigWdrReimburseRate1 {
 impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
     type PrimaryKey = SettlementsConfigWdrReimburseRate1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENTS_CONFIG".into(),
@@ -2890,7 +2411,6 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> SettlementsConfigWdrReimburseRate1PrimaryKey {
         SettlementsConfigWdrReimburseRate1PrimaryKey {
             regionid: self.regionid.clone(),
@@ -2898,9 +2418,7 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
             wdrrrperiod: self.wdrrrperiod.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "settlements_config_wdr_reimburse_rate_v1".to_string()
     }
@@ -2914,80 +2432,58 @@ pub struct SettlementsConfigWdrReimburseRate1PrimaryKey {
 impl mmsdm_core::PrimaryKey for SettlementsConfigWdrReimburseRate1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for SettlementsConfigWdrReimburseRate1 {
     type Row = SettlementsConfigWdrReimburseRate1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid
-            && self.version_datetime == row.version_datetime
+        self.regionid == row.regionid && self.version_datetime == row.version_datetime
             && self.wdrrrperiod == row.wdrrrperiod
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrReimburseRate1 {
     type PrimaryKey = SettlementsConfigWdrReimburseRate1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid
-            && self.version_datetime == key.version_datetime
+        self.regionid == key.regionid && self.version_datetime == key.version_datetime
             && self.wdrrrperiod == key.wdrrrperiod
     }
 }
 impl mmsdm_core::CompareWithRow for SettlementsConfigWdrReimburseRate1PrimaryKey {
     type Row = SettlementsConfigWdrReimburseRate1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid
-            && self.version_datetime == row.version_datetime
+        self.regionid == row.regionid && self.version_datetime == row.version_datetime
             && self.wdrrrperiod == row.wdrrrperiod
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrReimburseRate1PrimaryKey {
     type PrimaryKey = SettlementsConfigWdrReimburseRate1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid
-            && self.version_datetime == key.version_datetime
+        self.regionid == key.regionid && self.version_datetime == key.version_datetime
             && self.wdrrrperiod == key.wdrrrperiod
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "wdrrrperiod",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "wdrrr",
-                arrow2::datatypes::DataType::Decimal(18, 8),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "isfirm",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("wdrrrperiod",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("version_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("wdrrr",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("isfirm",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut wdrrrperiod_array = Vec::new();
         let mut regionid_array = Vec::new();
         let mut version_datetime_array = Vec::new();
@@ -2998,54 +2494,47 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
             wdrrrperiod_array.push(row.wdrrrperiod);
             regionid_array.push(row.regionid);
             version_datetime_array.push(row.version_datetime.timestamp());
-            wdrrr_array.push({
-                row.wdrrr.map(|mut val| {
-                    val.rescale(8);
-                    val.mantissa()
-                })
-            });
-            isfirm_array.push({
-                row.isfirm.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            wdrrr_array
+                .push({
+                    row.wdrrr
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            isfirm_array
+                .push({
+                    row.isfirm
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    wdrrrperiod_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(version_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(wdrrr_array)
-                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(isfirm_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(wdrrrperiod_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdrrr_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(isfirm_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 #[cfg(feature = "sql_server")]
@@ -3062,182 +2551,182 @@ where
         (Some("ANCILLARY_RECOVERY_SPLIT"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigAncillaryRecoverySplit1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigAncillaryRecoverySplit1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigAncillaryRecoverySplit1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKETFEE"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketfee1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketfee1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketfee1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKETFEEDATA"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketfeedata1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketfeedata1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketfeedata1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKETFEETRK"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketfeetrk1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketfeetrk1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketfeetrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKET_FEE_CAT_EXCL"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketFeeCatExcl1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExcl1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExcl1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKET_FEE_CAT_EXCL_TRK"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketFeeCatExclTrk1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExclTrk1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExclTrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKET_FEE_EXCLUSION"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketFeeExclusion1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusion1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusion1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKET_FEE_EXCLUSION_TRK"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigMarketFeeExclusionTrk1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusionTrk1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusionTrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("PARTICIPANT_BANDFEE_ALLOC"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigParticipantBandfeeAlloc1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigParticipantBandfeeAlloc1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigParticipantBandfeeAlloc1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("REALLOCATION"), version) if version <= 2_i32 => {
             let d: Vec<SetcfgReallocation2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSetcfgReallocation2 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSetcfgReallocation2 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("REALLOCATIONINTERVAL"), version) if version <= 1_i32 => {
             let d: Vec<SetcfgReallocationinterval1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSetcfgReallocationinterval1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSetcfgReallocationinterval1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("SETCFG_PARTICIPANT_MPF"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigSetcfgParticipantMpf1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpf1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpf1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("SETCFG_PARTICIPANT_MPFTRK"), version) if version <= 1_i32 => {
             let d: Vec<SettlementConfigSetcfgParticipantMpftrk1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpftrk1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpftrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("WDRRR_CALENDAR"), version) if version <= 1_i32 => {
             let d: Vec<SettlementsConfigWdrrrCalendar1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("WDR_REIMBURSE_RATE"), version) if version <= 1_i32 => {
             let d: Vec<SettlementsConfigWdrReimburseRate1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertSettlementsConfigWdrReimburseRate1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementsConfigWdrReimburseRate1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         _ => {
             log::error!("Unexpected file key {:?}", file_key);

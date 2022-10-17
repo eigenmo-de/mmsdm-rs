@@ -54,7 +54,6 @@ pub struct AsofferOfferagcdata1 {
 impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
     type PrimaryKey = AsofferOfferagcdata1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -62,7 +61,6 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> AsofferOfferagcdata1PrimaryKey {
         AsofferOfferagcdata1PrimaryKey {
             contractid: self.contractid.clone(),
@@ -71,9 +69,7 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "asoffer_offeragcdata_v1".to_string()
     }
@@ -88,115 +84,71 @@ pub struct AsofferOfferagcdata1PrimaryKey {
 impl mmsdm_core::PrimaryKey for AsofferOfferagcdata1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for AsofferOfferagcdata1 {
     type Row = AsofferOfferagcdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.effectivedate == row.effectivedate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferagcdata1 {
     type PrimaryKey = AsofferOfferagcdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.effectivedate == key.effectivedate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for AsofferOfferagcdata1PrimaryKey {
     type Row = AsofferOfferagcdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.effectivedate == row.effectivedate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferagcdata1PrimaryKey {
     type PrimaryKey = AsofferOfferagcdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.effectivedate == key.effectivedate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "contractid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "availability",
-                arrow2::datatypes::DataType::Decimal(4, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "upperlimit",
-                arrow2::datatypes::DataType::Decimal(4, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lowerlimit",
-                arrow2::datatypes::DataType::Decimal(4, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "agcup",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "agcdown",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("availability",
+                arrow2::datatypes::DataType::Decimal(4, 0), true),
+                arrow2::datatypes::Field::new("upperlimit",
+                arrow2::datatypes::DataType::Decimal(4, 0), true),
+                arrow2::datatypes::Field::new("lowerlimit",
+                arrow2::datatypes::DataType::Decimal(4, 0), true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("filename",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("agcup",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("agcdown",
+                arrow2::datatypes::DataType::Decimal(3, 0), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut contractid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -213,115 +165,107 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
         for row in partition {
             contractid_array.push(row.contractid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            availability_array.push({
-                row.availability.map(|mut val| {
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
                     val.rescale(0);
                     val.mantissa()
-                })
-            });
-            upperlimit_array.push({
-                row.upperlimit.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            lowerlimit_array.push({
-                row.lowerlimit.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+                });
+            availability_array
+                .push({
+                    row.availability
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            upperlimit_array
+                .push({
+                    row.upperlimit
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lowerlimit_array
+                .push({
+                    row.lowerlimit
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            periodid_array.push({
-                let mut val = row.periodid;
-                val.rescale(0);
-                val.mantissa()
-            });
-            agcup_array.push({
-                row.agcup.map(|mut val| {
+            periodid_array
+                .push({
+                    let mut val = row.periodid;
                     val.rescale(0);
                     val.mantissa()
-                })
-            });
-            agcdown_array.push({
-                row.agcdown.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+                });
+            agcup_array
+                .push({
+                    row.agcup
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            agcdown_array
+                .push({
+                    row.agcdown
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    contractid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availability_array)
-                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(upperlimit_array)
-                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lowerlimit_array)
-                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(agcup_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(agcdown_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(availability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(upperlimit_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lowerlimit_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(agcup_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(agcdown_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -362,7 +306,6 @@ pub struct AsofferOfferastrk1 {
 impl mmsdm_core::GetTable for AsofferOfferastrk1 {
     type PrimaryKey = AsofferOfferastrk1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -370,7 +313,6 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> AsofferOfferastrk1PrimaryKey {
         AsofferOfferastrk1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -378,9 +320,7 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "asoffer_offerastrk_v1".to_string()
     }
@@ -394,71 +334,56 @@ pub struct AsofferOfferastrk1PrimaryKey {
 impl mmsdm_core::PrimaryKey for AsofferOfferastrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for AsofferOfferastrk1 {
     type Row = AsofferOfferastrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferastrk1 {
     type PrimaryKey = AsofferOfferastrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for AsofferOfferastrk1PrimaryKey {
     type Row = AsofferOfferastrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferastrk1PrimaryKey {
     type PrimaryKey = AsofferOfferastrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.versionno == key.versionno
+            && self.participantid == key.participantid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("filename",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut participantid_array = Vec::new();
@@ -466,45 +391,36 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             participantid_array.push(row.participantid);
             filename_array.push(row.filename);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -555,7 +471,6 @@ pub struct AsofferOfferlsheddata1 {
 impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
     type PrimaryKey = AsofferOfferlsheddata1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -563,7 +478,6 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> AsofferOfferlsheddata1PrimaryKey {
         AsofferOfferlsheddata1PrimaryKey {
             contractid: self.contractid.clone(),
@@ -572,9 +486,7 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "asoffer_offerlsheddata_v1".to_string()
     }
@@ -589,95 +501,63 @@ pub struct AsofferOfferlsheddata1PrimaryKey {
 impl mmsdm_core::PrimaryKey for AsofferOfferlsheddata1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for AsofferOfferlsheddata1 {
     type Row = AsofferOfferlsheddata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.effectivedate == row.effectivedate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferlsheddata1 {
     type PrimaryKey = AsofferOfferlsheddata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.effectivedate == key.effectivedate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for AsofferOfferlsheddata1PrimaryKey {
     type Row = AsofferOfferlsheddata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.effectivedate == row.effectivedate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferlsheddata1PrimaryKey {
     type PrimaryKey = AsofferOfferlsheddata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.effectivedate == key.effectivedate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "contractid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "availableload",
-                arrow2::datatypes::DataType::Decimal(4, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("availableload",
+                arrow2::datatypes::DataType::Decimal(4, 0), true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("filename",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0), false)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut contractid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -690,75 +570,63 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
         for row in partition {
             contractid_array.push(row.contractid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            availableload_array.push({
-                row.availableload.map(|mut val| {
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
                     val.rescale(0);
                     val.mantissa()
-                })
-            });
+                });
+            availableload_array
+                .push({
+                    row.availableload
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            periodid_array.push({
-                let mut val = row.periodid;
-                val.rescale(0);
-                val.mantissa()
-            });
+            periodid_array
+                .push({
+                    let mut val = row.periodid;
+                    val.rescale(0);
+                    val.mantissa()
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    contractid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availableload_array)
-                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(availableload_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -809,7 +677,6 @@ pub struct AsofferOfferrestartdata1 {
 impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
     type PrimaryKey = AsofferOfferrestartdata1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -817,7 +684,6 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> AsofferOfferrestartdata1PrimaryKey {
         AsofferOfferrestartdata1PrimaryKey {
             contractid: self.contractid.clone(),
@@ -826,9 +692,7 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "asoffer_offerrestartdata_v1".to_string()
     }
@@ -843,95 +707,63 @@ pub struct AsofferOfferrestartdata1PrimaryKey {
 impl mmsdm_core::PrimaryKey for AsofferOfferrestartdata1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for AsofferOfferrestartdata1 {
     type Row = AsofferOfferrestartdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.offerdate == row.offerdate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.offerdate == row.offerdate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferrestartdata1 {
     type PrimaryKey = AsofferOfferrestartdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.offerdate == key.offerdate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.offerdate == key.offerdate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for AsofferOfferrestartdata1PrimaryKey {
     type Row = AsofferOfferrestartdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.offerdate == row.offerdate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.offerdate == row.offerdate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferrestartdata1PrimaryKey {
     type PrimaryKey = AsofferOfferrestartdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.offerdate == key.offerdate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.offerdate == key.offerdate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "contractid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "offerdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "availability",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("offerdate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("availability",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("filename",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0), false)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut contractid_array = Vec::new();
         let mut offerdate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -944,66 +776,56 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
         for row in partition {
             contractid_array.push(row.contractid);
             offerdate_array.push(row.offerdate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             availability_array.push(row.availability);
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            periodid_array.push({
-                let mut val = row.periodid;
-                val.rescale(0);
-                val.mantissa()
-            });
+            periodid_array
+                .push({
+                    let mut val = row.periodid;
+                    val.rescale(0);
+                    val.mantissa()
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    contractid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdate_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(availability_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(availability_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1058,7 +880,6 @@ pub struct AsofferOfferrpowerdata1 {
 impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
     type PrimaryKey = AsofferOfferrpowerdata1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -1066,7 +887,6 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> AsofferOfferrpowerdata1PrimaryKey {
         AsofferOfferrpowerdata1PrimaryKey {
             contractid: self.contractid.clone(),
@@ -1075,9 +895,7 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "asoffer_offerrpowerdata_v1".to_string()
     }
@@ -1092,97 +910,68 @@ pub struct AsofferOfferrpowerdata1PrimaryKey {
 impl mmsdm_core::PrimaryKey for AsofferOfferrpowerdata1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for AsofferOfferrpowerdata1 {
     type Row = AsofferOfferrpowerdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.effectivedate == row.effectivedate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferrpowerdata1 {
     type PrimaryKey = AsofferOfferrpowerdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.effectivedate == key.effectivedate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for AsofferOfferrpowerdata1PrimaryKey {
     type Row = AsofferOfferrpowerdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid
-            && self.effectivedate == row.effectivedate
-            && self.periodid == row.periodid
-            && self.versionno == row.versionno
+        self.contractid == row.contractid && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for AsofferOfferrpowerdata1PrimaryKey {
     type PrimaryKey = AsofferOfferrpowerdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid
-            && self.effectivedate == key.effectivedate
-            && self.periodid == key.periodid
-            && self.versionno == key.versionno
+        self.contractid == key.contractid && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "contractid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "availability",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new("mta", arrow2::datatypes::DataType::Decimal(6, 0), true),
-            arrow2::datatypes::Field::new("mtg", arrow2::datatypes::DataType::Decimal(6, 0), true),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("filename", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("availability",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("mta",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("mtg",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("filename",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut contractid_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -1197,95 +986,85 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
         for row in partition {
             contractid_array.push(row.contractid);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            periodid_array.push({
-                let mut val = row.periodid;
-                val.rescale(0);
-                val.mantissa()
-            });
-            availability_array.push({
-                row.availability.map(|mut val| {
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
                     val.rescale(0);
                     val.mantissa()
-                })
-            });
-            mta_array.push({
-                row.mta.map(|mut val| {
+                });
+            periodid_array
+                .push({
+                    let mut val = row.periodid;
                     val.rescale(0);
                     val.mantissa()
-                })
-            });
-            mtg_array.push({
-                row.mtg.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+                });
+            availability_array
+                .push({
+                    row.availability
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            mta_array
+                .push({
+                    row.mta
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            mtg_array
+                .push({
+                    row.mtg
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             filename_array.push(row.filename);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    contractid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(availability_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(mta_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(mtg_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(filename_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(availability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mta_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mtg_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 #[cfg(feature = "sql_server")]
@@ -1302,62 +1081,62 @@ where
         (Some("OFFERAGCDATA"), version) if version <= 1_i32 => {
             let d: Vec<AsofferOfferagcdata1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertAsofferOfferagcdata1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertAsofferOfferagcdata1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("OFFERASTRK"), version) if version <= 1_i32 => {
             let d: Vec<AsofferOfferastrk1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertAsofferOfferastrk1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertAsofferOfferastrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("OFFERLSHEDDATA"), version) if version <= 1_i32 => {
             let d: Vec<AsofferOfferlsheddata1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertAsofferOfferlsheddata1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertAsofferOfferlsheddata1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("OFFERRESTARTDATA"), version) if version <= 1_i32 => {
             let d: Vec<AsofferOfferrestartdata1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertAsofferOfferrestartdata1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertAsofferOfferrestartdata1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("OFFERRPOWERDATA"), version) if version <= 1_i32 => {
             let d: Vec<AsofferOfferrpowerdata1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertAsofferOfferrpowerdata1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertAsofferOfferrpowerdata1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         _ => {
             log::error!("Unexpected file key {:?}", file_key);

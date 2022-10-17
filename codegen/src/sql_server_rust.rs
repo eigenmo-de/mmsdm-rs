@@ -1,32 +1,19 @@
 // use anyhow::anyhow;
 // use serde::{Deserialize, Serialize};
-use crate::{mms, pdr};
-use std::{collections, fs, str};
+use crate::{
+    mms,
+    rust::{TableMapping, VERSION},
+};
+use std::{collections, fs};
 
 pub fn run() -> anyhow::Result<()> {
-    let rdr = fs::File::open("mmsdm.json")?;
-    let mapping = fs::read_to_string("table_mapping.csv").unwrap();
+    let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
+    let mut mapping = csv::Reader::from_path(format!("table_mapping_v{VERSION}.csv"))?;
     let mut map = collections::HashMap::new();
-    // use std::iter::Iterator;
-    for row in mapping.split("\n").skip(1) {
-        if row.contains(',') {
-            let pieces = row.split(",").collect::<Vec<&str>>();
-            let mms = mms::Report {
-                name: pieces[0].to_string(),
-                sub_type: pieces[1].to_string(),
-            };
-            let pdr = pdr::Report {
-                name: pieces[2].to_string(),
-                sub_type: match pieces[3] {
-                    "" => None,
-                    otherwise => Some(otherwise.to_string()),
-                },
-                version: pieces[4].parse().unwrap(),
-                transaction_type: pieces[5].to_string(),
-                row_filter: pieces[6].to_string(),
-            };
-            map.insert(mms, pdr);
-        }
+
+    for row in mapping.deserialize::<TableMapping>() {
+        let row = row?;
+        map.insert(row.mms(), row.pdr());
     }
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
     let mut fmt_str = String::new();
@@ -100,8 +87,10 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 Ok(())
 }"#,
     );
-    // use heck::SnakeCase;
-    fs::write("src/sql_server.rs", fmt_str)?;
+
+    let parsed = syn::parse_file(&fmt_str)?;
+    let formatted = prettyplease::unparse(&parsed);
+    fs::write("src/sql_server.rs", formatted)?;
 
     Ok(())
 }

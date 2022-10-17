@@ -44,7 +44,6 @@ pub struct MarketConfigBidtypes1 {
 impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -52,7 +51,6 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigBidtypes1PrimaryKey {
         MarketConfigBidtypes1PrimaryKey {
             bidtype: self.bidtype.clone(),
@@ -60,9 +58,7 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_bidtypes_v1".to_string()
     }
@@ -76,87 +72,63 @@ pub struct MarketConfigBidtypes1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigBidtypes1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigBidtypes1 {
     type Row = MarketConfigBidtypes1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.bidtype == row.bidtype
-            && self.effectivedate == row.effectivedate
+        self.bidtype == row.bidtype && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypes1 {
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype
-            && self.effectivedate == key.effectivedate
+        self.bidtype == key.bidtype && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigBidtypes1PrimaryKey {
     type Row = MarketConfigBidtypes1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.bidtype == row.bidtype
-            && self.effectivedate == row.effectivedate
+        self.bidtype == row.bidtype && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypes1PrimaryKey {
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype
-            && self.effectivedate == key.effectivedate
+        self.bidtype == key.bidtype && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new("bidtype", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "description",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "numberofbands",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "numdaysaheadpricelocked",
-                arrow2::datatypes::DataType::Decimal(2, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "validationrule",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new("spdalias", arrow2::datatypes::DataType::LargeUtf8, true),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("bidtype",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("description",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("numberofbands",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("numdaysaheadpricelocked",
+                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::Field::new("validationrule",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("spdalias",
+                arrow2::datatypes::DataType::LargeUtf8, true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut bidtype_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -169,69 +141,65 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
         for row in partition {
             bidtype_array.push(row.bidtype);
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             description_array.push(row.description);
-            numberofbands_array.push({
-                row.numberofbands.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            numdaysaheadpricelocked_array.push({
-                row.numdaysaheadpricelocked.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            numberofbands_array
+                .push({
+                    row.numberofbands
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            numdaysaheadpricelocked_array
+                .push({
+                    row.numdaysaheadpricelocked
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             validationrule_array.push(row.validationrule);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
             spdalias_array.push(row.spdalias);
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(bidtype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(numberofbands_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(numdaysaheadpricelocked_array)
-                        .to(arrow2::datatypes::DataType::Decimal(2, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(validationrule_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(spdalias_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(bidtype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(description_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(numberofbands_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(numdaysaheadpricelocked_array)
+                    .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(validationrule_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(spdalias_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -272,7 +240,6 @@ pub struct MarketConfigBidtypestrk1 {
 impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -280,16 +247,13 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigBidtypestrk1PrimaryKey {
         MarketConfigBidtypestrk1PrimaryKey {
             effectivedate: self.effectivedate,
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_bidtypestrk_v1".to_string()
     }
@@ -302,28 +266,24 @@ pub struct MarketConfigBidtypestrk1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigBidtypestrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigBidtypestrk1 {
     type Row = MarketConfigBidtypestrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypestrk1 {
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigBidtypestrk1PrimaryKey {
     type Row = MarketConfigBidtypestrk1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypestrk1PrimaryKey {
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
@@ -331,38 +291,27 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypestrk1PrimaryKey {
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut authoriseddate_array = Vec::new();
@@ -370,50 +319,36 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -453,7 +388,6 @@ pub struct MarketConfigInterconnector1 {
 impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
     type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -461,15 +395,12 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigInterconnector1PrimaryKey {
         MarketConfigInterconnector1PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_interconnector_v1".to_string()
     }
@@ -481,28 +412,24 @@ pub struct MarketConfigInterconnector1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigInterconnector1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigInterconnector1 {
     type Row = MarketConfigInterconnector1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interconnectorid == row.interconnectorid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1 {
     type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interconnectorid == key.interconnectorid
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigInterconnector1PrimaryKey {
     type Row = MarketConfigInterconnector1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interconnectorid == row.interconnectorid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1PrimaryKey {
     type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interconnectorid == key.interconnectorid
     }
@@ -510,35 +437,29 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1PrimaryKey
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionfrom",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("rsoid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("regionto", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "description",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionfrom",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("rsoid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("regionto",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("description",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut interconnectorid_array = Vec::new();
         let mut regionfrom_array = Vec::new();
         let mut rsoid_array = Vec::new();
@@ -553,30 +474,27 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
             description_array.push(row.description);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionfrom_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(rsoid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionto_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionfrom_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(rsoid_array)) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionto_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(description_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -623,7 +541,6 @@ pub struct MarketConfigInterconnectoralloc1 {
 impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -631,7 +548,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigInterconnectoralloc1PrimaryKey {
         MarketConfigInterconnectoralloc1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -641,9 +557,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_interconnectoralloc_v1".to_string()
     }
@@ -659,93 +573,68 @@ pub struct MarketConfigInterconnectoralloc1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigInterconnectoralloc1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigInterconnectoralloc1 {
     type Row = MarketConfigInterconnectoralloc1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
-            && self.regionid == row.regionid
+            && self.participantid == row.participantid && self.regionid == row.regionid
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1 {
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
-            && self.regionid == key.regionid
+            && self.participantid == key.participantid && self.regionid == key.regionid
             && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigInterconnectoralloc1PrimaryKey {
     type Row = MarketConfigInterconnectoralloc1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
-            && self.regionid == row.regionid
+            && self.participantid == row.participantid && self.regionid == row.regionid
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1PrimaryKey {
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
-            && self.regionid == key.regionid
+            && self.participantid == key.participantid && self.regionid == key.regionid
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(5, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "allocation",
-                arrow2::datatypes::DataType::Decimal(12, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(5, 0), false),
+                arrow2::datatypes::Field::new("interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("allocation",
+                arrow2::datatypes::DataType::Decimal(12, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -755,59 +644,51 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             interconnectorid_array.push(row.interconnectorid);
             regionid_array.push(row.regionid);
             participantid_array.push(row.participantid);
-            allocation_array.push({
-                row.allocation.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            allocation_array
+                .push({
+                    row.allocation
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(allocation_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(allocation_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -883,7 +764,6 @@ pub struct MarketConfigInterconnectorconstraint1 {
 impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -891,7 +771,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigInterconnectorconstraint1PrimaryKey {
         MarketConfigInterconnectorconstraint1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -899,9 +778,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_interconnectorconstraint_v1".to_string()
     }
@@ -915,7 +792,6 @@ pub struct MarketConfigInterconnectorconstraint1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigInterconnectorconstraint1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigInterconnectorconstraint1 {
     type Row = MarketConfigInterconnectorconstraint1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
@@ -924,7 +800,6 @@ impl mmsdm_core::CompareWithRow for MarketConfigInterconnectorconstraint1 {
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1 {
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
@@ -933,16 +808,15 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1
 }
 impl mmsdm_core::CompareWithRow for MarketConfigInterconnectorconstraint1PrimaryKey {
     type Row = MarketConfigInterconnectorconstraint1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for MarketConfigInterconnectorconstraint1PrimaryKey {
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
@@ -952,119 +826,60 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "reserveoverallloadfactor",
-                arrow2::datatypes::DataType::Decimal(5, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "fromregionlossshare",
-                arrow2::datatypes::DataType::Decimal(5, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "maxmwin",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "maxmwout",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lossconstant",
-                arrow2::datatypes::DataType::Decimal(15, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lossflowcoefficient",
-                arrow2::datatypes::DataType::Decimal(27, 17),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "emsmeasurand",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "dynamicrhs",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "importlimit",
-                arrow2::datatypes::DataType::Decimal(6, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "exportlimit",
-                arrow2::datatypes::DataType::Decimal(6, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "outagederationfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "nonphysicallossfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "overloadfactor60sec",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "overloadfactor6sec",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "fcassupportunavailable",
-                arrow2::datatypes::DataType::Decimal(1, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new("ictype", arrow2::datatypes::DataType::LargeUtf8, true),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("reserveoverallloadfactor",
+                arrow2::datatypes::DataType::Decimal(5, 2), true),
+                arrow2::datatypes::Field::new("fromregionlossshare",
+                arrow2::datatypes::DataType::Decimal(5, 2), true),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("maxmwin",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("maxmwout",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lossconstant",
+                arrow2::datatypes::DataType::Decimal(15, 6), true),
+                arrow2::datatypes::Field::new("lossflowcoefficient",
+                arrow2::datatypes::DataType::Decimal(27, 17), true),
+                arrow2::datatypes::Field::new("emsmeasurand",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("dynamicrhs",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("importlimit",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("exportlimit",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("outagederationfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("nonphysicallossfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("overloadfactor60sec",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("overloadfactor6sec",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("fcassupportunavailable",
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("ictype",
+                arrow2::datatypes::DataType::LargeUtf8, true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut reserveoverallloadfactor_array = Vec::new();
         let mut fromregionlossshare_array = Vec::new();
         let mut effectivedate_array = Vec::new();
@@ -1088,194 +903,196 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
         let mut fcassupportunavailable_array = Vec::new();
         let mut ictype_array = Vec::new();
         for row in partition {
-            reserveoverallloadfactor_array.push({
-                row.reserveoverallloadfactor.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            fromregionlossshare_array.push({
-                row.fromregionlossshare.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
+            reserveoverallloadfactor_array
+                .push({
+                    row.reserveoverallloadfactor
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            fromregionlossshare_array
+                .push({
+                    row.fromregionlossshare
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             interconnectorid_array.push(row.interconnectorid);
-            maxmwin_array.push({
-                row.maxmwin.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            maxmwout_array.push({
-                row.maxmwout.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            lossconstant_array.push({
-                row.lossconstant.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            lossflowcoefficient_array.push({
-                row.lossflowcoefficient.map(|mut val| {
-                    val.rescale(17);
-                    val.mantissa()
-                })
-            });
+            maxmwin_array
+                .push({
+                    row.maxmwin
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            maxmwout_array
+                .push({
+                    row.maxmwout
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lossconstant_array
+                .push({
+                    row.lossconstant
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            lossflowcoefficient_array
+                .push({
+                    row.lossflowcoefficient
+                        .map(|mut val| {
+                            val.rescale(17);
+                            val.mantissa()
+                        })
+                });
             emsmeasurand_array.push(row.emsmeasurand);
             authorisedby_array.push(row.authorisedby);
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             dynamicrhs_array.push(row.dynamicrhs);
-            importlimit_array.push({
-                row.importlimit.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            exportlimit_array.push({
-                row.exportlimit.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            outagederationfactor_array.push({
-                row.outagederationfactor.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            nonphysicallossfactor_array.push({
-                row.nonphysicallossfactor.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            overloadfactor60sec_array.push({
-                row.overloadfactor60sec.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            overloadfactor6sec_array.push({
-                row.overloadfactor6sec.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            importlimit_array
+                .push({
+                    row.importlimit
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            exportlimit_array
+                .push({
+                    row.exportlimit
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            outagederationfactor_array
+                .push({
+                    row.outagederationfactor
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            nonphysicallossfactor_array
+                .push({
+                    row.nonphysicallossfactor
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            overloadfactor60sec_array
+                .push({
+                    row.overloadfactor60sec
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            overloadfactor6sec_array
+                .push({
+                    row.overloadfactor6sec
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            fcassupportunavailable_array.push({
-                row.fcassupportunavailable.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            fcassupportunavailable_array
+                .push({
+                    row.fcassupportunavailable
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             ictype_array.push(row.ictype);
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(reserveoverallloadfactor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(5, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(fromregionlossshare_array)
-                        .to(arrow2::datatypes::DataType::Decimal(5, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(maxmwin_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(maxmwout_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lossconstant_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lossflowcoefficient_array)
-                        .to(arrow2::datatypes::DataType::Decimal(27, 17)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(emsmeasurand_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(dynamicrhs_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(importlimit_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(exportlimit_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(outagederationfactor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(nonphysicallossfactor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(overloadfactor60sec_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(overloadfactor6sec_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(fcassupportunavailable_array)
-                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(ictype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reserveoverallloadfactor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(5, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(fromregionlossshare_array)
+                    .to(arrow2::datatypes::DataType::Decimal(5, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxmwin_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxmwout_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lossconstant_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lossflowcoefficient_array)
+                    .to(arrow2::datatypes::DataType::Decimal(27, 17))) as std::sync::Arc
+                    < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(emsmeasurand_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(dynamicrhs_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(importlimit_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(exportlimit_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(outagederationfactor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(nonphysicallossfactor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(overloadfactor60sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(overloadfactor6sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(fcassupportunavailable_array)
+                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(ictype_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1319,7 +1136,6 @@ pub struct MarketConfigIntraregionalloc1 {
 impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1327,7 +1143,6 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigIntraregionalloc1PrimaryKey {
         MarketConfigIntraregionalloc1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1336,9 +1151,7 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_intraregionalloc_v1".to_string()
     }
@@ -1353,84 +1166,62 @@ pub struct MarketConfigIntraregionalloc1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigIntraregionalloc1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigIntraregionalloc1 {
     type Row = MarketConfigIntraregionalloc1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.regionid == row.regionid
+            && self.participantid == row.participantid && self.regionid == row.regionid
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigIntraregionalloc1 {
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.regionid == key.regionid
+            && self.participantid == key.participantid && self.regionid == key.regionid
             && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigIntraregionalloc1PrimaryKey {
     type Row = MarketConfigIntraregionalloc1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid
-            && self.regionid == row.regionid
+            && self.participantid == row.participantid && self.regionid == row.regionid
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigIntraregionalloc1PrimaryKey {
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
-            && self.regionid == key.regionid
+            && self.participantid == key.participantid && self.regionid == key.regionid
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(5, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "allocation",
-                arrow2::datatypes::DataType::Decimal(12, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(5, 0), false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("allocation",
+                arrow2::datatypes::DataType::Decimal(12, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -1439,55 +1230,47 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             regionid_array.push(row.regionid);
             participantid_array.push(row.participantid);
-            allocation_array.push({
-                row.allocation.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            allocation_array
+                .push({
+                    row.allocation
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(5, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    participantid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(allocation_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(allocation_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1531,7 +1314,6 @@ pub struct MarketConfigLossfactormodel1 {
 impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1539,7 +1321,6 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigLossfactormodel1PrimaryKey {
         MarketConfigLossfactormodel1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1548,9 +1329,7 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_lossfactormodel_v1".to_string()
     }
@@ -1565,84 +1344,62 @@ pub struct MarketConfigLossfactormodel1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigLossfactormodel1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigLossfactormodel1 {
     type Row = MarketConfigLossfactormodel1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
-            && self.regionid == row.regionid
-            && self.versionno == row.versionno
+            && self.regionid == row.regionid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossfactormodel1 {
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.regionid == key.regionid
-            && self.versionno == key.versionno
+            && self.regionid == key.regionid && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigLossfactormodel1PrimaryKey {
     type Row = MarketConfigLossfactormodel1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
-            && self.regionid == row.regionid
-            && self.versionno == row.versionno
+            && self.regionid == row.regionid && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossfactormodel1PrimaryKey {
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.regionid == key.regionid
-            && self.versionno == key.versionno
+            && self.regionid == key.regionid && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "demandcoefficient",
-                arrow2::datatypes::DataType::Decimal(27, 17),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("demandcoefficient",
+                arrow2::datatypes::DataType::Decimal(27, 17), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -1651,55 +1408,47 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             interconnectorid_array.push(row.interconnectorid);
             regionid_array.push(row.regionid);
-            demandcoefficient_array.push({
-                row.demandcoefficient.map(|mut val| {
-                    val.rescale(17);
-                    val.mantissa()
-                })
-            });
+            demandcoefficient_array
+                .push({
+                    row.demandcoefficient
+                        .map(|mut val| {
+                            val.rescale(17);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(demandcoefficient_array)
-                        .to(arrow2::datatypes::DataType::Decimal(27, 17)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demandcoefficient_array)
+                    .to(arrow2::datatypes::DataType::Decimal(27, 17))) as std::sync::Arc
+                    < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1747,7 +1496,6 @@ pub struct MarketConfigLossmodel1 {
 impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1755,7 +1503,6 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigLossmodel1PrimaryKey {
         MarketConfigLossmodel1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -1764,9 +1511,7 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_lossmodel_v1".to_string()
     }
@@ -1781,90 +1526,66 @@ pub struct MarketConfigLossmodel1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigLossmodel1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigLossmodel1 {
     type Row = MarketConfigLossmodel1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
-            && self.losssegment == row.losssegment
-            && self.versionno == row.versionno
+            && self.losssegment == row.losssegment && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossmodel1 {
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.losssegment == key.losssegment
-            && self.versionno == key.versionno
+            && self.losssegment == key.losssegment && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigLossmodel1PrimaryKey {
     type Row = MarketConfigLossmodel1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.interconnectorid == row.interconnectorid
-            && self.losssegment == row.losssegment
-            && self.versionno == row.versionno
+            && self.losssegment == row.losssegment && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossmodel1PrimaryKey {
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.losssegment == key.losssegment
-            && self.versionno == key.versionno
+            && self.losssegment == key.losssegment && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("periodid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "losssegment",
-                arrow2::datatypes::DataType::Decimal(6, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "mwbreakpoint",
-                arrow2::datatypes::DataType::Decimal(6, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lossfactor",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("losssegment",
+                arrow2::datatypes::DataType::Decimal(6, 0), false),
+                arrow2::datatypes::Field::new("mwbreakpoint",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("lossfactor",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -1875,74 +1596,67 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            interconnectorid_array.push(row.interconnectorid);
-            periodid_array.push(row.periodid);
-            losssegment_array.push({
-                let mut val = row.losssegment;
-                val.rescale(0);
-                val.mantissa()
-            });
-            mwbreakpoint_array.push({
-                row.mwbreakpoint.map(|mut val| {
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
                     val.rescale(0);
                     val.mantissa()
-                })
-            });
-            lossfactor_array.push({
-                row.lossfactor.map(|mut val| {
-                    val.rescale(6);
+                });
+            interconnectorid_array.push(row.interconnectorid);
+            periodid_array.push(row.periodid);
+            losssegment_array
+                .push({
+                    let mut val = row.losssegment;
+                    val.rescale(0);
                     val.mantissa()
-                })
-            });
+                });
+            mwbreakpoint_array
+                .push({
+                    row.mwbreakpoint
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lossfactor_array
+                .push({
+                    row.lossfactor
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(periodid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(losssegment_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(mwbreakpoint_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lossfactor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(losssegment_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mwbreakpoint_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lossfactor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1989,7 +1703,6 @@ pub struct MarketConfigMarketPriceThresholds1 {
 impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1997,16 +1710,13 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigMarketPriceThresholds1PrimaryKey {
         MarketConfigMarketPriceThresholds1PrimaryKey {
             effectivedate: self.effectivedate,
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_market_price_thresholds_v1".to_string()
     }
@@ -2019,28 +1729,24 @@ pub struct MarketConfigMarketPriceThresholds1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigMarketPriceThresholds1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigMarketPriceThresholds1 {
     type Row = MarketConfigMarketPriceThresholds1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1 {
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigMarketPriceThresholds1PrimaryKey {
     type Row = MarketConfigMarketPriceThresholds1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1PrimaryKey {
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
@@ -2048,53 +1754,33 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1Pri
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(4, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "voll",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "marketpricefloor",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "administered_price_threshold",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("voll",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("marketpricefloor",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("administered_price_threshold",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut voll_array = Vec::new();
@@ -2105,80 +1791,69 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-            voll_array.push({
-                row.voll.map(|mut val| {
-                    val.rescale(5);
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
                     val.mantissa()
-                })
-            });
-            marketpricefloor_array.push({
-                row.marketpricefloor.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            administered_price_threshold_array.push({
-                row.administered_price_threshold.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+                });
+            voll_array
+                .push({
+                    row.voll
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            marketpricefloor_array
+                .push({
+                    row.marketpricefloor
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            administered_price_threshold_array
+                .push({
+                    row.administered_price_threshold
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(4, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(voll_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(marketpricefloor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(administered_price_threshold_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(voll_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marketpricefloor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(administered_price_threshold_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2214,7 +1889,6 @@ pub struct MarketConfigRegion1 {
 impl mmsdm_core::GetTable for MarketConfigRegion1 {
     type PrimaryKey = MarketConfigRegion1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -2222,15 +1896,12 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigRegion1PrimaryKey {
         MarketConfigRegion1PrimaryKey {
             regionid: self.regionid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_region_v1".to_string()
     }
@@ -2242,28 +1913,24 @@ pub struct MarketConfigRegion1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigRegion1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigRegion1 {
     type Row = MarketConfigRegion1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.regionid == row.regionid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1 {
     type PrimaryKey = MarketConfigRegion1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.regionid == key.regionid
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigRegion1PrimaryKey {
     type Row = MarketConfigRegion1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.regionid == row.regionid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1PrimaryKey {
     type PrimaryKey = MarketConfigRegion1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.regionid == key.regionid
     }
@@ -2271,33 +1938,25 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1PrimaryKey {
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "description",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionstatus",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("description",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("regionstatus",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut regionid_array = Vec::new();
         let mut description_array = Vec::new();
         let mut regionstatus_array = Vec::new();
@@ -2308,25 +1967,23 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
             regionstatus_array.push(row.regionstatus);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionstatus_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(description_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionstatus_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2378,7 +2035,6 @@ pub struct MarketConfigRegionstandingdata1 {
 impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -2386,7 +2042,6 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> MarketConfigRegionstandingdata1PrimaryKey {
         MarketConfigRegionstandingdata1PrimaryKey {
             effectivedate: self.effectivedate,
@@ -2394,9 +2049,7 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_regionstandingdata_v1".to_string()
     }
@@ -2410,96 +2063,66 @@ pub struct MarketConfigRegionstandingdata1PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigRegionstandingdata1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigRegionstandingdata1 {
     type Row = MarketConfigRegionstandingdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.regionid == row.regionid
+        self.effectivedate == row.effectivedate && self.regionid == row.regionid
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegionstandingdata1 {
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.regionid == key.regionid
+        self.effectivedate == key.effectivedate && self.regionid == key.regionid
             && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigRegionstandingdata1PrimaryKey {
     type Row = MarketConfigRegionstandingdata1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.regionid == row.regionid
+        self.effectivedate == row.effectivedate && self.regionid == row.regionid
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegionstandingdata1PrimaryKey {
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.regionid == key.regionid
+        self.effectivedate == key.effectivedate && self.regionid == key.regionid
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("rsoid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "regionalreferencepointid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "peaktradingperiod",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "scalingfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("rsoid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("regionalreferencepointid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("peaktradingperiod",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("scalingfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -2512,80 +2135,69 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
         let mut lastchanged_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             regionid_array.push(row.regionid);
             rsoid_array.push(row.rsoid);
             regionalreferencepointid_array.push(row.regionalreferencepointid);
-            peaktradingperiod_array.push({
-                row.peaktradingperiod.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            peaktradingperiod_array
+                .push({
+                    row.peaktradingperiod
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
-            scalingfactor_array.push({
-                row.scalingfactor.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
+            scalingfactor_array
+                .push({
+                    row.scalingfactor
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(rsoid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    regionalreferencepointid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(peaktradingperiod_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(scalingfactor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(rsoid_array)) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionalreferencepointid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(peaktradingperiod_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(scalingfactor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -2630,7 +2242,6 @@ pub struct MarketConfigTransmissionlossfactor2 {
 impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -2638,7 +2249,6 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
             version: 2,
         }
     }
-
     fn primary_key(&self) -> MarketConfigTransmissionlossfactor2PrimaryKey {
         MarketConfigTransmissionlossfactor2PrimaryKey {
             connectionpointid: self.connectionpointid.clone(),
@@ -2646,9 +2256,7 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
             versionno: self.versionno,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "market_config_transmissionlossfactor_v2".to_string()
     }
@@ -2662,81 +2270,60 @@ pub struct MarketConfigTransmissionlossfactor2PrimaryKey {
 impl mmsdm_core::PrimaryKey for MarketConfigTransmissionlossfactor2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for MarketConfigTransmissionlossfactor2 {
     type Row = MarketConfigTransmissionlossfactor2;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.connectionpointid == row.connectionpointid
-            && self.effectivedate == row.effectivedate
-            && self.versionno == row.versionno
+            && self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigTransmissionlossfactor2 {
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.connectionpointid == key.connectionpointid
-            && self.effectivedate == key.effectivedate
-            && self.versionno == key.versionno
+            && self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
 impl mmsdm_core::CompareWithRow for MarketConfigTransmissionlossfactor2PrimaryKey {
     type Row = MarketConfigTransmissionlossfactor2;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.connectionpointid == row.connectionpointid
-            && self.effectivedate == row.effectivedate
-            && self.versionno == row.versionno
+            && self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigTransmissionlossfactor2PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey
+for MarketConfigTransmissionlossfactor2PrimaryKey {
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.connectionpointid == key.connectionpointid
-            && self.effectivedate == key.effectivedate
-            && self.versionno == key.versionno
+            && self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "transmissionlossfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "versionno",
-                arrow2::datatypes::DataType::Decimal(22, 0),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "connectionpointid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "secondary_tlf",
-                arrow2::datatypes::DataType::Decimal(18, 8),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("transmissionlossfactor",
+                arrow2::datatypes::DataType::Decimal(15, 5), false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(22, 0), false),
+                arrow2::datatypes::Field::new("connectionpointid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("secondary_tlf",
+                arrow2::datatypes::DataType::Decimal(18, 8), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut transmissionlossfactor_array = Vec::new();
         let mut effectivedate_array = Vec::new();
         let mut versionno_array = Vec::new();
@@ -2745,65 +2332,57 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
         let mut lastchanged_array = Vec::new();
         let mut secondary_tlf_array = Vec::new();
         for row in partition {
-            transmissionlossfactor_array.push({
-                let mut val = row.transmissionlossfactor;
-                val.rescale(5);
-                val.mantissa()
-            });
+            transmissionlossfactor_array
+                .push({
+                    let mut val = row.transmissionlossfactor;
+                    val.rescale(5);
+                    val.mantissa()
+                });
             effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array.push({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             connectionpointid_array.push(row.connectionpointid);
             regionid_array.push(row.regionid);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            secondary_tlf_array.push({
-                row.secondary_tlf.map(|mut val| {
-                    val.rescale(8);
-                    val.mantissa()
-                })
-            });
+            secondary_tlf_array
+                .push({
+                    row.secondary_tlf
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(transmissionlossfactor_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(effectivedate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    connectionpointid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(secondary_tlf_array)
-                        .to(arrow2::datatypes::DataType::Decimal(18, 8)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(transmissionlossfactor_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(22, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(connectionpointid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(secondary_tlf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 #[cfg(feature = "sql_server")]
@@ -2820,146 +2399,146 @@ where
         (Some("BIDTYPES"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigBidtypes1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigBidtypes1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigBidtypes1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("BIDTYPESTRK"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigBidtypestrk1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigBidtypestrk1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigBidtypestrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INTERCONNECTOR"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigInterconnector1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigInterconnector1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigInterconnector1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INTERCONNECTORALLOC"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigInterconnectoralloc1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigInterconnectoralloc1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigInterconnectoralloc1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INTERCONNECTORCONSTRAINT"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigInterconnectorconstraint1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigInterconnectorconstraint1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigInterconnectorconstraint1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INTRAREGIONALLOC"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigIntraregionalloc1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigIntraregionalloc1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigIntraregionalloc1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("LOSSFACTORMODEL"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigLossfactormodel1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigLossfactormodel1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigLossfactormodel1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("LOSSMODEL"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigLossmodel1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigLossmodel1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigLossmodel1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("MARKET_PRICE_THRESHOLDS"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigMarketPriceThresholds1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigMarketPriceThresholds1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigMarketPriceThresholds1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("REGION"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigRegion1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigRegion1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigRegion1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("REGIONSTANDINGDATA"), version) if version <= 1_i32 => {
             let d: Vec<MarketConfigRegionstandingdata1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigRegionstandingdata1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigRegionstandingdata1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("TRANSMISSIONLOSSFACTOR"), version) if version <= 2_i32 => {
             let d: Vec<MarketConfigTransmissionlossfactor2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertMarketConfigTransmissionlossfactor2 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertMarketConfigTransmissionlossfactor2 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         _ => {
             log::error!("Unexpected file key {:?}", file_key);

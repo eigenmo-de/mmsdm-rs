@@ -62,7 +62,6 @@ pub struct StpasaCasesolution3 {
 impl mmsdm_core::GetTable for StpasaCasesolution3 {
     type PrimaryKey = StpasaCasesolution3PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -70,15 +69,12 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
             version: 3,
         }
     }
-
     fn primary_key(&self) -> StpasaCasesolution3PrimaryKey {
         StpasaCasesolution3PrimaryKey {
             run_datetime: self.run_datetime,
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "stpasa_casesolution_v3".to_string()
     }
@@ -90,28 +86,24 @@ pub struct StpasaCasesolution3PrimaryKey {
 impl mmsdm_core::PrimaryKey for StpasaCasesolution3PrimaryKey {}
 impl mmsdm_core::CompareWithRow for StpasaCasesolution3 {
     type Row = StpasaCasesolution3;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.run_datetime == row.run_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaCasesolution3 {
     type PrimaryKey = StpasaCasesolution3PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.run_datetime == key.run_datetime
     }
 }
 impl mmsdm_core::CompareWithRow for StpasaCasesolution3PrimaryKey {
     type Row = StpasaCasesolution3;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.run_datetime == row.run_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaCasesolution3PrimaryKey {
     type PrimaryKey = StpasaCasesolution3PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.run_datetime == key.run_datetime
     }
@@ -119,108 +111,54 @@ impl mmsdm_core::CompareWithPrimaryKey for StpasaCasesolution3PrimaryKey {
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "pasaversion",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "reservecondition",
-                arrow2::datatypes::DataType::Decimal(1, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lorcondition",
-                arrow2::datatypes::DataType::Decimal(1, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacityobjfunction",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacityoption",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "maxsurplusreserveoption",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "maxsparecapacityoption",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "interconnectorflowpenalty",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "reliabilitylrcdemandoption",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "outagelrcdemandoption",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lordemandoption",
-                arrow2::datatypes::DataType::Decimal(12, 3),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "reliabilitylrccapacityoption",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "outagelrccapacityoption",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lorcapacityoption",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "loruigf_option",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "reliability_lrcuigf_option",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "outage_lrcuigf_option",
-                arrow2::datatypes::DataType::Decimal(3, 0),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("run_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("pasaversion",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("reservecondition",
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("lorcondition",
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("capacityobjfunction",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("capacityoption",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("maxsurplusreserveoption",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("maxsparecapacityoption",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("interconnectorflowpenalty",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("reliabilitylrcdemandoption",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("outagelrcdemandoption",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("lordemandoption",
+                arrow2::datatypes::DataType::Decimal(12, 3), true),
+                arrow2::datatypes::Field::new("reliabilitylrccapacityoption",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("outagelrccapacityoption",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lorcapacityoption",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("loruigf_option",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("reliability_lrcuigf_option",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("outage_lrcuigf_option",
+                arrow2::datatypes::DataType::Decimal(3, 0), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut run_datetime_array = Vec::new();
         let mut pasaversion_array = Vec::new();
         let mut reservecondition_array = Vec::new();
@@ -243,173 +181,177 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
         for row in partition {
             run_datetime_array.push(row.run_datetime.timestamp());
             pasaversion_array.push(row.pasaversion);
-            reservecondition_array.push({
-                row.reservecondition.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            lorcondition_array.push({
-                row.lorcondition.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            capacityobjfunction_array.push({
-                row.capacityobjfunction.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
-            capacityoption_array.push({
-                row.capacityoption.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
-            maxsurplusreserveoption_array.push({
-                row.maxsurplusreserveoption.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
-            maxsparecapacityoption_array.push({
-                row.maxsparecapacityoption.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
-            interconnectorflowpenalty_array.push({
-                row.interconnectorflowpenalty.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
+            reservecondition_array
+                .push({
+                    row.reservecondition
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lorcondition_array
+                .push({
+                    row.lorcondition
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            capacityobjfunction_array
+                .push({
+                    row.capacityobjfunction
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
+            capacityoption_array
+                .push({
+                    row.capacityoption
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
+            maxsurplusreserveoption_array
+                .push({
+                    row.maxsurplusreserveoption
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
+            maxsparecapacityoption_array
+                .push({
+                    row.maxsparecapacityoption
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
+            interconnectorflowpenalty_array
+                .push({
+                    row.interconnectorflowpenalty
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            reliabilitylrcdemandoption_array.push({
-                row.reliabilitylrcdemandoption.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
-            outagelrcdemandoption_array.push({
-                row.outagelrcdemandoption.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
-            lordemandoption_array.push({
-                row.lordemandoption.map(|mut val| {
-                    val.rescale(3);
-                    val.mantissa()
-                })
-            });
+            reliabilitylrcdemandoption_array
+                .push({
+                    row.reliabilitylrcdemandoption
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
+            outagelrcdemandoption_array
+                .push({
+                    row.outagelrcdemandoption
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
+            lordemandoption_array
+                .push({
+                    row.lordemandoption
+                        .map(|mut val| {
+                            val.rescale(3);
+                            val.mantissa()
+                        })
+                });
             reliabilitylrccapacityoption_array.push(row.reliabilitylrccapacityoption);
             outagelrccapacityoption_array.push(row.outagelrccapacityoption);
             lorcapacityoption_array.push(row.lorcapacityoption);
-            loruigf_option_array.push({
-                row.loruigf_option.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            reliability_lrcuigf_option_array.push({
-                row.reliability_lrcuigf_option.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            outage_lrcuigf_option_array.push({
-                row.outage_lrcuigf_option.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            loruigf_option_array
+                .push({
+                    row.loruigf_option
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            reliability_lrcuigf_option_array
+                .push({
+                    row.reliability_lrcuigf_option
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            outage_lrcuigf_option_array
+                .push({
+                    row.outage_lrcuigf_option
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(pasaversion_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(reservecondition_array)
-                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lorcondition_array)
-                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacityobjfunction_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacityoption_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(maxsurplusreserveoption_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(maxsparecapacityoption_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(interconnectorflowpenalty_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(reliabilitylrcdemandoption_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(outagelrcdemandoption_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lordemandoption_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 3)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    reliabilitylrccapacityoption_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    outagelrccapacityoption_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    lorcapacityoption_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(loruigf_option_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(reliability_lrcuigf_option_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(outage_lrcuigf_option_array)
-                        .to(arrow2::datatypes::DataType::Decimal(3, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(pasaversion_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reservecondition_array)
+                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lorcondition_array)
+                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacityobjfunction_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacityoption_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxsurplusreserveoption_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxsparecapacityoption_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(interconnectorflowpenalty_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reliabilitylrcdemandoption_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(outagelrcdemandoption_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lordemandoption_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(reliabilitylrccapacityoption_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(outagelrccapacityoption_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(lorcapacityoption_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(loruigf_option_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reliability_lrcuigf_option_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(outage_lrcuigf_option_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -461,7 +403,6 @@ pub struct StpasaConstraintsolution3 {
 impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
     type PrimaryKey = StpasaConstraintsolution3PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -469,7 +410,6 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
             version: 3,
         }
     }
-
     fn primary_key(&self) -> StpasaConstraintsolution3PrimaryKey {
         StpasaConstraintsolution3PrimaryKey {
             constraintid: self.constraintid.clone(),
@@ -479,9 +419,7 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
             studyregionid: self.studyregionid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "stpasa_constraintsolution_v3".to_string()
     }
@@ -497,99 +435,71 @@ pub struct StpasaConstraintsolution3PrimaryKey {
 impl mmsdm_core::PrimaryKey for StpasaConstraintsolution3PrimaryKey {}
 impl mmsdm_core::CompareWithRow for StpasaConstraintsolution3 {
     type Row = StpasaConstraintsolution3;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.constraintid == row.constraintid
             && self.interval_datetime == row.interval_datetime
-            && self.run_datetime == row.run_datetime
-            && self.runtype == row.runtype
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype
             && self.studyregionid == row.studyregionid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaConstraintsolution3 {
     type PrimaryKey = StpasaConstraintsolution3PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.constraintid == key.constraintid
             && self.interval_datetime == key.interval_datetime
-            && self.run_datetime == key.run_datetime
-            && self.runtype == key.runtype
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
             && self.studyregionid == key.studyregionid
     }
 }
 impl mmsdm_core::CompareWithRow for StpasaConstraintsolution3PrimaryKey {
     type Row = StpasaConstraintsolution3;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.constraintid == row.constraintid
             && self.interval_datetime == row.interval_datetime
-            && self.run_datetime == row.run_datetime
-            && self.runtype == row.runtype
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype
             && self.studyregionid == row.studyregionid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaConstraintsolution3PrimaryKey {
     type PrimaryKey = StpasaConstraintsolution3PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.constraintid == key.constraintid
             && self.interval_datetime == key.interval_datetime
-            && self.run_datetime == key.run_datetime
-            && self.runtype == key.runtype
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
             && self.studyregionid == key.studyregionid
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "constraintid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacityrhs",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacitymarginalvalue",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacityviolationdegree",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new("runtype", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new(
-                "studyregionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("run_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("interval_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("constraintid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("capacityrhs",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("capacitymarginalvalue",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("capacityviolationdegree",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("runtype",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("studyregionid",
+                arrow2::datatypes::DataType::LargeUtf8, false)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut run_datetime_array = Vec::new();
         let mut interval_datetime_array = Vec::new();
         let mut constraintid_array = Vec::new();
@@ -603,77 +513,66 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
             run_datetime_array.push(row.run_datetime.timestamp());
             interval_datetime_array.push(row.interval_datetime.timestamp());
             constraintid_array.push(row.constraintid);
-            capacityrhs_array.push({
-                row.capacityrhs.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            capacitymarginalvalue_array.push({
-                row.capacitymarginalvalue.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            capacityviolationdegree_array.push({
-                row.capacityviolationdegree.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
+            capacityrhs_array
+                .push({
+                    row.capacityrhs
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            capacitymarginalvalue_array
+                .push({
+                    row.capacitymarginalvalue
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            capacityviolationdegree_array
+                .push({
+                    row.capacityviolationdegree
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
             runtype_array.push(row.runtype);
             studyregionid_array.push(row.studyregionid);
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    constraintid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacityrhs_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacitymarginalvalue_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacityviolationdegree_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(runtype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    studyregionid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(constraintid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacityrhs_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacitymarginalvalue_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacityviolationdegree_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(runtype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(studyregionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -733,7 +632,6 @@ pub struct StpasaInterconnectorsoln3 {
 impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
     type PrimaryKey = StpasaInterconnectorsoln3PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -741,7 +639,6 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
             version: 3,
         }
     }
-
     fn primary_key(&self) -> StpasaInterconnectorsoln3PrimaryKey {
         StpasaInterconnectorsoln3PrimaryKey {
             interconnectorid: self.interconnectorid.clone(),
@@ -751,9 +648,7 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
             studyregionid: self.studyregionid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "stpasa_interconnectorsoln_v3".to_string()
     }
@@ -769,119 +664,79 @@ pub struct StpasaInterconnectorsoln3PrimaryKey {
 impl mmsdm_core::PrimaryKey for StpasaInterconnectorsoln3PrimaryKey {}
 impl mmsdm_core::CompareWithRow for StpasaInterconnectorsoln3 {
     type Row = StpasaInterconnectorsoln3;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interconnectorid == row.interconnectorid
             && self.interval_datetime == row.interval_datetime
-            && self.run_datetime == row.run_datetime
-            && self.runtype == row.runtype
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype
             && self.studyregionid == row.studyregionid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaInterconnectorsoln3 {
     type PrimaryKey = StpasaInterconnectorsoln3PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interconnectorid == key.interconnectorid
             && self.interval_datetime == key.interval_datetime
-            && self.run_datetime == key.run_datetime
-            && self.runtype == key.runtype
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
             && self.studyregionid == key.studyregionid
     }
 }
 impl mmsdm_core::CompareWithRow for StpasaInterconnectorsoln3PrimaryKey {
     type Row = StpasaInterconnectorsoln3;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interconnectorid == row.interconnectorid
             && self.interval_datetime == row.interval_datetime
-            && self.run_datetime == row.run_datetime
-            && self.runtype == row.runtype
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype
             && self.studyregionid == row.studyregionid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaInterconnectorsoln3PrimaryKey {
     type PrimaryKey = StpasaInterconnectorsoln3PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interconnectorid == key.interconnectorid
             && self.interval_datetime == key.interval_datetime
-            && self.run_datetime == key.run_datetime
-            && self.runtype == key.runtype
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
             && self.studyregionid == key.studyregionid
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacitymwflow",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacitymarginalvalue",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacityviolationdegree",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "calculatedexportlimit",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "calculatedimportlimit",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new("runtype", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new(
-                "exportlimitconstraintid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "importlimitconstraintid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "studyregionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("run_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("interval_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("interconnectorid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("capacitymwflow",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("capacitymarginalvalue",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("capacityviolationdegree",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("calculatedexportlimit",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("calculatedimportlimit",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("runtype",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("exportlimitconstraintid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("importlimitconstraintid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("studyregionid",
+                arrow2::datatypes::DataType::LargeUtf8, false)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut run_datetime_array = Vec::new();
         let mut interval_datetime_array = Vec::new();
         let mut interconnectorid_array = Vec::new();
@@ -899,105 +754,96 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
             run_datetime_array.push(row.run_datetime.timestamp());
             interval_datetime_array.push(row.interval_datetime.timestamp());
             interconnectorid_array.push(row.interconnectorid);
-            capacitymwflow_array.push({
-                row.capacitymwflow.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            capacitymarginalvalue_array.push({
-                row.capacitymarginalvalue.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            capacityviolationdegree_array.push({
-                row.capacityviolationdegree.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            calculatedexportlimit_array.push({
-                row.calculatedexportlimit.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            calculatedimportlimit_array.push({
-                row.calculatedimportlimit.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
+            capacitymwflow_array
+                .push({
+                    row.capacitymwflow
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            capacitymarginalvalue_array
+                .push({
+                    row.capacitymarginalvalue
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            capacityviolationdegree_array
+                .push({
+                    row.capacityviolationdegree
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            calculatedexportlimit_array
+                .push({
+                    row.calculatedexportlimit
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            calculatedimportlimit_array
+                .push({
+                    row.calculatedimportlimit
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
             runtype_array.push(row.runtype);
             exportlimitconstraintid_array.push(row.exportlimitconstraintid);
             importlimitconstraintid_array.push(row.importlimitconstraintid);
             studyregionid_array.push(row.studyregionid);
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    interconnectorid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacitymwflow_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacitymarginalvalue_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacityviolationdegree_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(calculatedexportlimit_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(calculatedimportlimit_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(runtype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    exportlimitconstraintid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    importlimitconstraintid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    studyregionid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacitymwflow_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacitymarginalvalue_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacityviolationdegree_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(calculatedexportlimit_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(calculatedimportlimit_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(runtype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(exportlimitconstraintid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(importlimitconstraintid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(studyregionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -1120,7 +966,6 @@ pub struct StpasaRegionsolution7 {
 impl mmsdm_core::GetTable for StpasaRegionsolution7 {
     type PrimaryKey = StpasaRegionsolution7PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -1128,7 +973,6 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
             version: 7,
         }
     }
-
     fn primary_key(&self) -> StpasaRegionsolution7PrimaryKey {
         StpasaRegionsolution7PrimaryKey {
             interval_datetime: self.interval_datetime,
@@ -1137,9 +981,7 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
             runtype: self.runtype.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "stpasa_regionsolution_v7".to_string()
     }
@@ -1154,267 +996,135 @@ pub struct StpasaRegionsolution7PrimaryKey {
 impl mmsdm_core::PrimaryKey for StpasaRegionsolution7PrimaryKey {}
 impl mmsdm_core::CompareWithRow for StpasaRegionsolution7 {
     type Row = StpasaRegionsolution7;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime
-            && self.regionid == row.regionid
-            && self.run_datetime == row.run_datetime
-            && self.runtype == row.runtype
+        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaRegionsolution7 {
     type PrimaryKey = StpasaRegionsolution7PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interval_datetime == key.interval_datetime
-            && self.regionid == key.regionid
-            && self.run_datetime == key.run_datetime
-            && self.runtype == key.runtype
+        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
     }
 }
 impl mmsdm_core::CompareWithRow for StpasaRegionsolution7PrimaryKey {
     type Row = StpasaRegionsolution7;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime
-            && self.regionid == row.regionid
-            && self.run_datetime == row.run_datetime
-            && self.runtype == row.runtype
+        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for StpasaRegionsolution7PrimaryKey {
     type PrimaryKey = StpasaRegionsolution7PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interval_datetime == key.interval_datetime
-            && self.regionid == key.regionid
-            && self.run_datetime == key.run_datetime
-            && self.runtype == key.runtype
+        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "regionid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "demand10",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "demand50",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "demand90",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "reservereq",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "capacityreq",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "energyreqdemand50",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "unconstrainedcapacity",
-                arrow2::datatypes::DataType::Decimal(12, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "constrainedcapacity",
-                arrow2::datatypes::DataType::Decimal(12, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "netinterchangeunderscarcity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "surpluscapacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "surplusreserve",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "reservecondition",
-                arrow2::datatypes::DataType::Decimal(1, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "maxsurplusreserve",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "maxsparecapacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lorcondition",
-                arrow2::datatypes::DataType::Decimal(1, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "aggregatecapacityavailable",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "aggregatescheduledload",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "aggregatepasaavailability",
-                arrow2::datatypes::DataType::Decimal(12, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new("runtype", arrow2::datatypes::DataType::LargeUtf8, false),
-            arrow2::datatypes::Field::new(
-                "energyreqdemand10",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "calculatedlor1level",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "calculatedlor2level",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "msrnetinterchangeunderscarcity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lornetinterchangeunderscarcity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "totalintermittentgeneration",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "demand_and_nonschedgen",
-                arrow2::datatypes::DataType::Decimal(15, 5),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "uigf",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "semi_scheduled_capacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lor_semi_scheduled_capacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new("lcr", arrow2::datatypes::DataType::Decimal(16, 6), true),
-            arrow2::datatypes::Field::new(
-                "lcr2",
-                arrow2::datatypes::DataType::Decimal(16, 6),
-                true,
-            ),
-            arrow2::datatypes::Field::new("fum", arrow2::datatypes::DataType::Decimal(16, 6), true),
-            arrow2::datatypes::Field::new(
-                "ss_solar_uigf",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ss_wind_uigf",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ss_solar_capacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ss_wind_capacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ss_solar_cleared",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "ss_wind_cleared",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "wdr_available",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "wdr_pasaavailable",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "wdr_capacity",
-                arrow2::datatypes::DataType::Decimal(12, 2),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("run_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("interval_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("demand10",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("demand50",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("demand90",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("reservereq",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("capacityreq",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("energyreqdemand50",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("unconstrainedcapacity",
+                arrow2::datatypes::DataType::Decimal(12, 0), true),
+                arrow2::datatypes::Field::new("constrainedcapacity",
+                arrow2::datatypes::DataType::Decimal(12, 0), true),
+                arrow2::datatypes::Field::new("netinterchangeunderscarcity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("surpluscapacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("surplusreserve",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("reservecondition",
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("maxsurplusreserve",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("maxsparecapacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lorcondition",
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("aggregatecapacityavailable",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("aggregatescheduledload",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("aggregatepasaavailability",
+                arrow2::datatypes::DataType::Decimal(12, 0), true),
+                arrow2::datatypes::Field::new("runtype",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("energyreqdemand10",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("calculatedlor1level",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("calculatedlor2level",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("msrnetinterchangeunderscarcity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lornetinterchangeunderscarcity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("totalintermittentgeneration",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("demand_and_nonschedgen",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("uigf",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("semi_scheduled_capacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lor_semi_scheduled_capacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("lcr",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("lcr2",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("fum",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("ss_solar_uigf",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("ss_wind_uigf",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("ss_solar_capacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("ss_wind_capacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("ss_solar_cleared",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("ss_wind_cleared",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("wdr_available",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("wdr_pasaavailable",
+                arrow2::datatypes::DataType::Decimal(12, 2), true),
+                arrow2::datatypes::Field::new("wdr_capacity",
+                arrow2::datatypes::DataType::Decimal(12, 2), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut run_datetime_array = Vec::new();
         let mut interval_datetime_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -1464,442 +1174,469 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
             run_datetime_array.push(row.run_datetime.timestamp());
             interval_datetime_array.push(row.interval_datetime.timestamp());
             regionid_array.push(row.regionid);
-            demand10_array.push({
-                row.demand10.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            demand50_array.push({
-                row.demand50.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            demand90_array.push({
-                row.demand90.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            reservereq_array.push({
-                row.reservereq.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            capacityreq_array.push({
-                row.capacityreq.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            energyreqdemand50_array.push({
-                row.energyreqdemand50.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            unconstrainedcapacity_array.push({
-                row.unconstrainedcapacity.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            constrainedcapacity_array.push({
-                row.constrainedcapacity.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            netinterchangeunderscarcity_array.push({
-                row.netinterchangeunderscarcity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            surpluscapacity_array.push({
-                row.surpluscapacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            surplusreserve_array.push({
-                row.surplusreserve.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            reservecondition_array.push({
-                row.reservecondition.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            maxsurplusreserve_array.push({
-                row.maxsurplusreserve.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            maxsparecapacity_array.push({
-                row.maxsparecapacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            lorcondition_array.push({
-                row.lorcondition.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
-            aggregatecapacityavailable_array.push({
-                row.aggregatecapacityavailable.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            aggregatescheduledload_array.push({
-                row.aggregatescheduledload.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
+            demand10_array
+                .push({
+                    row.demand10
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            demand50_array
+                .push({
+                    row.demand50
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            demand90_array
+                .push({
+                    row.demand90
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            reservereq_array
+                .push({
+                    row.reservereq
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            capacityreq_array
+                .push({
+                    row.capacityreq
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            energyreqdemand50_array
+                .push({
+                    row.energyreqdemand50
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            unconstrainedcapacity_array
+                .push({
+                    row.unconstrainedcapacity
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            constrainedcapacity_array
+                .push({
+                    row.constrainedcapacity
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            netinterchangeunderscarcity_array
+                .push({
+                    row.netinterchangeunderscarcity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            surpluscapacity_array
+                .push({
+                    row.surpluscapacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            surplusreserve_array
+                .push({
+                    row.surplusreserve
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            reservecondition_array
+                .push({
+                    row.reservecondition
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            maxsurplusreserve_array
+                .push({
+                    row.maxsurplusreserve
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            maxsparecapacity_array
+                .push({
+                    row.maxsparecapacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            lorcondition_array
+                .push({
+                    row.lorcondition
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            aggregatecapacityavailable_array
+                .push({
+                    row.aggregatecapacityavailable
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            aggregatescheduledload_array
+                .push({
+                    row.aggregatescheduledload
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            aggregatepasaavailability_array.push({
-                row.aggregatepasaavailability.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            aggregatepasaavailability_array
+                .push({
+                    row.aggregatepasaavailability
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             runtype_array.push(row.runtype);
-            energyreqdemand10_array.push({
-                row.energyreqdemand10.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            calculatedlor1level_array.push({
-                row.calculatedlor1level.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            calculatedlor2level_array.push({
-                row.calculatedlor2level.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            msrnetinterchangeunderscarcity_array.push({
-                row.msrnetinterchangeunderscarcity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            lornetinterchangeunderscarcity_array.push({
-                row.lornetinterchangeunderscarcity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            totalintermittentgeneration_array.push({
-                row.totalintermittentgeneration.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            demand_and_nonschedgen_array.push({
-                row.demand_and_nonschedgen.map(|mut val| {
-                    val.rescale(5);
-                    val.mantissa()
-                })
-            });
-            uigf_array.push({
-                row.uigf.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            semi_scheduled_capacity_array.push({
-                row.semi_scheduled_capacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            lor_semi_scheduled_capacity_array.push({
-                row.lor_semi_scheduled_capacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            lcr_array.push({
-                row.lcr.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            lcr2_array.push({
-                row.lcr2.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            fum_array.push({
-                row.fum.map(|mut val| {
-                    val.rescale(6);
-                    val.mantissa()
-                })
-            });
-            ss_solar_uigf_array.push({
-                row.ss_solar_uigf.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            ss_wind_uigf_array.push({
-                row.ss_wind_uigf.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            ss_solar_capacity_array.push({
-                row.ss_solar_capacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            ss_wind_capacity_array.push({
-                row.ss_wind_capacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            ss_solar_cleared_array.push({
-                row.ss_solar_cleared.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            ss_wind_cleared_array.push({
-                row.ss_wind_cleared.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            wdr_available_array.push({
-                row.wdr_available.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            wdr_pasaavailable_array.push({
-                row.wdr_pasaavailable.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
-            wdr_capacity_array.push({
-                row.wdr_capacity.map(|mut val| {
-                    val.rescale(2);
-                    val.mantissa()
-                })
-            });
+            energyreqdemand10_array
+                .push({
+                    row.energyreqdemand10
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            calculatedlor1level_array
+                .push({
+                    row.calculatedlor1level
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            calculatedlor2level_array
+                .push({
+                    row.calculatedlor2level
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            msrnetinterchangeunderscarcity_array
+                .push({
+                    row.msrnetinterchangeunderscarcity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            lornetinterchangeunderscarcity_array
+                .push({
+                    row.lornetinterchangeunderscarcity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            totalintermittentgeneration_array
+                .push({
+                    row.totalintermittentgeneration
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            demand_and_nonschedgen_array
+                .push({
+                    row.demand_and_nonschedgen
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            uigf_array
+                .push({
+                    row.uigf
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            semi_scheduled_capacity_array
+                .push({
+                    row.semi_scheduled_capacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            lor_semi_scheduled_capacity_array
+                .push({
+                    row.lor_semi_scheduled_capacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            lcr_array
+                .push({
+                    row.lcr
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            lcr2_array
+                .push({
+                    row.lcr2
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            fum_array
+                .push({
+                    row.fum
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            ss_solar_uigf_array
+                .push({
+                    row.ss_solar_uigf
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            ss_wind_uigf_array
+                .push({
+                    row.ss_wind_uigf
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            ss_solar_capacity_array
+                .push({
+                    row.ss_solar_capacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            ss_wind_capacity_array
+                .push({
+                    row.ss_wind_capacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            ss_solar_cleared_array
+                .push({
+                    row.ss_solar_cleared
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            ss_wind_cleared_array
+                .push({
+                    row.ss_wind_cleared
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            wdr_available_array
+                .push({
+                    row.wdr_available
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            wdr_pasaavailable_array
+                .push({
+                    row.wdr_pasaavailable
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
+            wdr_capacity_array
+                .push({
+                    row.wdr_capacity
+                        .map(|mut val| {
+                            val.rescale(2);
+                            val.mantissa()
+                        })
+                });
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(run_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(interval_datetime_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(demand10_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(demand50_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(demand90_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(reservereq_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(capacityreq_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(energyreqdemand50_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(unconstrainedcapacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(constrainedcapacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(netinterchangeunderscarcity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(surpluscapacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(surplusreserve_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(reservecondition_array)
-                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(maxsurplusreserve_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(maxsparecapacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lorcondition_array)
-                        .to(arrow2::datatypes::DataType::Decimal(1, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(aggregatecapacityavailable_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(aggregatescheduledload_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(aggregatepasaavailability_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(runtype_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(energyreqdemand10_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(calculatedlor1level_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(calculatedlor2level_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(msrnetinterchangeunderscarcity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lornetinterchangeunderscarcity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(totalintermittentgeneration_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(demand_and_nonschedgen_array)
-                        .to(arrow2::datatypes::DataType::Decimal(15, 5)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(uigf_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(semi_scheduled_capacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lor_semi_scheduled_capacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lcr_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(lcr2_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(fum_array)
-                        .to(arrow2::datatypes::DataType::Decimal(16, 6)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ss_solar_uigf_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ss_wind_uigf_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ss_solar_capacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ss_wind_capacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ss_solar_cleared_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(ss_wind_cleared_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(wdr_available_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(wdr_pasaavailable_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(wdr_capacity_array)
-                        .to(arrow2::datatypes::DataType::Decimal(12, 2)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demand10_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demand50_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demand90_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reservereq_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(capacityreq_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(energyreqdemand50_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(unconstrainedcapacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(constrainedcapacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(netinterchangeunderscarcity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(surpluscapacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(surplusreserve_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reservecondition_array)
+                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxsurplusreserve_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxsparecapacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lorcondition_array)
+                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(aggregatecapacityavailable_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(aggregatescheduledload_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(aggregatepasaavailability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(runtype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(energyreqdemand10_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(calculatedlor1level_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(calculatedlor2level_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(msrnetinterchangeunderscarcity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lornetinterchangeunderscarcity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(totalintermittentgeneration_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demand_and_nonschedgen_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uigf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(semi_scheduled_capacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lor_semi_scheduled_capacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lcr_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lcr2_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(fum_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_solar_uigf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_wind_uigf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_solar_capacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_wind_capacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_solar_cleared_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_wind_cleared_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_available_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_pasaavailable_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_capacity_array)
+                    .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 #[cfg(feature = "sql_server")]
@@ -1916,50 +1653,50 @@ where
         (Some("CASESOLUTION"), version) if version <= 3_i32 => {
             let d: Vec<StpasaCasesolution3> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertStpasaCasesolution3 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertStpasaCasesolution3 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("CONSTRAINTSOLUTION"), version) if version <= 3_i32 => {
             let d: Vec<StpasaConstraintsolution3> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertStpasaConstraintsolution3 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertStpasaConstraintsolution3 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INTERCONNECTORSOLN"), version) if version <= 3_i32 => {
             let d: Vec<StpasaInterconnectorsoln3> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertStpasaInterconnectorsoln3 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertStpasaInterconnectorsoln3 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("REGIONSOLUTION"), version) if version <= 7_i32 => {
             let d: Vec<StpasaRegionsolution7> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertStpasaRegionsolution7 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertStpasaRegionsolution7 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         _ => {
             log::error!("Unexpected file key {:?}", file_key);

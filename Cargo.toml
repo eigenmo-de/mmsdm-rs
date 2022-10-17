@@ -99,11 +99,6 @@ optional = true
 version = "0.3.21"
 optional = true
 
-[dependencies.mmsdm_ancillary_services]
-# version = "0.1.0"
-path = "./crates/ancillary_services"
-optional = true 
-
 [dependencies.mmsdm_asoffer]
 # version = "0.1.0"
 path = "./crates/asoffer"
@@ -122,11 +117,6 @@ optional = true
 [dependencies.mmsdm_billing_run]
 # version = "0.1.0"
 path = "./crates/billing_run"
-optional = true 
-
-[dependencies.mmsdm_configuration]
-# version = "0.1.0"
-path = "./crates/configuration"
 optional = true 
 
 [dependencies.mmsdm_demand_forecasts]
@@ -152,11 +142,6 @@ optional = true
 [dependencies.mmsdm_generic_constraint]
 # version = "0.1.0"
 path = "./crates/generic_constraint"
-optional = true 
-
-[dependencies.mmsdm_historical]
-# version = "0.1.0"
-path = "./crates/historical"
 optional = true 
 
 [dependencies.mmsdm_irauction]
@@ -244,12 +229,6 @@ optional = true
 path = "./crates/trading_data"
 optional = true 
 
-[dependencies.mmsdm_voltage_instructions]
-# version = "0.1.0"
-path = "./crates/voltage_instructions"
-optional = true 
-
-
 [dev-dependencies]
 anyhow = "1"
 env_logger = "0.9"
@@ -269,18 +248,15 @@ sql_server = [
     "tiberius", 
     "futures-util",
     "mmsdm_core/sql_server",
-    "mmsdm_ancillary_services?/sql_server",
     "mmsdm_asoffer?/sql_server",
     "mmsdm_bids?/sql_server",
     "mmsdm_billing_config?/sql_server",
     "mmsdm_billing_run?/sql_server",
-    "mmsdm_configuration?/sql_server",
     "mmsdm_demand_forecasts?/sql_server",
     "mmsdm_dispatch?/sql_server",
     "mmsdm_force_majeure?/sql_server",
     "mmsdm_gd_instruct?/sql_server",
     "mmsdm_generic_constraint?/sql_server",
-    "mmsdm_historical?/sql_server",
     "mmsdm_irauction?/sql_server",
     "mmsdm_market_config?/sql_server",
     "mmsdm_market_notice?/sql_server",
@@ -298,23 +274,19 @@ sql_server = [
     "mmsdm_settlement_data?/sql_server",
     "mmsdm_stpasa_solution?/sql_server",
     "mmsdm_trading_data?/sql_server",
-    "mmsdm_voltage_instructions?/sql_server",
 ]
 arrow = [
     "arrow2", 
     "mmsdm_core/arrow",
-    "mmsdm_ancillary_services?/arrow",
     "mmsdm_asoffer?/arrow",
     "mmsdm_bids?/arrow",
     "mmsdm_billing_config?/arrow",
     "mmsdm_billing_run?/arrow",
-    "mmsdm_configuration?/arrow",
     "mmsdm_demand_forecasts?/arrow",
     "mmsdm_dispatch?/arrow",
     "mmsdm_force_majeure?/arrow",
     "mmsdm_gd_instruct?/arrow",
     "mmsdm_generic_constraint?/arrow",
-    "mmsdm_historical?/arrow",
     "mmsdm_irauction?/arrow",
     "mmsdm_market_config?/arrow",
     "mmsdm_market_notice?/arrow",
@@ -332,20 +304,16 @@ arrow = [
     "mmsdm_settlement_data?/arrow",
     "mmsdm_stpasa_solution?/arrow",
     "mmsdm_trading_data?/arrow",
-    "mmsdm_voltage_instructions?/arrow",
 ]
-ancillary_services = ["mmsdm_ancillary_services"]
 asoffer = ["mmsdm_asoffer"]
 bids = ["mmsdm_bids"]
 billing_config = ["mmsdm_billing_config"]
 billing_run = ["mmsdm_billing_run"]
-configuration = ["mmsdm_configuration"]
 demand_forecasts = ["mmsdm_demand_forecasts"]
 dispatch = ["mmsdm_dispatch"]
 force_majeure = ["mmsdm_force_majeure"]
 gd_instruct = ["mmsdm_gd_instruct"]
 generic_constraint = ["mmsdm_generic_constraint"]
-historical = ["mmsdm_historical"]
 irauction = ["mmsdm_irauction"]
 market_config = ["mmsdm_market_config"]
 market_notice = ["mmsdm_market_notice"]
@@ -363,20 +331,16 @@ settlement_config = ["mmsdm_settlement_config"]
 settlement_data = ["mmsdm_settlement_data"]
 stpasa_solution = ["mmsdm_stpasa_solution"]
 trading_data = ["mmsdm_trading_data"]
-voltage_instructions = ["mmsdm_voltage_instructions"]
 mmsdm = [
-    "ancillary_services",
     "asoffer",
     "bids",
     "billing_config",
     "billing_run",
-    "configuration",
     "demand_forecasts",
     "dispatch",
     "force_majeure",
     "gd_instruct",
     "generic_constraint",
-    "historical",
     "irauction",
     "market_config",
     "market_notice",
@@ -394,6 +358,5 @@ mmsdm = [
     "settlement_data",
     "stpasa_solution",
     "trading_data",
-    "voltage_instructions",
 ]
 default = ["mmsdm", "arrow"]

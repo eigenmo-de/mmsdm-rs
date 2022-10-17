@@ -46,7 +46,7 @@ pub async fn run() -> anyhow::Result<()> {
         dbg!(&current_package);
         let text = el.inner_html();
         if text.starts_with("Package:") {
-            let package = text.split(" ").nth(1).map(string::ToString::to_string);
+            let package = text.split(' ').nth(1).map(string::ToString::to_string);
 
             // We need to keep the name of the package that we are
             // currently getting tables for
@@ -61,7 +61,7 @@ pub async fn run() -> anyhow::Result<()> {
                     .attr("href")
                     .unwrap()
                     .split(".htm#")
-                    .nth(0)
+                    .next()
                     .unwrap();
                 dbg!(&link_val);
 
@@ -88,8 +88,8 @@ pub async fn run() -> anyhow::Result<()> {
 
                     for pl in inner_doc.select(&A) {
                         if let Some(href) = pl.value().attr("href") {
-                            let page_links = href.split(".htm#").nth(0).unwrap();
-                            if LINK_MATCH.captures(&page_links).is_some() {
+                            let page_links = href.split(".htm#").next().unwrap();
+                            if LINK_MATCH.captures(page_links).is_some() {
                                 doc_pages_to_get.push(page_links.to_string());
                             }
                         }
@@ -121,7 +121,7 @@ pub async fn run() -> anyhow::Result<()> {
                     .and_modify(|e| {
                         e.insert(key.clone(), table_info.clone());
                     })
-                    .or_insert(iter::once((key, table_info)).collect());
+                    .or_insert_with(|| iter::once((key, table_info)).collect());
                 // break;
             }
 

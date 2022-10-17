@@ -56,7 +56,6 @@ pub struct GdInstructGdinstruct1 {
 impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
     type PrimaryKey = GdInstructGdinstruct1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GD_INSTRUCT".into(),
@@ -64,13 +63,12 @@ impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> GdInstructGdinstruct1PrimaryKey {
-        GdInstructGdinstruct1PrimaryKey { id: self.id }
+        GdInstructGdinstruct1PrimaryKey {
+            id: self.id,
+        }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "gd_instruct_gdinstruct_v1".to_string()
     }
@@ -82,28 +80,24 @@ pub struct GdInstructGdinstruct1PrimaryKey {
 impl mmsdm_core::PrimaryKey for GdInstructGdinstruct1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for GdInstructGdinstruct1 {
     type Row = GdInstructGdinstruct1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.id == row.id
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for GdInstructGdinstruct1 {
     type PrimaryKey = GdInstructGdinstruct1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.id == key.id
     }
 }
 impl mmsdm_core::CompareWithRow for GdInstructGdinstruct1PrimaryKey {
     type Row = GdInstructGdinstruct1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.id == row.id
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for GdInstructGdinstruct1PrimaryKey {
     type PrimaryKey = GdInstructGdinstruct1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.id == key.id
     }
@@ -111,72 +105,47 @@ impl mmsdm_core::CompareWithPrimaryKey for GdInstructGdinstruct1PrimaryKey {
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new("duid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "stationid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new("id", arrow2::datatypes::DataType::Decimal(22, 0), false),
-            arrow2::datatypes::Field::new(
-                "instructiontypeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "instructionsubtypeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "instructionclassid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("reason", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "instlevel",
-                arrow2::datatypes::DataType::Decimal(6, 0),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "participantid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "issuedtime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "targettime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("duid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("stationid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("id",
+                arrow2::datatypes::DataType::Decimal(22, 0), false),
+                arrow2::datatypes::Field::new("instructiontypeid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("instructionsubtypeid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("instructionclassid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("reason",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("instlevel",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("issuedtime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("targettime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut duid_array = Vec::new();
         let mut stationid_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -196,21 +165,24 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             duid_array.push(row.duid);
             stationid_array.push(row.stationid);
             regionid_array.push(row.regionid);
-            id_array.push({
-                let mut val = row.id;
-                val.rescale(0);
-                val.mantissa()
-            });
+            id_array
+                .push({
+                    let mut val = row.id;
+                    val.rescale(0);
+                    val.mantissa()
+                });
             instructiontypeid_array.push(row.instructiontypeid);
             instructionsubtypeid_array.push(row.instructionsubtypeid);
             instructionclassid_array.push(row.instructionclassid);
             reason_array.push(row.reason);
-            instlevel_array.push({
-                row.instlevel.map(|mut val| {
-                    val.rescale(0);
-                    val.mantissa()
-                })
-            });
+            instlevel_array
+                .push({
+                    row.instlevel
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
             authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
             authorisedby_array.push(row.authorisedby);
             participantid_array.push(row.participantid);
@@ -218,68 +190,55 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             targettime_array.push(row.targettime.map(|val| val.timestamp()));
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(duid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(stationid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from_vec(id_array)
-                        .to(arrow2::datatypes::DataType::Decimal(22, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    instructiontypeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    instructionsubtypeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(
-                    instructionclassid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(reason_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(instlevel_array)
-                        .to(arrow2::datatypes::DataType::Decimal(6, 0)),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(
-                    arrow2::array::PrimitiveArray::from(authoriseddate_array).to(
-                        arrow2::datatypes::DataType::Timestamp(
-                            arrow2::datatypes::TimeUnit::Second,
-                            None,
-                        ),
-                    ),
-                ) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(authorisedby_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(participantid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(issuedtime_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(targettime_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(duid_array)) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(stationid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(id_array)
+                    .to(arrow2::datatypes::DataType::Decimal(22, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(instructiontypeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(instructionsubtypeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(instructionclassid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(reason_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(instlevel_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(issuedtime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(targettime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -316,7 +275,6 @@ pub struct GdInstructInstructionsubtype1 {
 impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
     type PrimaryKey = GdInstructInstructionsubtype1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GD_INSTRUCT".into(),
@@ -324,16 +282,13 @@ impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> GdInstructInstructionsubtype1PrimaryKey {
         GdInstructInstructionsubtype1PrimaryKey {
             instructionsubtypeid: self.instructionsubtypeid.clone(),
             instructiontypeid: self.instructiontypeid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "gd_instruct_instructionsubtype_v1".to_string()
     }
@@ -346,7 +301,6 @@ pub struct GdInstructInstructionsubtype1PrimaryKey {
 impl mmsdm_core::PrimaryKey for GdInstructInstructionsubtype1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for GdInstructInstructionsubtype1 {
     type Row = GdInstructInstructionsubtype1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.instructionsubtypeid == row.instructionsubtypeid
             && self.instructiontypeid == row.instructiontypeid
@@ -354,7 +308,6 @@ impl mmsdm_core::CompareWithRow for GdInstructInstructionsubtype1 {
 }
 impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructionsubtype1 {
     type PrimaryKey = GdInstructInstructionsubtype1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.instructionsubtypeid == key.instructionsubtypeid
             && self.instructiontypeid == key.instructiontypeid
@@ -362,7 +315,6 @@ impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructionsubtype1 {
 }
 impl mmsdm_core::CompareWithRow for GdInstructInstructionsubtype1PrimaryKey {
     type Row = GdInstructInstructionsubtype1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.instructionsubtypeid == row.instructionsubtypeid
             && self.instructiontypeid == row.instructiontypeid
@@ -370,7 +322,6 @@ impl mmsdm_core::CompareWithRow for GdInstructInstructionsubtype1PrimaryKey {
 }
 impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructionsubtype1PrimaryKey {
     type PrimaryKey = GdInstructInstructionsubtype1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.instructionsubtypeid == key.instructionsubtypeid
             && self.instructiontypeid == key.instructiontypeid
@@ -379,33 +330,25 @@ impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructionsubtype1PrimaryK
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "instructiontypeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "instructionsubtypeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "description",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("instructiontypeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("instructionsubtypeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("description",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut instructiontypeid_array = Vec::new();
         let mut instructionsubtypeid_array = Vec::new();
         let mut description_array = Vec::new();
@@ -416,27 +359,23 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
             description_array.push(row.description);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    instructiontypeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    instructionsubtypeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(instructiontypeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(instructionsubtypeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(description_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 /// # Summary
@@ -472,7 +411,6 @@ pub struct GdInstructInstructiontype1 {
 impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
     type PrimaryKey = GdInstructInstructiontype1PrimaryKey;
     type Partition = ();
-
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GD_INSTRUCT".into(),
@@ -480,15 +418,12 @@ impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
             version: 1,
         }
     }
-
     fn primary_key(&self) -> GdInstructInstructiontype1PrimaryKey {
         GdInstructInstructiontype1PrimaryKey {
             instructiontypeid: self.instructiontypeid.clone(),
         }
     }
-
     fn partition_suffix(&self) -> Self::Partition {}
-
     fn partition_name(&self) -> String {
         "gd_instruct_instructiontype_v1".to_string()
     }
@@ -500,28 +435,24 @@ pub struct GdInstructInstructiontype1PrimaryKey {
 impl mmsdm_core::PrimaryKey for GdInstructInstructiontype1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for GdInstructInstructiontype1 {
     type Row = GdInstructInstructiontype1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.instructiontypeid == row.instructiontypeid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructiontype1 {
     type PrimaryKey = GdInstructInstructiontype1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.instructiontypeid == key.instructiontypeid
     }
 }
 impl mmsdm_core::CompareWithRow for GdInstructInstructiontype1PrimaryKey {
     type Row = GdInstructInstructiontype1;
-
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.instructiontypeid == row.instructiontypeid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructiontype1PrimaryKey {
     type PrimaryKey = GdInstructInstructiontype1PrimaryKey;
-
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.instructiontypeid == key.instructiontypeid
     }
@@ -529,29 +460,25 @@ impl mmsdm_core::CompareWithPrimaryKey for GdInstructInstructiontype1PrimaryKey 
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(vec![
-            arrow2::datatypes::Field::new(
-                "instructiontypeid",
-                arrow2::datatypes::DataType::LargeUtf8,
-                false,
-            ),
-            arrow2::datatypes::Field::new(
-                "description",
-                arrow2::datatypes::DataType::LargeUtf8,
-                true,
-            ),
-            arrow2::datatypes::Field::new("regionid", arrow2::datatypes::DataType::LargeUtf8, true),
-            arrow2::datatypes::Field::new(
-                "lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None),
-                true,
-            ),
-        ])
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("instructiontypeid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("description",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
     }
-
     fn partition_to_chunk(
         partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>> {
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
         let mut instructiontypeid_array = Vec::new();
         let mut description_array = Vec::new();
         let mut regionid_array = Vec::new();
@@ -562,26 +489,23 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
             regionid_array.push(row.regionid);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
         }
-
         arrow2::chunk::Chunk::try_new(
-            //std::sync::Arc::new(Self::arrow_schema()),
-            vec![
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from_slice(
-                    instructiontypeid_array,
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(description_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::Utf8Array::<i64>::from(regionid_array))
-                    as std::sync::Arc<dyn arrow2::array::Array>,
-                std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array).to(
-                    arrow2::datatypes::DataType::Timestamp(
-                        arrow2::datatypes::TimeUnit::Second,
-                        None,
-                    ),
-                )) as std::sync::Arc<dyn arrow2::array::Array>,
-            ],
-        )
-        .map_err(Into::into)
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(instructiontypeid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(description_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
     }
 }
 #[cfg(feature = "sql_server")]
@@ -598,38 +522,38 @@ where
         (Some("GDINSTRUCT"), version) if version <= 1_i32 => {
             let d: Vec<GdInstructGdinstruct1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertGdInstructGdinstruct1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertGdInstructGdinstruct1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INSTRUCTIONSUBTYPE"), version) if version <= 1_i32 => {
             let d: Vec<GdInstructInstructionsubtype1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertGdInstructInstructionsubtype1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertGdInstructInstructionsubtype1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         (Some("INSTRUCTIONTYPE"), version) if version <= 1_i32 => {
             let d: Vec<GdInstructInstructiontype1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
-                client,
-                file_key,
-                mms_file.header(),
-                &d,
-                "exec mmsdm_proc.InsertGdInstructInstructiontype1 @P1, @P2",
-                chunk_size,
-            )
-            .await?;
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertGdInstructInstructiontype1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
         }
         _ => {
             log::error!("Unexpected file key {:?}", file_key);
