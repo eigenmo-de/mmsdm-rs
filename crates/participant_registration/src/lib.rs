@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## BIDDUIDDETAILS
@@ -46,7 +47,7 @@ pub struct ParticipantRegistrationBidduiddetails1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
     type PrimaryKey = ParticipantRegistrationBidduiddetails1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -62,9 +63,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_bidduiddetails_v1".to_string()
+        format!(
+            "participant_registration_bidduiddetails_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -277,7 +287,7 @@ pub struct ParticipantRegistrationBidduiddetailstrk1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     type PrimaryKey = ParticipantRegistrationBidduiddetailstrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -292,9 +302,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_bidduiddetailstrk_v1".to_string()
+        format!(
+            "participant_registration_bidduiddetailstrk_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -571,7 +590,7 @@ pub struct ParticipantRegistrationDualloc1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
     type PrimaryKey = ParticipantRegistrationDualloc1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -587,9 +606,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_dualloc_v1".to_string()
+        format!(
+            "participant_registration_dualloc_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -761,7 +789,7 @@ pub struct ParticipantRegistrationDudetail4 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationDudetail4 {
     type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -776,9 +804,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail4 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_dudetail_v4".to_string()
+        format!(
+            "participant_registration_dudetail_v4_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1976,7 +2013,7 @@ pub struct ParticipantRegistrationGenunitsUnit1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit1 {
     type PrimaryKey = ParticipantRegistrationGenunitsUnit1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -1992,9 +2029,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_genunits_unit_v1".to_string()
+        format!(
+            "participant_registration_genunits_unit_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2215,7 +2261,7 @@ pub struct ParticipantRegistrationMnspInterconnector2 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
     type PrimaryKey = ParticipantRegistrationMnspInterconnector2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -2230,9 +2276,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_mnsp_interconnector_v2".to_string()
+        format!(
+            "participant_registration_mnsp_interconnector_v2_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2484,7 +2539,7 @@ pub struct ParticipantRegistrationMnspParticipant1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
     type PrimaryKey = ParticipantRegistrationMnspParticipant1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -2500,9 +2555,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_mnsp_participant_v1".to_string()
+        format!(
+            "participant_registration_mnsp_participant_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -3440,7 +3504,7 @@ pub struct ParticipantRegistrationParticipantcreditdetail1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
     type PrimaryKey = ParticipantRegistrationParticipantcreditdetail1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -3454,9 +3518,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
             participantid: self.participantid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_participantcreditdetail_v1".to_string()
+        format!(
+            "participant_registration_participantcreditdetail_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -4291,7 +4364,7 @@ pub struct ParticipantRegistrationStadualloc1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
     type PrimaryKey = ParticipantRegistrationStadualloc1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -4307,9 +4380,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_stadualloc_v1".to_string()
+        format!(
+            "participant_registration_stadualloc_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -4639,7 +4721,7 @@ pub struct ParticipantRegistrationStationoperatingstatus1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
     type PrimaryKey = ParticipantRegistrationStationoperatingstatus1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -4654,9 +4736,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_stationoperatingstatus_v1".to_string()
+        format!(
+            "participant_registration_stationoperatingstatus_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -4812,7 +4903,7 @@ pub struct ParticipantRegistrationStationowner1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
     type PrimaryKey = ParticipantRegistrationStationowner1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -4828,9 +4919,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_stationowner_v1".to_string()
+        format!(
+            "participant_registration_stationowner_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -4977,7 +5077,7 @@ pub struct ParticipantRegistrationStationownertrk1 {
 }
 impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
     type PrimaryKey = ParticipantRegistrationStationownertrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
@@ -4992,9 +5092,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "participant_registration_stationownertrk_v1".to_string()
+        format!(
+            "participant_registration_stationownertrk_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

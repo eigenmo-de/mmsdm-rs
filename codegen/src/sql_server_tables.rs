@@ -158,15 +158,15 @@ create nonclustered index Mmsdm{table_name}FileLogId on mmsdm.{table_name}(file_
 go
                         "#,
                     table_name = pdr_report.sql_table_name(),
-                    columns = table.columns.get_sql(),
-                    primary_key = table.primary_key_columns.get_sql(),
+                    columns = table.columns().get_sql(),
+                    primary_key = table.primary_key_columns().get_sql(),
                     // primary_key = ""
                 );
 
                 table_str.push_str(&create_table);
 
                 if table
-                    .columns
+                    .columns()
                     .columns
                     .iter()
                     .any(|col| col.name.to_lowercase() == "lastchanged")
@@ -205,12 +205,12 @@ when not matched
 end
 go"#,
                         target_table = pdr_report.sql_table_name(),
-                        merge_check = table.primary_key_columns.merge_check(),
-                        insert_columns = table.columns.get_columns_sql(None),
-                        select_columns_d = table.columns.get_columns_sql(Some("d")),
-                        select_columns_src = table.columns.get_columns_sql(Some("src")),
-                        update_columns = table.columns.merge_update(),
-                        column_schema = table.columns.get_column_schema(),
+                        merge_check = table.primary_key_columns().merge_check(),
+                        insert_columns = table.columns().get_columns_sql(None),
+                        select_columns_d = table.columns().get_columns_sql(Some("d")),
+                        select_columns_src = table.columns().get_columns_sql(Some("src")),
+                        update_columns = table.columns().merge_update(),
+                        column_schema = table.columns().get_column_schema(),
                     );
                     proc_str.push_str(&merge_proc);
                 } else {
@@ -233,9 +233,9 @@ from openjson(@data) with (
 end
 go"#,
                         target_table = pdr_report.sql_table_name(),
-                        insert_columns = table.columns.get_columns_sql(None),
-                        select_columns = table.columns.get_columns_sql(Some("d")),
-                        column_schema = table.columns.get_column_schema(),
+                        insert_columns = table.columns().get_columns_sql(None),
+                        select_columns = table.columns().get_columns_sql(Some("d")),
+                        column_schema = table.columns().get_column_schema(),
                     );
                     proc_str.push_str(&insert_proc);
                 }

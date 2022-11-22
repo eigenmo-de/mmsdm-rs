@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## ANCILLARY_RECOVERY_SPLIT
@@ -38,7 +39,7 @@ pub struct SettlementConfigAncillaryRecoverySplit1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit1 {
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -54,9 +55,18 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_ancillary_recovery_split_v1".to_string()
+        format!(
+            "settlement_config_ancillary_recovery_split_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -374,7 +384,7 @@ pub struct SettlementConfigMarketfeedata1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -389,9 +399,18 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
             marketfeeversionno: self.marketfeeversionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_marketfeedata_v1".to_string()
+        format!(
+            "settlement_config_marketfeedata_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -536,7 +555,7 @@ pub struct SettlementConfigMarketfeetrk1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -550,9 +569,18 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
             marketfeeversionno: self.marketfeeversionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_marketfeetrk_v1".to_string()
+        format!(
+            "settlement_config_marketfeetrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -687,7 +715,7 @@ pub struct SettlementConfigMarketFeeCatExcl1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
     type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -703,9 +731,18 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_market_fee_cat_excl_v1".to_string()
+        format!(
+            "settlement_config_market_fee_cat_excl_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -833,7 +870,7 @@ pub struct SettlementConfigMarketFeeCatExclTrk1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -848,9 +885,18 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_market_fee_cat_excl_trk_v1".to_string()
+        format!(
+            "settlement_config_market_fee_cat_excl_trk_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -978,7 +1024,7 @@ pub struct SettlementConfigMarketFeeExclusion1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -994,9 +1040,18 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_market_fee_exclusion_v1".to_string()
+        format!(
+            "settlement_config_market_fee_exclusion_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1139,7 +1194,7 @@ pub struct SettlementConfigMarketFeeExclusionTrk1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -1154,9 +1209,18 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_market_fee_exclusion_trk_v1".to_string()
+        format!(
+            "settlement_config_market_fee_exclusion_trk_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1308,7 +1372,7 @@ pub struct SettlementConfigParticipantBandfeeAlloc1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
     type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -1325,9 +1389,18 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_participant_bandfee_alloc_v1".to_string()
+        format!(
+            "settlement_config_participant_bandfee_alloc_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1887,7 +1960,7 @@ pub struct SettlementConfigSetcfgParticipantMpf1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -1904,9 +1977,18 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_setcfg_participant_mpf_v1".to_string()
+        format!(
+            "settlement_config_setcfg_participant_mpf_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2079,7 +2161,7 @@ pub struct SettlementConfigSetcfgParticipantMpftrk1 {
 }
 impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENT_CONFIG".into(),
@@ -2094,9 +2176,18 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "settlement_config_setcfg_participant_mpftrk_v1".to_string()
+        format!(
+            "settlement_config_setcfg_participant_mpftrk_v1_{}_{}", self
+            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

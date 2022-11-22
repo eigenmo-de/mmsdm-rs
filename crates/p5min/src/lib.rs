@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## P5MIN_BLOCKEDCONSTRAINT
@@ -26,7 +27,7 @@ pub struct P5minBlockedConstraints1 {
 }
 impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
     type PrimaryKey = P5minBlockedConstraints1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -40,9 +41,18 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_blocked_constraints_v1".to_string()
+        format!(
+            "p5min_blocked_constraints_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -129,6 +139,7 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
 /// # Primary Key Columns
 ///
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minCasesolution2 {
     /// Unique Timestamp Identifier for this study
@@ -170,11 +181,11 @@ pub struct P5minCasesolution2 {
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate if this Predispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::GetTable for P5minCasesolution2 {
     type PrimaryKey = P5minCasesolution2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -185,40 +196,51 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
     fn primary_key(&self) -> P5minCasesolution2PrimaryKey {
         P5minCasesolution2PrimaryKey {
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_casesolution_v2".to_string()
+        format!(
+            "p5min_casesolution_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct P5minCasesolution2PrimaryKey {
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minCasesolution2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minCasesolution2 {
     type Row = P5minCasesolution2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.run_datetime == row.run_datetime
+        self.run_datetime == row.run_datetime && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minCasesolution2 {
     type PrimaryKey = P5minCasesolution2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.run_datetime == key.run_datetime
+        self.run_datetime == key.run_datetime && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minCasesolution2PrimaryKey {
     type Row = P5minCasesolution2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.run_datetime == row.run_datetime
+        self.run_datetime == row.run_datetime && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minCasesolution2PrimaryKey {
     type PrimaryKey = P5minCasesolution2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.run_datetime == key.run_datetime
+        self.run_datetime == key.run_datetime && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -263,7 +285,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
                 arrow2::datatypes::Field::new("lastchanged",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                 None), true), arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true)
+                arrow2::datatypes::DataType::Decimal(2, 0), false)
             ],
         )
     }
@@ -417,11 +439,9 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
         }
         arrow2::chunk::Chunk::try_new(
@@ -480,7 +500,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
                     .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                     None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                 ],
@@ -508,6 +528,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
 /// * CONSTRAINTID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minConstraintsolution6 {
     /// Unique Timestamp Identifier for this study
@@ -537,11 +558,11 @@ pub struct P5minConstraintsolution6 {
     /// Aggregation of the constraints LHS term solution values
     pub lhs: Option<rust_decimal::Decimal>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run(INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::GetTable for P5minConstraintsolution6 {
     type PrimaryKey = P5minConstraintsolution6PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -554,11 +575,21 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
             constraintid: self.constraintid.clone(),
             interval_datetime: self.interval_datetime,
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_constraintsolution_v6".to_string()
+        format!(
+            "p5min_constraintsolution_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -566,6 +597,7 @@ pub struct P5minConstraintsolution6PrimaryKey {
     pub constraintid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minConstraintsolution6PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minConstraintsolution6 {
@@ -574,6 +606,7 @@ impl mmsdm_core::CompareWithRow for P5minConstraintsolution6 {
         self.constraintid == row.constraintid
             && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minConstraintsolution6 {
@@ -582,6 +615,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minConstraintsolution6 {
         self.constraintid == key.constraintid
             && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minConstraintsolution6PrimaryKey {
@@ -590,6 +624,7 @@ impl mmsdm_core::CompareWithRow for P5minConstraintsolution6PrimaryKey {
         self.constraintid == row.constraintid
             && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minConstraintsolution6PrimaryKey {
@@ -598,6 +633,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minConstraintsolution6PrimaryKey {
         self.constraintid == key.constraintid
             && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -628,7 +664,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 arrow2::datatypes::Field::new("lhs",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true)
+                arrow2::datatypes::DataType::Decimal(2, 0), false)
             ],
         )
     }
@@ -699,11 +735,9 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 });
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
         }
         arrow2::chunk::Chunk::try_new(
@@ -740,7 +774,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lhs_array)
                     .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                 ],
@@ -768,6 +802,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minInterconnectorsoln4 {
     /// Unique Timestamp Identifier for this study
@@ -816,11 +851,11 @@ pub struct P5minInterconnectorsoln4 {
     /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
     pub locally_constrained_import: Option<rust_decimal::Decimal>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0)
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
     type PrimaryKey = P5minInterconnectorsoln4PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -833,11 +868,21 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
             interconnectorid: self.interconnectorid.clone(),
             interval_datetime: self.interval_datetime,
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_interconnectorsoln_v4".to_string()
+        format!(
+            "p5min_interconnectorsoln_v4_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -845,6 +890,7 @@ pub struct P5minInterconnectorsoln4PrimaryKey {
     pub interconnectorid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minInterconnectorsoln4PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minInterconnectorsoln4 {
@@ -853,6 +899,7 @@ impl mmsdm_core::CompareWithRow for P5minInterconnectorsoln4 {
         self.interconnectorid == row.interconnectorid
             && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minInterconnectorsoln4 {
@@ -861,6 +908,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minInterconnectorsoln4 {
         self.interconnectorid == key.interconnectorid
             && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minInterconnectorsoln4PrimaryKey {
@@ -869,6 +917,7 @@ impl mmsdm_core::CompareWithRow for P5minInterconnectorsoln4PrimaryKey {
         self.interconnectorid == row.interconnectorid
             && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minInterconnectorsoln4PrimaryKey {
@@ -877,6 +926,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minInterconnectorsoln4PrimaryKey {
         self.interconnectorid == key.interconnectorid
             && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -928,7 +978,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 arrow2::datatypes::Field::new("locally_constrained_import",
                 arrow2::datatypes::DataType::Decimal(1, 0), true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true)
+                arrow2::datatypes::DataType::Decimal(2, 0), false)
             ],
         )
     }
@@ -1088,11 +1138,9 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 });
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
         }
         arrow2::chunk::Chunk::try_new(
@@ -1160,7 +1208,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(locally_constrained_import_array)
                     .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                 ],
@@ -1187,6 +1235,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minIntersensitivities1 {
     /// Definitive Run from which this solution derives
@@ -1293,7 +1342,7 @@ pub struct P5minIntersensitivities1 {
 }
 impl mmsdm_core::GetTable for P5minIntersensitivities1 {
     type PrimaryKey = P5minIntersensitivities1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -1306,11 +1355,21 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
             interconnectorid: self.interconnectorid.clone(),
             interval_datetime: self.interval_datetime,
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_intersensitivities_v1".to_string()
+        format!(
+            "p5min_intersensitivities_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1318,6 +1377,7 @@ pub struct P5minIntersensitivities1PrimaryKey {
     pub interconnectorid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minIntersensitivities1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minIntersensitivities1 {
@@ -1326,6 +1386,7 @@ impl mmsdm_core::CompareWithRow for P5minIntersensitivities1 {
         self.interconnectorid == row.interconnectorid
             && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minIntersensitivities1 {
@@ -1334,6 +1395,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minIntersensitivities1 {
         self.interconnectorid == key.interconnectorid
             && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minIntersensitivities1PrimaryKey {
@@ -1342,6 +1404,7 @@ impl mmsdm_core::CompareWithRow for P5minIntersensitivities1PrimaryKey {
         self.interconnectorid == row.interconnectorid
             && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minIntersensitivities1PrimaryKey {
@@ -1350,6 +1413,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minIntersensitivities1PrimaryKey {
         self.interconnectorid == key.interconnectorid
             && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -2067,7 +2131,7 @@ pub struct P5minLocalPrice1 {
 }
 impl mmsdm_core::GetTable for P5minLocalPrice1 {
     type PrimaryKey = P5minLocalPrice1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -2082,9 +2146,18 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_local_price_v1".to_string()
+        format!(
+            "p5min_local_price_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2212,6 +2285,7 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minPricesensitivities1 {
     /// Definitive Run from which this solution derives
@@ -2318,7 +2392,7 @@ pub struct P5minPricesensitivities1 {
 }
 impl mmsdm_core::GetTable for P5minPricesensitivities1 {
     type PrimaryKey = P5minPricesensitivities1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -2331,11 +2405,21 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
             interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_pricesensitivities_v1".to_string()
+        format!(
+            "p5min_pricesensitivities_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2343,6 +2427,7 @@ pub struct P5minPricesensitivities1PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minPricesensitivities1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minPricesensitivities1 {
@@ -2350,6 +2435,7 @@ impl mmsdm_core::CompareWithRow for P5minPricesensitivities1 {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minPricesensitivities1 {
@@ -2357,6 +2443,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minPricesensitivities1 {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minPricesensitivities1PrimaryKey {
@@ -2364,6 +2451,7 @@ impl mmsdm_core::CompareWithRow for P5minPricesensitivities1PrimaryKey {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minPricesensitivities1PrimaryKey {
@@ -2371,6 +2459,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minPricesensitivities1PrimaryKey {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -3072,6 +3161,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minRegionsolution7 {
     /// Unique Timestamp Identifier for this study
@@ -3266,7 +3356,7 @@ pub struct P5minRegionsolution7 {
     /// Regional aggregated Semi-Schedule generator Cleared MW where Semi-Dispatch cap is enforced
     pub semischedule_compliancemw: Option<rust_decimal::Decimal>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW) where the primary fuel source is solar
     pub ss_solar_uigf: Option<rust_decimal::Decimal>,
     /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW) where the primary fuel source is wind
@@ -3288,7 +3378,7 @@ pub struct P5minRegionsolution7 {
 }
 impl mmsdm_core::GetTable for P5minRegionsolution7 {
     type PrimaryKey = P5minRegionsolution7PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -3301,11 +3391,21 @@ impl mmsdm_core::GetTable for P5minRegionsolution7 {
             interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_regionsolution_v7".to_string()
+        format!(
+            "p5min_regionsolution_v7_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -3313,6 +3413,7 @@ pub struct P5minRegionsolution7PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minRegionsolution7PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minRegionsolution7 {
@@ -3320,6 +3421,7 @@ impl mmsdm_core::CompareWithRow for P5minRegionsolution7 {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7 {
@@ -3327,6 +3429,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7 {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minRegionsolution7PrimaryKey {
@@ -3334,6 +3437,7 @@ impl mmsdm_core::CompareWithRow for P5minRegionsolution7PrimaryKey {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7PrimaryKey {
@@ -3341,6 +3445,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7PrimaryKey {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -3538,7 +3643,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
                 arrow2::datatypes::Field::new("semischedule_compliancemw",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("ss_solar_uigf",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("ss_wind_uigf",
@@ -4396,11 +4501,9 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
                 });
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             ss_solar_uigf_array
                 .push({
@@ -4759,7 +4862,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(semischedule_compliancemw_array)
                     .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_solar_uigf_array)
@@ -4831,7 +4934,7 @@ pub struct P5minScenariodemand1 {
 }
 impl mmsdm_core::GetTable for P5minScenariodemand1 {
     type PrimaryKey = P5minScenariodemand1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -4847,9 +4950,18 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_scenariodemand_v1".to_string()
+        format!(
+            "p5min_scenariodemand_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -4996,7 +5108,7 @@ pub struct P5minScenariodemandtrk1 {
 }
 impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
     type PrimaryKey = P5minScenariodemandtrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -5010,9 +5122,18 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_scenariodemandtrk_v1".to_string()
+        format!(
+            "p5min_scenariodemandtrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -5120,6 +5241,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
 /// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct P5minUnitsolution4 {
     /// Unique Timestamp Identifier for this study
@@ -5184,13 +5306,13 @@ pub struct P5minUnitsolution4 {
     /// Boolean representation flagging if the Target is Capped
     pub semidispatchcap: Option<rust_decimal::Decimal>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run(INTERVENTION=1). In the event there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Minutes for which the unit has been in the current DISPATCHMODE. From NEMDE TRADERSOLUTION element FSTARGETMODETIME attribute.
     pub dispatchmodetime: Option<rust_decimal::Decimal>,
 }
 impl mmsdm_core::GetTable for P5minUnitsolution4 {
     type PrimaryKey = P5minUnitsolution4PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
@@ -5203,11 +5325,21 @@ impl mmsdm_core::GetTable for P5minUnitsolution4 {
             duid: self.duid.clone(),
             interval_datetime: self.interval_datetime,
             run_datetime: self.run_datetime,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "p5min_unitsolution_v4".to_string()
+        format!(
+            "p5min_unitsolution_v4_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -5215,6 +5347,7 @@ pub struct P5minUnitsolution4PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for P5minUnitsolution4PrimaryKey {}
 impl mmsdm_core::CompareWithRow for P5minUnitsolution4 {
@@ -5222,6 +5355,7 @@ impl mmsdm_core::CompareWithRow for P5minUnitsolution4 {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4 {
@@ -5229,6 +5363,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4 {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for P5minUnitsolution4PrimaryKey {
@@ -5236,6 +5371,7 @@ impl mmsdm_core::CompareWithRow for P5minUnitsolution4PrimaryKey {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4PrimaryKey {
@@ -5243,6 +5379,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4PrimaryKey {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -5309,7 +5446,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
                 None), true), arrow2::datatypes::Field::new("semidispatchcap",
                 arrow2::datatypes::DataType::Decimal(3, 0), true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("dispatchmodetime",
                 arrow2::datatypes::DataType::Decimal(4, 0), true)
             ],
@@ -5551,11 +5688,9 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
                 });
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             dispatchmodetime_array
                 .push({
@@ -5655,7 +5790,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(semidispatchcap_array)
                     .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(dispatchmodetime_array)

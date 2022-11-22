@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## DAYTRACK
@@ -56,17 +57,15 @@ impl mmsdm_core::GetTable for SettlementsDaytrack6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_daytrack_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_daytrack_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -306,17 +305,15 @@ impl mmsdm_core::GetTable for SettlementsCpdata6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_cpdata_v6_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "settlements_cpdata_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -821,17 +818,15 @@ impl mmsdm_core::GetTable for SettlementsCpdataregion5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_cpdataregion_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_cpdataregion_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -1106,17 +1101,15 @@ impl mmsdm_core::GetTable for SettlementsFcasregionrecovery5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_fcasregionrecovery_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_fcasregionrecovery_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -1388,17 +1381,15 @@ impl mmsdm_core::GetTable for SettlementsGendata6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_gendata_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_gendata_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -1890,17 +1881,15 @@ impl mmsdm_core::GetTable for SettlementsGendataregion5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_gendataregion_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_gendataregion_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2204,17 +2193,15 @@ impl mmsdm_core::GetTable for SettlementsIntraregionresidues5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_intraregionresidues_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_intraregionresidues_v5_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2458,17 +2445,15 @@ impl mmsdm_core::GetTable for SettlementsIraucsurplus6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_iraucsurplus_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_iraucsurplus_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2759,17 +2744,15 @@ impl mmsdm_core::GetTable for SettlementsIrnspsurplus6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_irnspsurplus_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_irnspsurplus_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -3060,17 +3043,15 @@ impl mmsdm_core::GetTable for SettlementsIrpartsurplus6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_irpartsurplus_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_irpartsurplus_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -3353,17 +3334,15 @@ impl mmsdm_core::GetTable for SettlementsIrsurplus6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_irsurplus_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_irsurplus_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -3617,17 +3596,15 @@ impl mmsdm_core::GetTable for SettlementsLocalareaenergy1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_localareaenergy_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_localareaenergy_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -3864,17 +3841,15 @@ impl mmsdm_core::GetTable for SettlementsLocalareatni1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_localareatni_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_localareatni_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -4074,17 +4049,15 @@ impl mmsdm_core::GetTable for SettlementsLshedpayment5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_lshedpayment_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_lshedpayment_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -4504,17 +4477,15 @@ impl mmsdm_core::GetTable for SettlementsMarketfees6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_marketfees_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_marketfees_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -4767,17 +4738,15 @@ impl mmsdm_core::GetTable for SettlementsReallocations5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_reallocations_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_reallocations_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -5020,17 +4989,15 @@ impl mmsdm_core::GetTable for SettlementsRestartpayment6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_restartpayment_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_restartpayment_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -5357,17 +5324,15 @@ impl mmsdm_core::GetTable for SettlementsRestartrecovery6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_restartrecovery_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_restartrecovery_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -5740,17 +5705,15 @@ impl mmsdm_core::GetTable for SettlementsRpowerpayment6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_rpowerpayment_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_rpowerpayment_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6241,17 +6204,15 @@ impl mmsdm_core::GetTable for SettlementsSmallgendata1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_smallgendata_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_smallgendata_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6532,17 +6493,15 @@ impl mmsdm_core::GetTable for SettlementsAncillarySummary5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_ancillary_summary_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_ancillary_summary_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6750,17 +6709,15 @@ impl mmsdm_core::GetTable for SettlementsApcCompensation1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_apc_compensation_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_apc_compensation_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6952,17 +6909,15 @@ impl mmsdm_core::GetTable for SettlementsApcRecovery1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_apc_recovery_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_apc_recovery_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7184,17 +7139,15 @@ impl mmsdm_core::GetTable for SettlementsFcasPayment5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_fcas_payment_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_fcas_payment_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7524,17 +7477,15 @@ impl mmsdm_core::GetTable for SettlementsFcasRecovery6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_fcas_recovery_v6_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_fcas_recovery_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7941,17 +7892,15 @@ impl mmsdm_core::GetTable for SettlementsSetFcasRegulationTrk2 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_set_fcas_regulation_trk_v2_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_set_fcas_regulation_trk_v2_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
         )
     }
 }
@@ -8234,17 +8183,15 @@ impl mmsdm_core::GetTable for SettlementsNmasRecovery2 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_nmas_recovery_v2_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_nmas_recovery_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -8594,17 +8541,15 @@ impl mmsdm_core::GetTable for SettlementsNmasRecoveryRbf1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_nmas_recovery_rbf_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_nmas_recovery_rbf_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -8862,17 +8807,15 @@ impl mmsdm_core::GetTable for SettlementsRecoveryEnergy1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_recovery_energy_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_recovery_energy_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -9178,17 +9121,15 @@ impl mmsdm_core::GetTable for SettlementsRunParameter5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_run_parameter_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_run_parameter_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -9347,17 +9288,15 @@ impl mmsdm_core::GetTable for SettlementsSubstDemand1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_subst_demand_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_subst_demand_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -9530,17 +9469,15 @@ impl mmsdm_core::GetTable for SettlementsSubstRunVersion1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_subst_run_version_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_subst_run_version_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -9734,17 +9671,15 @@ impl mmsdm_core::GetTable for SettlementsWdrReconDetail1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_wdr_recon_detail_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_wdr_recon_detail_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -10106,17 +10041,15 @@ impl mmsdm_core::GetTable for SettlementsWdrTransact1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_wdr_transact_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "settlements_wdr_transact_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }

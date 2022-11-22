@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## CONSTRAINTRELAXATION_OCD
@@ -56,17 +57,15 @@ impl mmsdm_core::GetTable for PriceloadConstraintrelaxation1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "priceload_constraintrelaxation_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "priceload_constraintrelaxation_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -239,17 +238,15 @@ impl mmsdm_core::GetTable for DispatchBlockedConstraints1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_blocked_constraints_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_blocked_constraints_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -355,6 +352,7 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
 ///
 /// * RUNNO
 /// * SETTLEMENTDATE
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct DispatchCaseSolution2 {
     /// Date and time of the dispatch interval (e.g. five minute dispatch interval ending 28/09/2000 16:35)
@@ -422,21 +420,20 @@ impl mmsdm_core::GetTable for DispatchCaseSolution2 {
         DispatchCaseSolution2PrimaryKey {
             runno: self.runno,
             settlementdate: self.settlementdate,
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_case_solution_v2_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_case_solution_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -444,30 +441,35 @@ impl mmsdm_core::GetTable for DispatchCaseSolution2 {
 pub struct DispatchCaseSolution2PrimaryKey {
     pub runno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for DispatchCaseSolution2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for DispatchCaseSolution2 {
     type Row = DispatchCaseSolution2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.runno == row.runno && self.settlementdate == row.settlementdate
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for DispatchCaseSolution2 {
     type PrimaryKey = DispatchCaseSolution2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.runno == key.runno && self.settlementdate == key.settlementdate
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for DispatchCaseSolution2PrimaryKey {
     type Row = DispatchCaseSolution2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.runno == row.runno && self.settlementdate == row.settlementdate
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for DispatchCaseSolution2PrimaryKey {
     type PrimaryKey = DispatchCaseSolution2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.runno == key.runno && self.settlementdate == key.settlementdate
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -871,17 +873,15 @@ impl mmsdm_core::GetTable for DispatchConstraint5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_constraint_v5_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_constraint_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -1180,17 +1180,15 @@ impl mmsdm_core::GetTable for DispatchInterconnectorres3 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_interconnectorres_v3_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_interconnectorres_v3_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -1683,17 +1681,15 @@ impl mmsdm_core::GetTable for DispatchUnitSolution3 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_unit_solution_v3_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_unit_solution_v3_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2572,17 +2568,15 @@ impl mmsdm_core::GetTable for DispatchOffertrk1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_offertrk_v1_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "dispatch_offertrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2847,17 +2841,15 @@ impl mmsdm_core::GetTable for DispatchPrice4 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_price_v4_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "dispatch_price_v4_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -3931,17 +3923,15 @@ impl mmsdm_core::GetTable for DispatchRegionsum6 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_regionsum_v6_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "dispatch_regionsum_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -5637,17 +5627,15 @@ impl mmsdm_core::GetTable for PriceloadConstraintFcasOcd1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "priceload_constraint_fcas_ocd_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "priceload_constraint_fcas_ocd_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -5878,17 +5866,15 @@ impl mmsdm_core::GetTable for DispatchFcasReq2 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_fcas_req_v2_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "dispatch_fcas_req_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6206,17 +6192,15 @@ impl mmsdm_core::GetTable for DispatchInterconnection1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_interconnection_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_interconnection_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6461,17 +6445,15 @@ impl mmsdm_core::GetTable for DispatchLocalPrice1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_local_price_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_local_price_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6633,17 +6615,15 @@ impl mmsdm_core::GetTable for DispatchMnspbidtrk1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_mnspbidtrk_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_mnspbidtrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6830,17 +6810,15 @@ impl mmsdm_core::GetTable for DispatchMrScheduleTrk1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_mr_schedule_trk_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_mr_schedule_trk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -6999,17 +6977,15 @@ impl mmsdm_core::GetTable for PriceloadPriceRevision1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "priceload_price_revision_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "priceload_price_revision_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7230,7 +7206,7 @@ pub struct DispatchUnitConformance1 {
 }
 impl mmsdm_core::GetTable for DispatchUnitConformance1 {
     type PrimaryKey = DispatchUnitConformance1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DISPATCH".into(),
@@ -7244,9 +7220,18 @@ impl mmsdm_core::GetTable for DispatchUnitConformance1 {
             interval_datetime: self.interval_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "dispatch_unit_conformance_v1".to_string()
+        format!(
+            "dispatch_unit_conformance_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -7542,17 +7527,15 @@ impl mmsdm_core::GetTable for DispatchUnitScada1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_unit_scada_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_unit_scada_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7687,17 +7670,15 @@ impl mmsdm_core::GetTable for DispatchIntermittentForecastTrk1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_intermittent_forecast_trk_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_intermittent_forecast_trk_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7838,7 +7819,7 @@ pub struct DispatchNegativeResidue1 {
     /// SubjectToReview, Indeterminate, Accepted or Rejected
     pub price_revision: Option<String>,
     /// Predispatch sequence number
-    pub predispatchseqno: Option<String>,
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// The starting DI when NRM event is active
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub event_activated_di: Option<chrono::NaiveDateTime>,
@@ -7871,17 +7852,15 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "dispatch_negative_residue_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "dispatch_negative_residue_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7949,8 +7928,8 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 arrow2::datatypes::Field::new("price_revision",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("predispatchseqno",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("event_activated_di",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("event_activated_di",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                 None), true), arrow2::datatypes::Field::new("event_deactivated_di",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
@@ -8028,7 +8007,7 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                         })
                 });
             price_revision_array.push(row.price_revision);
-            predispatchseqno_array.push(row.predispatchseqno);
+            predispatchseqno_array.push(row.predispatchseqno.start().timestamp());
             event_activated_di_array
                 .push(row.event_activated_di.map(|val| val.timestamp()));
             event_deactivated_di_array
@@ -8087,9 +8066,9 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(price_revision_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(predispatchseqno_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(event_activated_di_array)
                     .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                     None))) as std::sync::Arc < dyn arrow2::array::Array >,

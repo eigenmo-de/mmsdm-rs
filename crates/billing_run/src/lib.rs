@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## BILLINGASPAYMENTS
@@ -1543,17 +1544,15 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "billing_daytrk_v5_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "billing_daytrk_v5_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7234,17 +7233,15 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "billing_billing_co2e_publication_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "billing_billing_co2e_publication_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
         )
     }
 }
@@ -7576,17 +7573,15 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "billing_daily_energy_summary_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "billing_daily_energy_summary_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -10435,7 +10430,7 @@ pub struct BillingSecdepInterestRate1 {
 }
 impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
     type PrimaryKey = BillingSecdepInterestRate1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BILLING".into(),
@@ -10452,9 +10447,18 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
             weekno: self.weekno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "billing_secdep_interest_rate_v1".to_string()
+        format!(
+            "billing_secdep_interest_rate_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -10648,17 +10652,15 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "billing_subst_demand_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "billing_subst_demand_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }

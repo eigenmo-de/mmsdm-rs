@@ -1,7 +1,7 @@
 use anyhow::anyhow;
 use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
-use std::{collections, str};
+use std::{collections, str, ops::ControlFlow};
 
 lazy_static::lazy_static! {
     static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();
@@ -54,11 +54,72 @@ pub struct TablePage {
     pub summary: TableSummary,
     pub description: Option<Description>,
     pub notes: Option<TableNotes>,
-    pub primary_key_columns: PkColumns,
-    pub columns: TableColumns,
+    primary_key_columns: PkColumns,
+    columns: TableColumns,
 }
 
 impl TablePage {
+    pub fn columns(&self) -> TableColumns {
+        let mut base = self.columns.clone();
+
+        // if intervention exists, it must be mandatory
+        // as it must also be in the primary key
+        if let Some(intervention) =base.columns.iter_mut().find(|c| c.name.to_lowercase() == "intervention") {
+            intervention.mandatory = true;
+        }
+        base
+    }
+
+    pub fn find_column(&self, name: &str) -> ControlFlow<TableColumn, ()> {        
+        // make sure in pk
+        if !self.primary_key_columns().cols.iter().any(|c| c.to_lowercase() == name) {
+            return ControlFlow::Continue(());
+        }
+        
+        if let Some(col) = self.columns.columns.iter().find(|c| c.name.to_lowercase() == name) {
+            // make sure mandatory
+            if !col.mandatory {
+                return ControlFlow::Continue(());
+            }
+
+            return ControlFlow::Break(col.clone());
+        }
+
+        ControlFlow::Continue(())
+    }
+
+    pub fn partition_column(&self) -> ControlFlow<TableColumn, ()> {
+
+            // in preference order
+            self.find_column("predispatchseqno")?;            
+            self.find_column("effectivedate")?;
+            self.find_column("tradingdate")?;
+            self.find_column("interval_datetime")?;
+            self.find_column("settlementdate")?;
+            self.find_column("day")?;
+            self.find_column("offerdate")?;
+            
+            // these are more like transaction time so
+            // they are last preference
+            self.find_column("run_datetime")?;
+            self.find_column("offerdatetime")?;
+            self.find_column("publish_datetime")?;
+            
+            ControlFlow::Continue(())
+    }
+
+    pub fn primary_key_columns(&self) -> PkColumns {
+        let mut base = self.primary_key_columns.clone();
+
+        // if intervention exists, it must be in the primary key
+        if let Some(intervention) = self.columns.columns.iter().find(|c| c.name.to_lowercase() == "intervention") {
+            if !base.cols.contains(&intervention.name) {
+                base.cols.push(intervention.name.to_string());
+            }
+        }
+
+        base
+    }
     pub fn get_summary_name(&self) -> String {
         self.summary.get_name()
     }
@@ -143,8 +204,7 @@ impl TableSummary {
             .next()
             .ok_or_else(|| anyhow!("No content in summary table name"))?
             .inner_html()
-            .replace(' ', "")
-            .replace('\n', "");
+            .replace([' ','\n'], "");
         let comment_el = cells
             .nth(1)
             .ok_or_else(|| anyhow!("Comment cell missing from summary table"))?;
@@ -266,8 +326,7 @@ impl TableColumn {
             .next()
             .unwrap()
             .inner_html()
-            .replace('\n', "")
-            .replace(' ', "")
+            .replace(['\n', ' '], "")
             .parse()?;
         let mandatory = cells.next().unwrap().inner_html().starts_with('X');
         let comment = cells.next().unwrap().inner_html().replace('\n', "");
@@ -326,7 +385,7 @@ impl str::FromStr for DataType {
     type Err = anyhow::Error;
     fn from_str(s: &str) -> anyhow::Result<DataType> {
         let input = s.replace(' ', "").to_lowercase();
-        let set = regex::RegexSet::new(&[
+        let set = regex::RegexSet::new([
             r"date",
             r"char\(1\)",
             r"varchar\S+",

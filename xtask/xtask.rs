@@ -8,6 +8,7 @@ use cargo::Config;
 use std::env;
 use std::path::Path;
 use std::thread;
+use std::process;
 
 fn main() -> anyhow::Result<()> {
     let config = Config::default()?;
@@ -30,14 +31,23 @@ fn main() -> anyhow::Result<()> {
                     ..base_compile_options
                 };
 
-                ops::run(&workspace, &local_build_options, &["rust".into()])?;
+                // can't use ops::run as it subsubmes the whole process!
+                ops::compile(&workspace, &local_build_options)?;
+
+                process::Command::new("target/debug/mmsdm-codegen")
+                    .arg("rust")
+                    .status()?;
                 println!("Generated rust structures");
 
-                ops::run(&workspace, &local_build_options, &["sql-server-tables".into()])?;
-                println!("Generated sql server tables");
-
-                ops::run(&workspace, &local_build_options, &["sql-server-rust-part".into()])?;
+                process::Command::new("target/debug/mmsdm-codegen")
+                    .arg("sql-server-rust-part")
+                    .status()?;
                 println!("Generated sql server - rust interaction");
+
+                process::Command::new("target/debug/mmsdm-codegen")
+                    .arg("sql-server-tables")
+                    .status()?;
+                println!("Generated sql server tables");
             }
             // "python" => {
             //     codegen_cmd("python")?;

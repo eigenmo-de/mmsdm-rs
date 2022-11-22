@@ -1,5 +1,5 @@
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
-use std::{collections, fs, str};
+use std::{collections, fs, str, ops::ControlFlow, fmt::Debug};
 
 use crate::{mms, pdr};
 use serde::Deserialize;
@@ -67,7 +67,7 @@ impl mms::TableColumn {
         }
     }
     fn as_arrow_type(&self) -> String {
-        if self.comment.contains("YYYYMMDDPPP") || self.comment.contains("YYYYMMDDPP") {
+        if self.comment.contains("YYYYMMDDPPP") || self.comment.contains("YYYYMMDDPP") || self.name.to_lowercase() == "predispatchseqno" {
             "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)"
                 .to_string()
         } else {
@@ -90,7 +90,7 @@ impl mms::TableColumn {
             (_, _) if self.comment.contains("YYYYMMDDPPP") => {
                 format!("row.{}.start().timestamp()", self.rust_field_name())
             }
-            (_, _) if self.comment.contains("YYYYMMDDPP") => {
+            (_, _) if self.comment.contains("YYYYMMDDPP") || self.name.to_lowercase() == "predispatchseqno" => {
                 format!("row.{}.start().timestamp()", self.rust_field_name())
             }
             // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp())", self.rust_field_name()),
@@ -142,7 +142,7 @@ impl mms::TableColumn {
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
             ),
-            (_, _) if self.comment.contains("YYYYMMDDPP") => format!(
+            (_, _) if self.comment.contains("YYYYMMDDPP") || self.name.to_lowercase() == "predispatchseqno" => format!(
                 "arrow2::array::PrimitiveArray::from_vec({}).to({})",
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
@@ -286,7 +286,7 @@ impl mms::TablePage {
                 .as_ref()
                 .map(|n| n.get_rust_doc().replace('\t', ""))
                 .unwrap_or_else(|| "".into()),
-            primary_key = self.primary_key_columns.get_rust_doc().replace('\t', ""),
+            primary_key = self.primary_key_columns().get_rust_doc().replace('\t', ""),
         )
     }
 }
@@ -369,7 +369,7 @@ fn codegen_struct(
         .derive("Eq")
         .derive("serde::Deserialize")
         .derive("serde::Serialize");
-    for col in table.columns.columns.iter() {
+    for col in table.columns().columns.iter() {
         if &col.field_name() == "type" {
             let mut field = codegen::Field::new("pub r#type", &col.to_rust_type());
             field.annotation(vec!["#[serde(rename = \"type\")]"]);
@@ -384,7 +384,11 @@ fn codegen_struct(
             // field.annotation(vec!["#[serde(with = \"crate::dispatch_period\")]"]);
             field.doc(vec![&col.comment.replace('\t', "")]);
             current_struct.push_field(field);
-        } else if col.comment.contains("YYYYMMDDPP") {
+        } else if col.comment.contains("YYYYMMDDPP") 
+        // special case for PredispatchMnspbidtrk1
+        // which is missing the YYYYMMDDPP comment
+        || col.name.to_lowercase() == "predispatchseqno"  
+        {
             // parse as TradingPeriod
             let mut field = codegen::Field::new(
                 &format!("pub {}", col.field_name()),
@@ -452,14 +456,14 @@ fn codegen_impl_get_table(
 }}"#,
         pk_name = pdr_report.get_rust_pk_name(),
         pk_fields = table
-            .primary_key_columns
+            .primary_key_columns()
             .cols
             .iter()
             .map(|name| format!(
                 "    {0}: self.{0}{1}",
                 lowercase_and_escape(name),
                 table
-                    .columns
+                .columns()
                     .columns
                     .iter()
                     .find(|col| &col.name == name)
@@ -478,17 +482,13 @@ fn codegen_impl_get_table(
     partition_suffix.ret("Self::Partition");
     partition_suffix.arg_ref_self();
 
-    if table
-        .primary_key_columns
-        .cols
-        .iter()
-        .any(|c| c.to_lowercase() == "settlementdate")
+    if let ControlFlow::Break(col) = table
+        .partition_column()
     {
         current_impl.associate_type("Partition", "mmsdm_core::YearMonth");
-        partition_suffix.line(r#"mmsdm_core::YearMonth { year: chrono::Datelike::year(&self.settlementdate), month: num_traits::FromPrimitive::from_u32(chrono::Datelike::month(&self.settlementdate)).unwrap() }"#);
+        partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: self.{colname}.year(), month: num_traits::FromPrimitive::from_u32(self.{colname}.month()).unwrap() }}"#, colname = col.field_name()));
     } else {
         current_impl.associate_type("Partition", "()");
-        // partition_suffix.line("()");
     }
     current_impl.push_fn(partition_suffix);
 
@@ -497,14 +497,11 @@ fn codegen_impl_get_table(
     partition_name.arg_ref_self();
 
     if table
-        .primary_key_columns
-        .cols
-        .iter()
-        .any(|c| c.to_lowercase() == "settlementdate")
+        .partition_column().is_break()
     {
         partition_name.line(
             &format!(
-                r#"format!("{}_{{}}_{{}}", chrono::Datelike::year(&self.settlementdate), chrono::Datelike::month(&self.settlementdate))"#,
+                r#"format!("{}_{{}}_{{}}", self.partition_suffix().year, self.partition_suffix().month.number_from_month())"#,
                 pdr_report.get_partition_base()
             )
         );
@@ -537,10 +534,10 @@ fn codegen_pk(
         .derive("serde::Serialize")
         .derive("Ord");
 
-    for pk_col_name in table.primary_key_columns.cols.iter() {
-        let col = table
-            .columns
-            .columns
+    for pk_col_name in table.primary_key_columns().cols.iter() {
+        let table_cols = table.columns();
+        let col = table_cols
+        .columns
             .iter()
             .find(|col| &col.name == pk_col_name)
             .expect("PK column must exist");
@@ -560,7 +557,11 @@ fn codegen_pk(
                 "mmsdm_core::DispatchPeriod",
             );
             pk_struct.push_field(field);
-        } else if col.comment.contains("YYYYMMDDPP") {
+        } else if col.comment.contains("YYYYMMDDPP") 
+        // special case for PredispatchMnspbidtrk1
+        // which is missing the YYYYMMDDPP comment
+        || col.name.to_lowercase() == "predispatchseqno"  
+        {
             // parse as TradingPeriod
             let field = codegen::Field::new(
                 &format!("pub {}", col.field_name()),
@@ -606,7 +607,7 @@ fn codegen_impl_compare_with_row_on_struct(
     compare_with_other.arg("row", "&Self::Row");
     compare_with_other.line(
         &table
-            .primary_key_columns
+            .primary_key_columns()
             .cols
             .iter()
             .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
@@ -631,7 +632,7 @@ fn codegen_impl_compare_with_pk_on_struct(
     compare_with_key.ret("bool");
     compare_with_key.line(
         &table
-            .primary_key_columns
+            .primary_key_columns()
             .cols
             .iter()
             .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
@@ -659,7 +660,7 @@ fn codegen_impl_compare_with_row_on_pk(
     compare_with_row.arg("row", "&Self::Row");
     compare_with_row.line(
         &table
-            .primary_key_columns
+            .primary_key_columns()
             .cols
             .iter()
             .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
@@ -685,7 +686,7 @@ fn codegen_impl_compare_with_pk_on_pk(
     compare_with_other_pk.arg("key", "&Self::PrimaryKey");
     compare_with_other_pk.line(
         &table
-            .primary_key_columns
+            .primary_key_columns()
             .cols
             .iter()
             .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
@@ -709,7 +710,7 @@ fn codegen_impl_arrow_schema(
 
     let mut arrow_schema = codegen::Function::new("arrow_schema");
     arrow_schema.ret("arrow2::datatypes::Schema");
-    arrow_schema.line(&table.columns.as_arrow_schema());
+    arrow_schema.line(&table.columns().as_arrow_schema());
     arrow_trait.push_fn(arrow_schema);
 
     let mut partition_to_batch = codegen::Function::new("partition_to_chunk");
@@ -719,7 +720,7 @@ fn codegen_impl_arrow_schema(
 
     // partition_to_batch.line("use std::convert::TryFrom;");
 
-    for col in &table.columns.columns {
+    for col in &table.columns().columns {
         partition_to_batch.line(&format!(
             "let mut {} = Vec::new();",
             col.as_arrow_array_name()
@@ -728,7 +729,7 @@ fn codegen_impl_arrow_schema(
 
     partition_to_batch.line("for row in partition {");
 
-    for col in &table.columns.columns {
+    for col in &table.columns().columns {
         partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
     }
     partition_to_batch.line(
@@ -739,7 +740,7 @@ arrow2::chunk::Chunk::try_new(
 vec![",
     );
 
-    for col in &table.columns.columns {
+    for col in &table.columns().columns {
         partition_to_batch.line(&format!(
             "        std::sync::Arc::new({}) as std::sync::Arc<dyn arrow2::array::Array>,",
             col.as_arrow_array_constructor()
@@ -793,7 +794,7 @@ default-features = false
 features = []
 
 [dependencies.chrono-tz]
-version = "0.6.1"
+version = "0.8.0"
 default-features = false
 features = []
 
@@ -803,7 +804,7 @@ default-features = false
 features = []
 
 [dependencies.rust_decimal]
-version = "1.23.1"
+version = "1.26.1"
 default-features = false
 features = ["std", "serde"]
 
@@ -823,17 +824,17 @@ features = ["derive"]
 default-features = false
 
 [dependencies.chrono]
-version = "0.4.22"
+version = "0.4.23"
 features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.13.1"
+version = "0.14.2"
 optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.11.0"
+version = "0.11.3"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true
@@ -915,7 +916,11 @@ pub fn run() -> anyhow::Result<()> {
         prepare_data_set_crate(&data_set)?;
 
         let mut fmt_str = String::new();
+        fmt_str.push_str("use chrono::Datelike as _;\n");
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
+
+        
+
         for (table_key, table) in tables.clone().into_iter() {
             let mms_report = mms::Report {
                 name: data_set.clone(),

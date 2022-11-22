@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## BIDDAYOFFER
@@ -109,17 +110,15 @@ impl mmsdm_core::GetTable for BidsBiddayoffer1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "bids_biddayoffer_v1_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "bids_biddayoffer_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -637,17 +636,15 @@ impl mmsdm_core::GetTable for BidBiddayofferD2 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "bid_biddayoffer_d_v2_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "bid_biddayoffer_d_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -1083,7 +1080,7 @@ pub struct BidsBidofferfiletrk1 {
 }
 impl mmsdm_core::GetTable for BidsBidofferfiletrk1 {
     type PrimaryKey = BidsBidofferfiletrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BIDS".into(),
@@ -1097,9 +1094,17 @@ impl mmsdm_core::GetTable for BidsBidofferfiletrk1 {
             participantid: self.participantid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.offerdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.offerdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "bids_bidofferfiletrk_v1".to_string()
+        format!(
+            "bids_bidofferfiletrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1314,7 +1319,7 @@ pub struct BidsBidofferperiod1 {
 }
 impl mmsdm_core::GetTable for BidsBidofferperiod1 {
     type PrimaryKey = BidsBidofferperiod1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BIDS".into(),
@@ -1331,9 +1336,17 @@ impl mmsdm_core::GetTable for BidsBidofferperiod1 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "bids_bidofferperiod_v1".to_string()
+        format!(
+            "bids_bidofferperiod_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1796,17 +1809,15 @@ impl mmsdm_core::GetTable for BidBidperofferD2 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "bid_bidperoffer_d_v2_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "bid_bidperoffer_d_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2293,7 +2304,7 @@ pub struct BidsMnspBidofferperiod1 {
 }
 impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
     type PrimaryKey = BidsMnspBidofferperiod1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BIDS".into(),
@@ -2309,9 +2320,17 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "bids_mnsp_bidofferperiod_v1".to_string()
+        format!(
+            "bids_mnsp_bidofferperiod_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2690,17 +2709,15 @@ impl mmsdm_core::GetTable for BidsMnspDayoffer1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "bids_mnsp_dayoffer_v1_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "bids_mnsp_dayoffer_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -3075,7 +3092,7 @@ pub struct OfferMtpasaOfferdata1 {
 }
 impl mmsdm_core::GetTable for OfferMtpasaOfferdata1 {
     type PrimaryKey = OfferMtpasaOfferdata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "OFFER".into(),
@@ -3091,9 +3108,18 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferdata1 {
             unitid: self.unitid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "offer_mtpasa_offerdata_v1".to_string()
+        format!(
+            "offer_mtpasa_offerdata_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -3273,7 +3299,7 @@ pub struct OfferMtpasaOfferfiletrk1 {
 }
 impl mmsdm_core::GetTable for OfferMtpasaOfferfiletrk1 {
     type PrimaryKey = OfferMtpasaOfferfiletrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "OFFER".into(),
@@ -3287,9 +3313,18 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferfiletrk1 {
             participantid: self.participantid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.offerdatetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.offerdatetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "offer_mtpasa_offerfiletrk_v1".to_string()
+        format!(
+            "offer_mtpasa_offerfiletrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

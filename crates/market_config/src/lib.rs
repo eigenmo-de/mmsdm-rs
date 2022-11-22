@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## BIDTYPES
@@ -43,7 +44,7 @@ pub struct MarketConfigBidtypes1 {
 }
 impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -58,9 +59,18 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_bidtypes_v1".to_string()
+        format!(
+            "market_config_bidtypes_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -239,7 +249,7 @@ pub struct MarketConfigBidtypestrk1 {
 }
 impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -253,9 +263,18 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_bidtypestrk_v1".to_string()
+        format!(
+            "market_config_bidtypestrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -540,7 +559,7 @@ pub struct MarketConfigInterconnectoralloc1 {
 }
 impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -557,9 +576,18 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_interconnectoralloc_v1".to_string()
+        format!(
+            "market_config_interconnectoralloc_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -763,7 +791,7 @@ pub struct MarketConfigInterconnectorconstraint1 {
 }
 impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -778,9 +806,18 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_interconnectorconstraint_v1".to_string()
+        format!(
+            "market_config_interconnectorconstraint_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1135,7 +1172,7 @@ pub struct MarketConfigIntraregionalloc1 {
 }
 impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1151,9 +1188,18 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_intraregionalloc_v1".to_string()
+        format!(
+            "market_config_intraregionalloc_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1313,7 +1359,7 @@ pub struct MarketConfigLossfactormodel1 {
 }
 impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1329,9 +1375,18 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_lossfactormodel_v1".to_string()
+        format!(
+            "market_config_lossfactormodel_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1495,7 +1550,7 @@ pub struct MarketConfigLossmodel1 {
 }
 impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1511,9 +1566,18 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_lossmodel_v1".to_string()
+        format!(
+            "market_config_lossmodel_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1702,7 +1766,7 @@ pub struct MarketConfigMarketPriceThresholds1 {
 }
 impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -1716,9 +1780,18 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_market_price_thresholds_v1".to_string()
+        format!(
+            "market_config_market_price_thresholds_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2034,7 +2107,7 @@ pub struct MarketConfigRegionstandingdata1 {
 }
 impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -2049,9 +2122,18 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_regionstandingdata_v1".to_string()
+        format!(
+            "market_config_regionstandingdata_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2241,7 +2323,7 @@ pub struct MarketConfigTransmissionlossfactor2 {
 }
 impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MARKET_CONFIG".into(),
@@ -2256,9 +2338,18 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "market_config_transmissionlossfactor_v2".to_string()
+        format!(
+            "market_config_transmissionlossfactor_v2_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

@@ -103,7 +103,7 @@ def get_row_partition_name(row: List[str]) -> str:
 
             if let Some(pdr_report) = map.get(&mms_report) {
                 if let Some((idx, col)) = table
-                    .columns
+                .columns()
                     .columns
                     .iter()
                     .enumerate()
@@ -178,7 +178,7 @@ def {fn_name}(file_path):
     return table.cast(schema)
 "#, 
                     fn_name = schema_fn_name,
-                    schema = table.columns.as_pyarrow_schema(),
+                    schema = table.columns().as_pyarrow_schema(),
                 ));
                 extract_str.push_str(&format!(
                     "        (\"{}\", \"{}\"): {},\n",

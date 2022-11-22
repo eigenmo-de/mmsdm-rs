@@ -1720,7 +1720,7 @@ create table mmsdm.DispatchCaseSolution2 (
     [switchruninitialstatus] decimal(1,0) null,
     [switchrunbeststatus] decimal(1,0) null,
     [switchrunbeststatus_int] decimal(1,0) null,
-    primary key ([runno],[settlementdate])
+    primary key ([runno],[settlementdate],[intervention])
 )
 go
 
@@ -2568,13 +2568,13 @@ create table mmsdm.GenericConstraintGenconsetinvoke2 (
     [endperiod] decimal(3,0) null,
     [startauthorisedby] varchar(15) null,
     [endauthorisedby] varchar(15) null,
-    [intervention] varchar(1) null,
+    [intervention] varchar(1) not null,
     [asconstrainttype] varchar(10) null,
     [lastchanged] datetime2 null,
     [startintervaldatetime] datetime2 null,
     [endintervaldatetime] datetime2 null,
     [systemnormal] varchar(1) null,
-    primary key ([invocation_id])
+    primary key ([invocation_id],[intervention])
 )
 go
 
@@ -3822,8 +3822,8 @@ create table mmsdm.P5minCasesolution2 (
     [totalasprofileviolation] decimal(15,5) null,
     [totalfaststartviolation] decimal(15,5) null,
     [lastchanged] datetime2 null,
-    [intervention] decimal(2,0) null,
-    primary key ([run_datetime])
+    [intervention] decimal(2,0) not null,
+    primary key ([run_datetime],[intervention])
 )
 go
 
@@ -3843,8 +3843,8 @@ create table mmsdm.P5minConstraintsolution6 (
     [genconid_effectivedate] datetime2 null,
     [genconid_versionno] decimal(22,0) null,
     [lhs] decimal(15,5) null,
-    [intervention] decimal(2,0) null,
-    primary key ([constraintid],[interval_datetime],[run_datetime])
+    [intervention] decimal(2,0) not null,
+    primary key ([constraintid],[interval_datetime],[run_datetime],[intervention])
 )
 go
 
@@ -3874,8 +3874,8 @@ create table mmsdm.P5minInterconnectorsoln4 (
     [locally_constrained_export] decimal(1,0) null,
     [local_price_adjustment_import] decimal(10,2) null,
     [locally_constrained_import] decimal(1,0) null,
-    [intervention] decimal(2,0) null,
-    primary key ([interconnectorid],[interval_datetime],[run_datetime])
+    [intervention] decimal(2,0) not null,
+    primary key ([interconnectorid],[interval_datetime],[run_datetime],[intervention])
 )
 go
 
@@ -3933,7 +3933,7 @@ create table mmsdm.P5minIntersensitivities1 (
     [mwflow42] decimal(15,5) null,
     [mwflow43] decimal(15,5) null,
     [lastchanged] datetime2 null,
-    primary key ([interconnectorid],[interval_datetime],[run_datetime])
+    primary key ([interconnectorid],[interval_datetime],[run_datetime],[intervention])
 )
 go
 
@@ -4005,7 +4005,7 @@ create table mmsdm.P5minPricesensitivities1 (
     [rrp42] decimal(15,5) null,
     [rrp43] decimal(15,5) null,
     [lastchanged] datetime2 null,
-    primary key ([interval_datetime],[regionid],[run_datetime])
+    primary key ([interval_datetime],[regionid],[run_datetime],[intervention])
 )
 go
 
@@ -4108,7 +4108,7 @@ create table mmsdm.P5minRegionsolution7 (
     [uigf] decimal(15,5) null,
     [semischedule_clearedmw] decimal(15,5) null,
     [semischedule_compliancemw] decimal(15,5) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [ss_solar_uigf] decimal(15,5) null,
     [ss_wind_uigf] decimal(15,5) null,
     [ss_solar_clearedmw] decimal(15,5) null,
@@ -4118,7 +4118,7 @@ create table mmsdm.P5minRegionsolution7 (
     [wdr_initialmw] decimal(15,5) null,
     [wdr_available] decimal(15,5) null,
     [wdr_dispatched] decimal(15,5) null,
-    primary key ([interval_datetime],[regionid],[run_datetime])
+    primary key ([interval_datetime],[regionid],[run_datetime],[intervention])
 )
 go
 
@@ -4183,9 +4183,9 @@ create table mmsdm.P5minUnitsolution4 (
     [lowerregflags] decimal(3,0) null,
     [lastchanged] datetime2 null,
     [semidispatchcap] decimal(3,0) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [dispatchmodetime] decimal(4,0) null,
-    primary key ([duid],[interval_datetime],[run_datetime])
+    primary key ([duid],[interval_datetime],[run_datetime],[intervention])
 )
 go
 
@@ -4809,8 +4809,8 @@ create table mmsdm.PredispatchCaseSolution1 (
     [totalenergyconstrviolation] decimal(15,5) null,
     [totalenergyofferviolation] decimal(15,5) null,
     [lastchanged] datetime2 null,
-    [intervention] decimal(2,0) null,
-    primary key ([predispatchseqno],[runno])
+    [intervention] decimal(2,0) not null,
+    primary key ([predispatchseqno],[runno],[intervention])
 )
 go
 
@@ -4823,7 +4823,7 @@ create table mmsdm.PredispatchConstraintSolution5 (
     [runno] decimal(3,0) null,
     [constraintid] varchar(20) not null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [rhs] decimal(15,5) null,
     [marginalvalue] decimal(15,5) null,
     [violationdegree] decimal(15,5) null,
@@ -4833,7 +4833,7 @@ create table mmsdm.PredispatchConstraintSolution5 (
     [genconid_effectivedate] datetime2 null,
     [genconid_versionno] decimal(22,0) null,
     [lhs] decimal(15,5) null,
-    primary key ([constraintid],[datetime])
+    primary key ([constraintid],[datetime],[intervention])
 )
 go
 
@@ -4846,7 +4846,7 @@ create table mmsdm.PredispatchInterconnectorSoln3 (
     [runno] decimal(3,0) null,
     [interconnectorid] varchar(10) not null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [meteredmwflow] decimal(15,5) null,
     [mwflow] decimal(15,5) null,
     [mwlosses] decimal(15,5) null,
@@ -4865,7 +4865,7 @@ create table mmsdm.PredispatchInterconnectorSoln3 (
     [locally_constrained_export] decimal(1,0) null,
     [local_price_adjustment_import] decimal(10,2) null,
     [locally_constrained_import] decimal(1,0) null,
-    primary key ([datetime],[interconnectorid])
+    primary key ([datetime],[interconnectorid],[intervention])
 )
 go
 
@@ -4878,7 +4878,7 @@ create table mmsdm.PredispatchInterconnectrSens1 (
     [runno] decimal(3,0) null,
     [interconnectorid] varchar(10) not null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [datetime] datetime2 not null,
     [intervention_active] decimal(1,0) null,
     [mwflow1] decimal(15,5) null,
@@ -4925,7 +4925,7 @@ create table mmsdm.PredispatchInterconnectrSens1 (
     [mwflow42] decimal(15,5) null,
     [mwflow43] decimal(15,5) null,
     [lastchanged] datetime2 null,
-    primary key ([datetime],[interconnectorid])
+    primary key ([datetime],[interconnectorid],[intervention])
 )
 go
 
@@ -4939,7 +4939,7 @@ create table mmsdm.PredispatchUnitSolution2 (
     [duid] varchar(10) not null,
     [tradetype] decimal(2,0) null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [connectionpointid] varchar(12) null,
     [agcstatus] decimal(2,0) null,
     [dispatchmode] decimal(2,0) null,
@@ -4985,7 +4985,7 @@ create table mmsdm.PredispatchUnitSolution2 (
     [lower5minactualavailability] decimal(16,6) null,
     [lowerregactualavailability] decimal(16,6) null,
     [semidispatchcap] decimal(3,0) null,
-    primary key ([datetime],[duid])
+    primary key ([datetime],[duid],[intervention])
 )
 go
 
@@ -5015,7 +5015,7 @@ create table mmsdm.PredispatchRegionPrices1 (
     [runno] decimal(3,0) null,
     [regionid] varchar(10) not null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [rrp] decimal(15,5) null,
     [eep] decimal(15,5) null,
     [rrp1] decimal(15,5) null,
@@ -5044,7 +5044,7 @@ create table mmsdm.PredispatchRegionPrices1 (
     [lower60secrrp] decimal(15,5) null,
     [lower5minrrp] decimal(15,5) null,
     [lowerregrrp] decimal(15,5) null,
-    primary key ([datetime],[regionid])
+    primary key ([datetime],[regionid],[intervention])
 )
 go
 
@@ -5057,7 +5057,7 @@ create table mmsdm.PredispatchPricesensitivities1 (
     [runno] decimal(3,0) null,
     [regionid] varchar(10) not null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [rrpeep1] decimal(15,5) null,
     [rrpeep2] decimal(15,5) null,
     [rrpeep3] decimal(15,5) null,
@@ -5104,7 +5104,7 @@ create table mmsdm.PredispatchPricesensitivities1 (
     [rrpeep41] decimal(15,5) null,
     [rrpeep42] decimal(15,5) null,
     [rrpeep43] decimal(15,5) null,
-    primary key ([datetime],[regionid])
+    primary key ([datetime],[regionid],[intervention])
 )
 go
 
@@ -5117,7 +5117,7 @@ create table mmsdm.PredispatchRegionSolution6 (
     [runno] decimal(3,0) null,
     [regionid] varchar(10) not null,
     [periodid] varchar(20) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [totaldemand] decimal(15,5) null,
     [availablegeneration] decimal(15,5) null,
     [availableload] decimal(15,5) null,
@@ -5227,7 +5227,7 @@ create table mmsdm.PredispatchRegionSolution6 (
     [wdr_initialmw] decimal(15,5) null,
     [wdr_available] decimal(15,5) null,
     [wdr_dispatched] decimal(15,5) null,
-    primary key ([datetime],[regionid])
+    primary key ([datetime],[regionid],[intervention])
 )
 go
 
@@ -5266,7 +5266,7 @@ create table mmsdm.PredispatchRegionfcasrequirement2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [predispatchseqno] varchar(20) null,
     [runno] decimal(3,0) null,
-    [intervention] decimal(2,0) null,
+    [intervention] decimal(2,0) not null,
     [periodid] varchar(20) null,
     [genconid] varchar(20) not null,
     [regionid] varchar(10) not null,
@@ -5282,7 +5282,7 @@ create table mmsdm.PredispatchRegionfcasrequirement2 (
     [estimated_crmpf] decimal(18,8) null,
     [recovery_factor_cmpf] decimal(18,8) null,
     [recovery_factor_crmpf] decimal(18,8) null,
-    primary key ([bidtype],[datetime],[genconid],[regionid])
+    primary key ([bidtype],[datetime],[genconid],[regionid],[intervention])
 )
 go
 

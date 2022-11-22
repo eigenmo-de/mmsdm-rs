@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## EMSMASTER
@@ -219,7 +220,7 @@ pub struct GencondataNull6 {
 }
 impl mmsdm_core::GetTable for GencondataNull6 {
     type PrimaryKey = GencondataNull6PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GENCONDATA".into(),
@@ -234,9 +235,18 @@ impl mmsdm_core::GetTable for GencondataNull6 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "gencondata_null_v6".to_string()
+        format!(
+            "gencondata_null_v6_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -546,7 +556,7 @@ pub struct GenconsetNull1 {
 }
 impl mmsdm_core::GetTable for GenconsetNull1 {
     type PrimaryKey = GenconsetNull1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GENCONSET".into(),
@@ -562,9 +572,18 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "genconset_null_v1".to_string()
+        format!(
+            "genconset_null_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -705,6 +724,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
 /// # Primary Key Columns
 ///
 /// * INVOCATION_ID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct GenericConstraintGenconsetinvoke2 {
     /// Abstract unique identifier for the record. Allows Invocations to be modified without affecting PK values
@@ -726,7 +746,7 @@ pub struct GenericConstraintGenconsetinvoke2 {
     /// user authorising revoke.
     pub endauthorisedby: Option<String>,
     /// 0 is not intervention, 1 is intervention and causes dispatch to solve twice.
-    pub intervention: Option<String>,
+    pub intervention: String,
     /// Constraint type (e.g. ancillary services). This also flags where a constraint is an interconnector or intra-region network limit.
     pub asconstrainttype: Option<String>,
     /// Last date and time record changed
@@ -754,6 +774,7 @@ impl mmsdm_core::GetTable for GenericConstraintGenconsetinvoke2 {
     fn primary_key(&self) -> GenericConstraintGenconsetinvoke2PrimaryKey {
         GenericConstraintGenconsetinvoke2PrimaryKey {
             invocation_id: self.invocation_id,
+            intervention: self.intervention.clone(),
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -764,30 +785,31 @@ impl mmsdm_core::GetTable for GenericConstraintGenconsetinvoke2 {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct GenericConstraintGenconsetinvoke2PrimaryKey {
     pub invocation_id: i64,
+    pub intervention: String,
 }
 impl mmsdm_core::PrimaryKey for GenericConstraintGenconsetinvoke2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for GenericConstraintGenconsetinvoke2 {
     type Row = GenericConstraintGenconsetinvoke2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.invocation_id == row.invocation_id
+        self.invocation_id == row.invocation_id && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for GenericConstraintGenconsetinvoke2 {
     type PrimaryKey = GenericConstraintGenconsetinvoke2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.invocation_id == key.invocation_id
+        self.invocation_id == key.invocation_id && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for GenericConstraintGenconsetinvoke2PrimaryKey {
     type Row = GenericConstraintGenconsetinvoke2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.invocation_id == row.invocation_id
+        self.invocation_id == row.invocation_id && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for GenericConstraintGenconsetinvoke2PrimaryKey {
     type PrimaryKey = GenericConstraintGenconsetinvoke2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.invocation_id == key.invocation_id
+        self.invocation_id == key.invocation_id && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -812,7 +834,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                 arrow2::datatypes::Field::new("endauthorisedby",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::DataType::LargeUtf8, false),
                 arrow2::datatypes::Field::new("asconstrainttype",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("lastchanged",
@@ -901,7 +923,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintGenconsetinvoke2 {
                     >::from(endauthorisedby_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(intervention_array)) as std::sync::Arc < dyn
+                    >::from_slice(intervention_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(asconstrainttype_array)) as std::sync::Arc < dyn
@@ -973,7 +995,7 @@ pub struct GenconsettrkNull2 {
 }
 impl mmsdm_core::GetTable for GenconsettrkNull2 {
     type PrimaryKey = GenconsettrkNull2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GENCONSETTRK".into(),
@@ -988,9 +1010,18 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "genconsettrk_null_v2".to_string()
+        format!(
+            "genconsettrk_null_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1190,7 +1221,7 @@ pub struct GcrhsNull1 {
 }
 impl mmsdm_core::GetTable for GcrhsNull1 {
     type PrimaryKey = GcrhsNull1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GCRHS".into(),
@@ -1207,9 +1238,18 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "gcrhs_null_v1".to_string()
+        format!(
+            "gcrhs_null_v1_{}_{}", self.partition_suffix().year, self.partition_suffix()
+            .month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1638,7 +1678,7 @@ pub struct GeqrhsNull1 {
 }
 impl mmsdm_core::GetTable for GeqrhsNull1 {
     type PrimaryKey = GeqrhsNull1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "GEQRHS".into(),
@@ -1654,9 +1694,18 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "geqrhs_null_v1".to_string()
+        format!(
+            "geqrhs_null_v1_{}_{}", self.partition_suffix().year, self.partition_suffix()
+            .month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1889,7 +1938,7 @@ pub struct SpdcpcNull2 {
 }
 impl mmsdm_core::GetTable for SpdcpcNull2 {
     type PrimaryKey = SpdcpcNull2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SPDCPC".into(),
@@ -1906,9 +1955,18 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "spdcpc_null_v2".to_string()
+        format!(
+            "spdcpc_null_v2_{}_{}", self.partition_suffix().year, self.partition_suffix()
+            .month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2075,7 +2133,7 @@ pub struct SpdiccNull1 {
 }
 impl mmsdm_core::GetTable for SpdiccNull1 {
     type PrimaryKey = SpdiccNull1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SPDICC".into(),
@@ -2091,9 +2149,18 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "spdicc_null_v1".to_string()
+        format!(
+            "spdicc_null_v1_{}_{}", self.partition_suffix().year, self.partition_suffix()
+            .month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2256,7 +2323,7 @@ pub struct SpdrcNull2 {
 }
 impl mmsdm_core::GetTable for SpdrcNull2 {
     type PrimaryKey = SpdrcNull2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SPDRC".into(),
@@ -2273,9 +2340,18 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "spdrc_null_v2".to_string()
+        format!(
+            "spdrc_null_v2_{}_{}", self.partition_suffix().year, self.partition_suffix()
+            .month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

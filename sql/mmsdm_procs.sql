@@ -6285,6 +6285,7 @@ using (
 on (
     tgt.[runno] = src.[runno]
     and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -9912,6 +9913,7 @@ using (
 ) as src 
 on (
     tgt.[invocation_id] = src.[invocation_id]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -14705,6 +14707,7 @@ using (
 ) as src 
 on (
     tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -14815,6 +14818,7 @@ on (
     tgt.[constraintid] = src.[constraintid]
     and tgt.[interval_datetime] = src.[interval_datetime]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -14924,6 +14928,7 @@ on (
     tgt.[interconnectorid] = src.[interconnectorid]
     and tgt.[interval_datetime] = src.[interval_datetime]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -15117,6 +15122,7 @@ on (
     tgt.[interconnectorid] = src.[interconnectorid]
     and tgt.[interval_datetime] = src.[interval_datetime]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -15419,6 +15425,7 @@ on (
     tgt.[interval_datetime] = src.[interval_datetime]
     and tgt.[regionid] = src.[regionid]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -15803,6 +15810,7 @@ on (
     tgt.[interval_datetime] = src.[interval_datetime]
     and tgt.[regionid] = src.[regionid]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -16282,6 +16290,7 @@ on (
     tgt.[duid] = src.[duid]
     and tgt.[interval_datetime] = src.[interval_datetime]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -18909,6 +18918,7 @@ using (
 on (
     tgt.[predispatchseqno] = src.[predispatchseqno]
     and tgt.[runno] = src.[runno]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -19025,6 +19035,7 @@ using (
 on (
     tgt.[constraintid] = src.[constraintid]
     and tgt.[datetime] = src.[datetime]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -19141,6 +19152,7 @@ using (
 on (
     tgt.[datetime] = src.[datetime]
     and tgt.[interconnectorid] = src.[interconnectorid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -19340,6 +19352,7 @@ using (
 on (
     tgt.[datetime] = src.[datetime]
     and tgt.[interconnectorid] = src.[interconnectorid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -19623,6 +19636,7 @@ using (
 on (
     tgt.[datetime] = src.[datetime]
     and tgt.[duid] = src.[duid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -19940,6 +19954,7 @@ using (
 on (
     tgt.[datetime] = src.[datetime]
     and tgt.[regionid] = src.[regionid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -20169,6 +20184,7 @@ using (
 on (
     tgt.[datetime] = src.[datetime]
     and tgt.[regionid] = src.[regionid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -20578,6 +20594,7 @@ using (
 on (
     tgt.[datetime] = src.[datetime]
     and tgt.[regionid] = src.[regionid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -21067,6 +21084,7 @@ on (
     and tgt.[datetime] = src.[datetime]
     and tgt.[genconid] = src.[genconid]
     and tgt.[regionid] = src.[regionid]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]

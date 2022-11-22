@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## OFFERAGCDATA
@@ -53,7 +54,7 @@ pub struct AsofferOfferagcdata1 {
 }
 impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
     type PrimaryKey = AsofferOfferagcdata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -69,9 +70,18 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "asoffer_offeragcdata_v1".to_string()
+        format!(
+            "asoffer_offeragcdata_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -305,7 +315,7 @@ pub struct AsofferOfferastrk1 {
 }
 impl mmsdm_core::GetTable for AsofferOfferastrk1 {
     type PrimaryKey = AsofferOfferastrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -320,9 +330,18 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "asoffer_offerastrk_v1".to_string()
+        format!(
+            "asoffer_offerastrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -470,7 +489,7 @@ pub struct AsofferOfferlsheddata1 {
 }
 impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
     type PrimaryKey = AsofferOfferlsheddata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -486,9 +505,18 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "asoffer_offerlsheddata_v1".to_string()
+        format!(
+            "asoffer_offerlsheddata_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -676,7 +704,7 @@ pub struct AsofferOfferrestartdata1 {
 }
 impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
     type PrimaryKey = AsofferOfferrestartdata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -692,9 +720,17 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.offerdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.offerdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "asoffer_offerrestartdata_v1".to_string()
+        format!(
+            "asoffer_offerrestartdata_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -879,7 +915,7 @@ pub struct AsofferOfferrpowerdata1 {
 }
 impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
     type PrimaryKey = AsofferOfferrpowerdata1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ASOFFER".into(),
@@ -895,9 +931,18 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "asoffer_offerrpowerdata_v1".to_string()
+        format!(
+            "asoffer_offerrpowerdata_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

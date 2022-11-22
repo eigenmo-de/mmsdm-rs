@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## STPASA_CASESOLUTION
@@ -61,7 +62,7 @@ pub struct StpasaCasesolution3 {
 }
 impl mmsdm_core::GetTable for StpasaCasesolution3 {
     type PrimaryKey = StpasaCasesolution3PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -74,9 +75,18 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "stpasa_casesolution_v3".to_string()
+        format!(
+            "stpasa_casesolution_v3_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -402,7 +412,7 @@ pub struct StpasaConstraintsolution3 {
 }
 impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
     type PrimaryKey = StpasaConstraintsolution3PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -419,9 +429,18 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
             studyregionid: self.studyregionid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "stpasa_constraintsolution_v3".to_string()
+        format!(
+            "stpasa_constraintsolution_v3_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -631,7 +650,7 @@ pub struct StpasaInterconnectorsoln3 {
 }
 impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
     type PrimaryKey = StpasaInterconnectorsoln3PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -648,9 +667,18 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
             studyregionid: self.studyregionid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "stpasa_interconnectorsoln_v3".to_string()
+        format!(
+            "stpasa_interconnectorsoln_v3_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -965,7 +993,7 @@ pub struct StpasaRegionsolution7 {
 }
 impl mmsdm_core::GetTable for StpasaRegionsolution7 {
     type PrimaryKey = StpasaRegionsolution7PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "STPASA".into(),
@@ -981,9 +1009,18 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
             runtype: self.runtype.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "stpasa_regionsolution_v7".to_string()
+        format!(
+            "stpasa_regionsolution_v7_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

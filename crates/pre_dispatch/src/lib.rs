@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## PREDISPATCHBLOCKEDCONSTRAINT
@@ -25,7 +26,7 @@ pub struct PredispatchBlockedConstraints1 {
 }
 impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
     type PrimaryKey = PredispatchBlockedConstraints1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
@@ -39,9 +40,18 @@ impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
             predispatchseqno: self.predispatchseqno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.predispatchseqno.year(),
+            month: num_traits::FromPrimitive::from_u32(self.predispatchseqno.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "predispatch_blocked_constraints_v1".to_string()
+        format!(
+            "predispatch_blocked_constraints_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -133,6 +143,7 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
 ///
 /// * PREDISPATCHSEQNO
 /// * RUNNO
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchCaseSolution1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -175,11 +186,11 @@ pub struct PredispatchCaseSolution1 {
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate if this Pre-Dispatch case includes an intervention pricing run: 0 = case does not include an intervention pricing run, 1 = case does include an intervention pricing run. This field has a default value of 0 and is not nullable
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
     type PrimaryKey = PredispatchCaseSolution1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
@@ -191,41 +202,56 @@ impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
         PredispatchCaseSolution1PrimaryKey {
             predispatchseqno: self.predispatchseqno,
             runno: self.runno,
+            intervention: self.intervention,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.predispatchseqno.year(),
+            month: num_traits::FromPrimitive::from_u32(self.predispatchseqno.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "predispatch_case_solution_v1".to_string()
+        format!(
+            "predispatch_case_solution_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchCaseSolution1PrimaryKey {
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     pub runno: rust_decimal::Decimal,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchCaseSolution1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchCaseSolution1 {
     type Row = PredispatchCaseSolution1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.predispatchseqno == row.predispatchseqno && self.runno == row.runno
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchCaseSolution1 {
     type PrimaryKey = PredispatchCaseSolution1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.predispatchseqno == key.predispatchseqno && self.runno == key.runno
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchCaseSolution1PrimaryKey {
     type Row = PredispatchCaseSolution1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.predispatchseqno == row.predispatchseqno && self.runno == row.runno
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchCaseSolution1PrimaryKey {
     type PrimaryKey = PredispatchCaseSolution1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.predispatchseqno == key.predispatchseqno && self.runno == key.runno
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -272,7 +298,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
                 arrow2::datatypes::Field::new("lastchanged",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                 None), true), arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true)
+                arrow2::datatypes::DataType::Decimal(2, 0), false)
             ],
         )
     }
@@ -433,11 +459,9 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
         }
         arrow2::chunk::Chunk::try_new(
@@ -499,7 +523,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
                     .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                     None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                 ],
@@ -526,6 +550,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
 ///
 /// * CONSTRAINTID
 /// * DATETIME
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchConstraintSolution5 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -537,7 +562,7 @@ pub struct PredispatchConstraintSolution5 {
     /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// RHS value used.
     pub rhs: Option<rust_decimal::Decimal>,
     /// Marginal value of violated constraint
@@ -574,6 +599,7 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
         PredispatchConstraintSolution5PrimaryKey {
             constraintid: self.constraintid.clone(),
             datetime: self.datetime,
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -585,30 +611,35 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
 pub struct PredispatchConstraintSolution5PrimaryKey {
     pub constraintid: String,
     pub datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchConstraintSolution5PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchConstraintSolution5 {
     type Row = PredispatchConstraintSolution5;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.constraintid == row.constraintid && self.datetime == row.datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchConstraintSolution5 {
     type PrimaryKey = PredispatchConstraintSolution5PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.constraintid == key.constraintid && self.datetime == key.datetime
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchConstraintSolution5PrimaryKey {
     type Row = PredispatchConstraintSolution5;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.constraintid == row.constraintid && self.datetime == row.datetime
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchConstraintSolution5PrimaryKey {
     type PrimaryKey = PredispatchConstraintSolution5PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.constraintid == key.constraintid && self.datetime == key.datetime
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -625,7 +656,7 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("rhs",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("marginalvalue",
@@ -680,11 +711,9 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             rhs_array
                 .push({
@@ -746,7 +775,7 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rhs_array)
@@ -799,6 +828,7 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
 ///
 /// * DATETIME
 /// * INTERCONNECTORID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchInterconnectorSoln3 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -810,7 +840,7 @@ pub struct PredispatchInterconnectorSoln3 {
     /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Metered MW Flow from EMS. For periods subsequent to the first period of a Pre-Dispatch run, this value represents the cleared target for the previous period of that Pre-Dispatch run.
     pub meteredmwflow: Option<rust_decimal::Decimal>,
     /// Calculated MW Flow
@@ -864,6 +894,7 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
         PredispatchInterconnectorSoln3PrimaryKey {
             datetime: self.datetime,
             interconnectorid: self.interconnectorid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -875,30 +906,35 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
 pub struct PredispatchInterconnectorSoln3PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub interconnectorid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchInterconnectorSoln3PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchInterconnectorSoln3 {
     type Row = PredispatchInterconnectorSoln3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.interconnectorid == row.interconnectorid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchInterconnectorSoln3 {
     type PrimaryKey = PredispatchInterconnectorSoln3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.interconnectorid == key.interconnectorid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchInterconnectorSoln3PrimaryKey {
     type Row = PredispatchInterconnectorSoln3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.interconnectorid == row.interconnectorid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchInterconnectorSoln3PrimaryKey {
     type PrimaryKey = PredispatchInterconnectorSoln3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.interconnectorid == key.interconnectorid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -915,7 +951,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("meteredmwflow",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("mwflow",
@@ -997,11 +1033,9 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             meteredmwflow_array
                 .push({
@@ -1134,7 +1168,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(meteredmwflow_array)
@@ -1214,6 +1248,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
 ///
 /// * DATETIME
 /// * INTERCONNECTORID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchInterconnectrSens1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -1225,7 +1260,7 @@ pub struct PredispatchInterconnectrSens1 {
     /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Period date and time
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub datetime: chrono::NaiveDateTime,
@@ -1335,6 +1370,7 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
         PredispatchInterconnectrSens1PrimaryKey {
             datetime: self.datetime,
             interconnectorid: self.interconnectorid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -1346,30 +1382,35 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
 pub struct PredispatchInterconnectrSens1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub interconnectorid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchInterconnectrSens1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchInterconnectrSens1 {
     type Row = PredispatchInterconnectrSens1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.interconnectorid == row.interconnectorid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchInterconnectrSens1 {
     type PrimaryKey = PredispatchInterconnectrSens1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.interconnectorid == key.interconnectorid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchInterconnectrSens1PrimaryKey {
     type Row = PredispatchInterconnectrSens1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.interconnectorid == row.interconnectorid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchInterconnectrSens1PrimaryKey {
     type PrimaryKey = PredispatchInterconnectrSens1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.interconnectorid == key.interconnectorid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -1386,7 +1427,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("datetime",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                 None), false), arrow2::datatypes::Field::new("intervention_active",
@@ -1553,11 +1594,9 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             datetime_array.push(row.datetime.timestamp());
             intervention_active_array
@@ -1928,7 +1967,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(datetime_array)
@@ -2093,6 +2132,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
 ///
 /// * DATETIME
 /// * DUID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchUnitSolution2 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -2106,7 +2146,7 @@ pub struct PredispatchUnitSolution2 {
     /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Connection point identifier
     pub connectionpointid: Option<String>,
     /// AGC Status from EMS
@@ -2214,6 +2254,7 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution2 {
         PredispatchUnitSolution2PrimaryKey {
             datetime: self.datetime,
             duid: self.duid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -2225,30 +2266,35 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution2 {
 pub struct PredispatchUnitSolution2PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub duid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchUnitSolution2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchUnitSolution2 {
     type Row = PredispatchUnitSolution2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.duid == row.duid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution2 {
     type PrimaryKey = PredispatchUnitSolution2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.duid == key.duid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchUnitSolution2PrimaryKey {
     type Row = PredispatchUnitSolution2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.duid == row.duid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution2PrimaryKey {
     type PrimaryKey = PredispatchUnitSolution2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.duid == key.duid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -2267,7 +2313,7 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("connectionpointid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("agcstatus",
@@ -2439,11 +2485,9 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             connectionpointid_array.push(row.connectionpointid);
             agcstatus_array
@@ -2802,7 +2846,7 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
@@ -2991,7 +3035,7 @@ pub struct PredispatchOffertrk1 {
 }
 impl mmsdm_core::GetTable for PredispatchOffertrk1 {
     type PrimaryKey = PredispatchOffertrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
@@ -3007,9 +3051,18 @@ impl mmsdm_core::GetTable for PredispatchOffertrk1 {
             predispatchseqno: self.predispatchseqno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.predispatchseqno.year(),
+            month: num_traits::FromPrimitive::from_u32(self.predispatchseqno.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "predispatch_offertrk_v1".to_string()
+        format!(
+            "predispatch_offertrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -3151,6 +3204,7 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
 ///
 /// * DATETIME
 /// * REGIONID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionPrices1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -3162,7 +3216,7 @@ pub struct PredispatchRegionPrices1 {
     /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Regional Reference Price
     pub rrp: Option<rust_decimal::Decimal>,
     /// Excess energy price
@@ -3236,6 +3290,7 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices1 {
         PredispatchRegionPrices1PrimaryKey {
             datetime: self.datetime,
             regionid: self.regionid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -3247,30 +3302,35 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices1 {
 pub struct PredispatchRegionPrices1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchRegionPrices1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchRegionPrices1 {
     type Row = PredispatchRegionPrices1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionPrices1 {
     type PrimaryKey = PredispatchRegionPrices1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchRegionPrices1PrimaryKey {
     type Row = PredispatchRegionPrices1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionPrices1PrimaryKey {
     type PrimaryKey = PredispatchRegionPrices1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -3287,7 +3347,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("rrp",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("eep",
@@ -3399,11 +3459,9 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             rrp_array
                 .push({
@@ -3630,7 +3688,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rrp_array)
@@ -3741,6 +3799,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
 ///
 /// * DATETIME
 /// * REGIONID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchPricesensitivities1 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -3752,7 +3811,7 @@ pub struct PredispatchPricesensitivities1 {
     /// PERIODID is just a period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Regional Energy Price for scenario 1
     pub rrpeep1: Option<rust_decimal::Decimal>,
     /// Regional Energy Price for scenario 2
@@ -3862,6 +3921,7 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
         PredispatchPricesensitivities1PrimaryKey {
             datetime: self.datetime,
             regionid: self.regionid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -3873,30 +3933,35 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
 pub struct PredispatchPricesensitivities1PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchPricesensitivities1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchPricesensitivities1 {
     type Row = PredispatchPricesensitivities1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchPricesensitivities1 {
     type PrimaryKey = PredispatchPricesensitivities1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchPricesensitivities1PrimaryKey {
     type Row = PredispatchPricesensitivities1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchPricesensitivities1PrimaryKey {
     type PrimaryKey = PredispatchPricesensitivities1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -3913,7 +3978,7 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("rrpeep1",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("rrpeep2",
@@ -4079,11 +4144,9 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             rrpeep1_array
                 .push({
@@ -4454,7 +4517,7 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rrpeep1_array)
@@ -4619,6 +4682,7 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
 ///
 /// * DATETIME
 /// * REGIONID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionSolution6 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -4630,7 +4694,7 @@ pub struct PredispatchRegionSolution6 {
     /// PERIODID is just a period count, starting from 1 for each Pre-Dispatch run. Use DATETIME to determine half hour period.
     pub periodid: Option<String>,
     /// Flag to indicate if this result set was sourced from the pricing run (INTERVENTION=0) or the physical run (INTERVENTION=1). In the event that there is not intervention in the market, both pricing and physical runs correspond to INTERVENTION=0
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Total demand in MW for period (less normally on loads)
     pub totaldemand: Option<rust_decimal::Decimal>,
     /// Aggregate generation bid available in region
@@ -4866,6 +4930,7 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution6 {
         PredispatchRegionSolution6PrimaryKey {
             datetime: self.datetime,
             regionid: self.regionid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -4877,30 +4942,35 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution6 {
 pub struct PredispatchRegionSolution6PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchRegionSolution6PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchRegionSolution6 {
     type Row = PredispatchRegionSolution6;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution6 {
     type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchRegionSolution6PrimaryKey {
     type Row = PredispatchRegionSolution6;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution6PrimaryKey {
     type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -4917,7 +4987,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("totaldemand",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("availablegeneration",
@@ -5272,11 +5342,9 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
             periodid_array.push(row.periodid);
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             totaldemand_array
                 .push({
@@ -6151,7 +6219,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
                     >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(totaldemand_array)
@@ -6522,7 +6590,7 @@ pub struct PredispatchScenarioDemand1 {
 }
 impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
     type PrimaryKey = PredispatchScenarioDemand1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
@@ -6538,9 +6606,18 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "predispatch_scenario_demand_v1".to_string()
+        format!(
+            "predispatch_scenario_demand_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -6669,7 +6746,7 @@ pub struct PredispatchScenarioDemandTrk1 {
 }
 impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
     type PrimaryKey = PredispatchScenarioDemandTrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
@@ -6683,9 +6760,18 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "predispatch_scenario_demand_trk_v1".to_string()
+        format!(
+            "predispatch_scenario_demand_trk_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -6796,14 +6882,15 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
 /// * DATETIME
 /// * GENCONID
 /// * REGIONID
+/// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchRegionfcasrequirement2 {
     /// PreDispatch Sequence number
-    pub predispatchseqno: Option<String>,
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// Case Run number
     pub runno: Option<rust_decimal::Decimal>,
     /// Intervention Flag
-    pub intervention: Option<rust_decimal::Decimal>,
+    pub intervention: rust_decimal::Decimal,
     /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
     pub periodid: Option<String>,
     /// Generic Constraint ID - Join to table GenConData
@@ -6854,6 +6941,7 @@ impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
             datetime: self.datetime,
             genconid: self.genconid.clone(),
             regionid: self.regionid.clone(),
+            intervention: self.intervention,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
@@ -6867,6 +6955,7 @@ pub struct PredispatchRegionfcasrequirement2PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub genconid: String,
     pub regionid: String,
+    pub intervention: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2 {
@@ -6874,6 +6963,7 @@ impl mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2 {
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.bidtype == row.bidtype && self.datetime == row.datetime
             && self.genconid == row.genconid && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2 {
@@ -6881,6 +6971,7 @@ impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2 {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.bidtype == key.bidtype && self.datetime == key.datetime
             && self.genconid == key.genconid && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 impl mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2PrimaryKey {
@@ -6888,6 +6979,7 @@ impl mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2PrimaryKey 
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.bidtype == row.bidtype && self.datetime == row.datetime
             && self.genconid == row.genconid && self.regionid == row.regionid
+            && self.intervention == row.intervention
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {
@@ -6895,6 +6987,7 @@ impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2Prim
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.bidtype == key.bidtype && self.datetime == key.datetime
             && self.genconid == key.genconid && self.regionid == key.regionid
+            && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
@@ -6903,11 +6996,11 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
         arrow2::datatypes::Schema::from(
             vec![
                 arrow2::datatypes::Field::new("predispatchseqno",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("runno",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("runno",
                 arrow2::datatypes::DataType::Decimal(3, 0), true),
                 arrow2::datatypes::Field::new("intervention",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("genconid",
@@ -6965,7 +7058,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
         let mut recovery_factor_cmpf_array = Vec::new();
         let mut recovery_factor_crmpf_array = Vec::new();
         for row in partition {
-            predispatchseqno_array.push(row.predispatchseqno);
+            predispatchseqno_array.push(row.predispatchseqno.start().timestamp());
             runno_array
                 .push({
                     row.runno
@@ -6976,11 +7069,9 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
                 });
             intervention_array
                 .push({
-                    row.intervention
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
                 });
             periodid_array.push(row.periodid);
             genconid_array.push(row.genconid);
@@ -7057,13 +7148,13 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(predispatchseqno_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(runno_array)
                     .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervention_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
                     .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
@@ -7312,7 +7403,7 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub struct PredispatchMnspbidtrk1 {
     /// Predispatch run identifier
-    pub predispatchseqno: String,
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
     pub linkid: String,
     /// Trading Interval number
@@ -7336,7 +7427,7 @@ pub struct PredispatchMnspbidtrk1 {
 }
 impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
     type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
@@ -7351,16 +7442,25 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
             predispatchseqno: self.predispatchseqno.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.predispatchseqno.year(),
+            month: num_traits::FromPrimitive::from_u32(self.predispatchseqno.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "predispatch_mnspbidtrk_v1".to_string()
+        format!(
+            "predispatch_mnspbidtrk_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
 pub struct PredispatchMnspbidtrk1PrimaryKey {
     pub linkid: String,
     pub periodid: String,
-    pub predispatchseqno: String,
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
 }
 impl mmsdm_core::PrimaryKey for PredispatchMnspbidtrk1PrimaryKey {}
 impl mmsdm_core::CompareWithRow for PredispatchMnspbidtrk1 {
@@ -7397,8 +7497,8 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
         arrow2::datatypes::Schema::from(
             vec![
                 arrow2::datatypes::Field::new("predispatchseqno",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("linkid",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("linkid",
                 arrow2::datatypes::DataType::LargeUtf8, false),
                 arrow2::datatypes::Field::new("periodid",
                 arrow2::datatypes::DataType::LargeUtf8, false),
@@ -7433,7 +7533,7 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
         let mut datetime_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         for row in partition {
-            predispatchseqno_array.push(row.predispatchseqno);
+            predispatchseqno_array.push(row.predispatchseqno.start().timestamp());
             linkid_array.push(row.linkid);
             periodid_array.push(row.periodid);
             participantid_array.push(row.participantid);
@@ -7452,9 +7552,9 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(predispatchseqno_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(predispatchseqno_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from_slice(linkid_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
