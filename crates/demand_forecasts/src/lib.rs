@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## DEMANDOPERATIONALACTUAL
@@ -35,7 +36,7 @@ pub struct OperationalDemandActual3 {
 }
 impl mmsdm_core::GetTable for OperationalDemandActual3 {
     type PrimaryKey = OperationalDemandActual3PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "OPERATIONAL_DEMAND".into(),
@@ -49,9 +50,18 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
             regionid: self.regionid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "operational_demand_actual_v3".to_string()
+        format!(
+            "operational_demand_actual_v3_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -202,7 +212,7 @@ pub struct OperationalDemandForecast1 {
 }
 impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     type PrimaryKey = OperationalDemandForecast1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "OPERATIONAL_DEMAND".into(),
@@ -216,9 +226,18 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
             regionid: self.regionid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "operational_demand_forecast_v1".to_string()
+        format!(
+            "operational_demand_forecast_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -386,7 +405,7 @@ pub struct DemandIntermittentClusterAvail2 {
 }
 impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     type PrimaryKey = DemandIntermittentClusterAvail2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -403,9 +422,17 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_intermittent_cluster_avail_v2".to_string()
+        format!(
+            "demand_intermittent_cluster_avail_v2_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -574,7 +601,7 @@ pub struct DemandIntermittentClusterAvailDay1 {
 }
 impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     type PrimaryKey = DemandIntermittentClusterAvailDay1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -590,9 +617,17 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_intermittent_cluster_avail_day_v1".to_string()
+        format!(
+            "demand_intermittent_cluster_avail_day_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -735,7 +770,7 @@ pub struct DemandIntermittentDsPred1 {
 }
 impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     type PrimaryKey = DemandIntermittentDsPred1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -753,9 +788,18 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_intermittent_ds_pred_v1".to_string()
+        format!(
+            "demand_intermittent_ds_pred_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -985,7 +1029,7 @@ pub struct DemandIntermittentDsRun1 {
 }
 impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     type PrimaryKey = DemandIntermittentDsRun1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -1002,9 +1046,18 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_intermittent_ds_run_v1".to_string()
+        format!(
+            "demand_intermittent_ds_run_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1220,7 +1273,7 @@ pub struct ForecastIntermittentGen1 {
 }
 impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     type PrimaryKey = ForecastIntermittentGen1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "FORECAST".into(),
@@ -1234,9 +1287,18 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "forecast_intermittent_gen_v1".to_string()
+        format!(
+            "forecast_intermittent_gen_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1385,7 +1447,7 @@ pub struct ForecastIntermittentGenData1 {
 }
 impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     type PrimaryKey = ForecastIntermittentGenData1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "FORECAST".into(),
@@ -1400,9 +1462,18 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "forecast_intermittent_gen_data_v1".to_string()
+        format!(
+            "forecast_intermittent_gen_data_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1584,7 +1655,7 @@ pub struct DemandIntermittentGenLimit1 {
 }
 impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     type PrimaryKey = DemandIntermittentGenLimit1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -1600,9 +1671,17 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_intermittent_gen_limit_v1".to_string()
+        format!(
+            "demand_intermittent_gen_limit_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1743,7 +1822,7 @@ pub struct DemandIntermittentGenLimitDay1 {
 }
 impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     type PrimaryKey = DemandIntermittentGenLimitDay1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -1758,9 +1837,17 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_intermittent_gen_limit_day_v1".to_string()
+        format!(
+            "demand_intermittent_gen_limit_day_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1911,7 +1998,7 @@ pub struct DemandMtpasaIntermittentAvail2 {
 }
 impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     type PrimaryKey = DemandMtpasaIntermittentAvail2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -1927,9 +2014,17 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_mtpasa_intermittent_avail_v2".to_string()
+        format!(
+            "demand_mtpasa_intermittent_avail_v2_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2098,7 +2193,7 @@ pub struct DemandMtpasaIntermittentLimit1 {
 }
 impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     type PrimaryKey = DemandMtpasaIntermittentLimit1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -2113,9 +2208,17 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
             tradingdate: self.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.tradingdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_mtpasa_intermittent_limit_v1".to_string()
+        format!(
+            "demand_mtpasa_intermittent_limit_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2295,17 +2398,15 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "demand_period_v1_{}_{}", chrono::Datelike::year(& self.settlementdate),
-            chrono::Datelike::month(& self.settlementdate)
+            "demand_period_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -2533,7 +2634,7 @@ pub struct DemandTrk1 {
 }
 impl mmsdm_core::GetTable for DemandTrk1 {
     type PrimaryKey = DemandTrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "DEMAND".into(),
@@ -2549,9 +2650,18 @@ impl mmsdm_core::GetTable for DemandTrk1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "demand_trk_v1".to_string()
+        format!(
+            "demand_trk_v1_{}_{}", self.partition_suffix().year, self.partition_suffix()
+            .month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2713,7 +2823,7 @@ pub struct RooftopActual2 {
 }
 impl mmsdm_core::GetTable for RooftopActual2 {
     type PrimaryKey = RooftopActual2PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ROOFTOP".into(),
@@ -2728,9 +2838,18 @@ impl mmsdm_core::GetTable for RooftopActual2 {
             r#type: self.r#type.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "rooftop_actual_v2".to_string()
+        format!(
+            "rooftop_actual_v2_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2890,7 +3009,7 @@ pub struct RooftopForecast1 {
 }
 impl mmsdm_core::GetTable for RooftopForecast1 {
     type PrimaryKey = RooftopForecast1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "ROOFTOP".into(),
@@ -2905,9 +3024,18 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "rooftop_forecast_v1".to_string()
+        format!(
+            "rooftop_forecast_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

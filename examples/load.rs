@@ -3,6 +3,7 @@ use std::fs;
 use tiberius;
 use tokio::net;
 use tokio_util::compat::TokioAsyncWriteCompatExt;
+use mmsdm::sql_server;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -30,9 +31,9 @@ async fn main() -> anyhow::Result<()> {
         let file = fs::File::open(path)?;
         let mut zip = zip::ZipArchive::new(file)?;
         let inner_file = zip.by_index(0)?;
-        let aemo = mmsdm::AemoFile::from_reader(inner_file)?;
+        let mut aemo = mmsdm::AemoFile::from_reader(inner_file)?;
         dbg!(aemo.file_keys());
-        aemo.load_data(&mut client, None, Some(10_000)).await?;
+        sql_server::save_all(&mut aemo, None, &mut client, Some(10_000)).await?;
     }
     Ok(())
 }

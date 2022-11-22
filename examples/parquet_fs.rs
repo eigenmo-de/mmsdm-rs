@@ -1,10 +1,7 @@
-use mmsdm::{data_model, ArrowSchema, GetTable};
+use mmsdm::{data_model, ArrowSchema, GetTable, MmsFile};
 use std::{collections, fs::File};
 
 use arrow2::{
-    chunk::Chunk,
-    datatypes::{DataType, Field, Schema},
-    error::Result,
     io::parquet::write::{
         CompressionOptions, Encoding, FileWriter, RowGroupIterator, Version, WriteOptions,
     },
@@ -15,8 +12,7 @@ fn main() -> anyhow::Result<()> {
 
     let mut handle =
         mmsdm::AemoDiskFile::from_path("./data/PUBLIC_DVD_DISPATCHLOAD_202110010000.zip")?;
-
-    dbg!(handle.file_keys());
+    dbg!(MmsFile::Disk(&mut handle).file_keys());
     let partitions = handle
         .get_table::<data_model::DispatchUnitSolution3>()?
         .map(|r| r.unwrap().partition_suffix())

@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## METERDATA_AGGREGATE_READS
@@ -69,17 +70,15 @@ impl mmsdm_core::GetTable for MeterdataAggregateReads1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "meterdata_aggregate_reads_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "meterdata_aggregate_reads_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -314,17 +313,15 @@ impl mmsdm_core::GetTable for MeterdataIndividualReads1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "meterdata_individual_reads_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "meterdata_individual_reads_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -555,17 +552,15 @@ impl mmsdm_core::GetTable for MeterdataInterconnector1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "meterdata_interconnector_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "meterdata_interconnector_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }
@@ -775,17 +770,15 @@ impl mmsdm_core::GetTable for MeterdataWdrReads1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "meterdata_wdr_reads_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "meterdata_wdr_reads_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }

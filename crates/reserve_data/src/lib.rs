@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT
@@ -38,7 +39,7 @@ pub struct MtpasaReservelimit1 {
 }
 impl mmsdm_core::GetTable for MtpasaReservelimit1 {
     type PrimaryKey = MtpasaReservelimit1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MTPASA".into(),
@@ -53,9 +54,18 @@ impl mmsdm_core::GetTable for MtpasaReservelimit1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "mtpasa_reservelimit_v1".to_string()
+        format!(
+            "mtpasa_reservelimit_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -210,7 +220,7 @@ pub struct MtpasaReservelimitRegion1 {
 }
 impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
     type PrimaryKey = MtpasaReservelimitRegion1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MTPASA".into(),
@@ -226,9 +236,18 @@ impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "mtpasa_reservelimit_region_v1".to_string()
+        format!(
+            "mtpasa_reservelimit_region_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -385,7 +404,7 @@ pub struct MtpasaReservelimitSet1 {
 }
 impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
     type PrimaryKey = MtpasaReservelimitSet1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MTPASA".into(),
@@ -399,9 +418,18 @@ impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
             version_datetime: self.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "mtpasa_reservelimit_set_v1".to_string()
+        format!(
+            "mtpasa_reservelimit_set_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -590,17 +618,15 @@ impl mmsdm_core::GetTable for ReserveDataReserve1 {
     }
     fn partition_suffix(&self) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::Datelike::year(&self.settlementdate),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::Datelike::month(&self.settlementdate),
-                )
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
                 .unwrap(),
         }
     }
     fn partition_name(&self) -> String {
         format!(
-            "reserve_data_reserve_v1_{}_{}", chrono::Datelike::year(& self
-            .settlementdate), chrono::Datelike::month(& self.settlementdate)
+            "reserve_data_reserve_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
         )
     }
 }

@@ -24,7 +24,7 @@ default-features = false
 features = []
 
 [dependencies.chrono-tz]
-version = "0.6.1"
+version = "0.8.0"
 default-features = false
 features = []
 
@@ -34,7 +34,7 @@ default-features = false
 features = []
 
 [dependencies.rust_decimal]
-version = "1.23.1"
+version = "1.26.1"
 default-features = false
 features = ["std", "serde"]
 
@@ -54,17 +54,17 @@ features = ["derive"]
 default-features = false
 
 [dependencies.chrono]
-version = "0.4.22"
+version = "0.4.23"
 features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.13.1"
+version = "0.14.2"
 optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.11.0"
+version = "0.11.3"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true

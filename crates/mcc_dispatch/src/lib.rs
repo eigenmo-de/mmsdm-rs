@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## MCC_CASESOLUTION
@@ -23,7 +24,7 @@ pub struct MccCasesolution1 {
 }
 impl mmsdm_core::GetTable for MccCasesolution1 {
     type PrimaryKey = MccCasesolution1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MCC".into(),
@@ -36,9 +37,18 @@ impl mmsdm_core::GetTable for MccCasesolution1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "mcc_casesolution_v1".to_string()
+        format!(
+            "mcc_casesolution_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -132,7 +142,7 @@ pub struct MccConstraintsolution1 {
 }
 impl mmsdm_core::GetTable for MccConstraintsolution1 {
     type PrimaryKey = MccConstraintsolution1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MCC".into(),
@@ -146,9 +156,18 @@ impl mmsdm_core::GetTable for MccConstraintsolution1 {
             run_datetime: self.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "mcc_constraintsolution_v1".to_string()
+        format!(
+            "mcc_constraintsolution_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]

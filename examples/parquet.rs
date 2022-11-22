@@ -29,7 +29,7 @@ fn main() -> anyhow::Result<()> {
     }
     for (partition_key, partition) in partitions {
         dbg!(partition_key);
-        let record_batch = mmsdm_core::ArrowSchema::partition_to_chunk(partition)?;
+        let record_batch = mmsdm_core::ArrowSchema::partition_to_chunk(partition.into_values())?;
         for col in record_batch.columns() {
             dbg!(col.data_type());
         }

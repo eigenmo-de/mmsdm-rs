@@ -1,3 +1,4 @@
+use chrono::Datelike as _;
 /// # Summary
 ///
 /// ## APEVENT
@@ -1188,7 +1189,7 @@ pub struct ForceMajeureMarketSuspendSchedule1 {
 }
 impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule1 {
     type PrimaryKey = ForceMajeureMarketSuspendSchedule1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "FORCE_MAJEURE".into(),
@@ -1204,9 +1205,18 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule1 {
             regionid: self.regionid.clone(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "force_majeure_market_suspend_schedule_v1".to_string()
+        format!(
+            "force_majeure_market_suspend_schedule_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1473,7 +1483,7 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1 {
 }
 impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
     type PrimaryKey = ForceMajeureMarketSuspendScheduleTrk1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "FORCE_MAJEURE".into(),
@@ -1486,9 +1496,18 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
             effectivedate: self.effectivedate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "force_majeure_market_suspend_schedule_trk_v1".to_string()
+        format!(
+            "force_majeure_market_suspend_schedule_trk_v1_{}_{}", self.partition_suffix()
+            .year, self.partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -1842,7 +1861,7 @@ pub struct ApRegionapc1 {
 }
 impl mmsdm_core::GetTable for ApRegionapc1 {
     type PrimaryKey = ApRegionapc1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "AP".into(),
@@ -1857,9 +1876,18 @@ impl mmsdm_core::GetTable for ApRegionapc1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "ap_regionapc_v1".to_string()
+        format!(
+            "ap_regionapc_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
@@ -2013,7 +2041,7 @@ pub struct ApRegionapcintervals1 {
 }
 impl mmsdm_core::GetTable for ApRegionapcintervals1 {
     type PrimaryKey = ApRegionapcintervals1PrimaryKey;
-    type Partition = ();
+    type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "AP".into(),
@@ -2029,9 +2057,18 @@ impl mmsdm_core::GetTable for ApRegionapcintervals1 {
             versionno: self.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
     fn partition_name(&self) -> String {
-        "ap_regionapcintervals_v1".to_string()
+        format!(
+            "ap_regionapcintervals_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
