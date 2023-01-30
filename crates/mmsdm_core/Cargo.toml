@@ -59,12 +59,12 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.14.2"
+version = "0.15.0"
 optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.11.3"
+version = "0.12.0"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true

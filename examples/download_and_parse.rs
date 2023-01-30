@@ -98,13 +98,12 @@ mod test_dispatch_is {
         let rows = links
             .iter()
             .take(8)
-            .map(|l| {
+            .flat_map(|l| {
                 let aemo_file = super::download(LOCATION, l).unwrap();
                 aemo_file
                     .get_table::<data_model::DispatchConstraint5>()
                     .unwrap()
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         // let all_data: Vec<mmsdm::AemoFile> = super::url_get_files(LOCATION).await.unwrap();
@@ -131,13 +130,12 @@ mod test_dispatch_scada {
         let rows = links
             .iter()
             .take(8)
-            .map(|l| {
+            .flat_map(|l| {
                 let aemo_file = super::download(LOCATION, l).unwrap();
                 aemo_file
                     .get_table::<data_model::DispatchUnitScada1>()
                     .unwrap()
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         info!("Downloaded and processed {} rows", rows.len());
@@ -154,7 +152,7 @@ fn get_filename_from_path(path: &path::Path) -> Result<String> {
     let file_stem = path.file_stem().and_then(|s| s.to_str());
     let extension = path.extension().and_then(|e| e.to_str());
     if let (Some(file), Some(ext)) = (file_stem, extension) {
-        Ok(format!("{}.{}", file, ext))
+        Ok(format!("{file}.{ext}"))
     } else {
         Err(Error::InvalidFilePath)
     }
@@ -164,8 +162,7 @@ fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
     let selector = Selector::parse("a").unwrap();
     doc.select(&selector)
         .into_iter()
-        .map(|el| el.value().attr("href"))
-        .flatten() // only interested in a elements that have a link!
+        .filter_map(|el| el.value().attr("href")) // only interested in a elements that have a link!
         .map(path::Path::new)
         .map(get_filename_from_path)
         .filter_map(|opt| opt.ok())
@@ -175,7 +172,7 @@ fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
 fn download(base_url: &str, link: &str) -> Result<mmsdm::AemoFile> {
     let path = path::Path::new(&link);
     let file_name = get_filename_from_path(path)?;
-    let file_url = format!("{}/{}", base_url, file_name);
+    let file_url = format!("{base_url}/{file_name}");
     info!("Getting: {}", file_url);
     let bytes = reqwest::blocking::get(&file_url)?
         .error_for_status()?
@@ -235,10 +232,10 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::InvalidFilePath => write!(f, "invalid file path"),
-            Self::Io(e) => write!(f, "io error: {}", e),
-            Self::Zip(e) => write!(f, "zip error: {}", e),
-            Self::Reqwest(e) => write!(f, "reqwest error: {}", e),
-            Self::Aemo(s) => write!(f, "AEMO error: {}", s),
+            Self::Io(e) => write!(f, "io error: {e}"),
+            Self::Zip(e) => write!(f, "zip error: {e}"),
+            Self::Reqwest(e) => write!(f, "reqwest error: {e}"),
+            Self::Aemo(s) => write!(f, "AEMO error: {s}"),
         }
     }
 }

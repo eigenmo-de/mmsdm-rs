@@ -24,8 +24,7 @@ impl mms::DataType {
                     .to_string()
             }
             mms::DataType::Decimal { precision, scale } => format!(
-                "arrow2::datatypes::DataType::Decimal({},{})",
-                precision, scale
+                "arrow2::datatypes::DataType::Decimal({precision},{scale})"
             ),
             mms::DataType::Integer { .. } => "arrow2::datatypes::DataType::Int64".to_string(),
         }
@@ -56,7 +55,7 @@ impl mms::TableColumn {
         if self.mandatory {
             formatted_type
         } else {
-            format!("Option<{}>", formatted_type)
+            format!("Option<{formatted_type}>")
         }
     }
     fn rust_field_name(&self) -> String {
@@ -244,7 +243,7 @@ impl mms::PkColumns {
     fn get_rust_doc(&self) -> String {
         self.cols
             .iter()
-            .map(|c| format!("* {}", c))
+            .map(|c| format!("* {c}"))
             .collect::<Vec<_>>()
             .join("\n")
     }
@@ -587,7 +586,7 @@ fn codegen_pk(
 }
 
 fn codegen_impl_pk(pdr_report: &pdr::Report, fmtr: &mut codegen::Formatter) -> anyhow::Result<()> {
-    let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    let mut pk_trait = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_trait.impl_trait("mmsdm_core::PrimaryKey");
     pk_trait.fmt(fmtr)?;
     Ok(())
@@ -651,7 +650,7 @@ fn codegen_impl_compare_with_row_on_pk(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut pk_compare_row_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    let mut pk_compare_row_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_compare_row_impl.impl_trait("mmsdm_core::CompareWithRow");
     pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
     let mut compare_with_row = codegen::Function::new("compare_with_row");
@@ -677,7 +676,7 @@ fn codegen_impl_compare_with_pk_on_pk(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut pk_compare_pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    let mut pk_compare_pk_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_compare_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
     pk_compare_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
     let mut compare_with_other_pk = codegen::Function::new("compare_with_key");
@@ -829,12 +828,12 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.14.2"
+version = "0.15.0"
 optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.11.3"
+version = "0.12.0"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true
@@ -993,7 +992,7 @@ r#"    ({table_name}, version) if version <= {version}_i32 => {{
     }}"#,
                         // data_set_name = pdr_report.name,
                         table_name = if let Some(sub_type) = &pdr_report.sub_type {
-                            format!("Some(\"{}\")", sub_type)
+                            format!("Some(\"{sub_type}\")")
                         } else {
                             "None".to_string()
                         },

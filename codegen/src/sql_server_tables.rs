@@ -22,9 +22,9 @@ impl mms::PkColumns {
         for (idx, col) in self.cols.iter().enumerate() {
             let col = col.to_snake_case();
             if idx == 0 {
-                sql.push_str(&format!("    tgt.[{0}] = src.[{0}]\n", col));
+                sql.push_str(&format!("    tgt.[{col}] = src.[{col}]\n"));
             } else {
-                sql.push_str(&format!("    and tgt.[{0}] = src.[{0}]\n", col));
+                sql.push_str(&format!("    and tgt.[{col}] = src.[{col}]\n"));
             }
         }
         sql
@@ -85,14 +85,14 @@ impl mms::TableColumn {
 impl mms::DataType {
     fn as_sql_type(&self) -> String {
         match self {
-            mms::DataType::Varchar { length } => format!("varchar({})", length),
+            mms::DataType::Varchar { length } => format!("varchar({length})"),
             mms::DataType::Char => "char(1)".into(),
             mms::DataType::Date => "datetime2".into(),
             mms::DataType::DateTime => "datetime2".into(),
             mms::DataType::Decimal { precision, scale } => {
-                format!("decimal({},{})", precision, scale)
+                format!("decimal({precision},{scale})")
             }
-            mms::DataType::Integer { precision } => format!("decimal({},0)", precision),
+            mms::DataType::Integer { precision } => format!("decimal({precision},0)"),
         }
     }
 }

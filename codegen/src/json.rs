@@ -77,7 +77,7 @@ pub async fn run() -> anyhow::Result<()> {
                 // for the base url, as well as _1, _2, etc, until we
                 // stop recieving a successfull HTTP response.
                 let mut docs = Vec::new();
-                let inner_url = format!("{}/{}.htm", BASE_URL, link_val);
+                let inner_url = format!("{BASE_URL}/{link_val}.htm");
 
                 let res = client.get(&inner_url).send().await?;
 
@@ -98,7 +98,7 @@ pub async fn run() -> anyhow::Result<()> {
                     docs.push(inner_doc);
 
                     for l in doc_pages_to_get {
-                        let get_url = format!("{}/{}", BASE_URL, l);
+                        let get_url = format!("{BASE_URL}/{l}");
                         let res = client.get(&get_url).send().await?;
                         if res.status().as_u16() == 200 {
                             let body = res.text().await?;

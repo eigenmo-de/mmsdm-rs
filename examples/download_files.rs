@@ -45,7 +45,7 @@ fn get_filename_from_path(path: &path::Path) -> anyhow::Result<String> {
     let file_stem = path.file_stem().and_then(|s| s.to_str());
     let extension = path.extension().and_then(|e| e.to_str());
     if let (Some(file), Some(ext)) = (file_stem, extension) {
-        Ok(format!("{}.{}", file, ext))
+        Ok(format!("{file}.{ext}"))
     } else {
         Err(anyhow::anyhow!("Invalid file path"))
     }
@@ -55,8 +55,7 @@ fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
     let selector = Selector::parse("a").unwrap();
     doc.select(&selector)
         .into_iter()
-        .map(|el| el.value().attr("href"))
-        .flatten() // only interested in a elements that have a link!
+        .filter_map(|el| el.value().attr("href")) // only interested in a elements that have a link!
         .map(path::Path::new)
         .map(get_filename_from_path)
         .filter_map(|opt| opt.ok())
@@ -66,11 +65,11 @@ fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
 fn download(base_url: &str, link: &str, local_path: &str) -> anyhow::Result<()> {
     let path = path::Path::new(&link);
     let file_name = get_filename_from_path(path)?;
-    let file_url = format!("{}/{}", base_url, file_name);
+    let file_url = format!("{base_url}/{file_name}");
 
     let mut dest = path::PathBuf::new();
-    dest.push(&local_path);
-    dest.push(&link);
+    dest.push(local_path);
+    dest.push(link);
 
     if !dest.as_path().exists() {
         info!("Getting: {}", file_url);
