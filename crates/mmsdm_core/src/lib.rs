@@ -508,6 +508,7 @@ impl serde::Serialize for TradingPeriod {
 pub mod mms_datetime {
     use serde::{de::Error, Deserialize, Deserializer, Serializer};
     const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
+    const DB_FORMAT: &str = "%Y-%m-%dT%H:%M:%S";
 
     pub fn serialize<S>(d: &chrono::NaiveDateTime, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -522,7 +523,10 @@ pub mod mms_datetime {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(d)?;
-        chrono::NaiveDateTime::parse_from_str(&s, FORMAT).map_err(Error::custom)
+
+        chrono::NaiveDateTime::parse_from_str(&s, FORMAT)
+            .or_else(|_| chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT))
+            .map_err(Error::custom)
     }
 }
 
@@ -530,6 +534,7 @@ pub mod mms_datetime_opt {
     use serde::{de::Error, Deserialize, Deserializer, Serializer};
 
     const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
+    const DB_FORMAT: &str = "%Y-%m-%dT%H:%M:%S";
 
     pub fn serialize<S>(d: &Option<chrono::NaiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -551,6 +556,7 @@ pub mod mms_datetime_opt {
             Ok(None)
         } else {
             chrono::NaiveDateTime::parse_from_str(&s, FORMAT)
+                .or_else(|_| chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT))
                 .map_err(Error::custom)
                 .map(Some)
         }
