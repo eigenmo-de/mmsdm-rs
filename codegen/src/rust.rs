@@ -1,5 +1,5 @@
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
-use std::{collections, fs, str, ops::ControlFlow, fmt::Debug};
+use std::{collections, fmt::Debug, fs, ops::ControlFlow, str};
 
 use crate::{mms, pdr};
 use serde::Deserialize;
@@ -67,7 +67,10 @@ impl mms::TableColumn {
         }
     }
     fn as_arrow_type(&self) -> String {
-        if self.comment.contains("YYYYMMDDPPP") || self.comment.contains("YYYYMMDDPP") || self.name.to_lowercase() == "predispatchseqno" {
+        if self.comment.contains("YYYYMMDDPPP")
+            || self.comment.contains("YYYYMMDDPP")
+            || self.name.to_lowercase() == "predispatchseqno"
+        {
             "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)"
                 .to_string()
         } else {
@@ -90,7 +93,10 @@ impl mms::TableColumn {
             (_, _) if self.comment.contains("YYYYMMDDPPP") => {
                 format!("row.{}.start().timestamp()", self.rust_field_name())
             }
-            (_, _) if self.comment.contains("YYYYMMDDPP") || self.name.to_lowercase() == "predispatchseqno" => {
+            (_, _)
+                if self.comment.contains("YYYYMMDDPP")
+                    || self.name.to_lowercase() == "predispatchseqno" =>
+            {
                 format!("row.{}.start().timestamp()", self.rust_field_name())
             }
             // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp())", self.rust_field_name()),
@@ -142,11 +148,16 @@ impl mms::TableColumn {
                 self.as_arrow_array_name(),
                 self.as_arrow_type()
             ),
-            (_, _) if self.comment.contains("YYYYMMDDPP") || self.name.to_lowercase() == "predispatchseqno" => format!(
-                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
+            (_, _)
+                if self.comment.contains("YYYYMMDDPP")
+                    || self.name.to_lowercase() == "predispatchseqno" =>
+            {
+                format!(
+                    "arrow2::array::PrimitiveArray::from_vec({}).to({})",
+                    self.as_arrow_array_name(),
+                    self.as_arrow_type()
+                )
+            }
             // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
             // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
             (mms::DataType::Varchar { .. }, true) => format!(
@@ -387,7 +398,7 @@ fn codegen_struct(
         } else if col.comment.contains("YYYYMMDDPP") 
         // special case for PredispatchMnspbidtrk1
         // which is missing the YYYYMMDDPP comment
-        || col.name.to_lowercase() == "predispatchseqno"  
+        || col.name.to_lowercase() == "predispatchseqno"
         {
             // parse as TradingPeriod
             let mut field = codegen::Field::new(
@@ -463,7 +474,7 @@ fn codegen_impl_get_table(
                 "    {0}: self.{0}{1}",
                 lowercase_and_escape(name),
                 table
-                .columns()
+                    .columns()
                     .columns
                     .iter()
                     .find(|col| &col.name == name)
@@ -482,9 +493,7 @@ fn codegen_impl_get_table(
     partition_suffix.ret("Self::Partition");
     partition_suffix.arg_ref_self();
 
-    if let ControlFlow::Break(col) = table
-        .partition_column()
-    {
+    if let ControlFlow::Break(col) = table.partition_column() {
         current_impl.associate_type("Partition", "mmsdm_core::YearMonth");
         partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: self.{colname}.year(), month: num_traits::FromPrimitive::from_u32(self.{colname}.month()).unwrap() }}"#, colname = col.field_name()));
     } else {
@@ -496,9 +505,7 @@ fn codegen_impl_get_table(
     partition_name.ret("String");
     partition_name.arg_ref_self();
 
-    if table
-        .partition_column().is_break()
-    {
+    if table.partition_column().is_break() {
         partition_name.line(
             &format!(
                 r#"format!("{}_{{}}_{{}}", self.partition_suffix().year, self.partition_suffix().month.number_from_month())"#,
@@ -537,7 +544,7 @@ fn codegen_pk(
     for pk_col_name in table.primary_key_columns().cols.iter() {
         let table_cols = table.columns();
         let col = table_cols
-        .columns
+            .columns
             .iter()
             .find(|col| &col.name == pk_col_name)
             .expect("PK column must exist");
@@ -560,7 +567,7 @@ fn codegen_pk(
         } else if col.comment.contains("YYYYMMDDPP") 
         // special case for PredispatchMnspbidtrk1
         // which is missing the YYYYMMDDPP comment
-        || col.name.to_lowercase() == "predispatchseqno"  
+        || col.name.to_lowercase() == "predispatchseqno"
         {
             // parse as TradingPeriod
             let field = codegen::Field::new(
@@ -918,8 +925,6 @@ pub fn run() -> anyhow::Result<()> {
         let mut fmt_str = String::new();
         fmt_str.push_str("use chrono::Datelike as _;\n");
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
-
-        
 
         for (table_key, table) in tables.clone().into_iter() {
             let mms_report = mms::Report {

@@ -103,7 +103,7 @@ def get_row_partition_name(row: List[str]) -> str:
 
             if let Some(pdr_report) = map.get(&mms_report) {
                 if let Some((idx, col)) = table
-                .columns()
+                    .columns()
                     .columns
                     .iter()
                     .enumerate()

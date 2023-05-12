@@ -7,8 +7,8 @@ use cargo::util::command_prelude::CompileMode;
 use cargo::Config;
 use std::env;
 use std::path::Path;
-use std::thread;
 use std::process;
+use std::thread;
 
 fn main() -> anyhow::Result<()> {
     let config = Config::default()?;
