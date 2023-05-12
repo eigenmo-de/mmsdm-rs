@@ -523,14 +523,10 @@ pub mod mms_datetime {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(d)?;
-        match chrono::NaiveDateTime::parse_from_str(&s, FORMAT) {
-            ok => ok,
-            Err(_) => match chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT) {
-                ok => ok,
-                err => err,
-            },
-        }
-        .map_err(Error::custom)
+
+        chrono::NaiveDateTime::parse_from_str(&s, FORMAT)
+            .or_else(|_| chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT))
+            .map_err(Error::custom)
     }
 }
 
@@ -559,19 +555,13 @@ pub mod mms_datetime_opt {
         if s.is_empty() {
             Ok(None)
         } else {
-            match chrono::NaiveDateTime::parse_from_str(&s, FORMAT) {
-                ok => ok,
-                Err(_) => match chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT) {
-                    ok => ok,
-                    err => err,
-                },
-            }
-            .map_err(Error::custom)
-            .map(Some)
+            chrono::NaiveDateTime::parse_from_str(&s, FORMAT)
+                .or_else(|_| chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT))
+                .map_err(Error::custom)
+                .map(Some)
         }
     }
 }
-
 
 pub mod mms_date {
     use serde::{de::Error, Deserialize, Deserializer, Serializer};
