@@ -10,13 +10,9 @@ where
 {
     let mut mms_file = file.into();
     for file_key in mms_file.file_keys() {
-        if skip_keys
-            .map(|set| set.contains(&file_key))
-            .unwrap_or(false)
-        {
+        if skip_keys.map(|set| set.contains(&file_key)).unwrap_or(false) {
             log::info!(
-                "Skippping file key {} as it is in the list of keys to skip",
-                file_key
+                "Skippping file key {} as it is in the list of keys to skip", file_key
             );
             continue;
         }
@@ -24,7 +20,8 @@ where
             "ASOFFER" => {
                 #[cfg(feature = "asoffer")]
                 {
-                    mmsdm_asoffer::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_asoffer::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "asoffer"))]
                 {
@@ -37,7 +34,8 @@ where
             "BID" | "BIDS" | "OFFER" => {
                 #[cfg(feature = "bids")]
                 {
-                    mmsdm_bids::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_bids::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "bids"))]
                 {
@@ -50,7 +48,12 @@ where
             "BILLING_CONFIG" => {
                 #[cfg(feature = "billing_config")]
                 {
-                    mmsdm_billing_config::save(&mut mms_file, &file_key, client, chunk_size)
+                    mmsdm_billing_config::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
                         .await?;
                 }
                 #[cfg(not(feature = "billing_config"))]
@@ -64,7 +67,8 @@ where
             "BILLING" => {
                 #[cfg(feature = "billing_run")]
                 {
-                    mmsdm_billing_run::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_billing_run::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "billing_run"))]
                 {
@@ -77,7 +81,12 @@ where
             "DEMAND" | "FORECAST" | "OPERATIONAL_DEMAND" | "ROOFTOP" => {
                 #[cfg(feature = "demand_forecasts")]
                 {
-                    mmsdm_demand_forecasts::save(&mut mms_file, &file_key, client, chunk_size)
+                    mmsdm_demand_forecasts::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
                         .await?;
                 }
                 #[cfg(not(feature = "demand_forecasts"))]
@@ -91,7 +100,8 @@ where
             "DISPATCH" | "PRICELOAD" => {
                 #[cfg(feature = "dispatch")]
                 {
-                    mmsdm_dispatch::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_dispatch::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "dispatch"))]
                 {
@@ -104,7 +114,13 @@ where
             "AP" | "FORCE_MAJEURE" => {
                 #[cfg(feature = "force_majeure")]
                 {
-                    mmsdm_force_majeure::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_force_majeure::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "force_majeure"))]
                 {
@@ -117,7 +133,8 @@ where
             "GD_INSTRUCT" => {
                 #[cfg(feature = "gd_instruct")]
                 {
-                    mmsdm_gd_instruct::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_gd_instruct::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "gd_instruct"))]
                 {
@@ -131,7 +148,12 @@ where
             | "GEQDESC" | "GEQRHS" | "SPDCPC" | "SPDICC" | "SPDRC" => {
                 #[cfg(feature = "generic_constraint")]
                 {
-                    mmsdm_generic_constraint::save(&mut mms_file, &file_key, client, chunk_size)
+                    mmsdm_generic_constraint::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
                         .await?;
                 }
                 #[cfg(not(feature = "generic_constraint"))]
@@ -145,7 +167,8 @@ where
             "IRAUCTION" | "IRAUCTION_BIDS" | "IRAUCTION_CONFIG" => {
                 #[cfg(feature = "irauction")]
                 {
-                    mmsdm_irauction::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_irauction::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "irauction"))]
                 {
@@ -158,7 +181,13 @@ where
             "MARKET_CONFIG" => {
                 #[cfg(feature = "market_config")]
                 {
-                    mmsdm_market_config::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_market_config::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "market_config"))]
                 {
@@ -171,7 +200,13 @@ where
             "MARKET_NOTICE" => {
                 #[cfg(feature = "market_notice")]
                 {
-                    mmsdm_market_notice::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_market_notice::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "market_notice"))]
                 {
@@ -184,7 +219,13 @@ where
             "MCC" => {
                 #[cfg(feature = "mcc_dispatch")]
                 {
-                    mmsdm_mcc_dispatch::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_mcc_dispatch::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "mcc_dispatch"))]
                 {
@@ -197,7 +238,8 @@ where
             "METERDATA" => {
                 #[cfg(feature = "meter_data")]
                 {
-                    mmsdm_meter_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_meter_data::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "meter_data"))]
                 {
@@ -210,7 +252,8 @@ where
             "NETWORK" => {
                 #[cfg(feature = "network")]
                 {
-                    mmsdm_network::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_network::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "network"))]
                 {
@@ -223,7 +266,8 @@ where
             "P5MIN" => {
                 #[cfg(feature = "p5min")]
                 {
-                    mmsdm_p5min::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_p5min::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "p5min"))]
                 {
@@ -237,12 +281,12 @@ where
                 #[cfg(feature = "participant_registration")]
                 {
                     mmsdm_participant_registration::save(
-                        &mut mms_file,
-                        &file_key,
-                        client,
-                        chunk_size,
-                    )
-                    .await?;
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "participant_registration"))]
                 {
@@ -255,7 +299,8 @@ where
             "PDPASA" => {
                 #[cfg(feature = "pdpasa")]
                 {
-                    mmsdm_pdpasa::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_pdpasa::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "pdpasa"))]
                 {
@@ -268,7 +313,13 @@ where
             "PREDISPATCH" => {
                 #[cfg(feature = "pre_dispatch")]
                 {
-                    mmsdm_pre_dispatch::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_pre_dispatch::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "pre_dispatch"))]
                 {
@@ -281,7 +332,8 @@ where
             "PRUDENTIAL" => {
                 #[cfg(feature = "prudentials")]
                 {
-                    mmsdm_prudentials::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_prudentials::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
                 }
                 #[cfg(not(feature = "prudentials"))]
                 {
@@ -294,7 +346,13 @@ where
             "MTPASA" | "RESERVE_DATA" => {
                 #[cfg(feature = "reserve_data")]
                 {
-                    mmsdm_reserve_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_reserve_data::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "reserve_data"))]
                 {
@@ -307,7 +365,12 @@ where
             "SETCFG" | "SETTLEMENTS_CONFIG" | "SETTLEMENT_CONFIG" => {
                 #[cfg(feature = "settlement_config")]
                 {
-                    mmsdm_settlement_config::save(&mut mms_file, &file_key, client, chunk_size)
+                    mmsdm_settlement_config::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
                         .await?;
                 }
                 #[cfg(not(feature = "settlement_config"))]
@@ -321,7 +384,12 @@ where
             "SETTLEMENTS" => {
                 #[cfg(feature = "settlement_data")]
                 {
-                    mmsdm_settlement_data::save(&mut mms_file, &file_key, client, chunk_size)
+                    mmsdm_settlement_data::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
                         .await?;
                 }
                 #[cfg(not(feature = "settlement_data"))]
@@ -335,7 +403,12 @@ where
             "STPASA" => {
                 #[cfg(feature = "stpasa_solution")]
                 {
-                    mmsdm_stpasa_solution::save(&mut mms_file, &file_key, client, chunk_size)
+                    mmsdm_stpasa_solution::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
                         .await?;
                 }
                 #[cfg(not(feature = "stpasa_solution"))]
@@ -349,7 +422,13 @@ where
             "TRADING" => {
                 #[cfg(feature = "trading_data")]
                 {
-                    mmsdm_trading_data::save(&mut mms_file, &file_key, client, chunk_size).await?;
+                    mmsdm_trading_data::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
                 }
                 #[cfg(not(feature = "trading_data"))]
                 {

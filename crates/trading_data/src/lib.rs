@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use chrono::Datelike as _;
 /// # Summary
 ///
