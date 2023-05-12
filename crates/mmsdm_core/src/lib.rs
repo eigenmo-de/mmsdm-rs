@@ -1,7 +1,7 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, fs, io, iter, result, str};
+use std::{collections, fmt, fs, io, iter, result, str, ops::{Sub, Div, Add}};
 
 use chrono::{Datelike, TimeZone};
 
@@ -339,6 +339,14 @@ where
 //     Ok(())
 // }
 
+// gets period, 1 based
+fn naive_time_to_five_min_period(nt: chrono::NaiveTime) -> u16 {
+    (nt.sub(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()).num_minutes().div(5).add(1)).try_into().unwrap()
+}
+
+
+
+
 // Represents a given dispatch period (5 min period)
 // Parsed from YYYYMMDDPPP
 #[derive(Debug, Clone, Copy, Ord, PartialEq, Eq, PartialOrd)]
@@ -356,6 +364,16 @@ impl DispatchPeriod {
     }
     fn format() -> &'static str {
         "%Y%m%d"
+    }
+    fn db_format() -> &'static str {
+        "%Y-%m-%dT%H:%M:%S"
+    }
+    pub fn from_db_str(s: String) -> Result<Self> {
+        let dt = chrono::NaiveDateTime::parse_from_str(&s, Self::db_format())?;
+        Ok(crate::DispatchPeriod {
+            date: dt.date(),
+            period: naive_time_to_five_min_period(dt.time()),
+        })
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
         self.date
@@ -404,9 +422,9 @@ impl<'de> serde::Deserialize<'de> for DispatchPeriod {
     {
         let s = String::deserialize(d)?;
         //dbg!(&s);
-        match s.parse() {
+        match s.parse().or_else(|_| crate::DispatchPeriod::from_db_str(s.clone())) {
             Err(e) => {
-                dbg!(&s[0..7]);
+                dbg!(&s);
                 dbg!(&e);
                 Err(serde::de::Error::custom(e))
             }
@@ -616,6 +634,16 @@ pub mod mms_time {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn naive_time_to_dispatch_period() {
+        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()), 1);
+        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(1, 0, 0).unwrap()), 13);
+        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(6, 3, 0).unwrap()), 73);
+        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(12, 47, 0).unwrap()), 154);
+        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(14, 30, 0).unwrap()), 175);
+        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(23, 59, 59).unwrap()), 288);
+    }
 
     #[test]
     fn dispatch_period() {
