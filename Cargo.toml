@@ -85,12 +85,12 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.17.1"
+version = "0.14.2"
 optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.11.3"
+version = "0.12.2"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true
@@ -231,12 +231,12 @@ optional = true
 
 [dev-dependencies]
 anyhow = "1"
-env_logger = "0.9"
+env_logger = "0.10.0"
 tokio = { version = "1", features = ["full"]  }
 tokio-util = { version = "0.7", features = ["compat"]  }
 flate2 = "1"
 reqwest = { version = "0.11", features = ["blocking"] }
-scraper = "0.12"
+scraper = "0.16"
 futures = "0.3"
 rayon = "1.5"
 once_cell = "1.3"
