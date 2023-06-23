@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  ANCILLARY_RECOVERY_SPLIT is public data, and is available to all participants. Source This table is updated infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -196,8 +195,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
 /// # Description
 ///  MARKETFEE data is public, so is available to all participants. Source MARKETFEE updates when fees change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -360,8 +358,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
 /// # Description
 ///  MARKETFEEDATA is public data, and is available to all participants. Source MARKETFEEDATA updates whenever fee rates change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -531,8 +528,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
 /// # Description
 ///  MARKETFEETRK data is public, so is available to all participants. Source MARKETFEETRK updated infrequently, when new annual rates must be inserted. Volume One record inserted per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -692,8 +688,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -847,8 +842,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -999,8 +993,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
 /// # Description
 ///  MARKET_FEE_EXCLUSION data is confidential to the relevant participant. Source MARKET_FEE_EXCLUSION updates only on change of participant configuration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1167,8 +1160,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
 /// # Description
 ///  MARKET_FEE_EXCLUSIONTRK is confidential to the participant. Source MARKET_FEE_EXCLUSIONTRK updates only on change of participant configuration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1342,8 +1334,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
 /// # Description
 ///  Source This view updates only on change of participant configuration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1542,8 +1533,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
 /// # Description
 ///  Note The column REALLOCATION_TYPE can be used in conjunction with CREDITPARTICIPANT or DEBITPARTICIPANT to determine who submitted a reallocation.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1776,8 +1766,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1930,8 +1919,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
 /// # Description
 ///  SETCFG_PARTICIPANT_MPF data is available to all participants. Volume Approximately 20,000 records per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2134,8 +2122,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
 /// # Description
 ///  SETCFG_PARTICIPANT_MPFTRK data is public, so is available to all participants. Volume Approximately 2,000 records per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2299,6 +2286,191 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
 }
 /// # Summary
 ///
+/// ## SETCFG_SAPS_SETT_PRICE
+///  _The Settlement Price for SAPS Energy in each Region_
+///
+/// * Data Set Name: Setcfg
+/// * File Name: Saps Sett Price
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * FROMDATE
+/// * REGIONID
+/// * TODATE
+/// * VERSION_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SetcfgSapsSettPrice1 {
+    /// The From Date of the SAPS Pricing Application Period
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub fromdate: chrono::NaiveDateTime,
+    /// The To Date of the SAPS Pricing Application Period
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub todate: chrono::NaiveDateTime,
+    /// The Region ID for which the calculated SAPS Price is applicable
+    pub regionid: String,
+    /// The Date time of the record generation
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    /// The Region Reference Price for SAPS in the Region
+    pub saps_rrp: Option<rust_decimal::Decimal>,
+    /// Whether the SAPS Price is Firm or Non-Firm
+    pub isfirm: Option<rust_decimal::Decimal>,
+    /// The Last Changed Date time of the record
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for SetcfgSapsSettPrice1 {
+    type PrimaryKey = SetcfgSapsSettPrice1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "SETCFG".into(),
+            table_name: Some("SAPS_SETT_PRICE".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> SetcfgSapsSettPrice1PrimaryKey {
+        SetcfgSapsSettPrice1PrimaryKey {
+            fromdate: self.fromdate,
+            regionid: self.regionid.clone(),
+            todate: self.todate,
+            version_datetime: self.version_datetime,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "setcfg_saps_sett_price_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct SetcfgSapsSettPrice1PrimaryKey {
+    pub fromdate: chrono::NaiveDateTime,
+    pub regionid: String,
+    pub todate: chrono::NaiveDateTime,
+    pub version_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for SetcfgSapsSettPrice1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for SetcfgSapsSettPrice1 {
+    type Row = SetcfgSapsSettPrice1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.fromdate == row.fromdate && self.regionid == row.regionid
+            && self.todate == row.todate && self.version_datetime == row.version_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for SetcfgSapsSettPrice1 {
+    type PrimaryKey = SetcfgSapsSettPrice1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.fromdate == key.fromdate && self.regionid == key.regionid
+            && self.todate == key.todate && self.version_datetime == key.version_datetime
+    }
+}
+impl mmsdm_core::CompareWithRow for SetcfgSapsSettPrice1PrimaryKey {
+    type Row = SetcfgSapsSettPrice1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.fromdate == row.fromdate && self.regionid == row.regionid
+            && self.todate == row.todate && self.version_datetime == row.version_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for SetcfgSapsSettPrice1PrimaryKey {
+    type PrimaryKey = SetcfgSapsSettPrice1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.fromdate == key.fromdate && self.regionid == key.regionid
+            && self.todate == key.todate && self.version_datetime == key.version_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("fromdate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("todate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("version_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("saps_rrp",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("isfirm",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut fromdate_array = Vec::new();
+        let mut todate_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut version_datetime_array = Vec::new();
+        let mut saps_rrp_array = Vec::new();
+        let mut isfirm_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            fromdate_array.push(row.fromdate.timestamp());
+            todate_array.push(row.todate.timestamp());
+            regionid_array.push(row.regionid);
+            version_datetime_array.push(row.version_datetime.timestamp());
+            saps_rrp_array
+                .push({
+                    row.saps_rrp
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            isfirm_array
+                .push({
+                    row.isfirm
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(fromdate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(todate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(saps_rrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(isfirm_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## SETCFG_WDRRR_CALENDAR
 ///  _Wholesale Demand Response Reimbursement Rate Calendar_
 ///
@@ -2308,8 +2480,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2468,8 +2639,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2792,6 +2962,18 @@ where
                     mms_file.header(),
                     &d,
                     "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpftrk1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("SAPS_SETT_PRICE"), version) if version <= 1_i32 => {
+            let d: Vec<SetcfgSapsSettPrice1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSetcfgSapsSettPrice1 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

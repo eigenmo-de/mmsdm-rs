@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -175,8 +174,7 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
 /// # Description
 ///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -390,13 +388,12 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
 ///
 /// * Data Set Name: Trading
 /// * File Name: Price
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 /// # Description
 ///  TRADINGPRICE data is public, so is available to all participants. Source TRADINGPRICE updates every 30 minutes. Notes INVALIDFLAG The INVALIDFLAG field is used to indicate whether the Trading interval price has been adjusted after the trading interval was completed. On a very restricted set of events, the market rules allow a dispatch price (5 min) to be adjusted on the next business day, and, when this occurs, the corresponding trading interval price for that region is also adjusted and marked as adjusted with INVALIDFLAG of 'A'. The INVALIDFLAG = 'Y' only applies to historical periods when not all six of the 5-minute dispatch intervals were run in the trading interval. System changes implemented on 30 September 2001 mean this situation no longer occurs since missing dispatch intervals are automatically populated from a previous interval. If the INVALIDFLAG field = '0', the price was not adjusted and all six dispatch intervals are present. Prices There is no field in the TRADINGPRICE table (or the MMS data model anywhere) telling you that the price is provisional or final. The only reliable method is to ensure that the trading date is at least 2 business days old.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -405,7 +402,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
 /// * RUNNO
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct TradingPrice2 {
+pub struct TradingPrice3 {
     /// Date that this data applies to
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -460,19 +457,27 @@ pub struct TradingPrice2 {
     pub lowerregrop: Option<rust_decimal::Decimal>,
     /// Status of regional prices for this dispatch interval "NOT FIRM" or "FIRM"
     pub price_status: Option<String>,
+    /// Regional Raise 1Sec Price - R1Price attribute after capping/flooring
+    pub raise1secrrp: Option<rust_decimal::Decimal>,
+    /// Raise1Sec Regional Original Price - uncapped/unfloored and unscaled
+    pub raise1secrop: Option<rust_decimal::Decimal>,
+    /// Regional Lower 1Sec Price - RegionSolution element L1Price attribute
+    pub lower1secrrp: Option<rust_decimal::Decimal>,
+    /// Lower1Sec Regional Original Price - uncapped/unfloored and unscaled
+    pub lower1secrop: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for TradingPrice2 {
-    type PrimaryKey = TradingPrice2PrimaryKey;
+impl mmsdm_core::GetTable for TradingPrice3 {
+    type PrimaryKey = TradingPrice3PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "TRADING".into(),
             table_name: Some("PRICE".into()),
-            version: 2,
+            version: 3,
         }
     }
-    fn primary_key(&self) -> TradingPrice2PrimaryKey {
-        TradingPrice2PrimaryKey {
+    fn primary_key(&self) -> TradingPrice3PrimaryKey {
+        TradingPrice3PrimaryKey {
             periodid: self.periodid,
             regionid: self.regionid.clone(),
             runno: self.runno,
@@ -488,49 +493,49 @@ impl mmsdm_core::GetTable for TradingPrice2 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "trading_price_v2_{}_{}", self.partition_suffix().year, self
+            "trading_price_v3_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct TradingPrice2PrimaryKey {
+pub struct TradingPrice3PrimaryKey {
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,
     pub runno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for TradingPrice2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for TradingPrice2 {
-    type Row = TradingPrice2;
+impl mmsdm_core::PrimaryKey for TradingPrice3PrimaryKey {}
+impl mmsdm_core::CompareWithRow for TradingPrice3 {
+    type Row = TradingPrice3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.periodid == row.periodid && self.regionid == row.regionid
             && self.runno == row.runno && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for TradingPrice2 {
-    type PrimaryKey = TradingPrice2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for TradingPrice3 {
+    type PrimaryKey = TradingPrice3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.periodid == key.periodid && self.regionid == key.regionid
             && self.runno == key.runno && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for TradingPrice2PrimaryKey {
-    type Row = TradingPrice2;
+impl mmsdm_core::CompareWithRow for TradingPrice3PrimaryKey {
+    type Row = TradingPrice3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.periodid == row.periodid && self.regionid == row.regionid
             && self.runno == row.runno && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for TradingPrice2PrimaryKey {
-    type PrimaryKey = TradingPrice2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for TradingPrice3PrimaryKey {
+    type PrimaryKey = TradingPrice3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.periodid == key.periodid && self.regionid == key.regionid
             && self.runno == key.runno && self.settlementdate == key.settlementdate
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for TradingPrice2 {
+impl mmsdm_core::ArrowSchema for TradingPrice3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -585,7 +590,15 @@ impl mmsdm_core::ArrowSchema for TradingPrice2 {
                 arrow2::datatypes::Field::new("lowerregrop",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("price_status",
-                arrow2::datatypes::DataType::LargeUtf8, true)
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("raise1secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5), true)
             ],
         )
     }
@@ -620,6 +633,10 @@ impl mmsdm_core::ArrowSchema for TradingPrice2 {
         let mut lowerregrrp_array = Vec::new();
         let mut lowerregrop_array = Vec::new();
         let mut price_status_array = Vec::new();
+        let mut raise1secrrp_array = Vec::new();
+        let mut raise1secrop_array = Vec::new();
+        let mut lower1secrrp_array = Vec::new();
+        let mut lower1secrop_array = Vec::new();
         for row in partition {
             settlementdate_array.push(row.settlementdate.timestamp());
             runno_array
@@ -790,6 +807,38 @@ impl mmsdm_core::ArrowSchema for TradingPrice2 {
                         })
                 });
             price_status_array.push(row.price_status);
+            raise1secrrp_array
+                .push({
+                    row.raise1secrrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1secrop_array
+                .push({
+                    row.raise1secrop
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secrrp_array
+                .push({
+                    row.lower1secrrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secrop_array
+                .push({
+                    row.lower1secrop
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -871,6 +920,18 @@ impl mmsdm_core::ArrowSchema for TradingPrice2 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(price_status_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secrrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secrop_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secrrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secrop_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -911,14 +972,14 @@ where
                 )
                 .await?;
         }
-        (Some("PRICE"), version) if version <= 2_i32 => {
-            let d: Vec<TradingPrice2> = mms_file.get_table()?;
+        (Some("PRICE"), version) if version <= 3_i32 => {
+            let d: Vec<TradingPrice3> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertTradingPrice2 @P1, @P2",
+                    "exec mmsdm_proc.InsertTradingPrice3 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

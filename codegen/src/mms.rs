@@ -2,6 +2,7 @@ use anyhow::anyhow;
 use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, ops::ControlFlow, str};
+use heck::ToSnakeCase;
 
 lazy_static::lazy_static! {
     static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();
@@ -16,34 +17,33 @@ lazy_static::lazy_static! {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct Report {
-    pub name: String,
     pub sub_type: String,
 }
 
 impl Report {
     pub fn should_skip(&self) -> bool {
         // skip historical dataset - there are no table definitions anyway
-        (self.name == "HISTORICAL")
-        || (self.name == "CONFIGURATION")
+        // (self.name == "HISTORICAL")
+        // || (self.name == "CONFIGURATION")
         // all the below seems to be missing
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTAGC")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTLOADSHED")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTREACTIVEPOWER")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTRESTARTSERVICES")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTRESTARTUNITS")
-        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_RUN")
-        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_PRED")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCCOMPENSATION")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCRECOVERY")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_RECOVERY")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_PAYMENT")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGIRFM")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_DIRECTION_RECONCILIATN")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLWHITEHOLE")
-        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRESERVERECOVERY")
-        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETLSHEDRECOVERY")
-        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRPOWERRECOVERY")
-        || (self.name == "VOLTAGE_INSTRUCTIONS")
+        self.sub_type == "CONTRACTAGC"
+        || self.sub_type == "CONTRACTLOADSHED"
+        || self.sub_type == "CONTRACTREACTIVEPOWER"
+        || self.sub_type == "CONTRACTRESTARTSERVICES"
+        || self.sub_type == "CONTRACTRESTARTUNITS"
+        || self.sub_type == "INTERMITTENT_P5_RUN"
+        || self.sub_type == "INTERMITTENT_P5_PRED"
+        || self.sub_type == "BILLINGAPCCOMPENSATION"
+        || self.sub_type == "BILLINGAPCRECOVERY"
+        || self.sub_type == "BILLING_RES_TRADER_RECOVERY"
+        || self.sub_type == "BILLING_RES_TRADER_PAYMENT"
+        || self.sub_type == "BILLINGIRFM"
+        || self.sub_type == "BILLING_DIRECTION_RECONCILIATN"
+        || self.sub_type == "BILLWHITEHOLE"
+        || self.sub_type == "SETRESERVERECOVERY"
+        || self.sub_type == "SETLSHEDRECOVERY"
+        || self.sub_type == "SETRPOWERRECOVERY"
+        // || (self.name == "VOLTAGE_INSTRUCTIONS")
     }
 }
 
@@ -334,7 +334,6 @@ pub struct TableColumn {
 
 impl TableColumn {
     pub fn field_name(&self) -> String {
-        use heck::SnakeCase;
         self.name.to_snake_case()
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumn> {

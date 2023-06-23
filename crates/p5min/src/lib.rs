@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -134,8 +133,7 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
 /// # Description
 ///  P5MIN_CASESOLUTION data is public, so is available to all participants. Source P5MIN_CASESOLUTION updates every 5 minutes. Volume Rows per day: 288
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -521,8 +519,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
 /// # Description
 ///  P5MIN_CONSTRAINTSOLUTION is public data, so is available to all participants. Source P5MIN_CONSTRAINTSOLUTION updates every five minutes. Volume Rows per day: ~2.3 million
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private &amp; Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -785,6 +782,343 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
 }
 /// # Summary
 ///
+/// ## P5MIN_FCAS_REQUIREMENT
+///  _5-minute Predispatch constraint tracking for Regional FCAS recovery_
+///
+/// * Data Set Name: P5min
+/// * File Name: Fcas Requirment
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
+/// * REGIONID
+/// * RUN_DATETIME
+/// * INTERVENTION
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct P5minFcasRequirment1 {
+    /// First interval of the 5-minute Predispatch case
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Datetime of the 5-minute Predispatch interval
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// ConstraintID Join to table GenConData
+    pub constraintid: String,
+    /// Region Identifier
+    pub regionid: String,
+    /// DUID offered type
+    pub bidtype: String,
+    /// Intervention flag
+    pub intervention: rust_decimal::Decimal,
+    /// Constraint EffectiveDate Join to table GenConData
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub constraint_effectivedate: Option<chrono::NaiveDateTime>,
+    /// Constraint Version number Join to table GenConData
+    pub constraint_versionno: Option<rust_decimal::Decimal>,
+    /// Marginal $ value for energy
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// The base cost of the constraint for this service, before the regulation/contingency split
+    pub base_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted cost of the constraint for this service, after the regulation/contingency split
+    pub adjusted_cost: Option<rust_decimal::Decimal>,
+    /// An estimated value for the constraint CMPF, based on 5- minute Predispatch data
+    pub estimated_cmpf: Option<rust_decimal::Decimal>,
+    /// An estimated value for the constraint CRMPF, based on 5-minute Predispatch data
+    pub estimated_crmpf: Option<rust_decimal::Decimal>,
+    /// Estimated recovery factor for CMPF based recovery
+    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
+    /// Estimated recovery for CRMPF based recovery
+    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
+    /// Last changed date for the record
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for P5minFcasRequirment1 {
+    type PrimaryKey = P5minFcasRequirment1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "P5MIN".into(),
+            table_name: Some("FCAS_REQUIRMENT".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> P5minFcasRequirment1PrimaryKey {
+        P5minFcasRequirment1PrimaryKey {
+            bidtype: self.bidtype.clone(),
+            constraintid: self.constraintid.clone(),
+            interval_datetime: self.interval_datetime,
+            regionid: self.regionid.clone(),
+            run_datetime: self.run_datetime,
+            intervention: self.intervention,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.interval_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+                .unwrap(),
+        }
+    }
+    fn partition_name(&self) -> String {
+        format!(
+            "p5min_fcas_requirment_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct P5minFcasRequirment1PrimaryKey {
+    pub bidtype: String,
+    pub constraintid: String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub regionid: String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub intervention: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for P5minFcasRequirment1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for P5minFcasRequirment1 {
+    type Row = P5minFcasRequirment1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype && self.constraintid == row.constraintid
+            && self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for P5minFcasRequirment1 {
+    type PrimaryKey = P5minFcasRequirment1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype && self.constraintid == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.regionid == key.regionid && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
+    }
+}
+impl mmsdm_core::CompareWithRow for P5minFcasRequirment1PrimaryKey {
+    type Row = P5minFcasRequirment1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.bidtype == row.bidtype && self.constraintid == row.constraintid
+            && self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid && self.run_datetime == row.run_datetime
+            && self.intervention == row.intervention
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for P5minFcasRequirment1PrimaryKey {
+    type PrimaryKey = P5minFcasRequirment1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype && self.constraintid == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.regionid == key.regionid && self.run_datetime == key.run_datetime
+            && self.intervention == key.intervention
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("run_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("interval_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("constraintid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("bidtype",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("intervention",
+                arrow2::datatypes::DataType::Decimal(2, 0), false),
+                arrow2::datatypes::Field::new("constraint_effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("constraint_versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("marginalvalue",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("base_cost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("adjusted_cost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("estimated_cmpf",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("estimated_crmpf",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("recovery_factor_cmpf",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("recovery_factor_crmpf",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut run_datetime_array = Vec::new();
+        let mut interval_datetime_array = Vec::new();
+        let mut constraintid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut bidtype_array = Vec::new();
+        let mut intervention_array = Vec::new();
+        let mut constraint_effectivedate_array = Vec::new();
+        let mut constraint_versionno_array = Vec::new();
+        let mut marginalvalue_array = Vec::new();
+        let mut base_cost_array = Vec::new();
+        let mut adjusted_cost_array = Vec::new();
+        let mut estimated_cmpf_array = Vec::new();
+        let mut estimated_crmpf_array = Vec::new();
+        let mut recovery_factor_cmpf_array = Vec::new();
+        let mut recovery_factor_crmpf_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            run_datetime_array.push(row.run_datetime.timestamp());
+            interval_datetime_array.push(row.interval_datetime.timestamp());
+            constraintid_array.push(row.constraintid);
+            regionid_array.push(row.regionid);
+            bidtype_array.push(row.bidtype);
+            intervention_array
+                .push({
+                    let mut val = row.intervention;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            constraint_effectivedate_array
+                .push(row.constraint_effectivedate.map(|val| val.timestamp()));
+            constraint_versionno_array
+                .push({
+                    row.constraint_versionno
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            marginalvalue_array
+                .push({
+                    row.marginalvalue
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            base_cost_array
+                .push({
+                    row.base_cost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            adjusted_cost_array
+                .push({
+                    row.adjusted_cost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            estimated_cmpf_array
+                .push({
+                    row.estimated_cmpf
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            estimated_crmpf_array
+                .push({
+                    row.estimated_crmpf
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            recovery_factor_cmpf_array
+                .push({
+                    row.recovery_factor_cmpf
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            recovery_factor_crmpf_array
+                .push({
+                    row.recovery_factor_crmpf
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(constraintid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(bidtype_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(intervention_array)
+                    .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(constraint_effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(constraint_versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marginalvalue_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(base_cost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(adjusted_cost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(estimated_cmpf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(estimated_crmpf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recovery_factor_cmpf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recovery_factor_crmpf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## P5MIN_INTERCONNECTORSOLN
 ///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.<br>_
 ///
@@ -795,8 +1129,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
 /// # Description
 ///  P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants. Source P5MIN_INTERCONNECTORSOLN updates every 5 minutes. Volume Rows per day: 1440 Based on 200 interconnector/binding constraints per interval
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1228,8 +1561,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2107,8 +2439,7 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2278,8 +2609,7 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3149,13 +3479,12 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
 ///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
-/// * Data Version: 7
+/// * Data Version: 8
 ///
 /// # Description
 ///  P5MIN_REGIONSOLUTION is public data, so is available to all participants. Source P5MIN_REGIONSOLUTION updates every 5 minutes. Volume Rows per day: 1440
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3164,7 +3493,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
 /// * RUN_DATETIME
 /// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minRegionsolution7 {
+pub struct P5minRegionsolution8 {
     /// Unique Timestamp Identifier for this study
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
@@ -3376,19 +3705,35 @@ pub struct P5minRegionsolution7 {
     pub wdr_available: Option<rust_decimal::Decimal>,
     /// Regional aggregated dispatched MW for Wholesale Demand Response (WDR) units
     pub wdr_dispatched: Option<rust_decimal::Decimal>,
+    /// For Semi-Scheduled units. Aggregate Energy Availability from Solar units in that region
+    pub ss_solar_availability: Option<rust_decimal::Decimal>,
+    /// For Semi-Scheduled units. Aggregate Energy Availability from Wind units in that region
+    pub ss_wind_availability: Option<rust_decimal::Decimal>,
+    /// Regional Raise 1Sec Price - R1Price attribute after capping/flooring
+    pub raise1secrrp: Option<rust_decimal::Decimal>,
+    /// Raise1Sec Regional Original Price - uncapped/unfloored and unscaled
+    pub raise1secrop: Option<rust_decimal::Decimal>,
+    /// Regional Lower 1Sec Price - RegionSolution element L1Price attribute
+    pub lower1secrrp: Option<rust_decimal::Decimal>,
+    /// Lower1Sec Regional Original Price - uncapped/unfloored and unscaled
+    pub lower1secrop: Option<rust_decimal::Decimal>,
+    /// Total Raise1Sec Dispatched in Region - RegionSolution element R1Dispatch attribute
+    pub raise1seclocaldispatch: Option<rust_decimal::Decimal>,
+    /// Total Lower1Sec Dispatched in Region - RegionSolution element L1Dispatch attribute
+    pub lower1seclocaldispatch: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for P5minRegionsolution7 {
-    type PrimaryKey = P5minRegionsolution7PrimaryKey;
+impl mmsdm_core::GetTable for P5minRegionsolution8 {
+    type PrimaryKey = P5minRegionsolution8PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
             table_name: Some("REGIONSOLUTION".into()),
-            version: 7,
+            version: 8,
         }
     }
-    fn primary_key(&self) -> P5minRegionsolution7PrimaryKey {
-        P5minRegionsolution7PrimaryKey {
+    fn primary_key(&self) -> P5minRegionsolution8PrimaryKey {
+        P5minRegionsolution8PrimaryKey {
             interval_datetime: self.interval_datetime,
             regionid: self.regionid.clone(),
             run_datetime: self.run_datetime,
@@ -3404,45 +3749,45 @@ impl mmsdm_core::GetTable for P5minRegionsolution7 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "p5min_regionsolution_v7_{}_{}", self.partition_suffix().year, self
+            "p5min_regionsolution_v8_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct P5minRegionsolution7PrimaryKey {
+pub struct P5minRegionsolution8PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub run_datetime: chrono::NaiveDateTime,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for P5minRegionsolution7PrimaryKey {}
-impl mmsdm_core::CompareWithRow for P5minRegionsolution7 {
-    type Row = P5minRegionsolution7;
+impl mmsdm_core::PrimaryKey for P5minRegionsolution8PrimaryKey {}
+impl mmsdm_core::CompareWithRow for P5minRegionsolution8 {
+    type Row = P5minRegionsolution8;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
             && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7 {
-    type PrimaryKey = P5minRegionsolution7PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution8 {
+    type PrimaryKey = P5minRegionsolution8PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
             && self.intervention == key.intervention
     }
 }
-impl mmsdm_core::CompareWithRow for P5minRegionsolution7PrimaryKey {
-    type Row = P5minRegionsolution7;
+impl mmsdm_core::CompareWithRow for P5minRegionsolution8PrimaryKey {
+    type Row = P5minRegionsolution8;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
             && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7PrimaryKey {
-    type PrimaryKey = P5minRegionsolution7PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution8PrimaryKey {
+    type PrimaryKey = P5minRegionsolution8PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
@@ -3450,7 +3795,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution7PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
+impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -3662,6 +4007,22 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
                 arrow2::datatypes::Field::new("wdr_available",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("wdr_dispatched",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("ss_solar_availability",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("ss_wind_availability",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secrop",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1seclocaldispatch",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1seclocaldispatch",
                 arrow2::datatypes::DataType::Decimal(15, 5), true)
             ],
         )
@@ -3775,6 +4136,14 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
         let mut wdr_initialmw_array = Vec::new();
         let mut wdr_available_array = Vec::new();
         let mut wdr_dispatched_array = Vec::new();
+        let mut ss_solar_availability_array = Vec::new();
+        let mut ss_wind_availability_array = Vec::new();
+        let mut raise1secrrp_array = Vec::new();
+        let mut raise1secrop_array = Vec::new();
+        let mut lower1secrrp_array = Vec::new();
+        let mut lower1secrop_array = Vec::new();
+        let mut raise1seclocaldispatch_array = Vec::new();
+        let mut lower1seclocaldispatch_array = Vec::new();
         for row in partition {
             run_datetime_array.push(row.run_datetime.timestamp());
             interval_datetime_array.push(row.interval_datetime.timestamp());
@@ -4578,6 +4947,70 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
                             val.mantissa()
                         })
                 });
+            ss_solar_availability_array
+                .push({
+                    row.ss_solar_availability
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            ss_wind_availability_array
+                .push({
+                    row.ss_wind_availability
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1secrrp_array
+                .push({
+                    row.raise1secrrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1secrop_array
+                .push({
+                    row.raise1secrop
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secrrp_array
+                .push({
+                    row.lower1secrrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secrop_array
+                .push({
+                    row.lower1secrop
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1seclocaldispatch_array
+                .push({
+                    row.raise1seclocaldispatch
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1seclocaldispatch_array
+                .push({
+                    row.lower1seclocaldispatch
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -4893,6 +5326,30 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_dispatched_array)
                     .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_solar_availability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_wind_availability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secrrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secrop_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secrrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secrop_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1seclocaldispatch_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1seclocaldispatch_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -4909,8 +5366,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution7 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5085,8 +5541,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5229,13 +5684,12 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
 ///
 /// * Data Set Name: P5min
 /// * File Name: Unitsolution
-/// * Data Version: 4
+/// * Data Version: 5
 ///
 /// # Description
 ///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5244,7 +5698,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
 /// * RUN_DATETIME
 /// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct P5minUnitsolution4 {
+pub struct P5minUnitsolution5 {
     /// Unique Timestamp Identifier for this study
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
@@ -5283,7 +5737,7 @@ pub struct P5minUnitsolution4 {
     pub lowerreg: Option<rust_decimal::Decimal>,
     /// Raise Regulation reserve target
     pub raisereg: Option<rust_decimal::Decimal>,
-    /// Energy Availability (MW)
+    /// For Scheduled units, this is the MAXAVAIL bid availability For Semi-scheduled units, this is the lower of MAXAVAIL bid availability and UIGF
     pub availability: Option<rust_decimal::Decimal>,
     /// Raise 6sec status flag
     pub raise6secflags: Option<rust_decimal::Decimal>,
@@ -5310,19 +5764,31 @@ pub struct P5minUnitsolution4 {
     pub intervention: rust_decimal::Decimal,
     /// Minutes for which the unit has been in the current DISPATCHMODE. From NEMDE TRADERSOLUTION element FSTARGETMODETIME attribute.
     pub dispatchmodetime: Option<rust_decimal::Decimal>,
+    /// Mode specific to units within an aggregate. 0 - no monitoring, 1 - aggregate monitoring, 2 - individual monitoring due to constraint
+    pub conformance_mode: Option<rust_decimal::Decimal>,
+    /// For Semi-Scheduled units. Unconstrained Intermittent Generation Forecast value provided to NEMDE
+    pub uigf: Option<rust_decimal::Decimal>,
+    /// Dispatched Raise1Sec - TraderSolution element R1Target attribute
+    pub raise1sec: Option<rust_decimal::Decimal>,
+    /// TraderSolution element R1Flags attribute
+    pub raise1secflags: Option<rust_decimal::Decimal>,
+    /// Dispatched Lower1Sec - TraderSolution element L1Target attribute
+    pub lower1sec: Option<rust_decimal::Decimal>,
+    /// TraderSolution element L1Flags attribute
+    pub lower1secflags: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for P5minUnitsolution4 {
-    type PrimaryKey = P5minUnitsolution4PrimaryKey;
+impl mmsdm_core::GetTable for P5minUnitsolution5 {
+    type PrimaryKey = P5minUnitsolution5PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "P5MIN".into(),
             table_name: Some("UNITSOLUTION".into()),
-            version: 4,
+            version: 5,
         }
     }
-    fn primary_key(&self) -> P5minUnitsolution4PrimaryKey {
-        P5minUnitsolution4PrimaryKey {
+    fn primary_key(&self) -> P5minUnitsolution5PrimaryKey {
+        P5minUnitsolution5PrimaryKey {
             duid: self.duid.clone(),
             interval_datetime: self.interval_datetime,
             run_datetime: self.run_datetime,
@@ -5338,45 +5804,45 @@ impl mmsdm_core::GetTable for P5minUnitsolution4 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "p5min_unitsolution_v4_{}_{}", self.partition_suffix().year, self
+            "p5min_unitsolution_v5_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct P5minUnitsolution4PrimaryKey {
+pub struct P5minUnitsolution5PrimaryKey {
     pub duid: String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for P5minUnitsolution4PrimaryKey {}
-impl mmsdm_core::CompareWithRow for P5minUnitsolution4 {
-    type Row = P5minUnitsolution4;
+impl mmsdm_core::PrimaryKey for P5minUnitsolution5PrimaryKey {}
+impl mmsdm_core::CompareWithRow for P5minUnitsolution5 {
+    type Row = P5minUnitsolution5;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4 {
-    type PrimaryKey = P5minUnitsolution4PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution5 {
+    type PrimaryKey = P5minUnitsolution5PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
             && self.intervention == key.intervention
     }
 }
-impl mmsdm_core::CompareWithRow for P5minUnitsolution4PrimaryKey {
-    type Row = P5minUnitsolution4;
+impl mmsdm_core::CompareWithRow for P5minUnitsolution5PrimaryKey {
+    type Row = P5minUnitsolution5;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4PrimaryKey {
-    type PrimaryKey = P5minUnitsolution4PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution5PrimaryKey {
+    type PrimaryKey = P5minUnitsolution5PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
@@ -5384,7 +5850,7 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution4PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
+impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -5449,7 +5915,19 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
                 arrow2::datatypes::Field::new("intervention",
                 arrow2::datatypes::DataType::Decimal(2, 0), false),
                 arrow2::datatypes::Field::new("dispatchmodetime",
-                arrow2::datatypes::DataType::Decimal(4, 0), true)
+                arrow2::datatypes::DataType::Decimal(4, 0), true),
+                arrow2::datatypes::Field::new("conformance_mode",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("uigf",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1sec",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secflags",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("lower1sec",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secflags",
+                arrow2::datatypes::DataType::Decimal(3, 0), true)
             ],
         )
     }
@@ -5489,6 +5967,12 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
         let mut semidispatchcap_array = Vec::new();
         let mut intervention_array = Vec::new();
         let mut dispatchmodetime_array = Vec::new();
+        let mut conformance_mode_array = Vec::new();
+        let mut uigf_array = Vec::new();
+        let mut raise1sec_array = Vec::new();
+        let mut raise1secflags_array = Vec::new();
+        let mut lower1sec_array = Vec::new();
+        let mut lower1secflags_array = Vec::new();
         for row in partition {
             run_datetime_array.push(row.run_datetime.timestamp());
             interval_datetime_array.push(row.interval_datetime.timestamp());
@@ -5701,6 +6185,54 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
                             val.mantissa()
                         })
                 });
+            conformance_mode_array
+                .push({
+                    row.conformance_mode
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            uigf_array
+                .push({
+                    row.uigf
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1sec_array
+                .push({
+                    row.raise1sec
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1secflags_array
+                .push({
+                    row.raise1secflags
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_array
+                .push({
+                    row.lower1sec
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secflags_array
+                .push({
+                    row.lower1secflags
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -5797,6 +6329,24 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution4 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(dispatchmodetime_array)
                     .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(conformance_mode_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uigf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secflags_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secflags_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -5849,6 +6399,18 @@ where
                 )
                 .await?;
         }
+        (Some("FCAS_REQUIRMENT"), version) if version <= 1_i32 => {
+            let d: Vec<P5minFcasRequirment1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertP5minFcasRequirment1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
         (Some("INTERCONNECTORSOLN"), version) if version <= 4_i32 => {
             let d: Vec<P5minInterconnectorsoln4> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
@@ -5897,14 +6459,14 @@ where
                 )
                 .await?;
         }
-        (Some("REGIONSOLUTION"), version) if version <= 7_i32 => {
-            let d: Vec<P5minRegionsolution7> = mms_file.get_table()?;
+        (Some("REGIONSOLUTION"), version) if version <= 8_i32 => {
+            let d: Vec<P5minRegionsolution8> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertP5minRegionsolution7 @P1, @P2",
+                    "exec mmsdm_proc.InsertP5minRegionsolution8 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -5933,14 +6495,14 @@ where
                 )
                 .await?;
         }
-        (Some("UNITSOLUTION"), version) if version <= 4_i32 => {
-            let d: Vec<P5minUnitsolution4> = mms_file.get_table()?;
+        (Some("UNITSOLUTION"), version) if version <= 5_i32 => {
+            let d: Vec<P5minUnitsolution5> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertP5minUnitsolution4 @P1, @P2",
+                    "exec mmsdm_proc.InsertP5minUnitsolution5 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

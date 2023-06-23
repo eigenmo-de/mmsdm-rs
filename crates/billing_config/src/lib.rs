@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  BILLINGCALENDAR is public data, and is available to all participants. Source Infrequently, only when inserting billing weeks for a future contractyear. Volume 52-53 records inserted per contractyear
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -220,8 +219,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
 /// # Description
 ///  GST_BAS_CLASS data is public to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -341,8 +339,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
 /// # Description
 ///  GST_RATE data is public to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -512,8 +509,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
 /// # Description
 ///  GST_TRANSACTION_CLASS data is public to all participants. Source GST_TRANSACTION_CLASS updates infrequently, when new transactions are introduced to the NEM. Volume Generally volume is fewer than one hundred records.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -683,8 +679,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
 /// # Description
 ///  GST_TRANSACTION_TYPE data is public to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -822,8 +817,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
 /// # Description
 ///  SECDEPOSIT_INTEREST_RATE data is public to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -982,8 +976,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///

@@ -21,7 +21,7 @@ fn main() -> anyhow::Result<()> {
             println!("Got first inner file");
             let aemo = mmsdm::AemoFile::from_reader(inner_file)?;
             dbg!(aemo.file_keys());
-            let dispatch: Vec<_> = aemo.get_table::<data_model::DispatchUnitSolution3>()?;
+            let dispatch: Vec<_> = aemo.get_table::<data_model::DispatchUnitSolution4>()?;
             dbg!(dispatch.len());
             partitions = mmsdm::merge_with_partitions(partitions, &dispatch);
             dbg!(partitions.len());

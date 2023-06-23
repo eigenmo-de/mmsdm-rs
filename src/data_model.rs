@@ -40,8 +40,8 @@ pub use mmsdm_mcc_dispatch::*;
 #[cfg(feature = "meter_data")]
 pub use mmsdm_meter_data::*;
 
-#[cfg(feature = "mtpasa_solution")]
-pub use mmsdm_mtpasa_solution::*;
+#[cfg(feature = "mtpasa")]
+pub use mmsdm_mtpasa::*;
 
 #[cfg(feature = "network")]
 pub use mmsdm_network::*;

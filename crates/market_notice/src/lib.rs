@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  MARKETNOTICEDATA data is confidential to each participant, although some notices are sent to all participants. Source MARKETNOTICEDATA updates immediately available.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private &amp; Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -172,8 +171,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
 /// # Description
 ///  MARKETNOTICETYPE data is public, so is available to all participants. Source MARKETNOTICETYPE updates whenever market notice types change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -302,8 +300,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
 /// # Description
 ///  PARTICIPANTNOTICETRK data is Confidential to the relevant participant. Source PARTICIPANTNOTICETRK updates immediately, whenever a participant notice is issued.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///

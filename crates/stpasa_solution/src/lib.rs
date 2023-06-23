@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  STPASA_CASESOLUTION is public data. Source STPASA_CASESOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 12 Mb per month: &lt;1
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -377,8 +376,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
 /// # Description
 ///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -607,8 +605,7 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
 /// # Description
 ///  STPASA_INTERCONNECTORSOLN is public so is available to all participants. Source STPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 576 Mb per month: 4
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -887,8 +884,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
 /// # Description
 ///  STPASA_REGIONSOLUTION is public so is available to all participants. Source STPASA_REGIONSOLUTION is updated each STPASA run (i.e every 2 hours). Volume Rows per day: 480 Mb per month: 8
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -918,9 +914,9 @@ pub struct StpasaRegionsolution7 {
     pub capacityreq: Option<rust_decimal::Decimal>,
     /// Sum of: (Region Period Demand - given Demand50)/Period (sum by trading day, entered in first period of trading day, GWh)
     pub energyreqdemand50: Option<rust_decimal::Decimal>,
-    /// Region energy unconstrained MW capacity subject to energy and network security constraints
+    /// In a Region, capacity from generation/Load with no Daily Energy Constraint, subject to network security constraints
     pub unconstrainedcapacity: Option<rust_decimal::Decimal>,
-    /// Available capacity (MW) in this region energy constrained MW capacity subject to energy and network security constraints
+    /// In a Region, capacity from generation/Load with non-zero Daily Energy Constraint, subject to network security constraints
     pub constrainedcapacity: Option<rust_decimal::Decimal>,
     /// Net export in MW out of this region in the capacity adequacy evaluation. Export if &gt; 0, Import if &lt; 0.
     pub netinterchangeunderscarcity: Option<rust_decimal::Decimal>,
@@ -936,7 +932,7 @@ pub struct StpasaRegionsolution7 {
     pub maxsparecapacity: Option<rust_decimal::Decimal>,
     /// The LOR Condition determined from the Maximum Spare Capacity value: 0 - no condition, 1 - LOR1 condition, 2 - LOR2 condition, 3 - LOR3 condition
     pub lorcondition: Option<rust_decimal::Decimal>,
-    /// Sum of  MAXAVAIL quantities offered by all Scheduled Generators in a given Region for a given PERIODID.
+    /// Sum of MAXAVAIL quantities offered by all Scheduled units and Availability of all semi-scheduled units limited by MAXAVAIL in a given Region for a given PERIODID
     pub aggregatecapacityavailable: Option<rust_decimal::Decimal>,
     /// Sum of  MAXAVAIL quantities bid by of all Scheduled Loads in a given Region for a given PERIODID.
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
@@ -963,27 +959,27 @@ pub struct StpasaRegionsolution7 {
     pub demand_and_nonschedgen: Option<rust_decimal::Decimal>,
     /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW).
     pub uigf: Option<rust_decimal::Decimal>,
-    /// Aggregate Regional UIGF availability
-    pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
-    /// Aggregate Regional UIGF availability for LOR
-    pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
+    /// Constrained generation forecast for semi-scheduled units for the region. For RELIABILITY_LRC run semi-scheduled generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run semi-scheduled generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
+    pub semischeduledcapacity: Option<rust_decimal::Decimal>,
+    /// Constrained generation forecast for semi-scheduled units for the region for the LOR run type. Semi-scheduled generation is constrained by both System Normal and Outage constraints, and incorporate MAXAVAIL limits.
+    pub lor_semischeduledcapacity: Option<rust_decimal::Decimal>,
     /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
     /// Two Largest Creditable Risks. MW value for highest two credible contingencies.
     pub lcr2: Option<rust_decimal::Decimal>,
     /// Forecasting Uncertainty Measure. MW value of reserve calculated as defined in the Reserve Level Declaration Guidelines
     pub fum: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW) where the primary fuel source is solar
+    /// Unconstrained Intermittent Generation Forecast for solar for the region. For RELIABILITY_LRC and OUTAGE_LRC run this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run this is the POE50 forecast
     pub ss_solar_uigf: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW) where the primary fuel source is wind
+    /// Unconstrained Intermittent Generation Forecast for wind for the region. For RELIABILITY_LRC and OUTAGE_LRC run this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run this is the POE50 forecast
     pub ss_wind_uigf: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled UIGF availability where the primary fuel source is solar
+    /// Constrained generation forecast for solar for the region. For RELIABILITY_LRC run solar generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run solar generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_solar_capacity: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled UIGF availability where the primary fuel source is wind
+    /// Constrained generation forecast for wind for the region. For RELIABILITY_LRC run wind generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run wind generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_wind_capacity: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is solar and StudyRegion = Region
+    /// Constrained generation forecast for solar for the region. For RELIABILITY_LRC run solar generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run solar generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_solar_cleared: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is wind and StudyRegion = Region
+    /// Constrained generation forecast for wind for the region. For RELIABILITY_LRC run wind generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run wind generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_wind_cleared: Option<rust_decimal::Decimal>,
     /// Regional aggregated Wholesale Demand Response (WDR) availability in MW.
     pub wdr_available: Option<rust_decimal::Decimal>,
@@ -1127,9 +1123,9 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("uigf",
                 arrow2::datatypes::DataType::Decimal(12, 2), true),
-                arrow2::datatypes::Field::new("semi_scheduled_capacity",
+                arrow2::datatypes::Field::new("semischeduledcapacity",
                 arrow2::datatypes::DataType::Decimal(12, 2), true),
-                arrow2::datatypes::Field::new("lor_semi_scheduled_capacity",
+                arrow2::datatypes::Field::new("lor_semischeduledcapacity",
                 arrow2::datatypes::DataType::Decimal(12, 2), true),
                 arrow2::datatypes::Field::new("lcr",
                 arrow2::datatypes::DataType::Decimal(16, 6), true),
@@ -1194,8 +1190,8 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
         let mut totalintermittentgeneration_array = Vec::new();
         let mut demand_and_nonschedgen_array = Vec::new();
         let mut uigf_array = Vec::new();
-        let mut semi_scheduled_capacity_array = Vec::new();
-        let mut lor_semi_scheduled_capacity_array = Vec::new();
+        let mut semischeduledcapacity_array = Vec::new();
+        let mut lor_semischeduledcapacity_array = Vec::new();
         let mut lcr_array = Vec::new();
         let mut lcr2_array = Vec::new();
         let mut fum_array = Vec::new();
@@ -1422,17 +1418,17 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                             val.mantissa()
                         })
                 });
-            semi_scheduled_capacity_array
+            semischeduledcapacity_array
                 .push({
-                    row.semi_scheduled_capacity
+                    row.semischeduledcapacity
                         .map(|mut val| {
                             val.rescale(2);
                             val.mantissa()
                         })
                 });
-            lor_semi_scheduled_capacity_array
+            lor_semischeduledcapacity_array
                 .push({
-                    row.lor_semi_scheduled_capacity
+                    row.lor_semischeduledcapacity
                         .map(|mut val| {
                             val.rescale(2);
                             val.mantissa()
@@ -1630,10 +1626,10 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uigf_array)
                     .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(semi_scheduled_capacity_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(semischeduledcapacity_array)
                     .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lor_semi_scheduled_capacity_array)
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lor_semischeduledcapacity_array)
                     .to(arrow2::datatypes::DataType::Decimal(12, 2))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lcr_array)

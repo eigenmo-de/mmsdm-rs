@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -184,8 +183,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -375,8 +373,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -578,8 +575,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -732,8 +728,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -985,8 +980,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1246,8 +1240,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
 /// # Description
 ///  Source &nbsp; INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of intermittent generation out to 8 days ahead. Volume ~18,000 rows per generator per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1414,10 +1407,9 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
 /// * Data Version: 1
 ///
 /// # Description
-///  Source INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of wind generation out to 40 hours ahead. Volume ~1,500,000 rows per generator per year
+///  Source INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of wind generation out to 8 days ahead. Volume ~1,500,000 rows per generator per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1630,8 +1622,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1793,8 +1784,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1959,6 +1949,168 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
 }
 /// # Summary
 ///
+/// ## INTERMITTENT_GEN_SCADA
+///  _INTERMITTENT_GEN_SCADA provides the SCADA Availability for every intermittent generating unit, including Elements Available (wind turbines/solar inverters) and Local Limit_
+///
+/// * Data Set Name: Demand
+/// * File Name: Intermittent Gen Scada
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * RUN_DATETIME
+/// * SCADA_TYPE
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct DemandIntermittentGenScada1 {
+    /// Date Time of the dispatch interval (interval ending)
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Dispatchable Unit Identifier
+    pub duid: String,
+    /// SCADA snapshot for intermittent generating unit at start of interval for a specified SCADA signal type. ELAV = Total Elements Available (# turbines for wind farms, # inverters for solar farms); LOCL = Local Limit (MW).
+    pub scada_type: String,
+    /// SCADA value snapshot for intermittent generating unit at start of interval for a specified SCADA signal type.
+    pub scada_value: Option<rust_decimal::Decimal>,
+    /// SCADA quality snapshot for intermittent generating unit at start of interval for a specified SCADA signal type.
+    pub scada_quality: Option<String>,
+}
+impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
+    type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "DEMAND".into(),
+            table_name: Some("INTERMITTENT_GEN_SCADA".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> DemandIntermittentGenScada1PrimaryKey {
+        DemandIntermittentGenScada1PrimaryKey {
+            duid: self.duid.clone(),
+            run_datetime: self.run_datetime,
+            scada_type: self.scada_type.clone(),
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.run_datetime.year(),
+            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+                .unwrap(),
+        }
+    }
+    fn partition_name(&self) -> String {
+        format!(
+            "demand_intermittent_gen_scada_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct DemandIntermittentGenScada1PrimaryKey {
+    pub duid: String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub scada_type: String,
+}
+impl mmsdm_core::PrimaryKey for DemandIntermittentGenScada1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for DemandIntermittentGenScada1 {
+    type Row = DemandIntermittentGenScada1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.duid == row.duid && self.run_datetime == row.run_datetime
+            && self.scada_type == row.scada_type
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenScada1 {
+    type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.run_datetime == key.run_datetime
+            && self.scada_type == key.scada_type
+    }
+}
+impl mmsdm_core::CompareWithRow for DemandIntermittentGenScada1PrimaryKey {
+    type Row = DemandIntermittentGenScada1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.duid == row.duid && self.run_datetime == row.run_datetime
+            && self.scada_type == row.scada_type
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenScada1PrimaryKey {
+    type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.run_datetime == key.run_datetime
+            && self.scada_type == key.scada_type
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("run_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("duid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("scada_type",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("scada_value",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("scada_quality",
+                arrow2::datatypes::DataType::LargeUtf8, true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut run_datetime_array = Vec::new();
+        let mut duid_array = Vec::new();
+        let mut scada_type_array = Vec::new();
+        let mut scada_value_array = Vec::new();
+        let mut scada_quality_array = Vec::new();
+        for row in partition {
+            run_datetime_array.push(row.run_datetime.timestamp());
+            duid_array.push(row.duid);
+            scada_type_array.push(row.scada_type);
+            scada_value_array
+                .push({
+                    row.scada_value
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            scada_quality_array.push(row.scada_quality);
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(duid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(scada_type_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(scada_value_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(scada_quality_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## MTPASA_INTERMITTENT_AVAIL
 ///  _A submission of expected plant availability for intermittent generators for use in MTPASA intermittent generation forecasts_
 ///
@@ -1968,8 +2120,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2164,8 +2315,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2339,8 +2489,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 /// # Description
 ///  The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records. Source PERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date. Volume 1296000 rows per year Note In the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are: · UnRestricted Profile  = ResDemand + MR_Schedule · Restricted Profile  = ResDemand
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2601,8 +2750,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
 /// # Description
 ///  RESDEMANDTRK data is public, so is available to all participants. Source RESDEMANDTRK updates are ad hoc. Volume 27000 rows per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2796,8 +2944,7 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2978,8 +3125,7 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3308,6 +3454,18 @@ where
                     mms_file.header(),
                     &d,
                     "exec mmsdm_proc.InsertDemandIntermittentGenLimitDay1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("INTERMITTENT_GEN_SCADA"), version) if version <= 1_i32 => {
+            let d: Vec<DemandIntermittentGenScada1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertDemandIntermittentGenScada1 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

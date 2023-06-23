@@ -2,7 +2,8 @@
 #![deny(warnings)]
 use serde::{Deserialize, Serialize};
 use std::{
-    collections, fmt, fs, io, iter,
+    collections::{self, BTreeSet},
+    fmt, fs, io, iter,
     ops::{Add, Div, Sub},
     result, str,
 };
@@ -141,6 +142,24 @@ pub trait Partition: std::hash::Hash + PartialEq + Eq {
 pub struct YearMonth {
     pub year: i32,
     pub month: chrono::Month,
+}
+
+impl PartialOrd for YearMonth {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.cmp(&other).into()
+    }
+}
+
+impl Ord for YearMonth {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.year.cmp(&other.year) {
+            core::cmp::Ordering::Equal => self
+                .month
+                .number_from_month()
+                .cmp(&other.month.number_from_month()),
+            ord => ord,
+        }
+    }
 }
 
 impl Partition for YearMonth {
@@ -858,6 +877,7 @@ impl<'a> From<&'a mut MemoryFile> for MmsFile<'a> {
 }
 
 impl DiskFile {
+    // whether the exact FileKey exists in the DiskFile
     pub fn contains_file(&self, key: &FileKey) -> bool {
         self.keys.contains_key(key)
     }
@@ -866,21 +886,41 @@ impl DiskFile {
     where
         T: serde::de::DeserializeOwned + Send + GetTable + 'static,
     {
-        let latest_version = T::get_file_key();
-        for version in (1..=latest_version.version).rev() {
-            let current_key = latest_version.with_version(version);
-            if self.contains_file(&current_key) {
-                return self.get_specific_table(current_key);
-            } else {
-                log::warn!(
-                    "For file key {}, version {} was not available",
-                    latest_version,
-                    version,
-                );
+        let current_version = T::get_file_key();
+
+        // first try the desired version
+        if self.contains_file(&current_version) {
+            return self.get_specific_table(current_version);
+        }
+
+        log::warn!("File key {} was not available", current_version,);
+
+        // inlined to avoid lifetime issues
+        let versions = self
+            .keys
+            .keys()
+            .filter(|k| {
+                k.data_set_name == current_version.data_set_name
+                    && k.table_name == current_version.table_name
+            })
+            .map(|k| k.version)
+            .collect::<BTreeSet<_>>();
+
+        // otherwise try available versions
+        for version in versions {
+            let target = FileKey {
+                version,
+                ..current_version.clone()
+            };
+            if self.contains_file(&target) {
+                return self.get_specific_table(target);
             }
         }
-        Err(Error::MissingFile(latest_version))
+
+        // no versions were available at all
+        Err(Error::MissingFile(current_version))
     }
+
     pub fn get_specific_table<T>(&'_ mut self, file_key: FileKey) -> Result<FileIter<'_, T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable,
@@ -898,7 +938,7 @@ impl DiskFile {
 
         Ok(FileIter {
             headings,
-            file_key,
+            file_key: file_key.clone(),
 
             inner: csv::ReaderBuilder::new()
                 .has_headers(false)
@@ -1007,33 +1047,48 @@ impl MemoryFile {
     where
         T: serde::de::DeserializeOwned + Send + GetTable,
     {
-        let latest_version = T::get_file_key();
-        for version in (1..=latest_version.version).rev() {
-            let current_key = latest_version.with_version(version);
-            match self.get_specific_table(&current_key) {
-                Ok(parsed) => {
-                    log::info!("Table found and parsed for file key {}", current_key);
-                    return Ok(parsed);
-                }
-                Err(e) => {
-                    log::warn!(
-                        "For file key {}, version {} was not available: {}",
-                        latest_version,
-                        version,
-                        e,
-                    );
-                }
+        let current_version = T::get_file_key();
+
+        // first try the desired version
+        if self.contains_file(&current_version) {
+            return self.get_specific_table(current_version);
+        }
+
+        log::warn!("File key {} was not available", current_version,);
+
+        // inlined to avoid lifetime issues
+        let versions = self
+            .data
+            .keys()
+            .filter(|k| {
+                k.data_set_name == current_version.data_set_name
+                    && k.table_name == current_version.table_name
+            })
+            .map(|k| k.version)
+            .collect::<BTreeSet<_>>();
+
+        // otherwise try available versions
+        for version in versions {
+            let target = FileKey {
+                version,
+                ..current_version.clone()
+            };
+            if self.contains_file(&target) {
+                return self.get_specific_table(target);
             }
         }
-        Err(Error::MissingFile(latest_version))
+
+        // no versions were available at all
+        Err(Error::MissingFile(current_version))
     }
-    pub fn get_specific_table<T>(&self, file_key: &FileKey) -> Result<Vec<T>>
+
+    pub fn get_specific_table<T>(&self, file_key: FileKey) -> Result<Vec<T>>
     where
         T: serde::de::DeserializeOwned + Send + GetTable,
     {
         let subtable = self
             .data
-            .get(file_key)
+            .get(&file_key)
             .ok_or_else(|| Error::MissingFile(file_key.clone()))?;
 
         subtable
@@ -1054,8 +1109,8 @@ impl MemoryFile {
         self.data.keys()
     }
 
-    pub fn contains_file(&self, key: FileKey) -> bool {
-        self.data.contains_key(&key)
+    pub fn contains_file(&self, key: &FileKey) -> bool {
+        self.data.contains_key(key)
     }
 
     pub fn from_reader(br: impl io::Read) -> Result<Self> {

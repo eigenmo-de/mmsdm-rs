@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  OFFERAGCDATA data is confidential to the relevant participant. Source OFFERAGCDATA updates as reoffers submitted.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -291,8 +290,7 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
 /// # Description
 ///  OFFERASTRK data is confidential to the relevant participant. Source OFFERASTRK is updated as offers are successfully acknowledged.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -455,8 +453,7 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
 /// # Description
 ///  OFFERLSHEDDATA data is confidential to the relevant participant. Source OFFERLSHEDDATA updates as reoffers process.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -670,8 +667,7 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
 /// # Description
 ///  OFFERRESTARTDATA data is confidential to the relevant participant. Source OFFERRESTARTDATA updates as reoffers process.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -877,8 +873,7 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
 /// # Description
 ///  OFFERRPOWERDATA data is confidential to the relevant participant. Source OFFERRPOWERDATA updates as reoffers process.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///

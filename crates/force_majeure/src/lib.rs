@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -193,19 +192,18 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
 ///
 /// * Data Set Name: Ap
 /// * File Name: Apeventregion
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * APEVENTID
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ApApeventregion1 {
+pub struct ApApeventregion2 {
     /// Unique identifier for this administered pricing event
     pub apeventid: rust_decimal::Decimal,
     /// Date-Time of the first Dispatch Interval to which the administered event applies
@@ -231,60 +229,64 @@ pub struct ApApeventregion1 {
     pub lower5minapflag: Option<rust_decimal::Decimal>,
     /// flag indicating if the apevent covers a lowerreg AP
     pub lowerregapflag: Option<rust_decimal::Decimal>,
+    /// Flag indicating if the APEvent covers a Raise1Sec AP
+    pub raise1secapflag: Option<rust_decimal::Decimal>,
+    /// Flag indicating if the APEvent covers a Lower1Sec AP
+    pub lower1secapflag: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for ApApeventregion1 {
-    type PrimaryKey = ApApeventregion1PrimaryKey;
+impl mmsdm_core::GetTable for ApApeventregion2 {
+    type PrimaryKey = ApApeventregion2PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "AP".into(),
             table_name: Some("APEVENTREGION".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> ApApeventregion1PrimaryKey {
-        ApApeventregion1PrimaryKey {
+    fn primary_key(&self) -> ApApeventregion2PrimaryKey {
+        ApApeventregion2PrimaryKey {
             apeventid: self.apeventid,
             regionid: self.regionid.clone(),
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "ap_apeventregion_v1".to_string()
+        "ap_apeventregion_v2".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct ApApeventregion1PrimaryKey {
+pub struct ApApeventregion2PrimaryKey {
     pub apeventid: rust_decimal::Decimal,
     pub regionid: String,
 }
-impl mmsdm_core::PrimaryKey for ApApeventregion1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ApApeventregion1 {
-    type Row = ApApeventregion1;
+impl mmsdm_core::PrimaryKey for ApApeventregion2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for ApApeventregion2 {
+    type Row = ApApeventregion2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.apeventid == row.apeventid && self.regionid == row.regionid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ApApeventregion1 {
-    type PrimaryKey = ApApeventregion1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ApApeventregion2 {
+    type PrimaryKey = ApApeventregion2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.apeventid == key.apeventid && self.regionid == key.regionid
     }
 }
-impl mmsdm_core::CompareWithRow for ApApeventregion1PrimaryKey {
-    type Row = ApApeventregion1;
+impl mmsdm_core::CompareWithRow for ApApeventregion2PrimaryKey {
+    type Row = ApApeventregion2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.apeventid == row.apeventid && self.regionid == row.regionid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ApApeventregion1PrimaryKey {
-    type PrimaryKey = ApApeventregion1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ApApeventregion2PrimaryKey {
+    type PrimaryKey = ApApeventregion2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.apeventid == key.apeventid && self.regionid == key.regionid
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for ApApeventregion1 {
+impl mmsdm_core::ArrowSchema for ApApeventregion2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -311,7 +313,11 @@ impl mmsdm_core::ArrowSchema for ApApeventregion1 {
                 arrow2::datatypes::Field::new("lower5minapflag",
                 arrow2::datatypes::DataType::Decimal(1, 0), true),
                 arrow2::datatypes::Field::new("lowerregapflag",
-                arrow2::datatypes::DataType::Decimal(1, 0), true)
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("raise1secapflag",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("lower1secapflag",
+                arrow2::datatypes::DataType::Decimal(3, 0), true)
             ],
         )
     }
@@ -332,6 +338,8 @@ impl mmsdm_core::ArrowSchema for ApApeventregion1 {
         let mut lower60secapflag_array = Vec::new();
         let mut lower5minapflag_array = Vec::new();
         let mut lowerregapflag_array = Vec::new();
+        let mut raise1secapflag_array = Vec::new();
+        let mut lower1secapflag_array = Vec::new();
         for row in partition {
             apeventid_array
                 .push({
@@ -413,6 +421,22 @@ impl mmsdm_core::ArrowSchema for ApApeventregion1 {
                             val.mantissa()
                         })
                 });
+            raise1secapflag_array
+                .push({
+                    row.raise1secapflag
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lower1secapflag_array
+                .push({
+                    row.lower1secapflag
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -452,6 +476,12 @@ impl mmsdm_core::ArrowSchema for ApApeventregion1 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lowerregapflag_array)
                     .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secapflag_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secapflag_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -469,8 +499,7 @@ impl mmsdm_core::ArrowSchema for ApApeventregion1 {
 /// # Description
 ///  IRFMAMOUNTis public data. Source IRFMAMOUNT is obsolete; was updated with each settlement run as required.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -664,8 +693,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
 /// # Description
 ///  IRFMEVENTS is public data. Source IRFMEVENTS updates with the occurrence of any such events.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -828,8 +856,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
 /// # Description
 ///  MARKET_SUSPEND_REGIME_SUM is public data, so is available to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -989,8 +1016,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
 /// # Description
 ///  MARKET_SUSPEND is public data, so is available to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1141,13 +1167,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Schedule
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///  MARKET_SUSPEND_SCHEDULE is public data, so is available to all participants.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1156,7 +1181,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
 /// * PERIODID
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ForceMajeureMarketSuspendSchedule1 {
+pub struct ForceMajeureMarketSuspendSchedule2 {
     /// Calendar date from when this record set is effective
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
@@ -1187,19 +1212,23 @@ pub struct ForceMajeureMarketSuspendSchedule1 {
     /// Last date and time record changed
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Lower 1Sec contingency Price applied for this period for this Day Type
+    pub l1_rrp: Option<rust_decimal::Decimal>,
+    /// Raise 1Sec contingency Price applied for this period for this Day Type
+    pub r1_rrp: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule1 {
-    type PrimaryKey = ForceMajeureMarketSuspendSchedule1PrimaryKey;
+impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule2 {
+    type PrimaryKey = ForceMajeureMarketSuspendSchedule2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "FORCE_MAJEURE".into(),
             table_name: Some("MARKET_SUSPEND_SCHEDULE".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> ForceMajeureMarketSuspendSchedule1PrimaryKey {
-        ForceMajeureMarketSuspendSchedule1PrimaryKey {
+    fn primary_key(&self) -> ForceMajeureMarketSuspendSchedule2PrimaryKey {
+        ForceMajeureMarketSuspendSchedule2PrimaryKey {
             day_type: self.day_type.clone(),
             effectivedate: self.effectivedate,
             periodid: self.periodid,
@@ -1215,49 +1244,49 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule1 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "force_majeure_market_suspend_schedule_v1_{}_{}", self.partition_suffix()
+            "force_majeure_market_suspend_schedule_v2_{}_{}", self.partition_suffix()
             .year, self.partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct ForceMajeureMarketSuspendSchedule1PrimaryKey {
+pub struct ForceMajeureMarketSuspendSchedule2PrimaryKey {
     pub day_type: String,
     pub effectivedate: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,
 }
-impl mmsdm_core::PrimaryKey for ForceMajeureMarketSuspendSchedule1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ForceMajeureMarketSuspendSchedule1 {
-    type Row = ForceMajeureMarketSuspendSchedule1;
+impl mmsdm_core::PrimaryKey for ForceMajeureMarketSuspendSchedule2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for ForceMajeureMarketSuspendSchedule2 {
+    type Row = ForceMajeureMarketSuspendSchedule2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.day_type == row.day_type && self.effectivedate == row.effectivedate
             && self.periodid == row.periodid && self.regionid == row.regionid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ForceMajeureMarketSuspendSchedule1 {
-    type PrimaryKey = ForceMajeureMarketSuspendSchedule1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ForceMajeureMarketSuspendSchedule2 {
+    type PrimaryKey = ForceMajeureMarketSuspendSchedule2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.day_type == key.day_type && self.effectivedate == key.effectivedate
             && self.periodid == key.periodid && self.regionid == key.regionid
     }
 }
-impl mmsdm_core::CompareWithRow for ForceMajeureMarketSuspendSchedule1PrimaryKey {
-    type Row = ForceMajeureMarketSuspendSchedule1;
+impl mmsdm_core::CompareWithRow for ForceMajeureMarketSuspendSchedule2PrimaryKey {
+    type Row = ForceMajeureMarketSuspendSchedule2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.day_type == row.day_type && self.effectivedate == row.effectivedate
             && self.periodid == row.periodid && self.regionid == row.regionid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ForceMajeureMarketSuspendSchedule1PrimaryKey {
-    type PrimaryKey = ForceMajeureMarketSuspendSchedule1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ForceMajeureMarketSuspendSchedule2PrimaryKey {
+    type PrimaryKey = ForceMajeureMarketSuspendSchedule2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.day_type == key.day_type && self.effectivedate == key.effectivedate
             && self.periodid == key.periodid && self.regionid == key.regionid
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
+impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -1289,7 +1318,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("lastchanged",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
+                None), true), arrow2::datatypes::Field::new("l1_rrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("r1_rrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true)
             ],
         )
     }
@@ -1312,6 +1344,8 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
         let mut l5_rrp_array = Vec::new();
         let mut lreg_rrp_array = Vec::new();
         let mut lastchanged_array = Vec::new();
+        let mut l1_rrp_array = Vec::new();
+        let mut r1_rrp_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
             day_type_array.push(row.day_type);
@@ -1395,6 +1429,22 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
                         })
                 });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+            l1_rrp_array
+                .push({
+                    row.l1_rrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            r1_rrp_array
+                .push({
+                    row.r1_rrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -1440,6 +1490,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
                     .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                     None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(l1_rrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(r1_rrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -1456,8 +1512,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1619,8 +1674,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
 /// # Description
 ///  OVERRIDERRP data is public, so is available to all participants. Source OVERRIDERRP updates every five minutes when override prices apply for the period.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1834,8 +1888,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
 /// # Description
 ///  REGIONAPC data is public, so is available to all participants. Source REGIONAPC updates when a change is ever made to the Administered Price Cap details. Changes to this table are infrequent.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2008,8 +2061,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
 /// # Description
 ///  REGIONAPCINTERVALS data is public, so is available to all participants. Source REGIONAPCINTERVALS is updated whenever an Administered Price Cap occurs.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2254,14 +2306,14 @@ where
                 )
                 .await?;
         }
-        (Some("APEVENTREGION"), version) if version <= 1_i32 => {
-            let d: Vec<ApApeventregion1> = mms_file.get_table()?;
+        (Some("APEVENTREGION"), version) if version <= 2_i32 => {
+            let d: Vec<ApApeventregion2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertApApeventregion1 @P1, @P2",
+                    "exec mmsdm_proc.InsertApApeventregion2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -2314,14 +2366,14 @@ where
                 )
                 .await?;
         }
-        (Some("MARKET_SUSPEND_SCHEDULE"), version) if version <= 1_i32 => {
-            let d: Vec<ForceMajeureMarketSuspendSchedule1> = mms_file.get_table()?;
+        (Some("MARKET_SUSPEND_SCHEDULE"), version) if version <= 2_i32 => {
+            let d: Vec<ForceMajeureMarketSuspendSchedule2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertForceMajeureMarketSuspendSchedule1 @P1, @P2",
+                    "exec mmsdm_proc.InsertForceMajeureMarketSuspendSchedule2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
