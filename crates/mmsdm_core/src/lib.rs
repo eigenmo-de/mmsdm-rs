@@ -419,16 +419,13 @@ impl<'de> serde::Deserialize<'de> for DispatchPeriod {
         D: serde::Deserializer<'de>,
     {
         let s = String::deserialize(d)?;
-        //dbg!(&s);
+
         match s.parse().or_else(|_| crate::DispatchPeriod::from_db_str(s.clone())) {
             Err(e) => {
-                dbg!(&s);
-                dbg!(&e);
                 Err(serde::de::Error::custom(e))
             }
             Ok(o) => Ok(o),
         }
-        //s.parse().map_err(Error::custom)
     }
 }
 
