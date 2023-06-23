@@ -98,13 +98,12 @@ mod test_dispatch_is {
         let rows = links
             .iter()
             .take(8)
-            .map(|l| {
+            .flat_map(|l| {
                 let aemo_file = super::download(LOCATION, l).unwrap();
                 aemo_file
                     .get_table::<data_model::DispatchConstraint5>()
                     .unwrap()
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         // let all_data: Vec<mmsdm::AemoFile> = super::url_get_files(LOCATION).await.unwrap();
@@ -131,13 +130,12 @@ mod test_dispatch_scada {
         let rows = links
             .iter()
             .take(8)
-            .map(|l| {
+            .flat_map(|l| {
                 let aemo_file = super::download(LOCATION, l).unwrap();
                 aemo_file
                     .get_table::<data_model::DispatchUnitScada1>()
                     .unwrap()
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         info!("Downloaded and processed {} rows", rows.len());
@@ -163,9 +161,7 @@ fn get_filename_from_path(path: &path::Path) -> Result<String> {
 fn get_file_links_from_page(doc: html::Html) -> Vec<String> {
     let selector = Selector::parse("a").unwrap();
     doc.select(&selector)
-        .into_iter()
-        .map(|el| el.value().attr("href"))
-        .flatten() // only interested in a elements that have a link!
+        .flat_map(|el| el.value().attr("href")) // only interested in a elements that have a link!
         .map(path::Path::new)
         .map(get_filename_from_path)
         .filter_map(|opt| opt.ok())

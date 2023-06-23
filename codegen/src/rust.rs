@@ -594,7 +594,7 @@ fn codegen_pk(
 }
 
 fn codegen_impl_pk(pdr_report: &pdr::Report, fmtr: &mut codegen::Formatter) -> anyhow::Result<()> {
-    let mut pk_trait = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    let mut pk_trait = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_trait.impl_trait("mmsdm_core::PrimaryKey");
     pk_trait.fmt(fmtr)?;
     Ok(())
@@ -658,7 +658,7 @@ fn codegen_impl_compare_with_row_on_pk(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut pk_compare_row_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    let mut pk_compare_row_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_compare_row_impl.impl_trait("mmsdm_core::CompareWithRow");
     pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
     let mut compare_with_row = codegen::Function::new("compare_with_row");
@@ -684,7 +684,7 @@ fn codegen_impl_compare_with_pk_on_pk(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut pk_compare_pk_impl = codegen::Impl::new(&pdr_report.get_rust_pk_name());
+    let mut pk_compare_pk_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_compare_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
     pk_compare_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
     let mut compare_with_other_pk = codegen::Function::new("compare_with_key");
@@ -841,7 +841,7 @@ optional = true
 default-features = false
 
 [dependencies.tiberius]
-version = "0.11.3"
+version = "0.12.2"
 features = ["rust_decimal", "tds73", "chrono"]
 default-features = false
 optional = true
@@ -923,7 +923,7 @@ pub fn run() -> anyhow::Result<()> {
         prepare_data_set_crate(&data_set)?;
 
         let mut fmt_str = String::new();
-        fmt_str.push_str("use chrono::Datelike as _;\n");
+        fmt_str.push_str("#[allow(unused_imports)]\nuse chrono::Datelike as _;\n");
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
 
         for (table_key, table) in tables.clone().into_iter() {
