@@ -1,10 +1,8 @@
 use mmsdm::{data_model, ArrowSchema, GetTable, MmsFile};
 use std::{collections, fs::File};
 
-use arrow2::{
-    io::parquet::write::{
-        CompressionOptions, Encoding, FileWriter, RowGroupIterator, Version, WriteOptions,
-    },
+use arrow2::io::parquet::write::{
+    CompressionOptions, Encoding, FileWriter, RowGroupIterator, Version, WriteOptions,
 };
 
 fn main() -> anyhow::Result<()> {

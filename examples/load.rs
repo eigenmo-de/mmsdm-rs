@@ -1,9 +1,9 @@
+use mmsdm::sql_server;
 use mmsdm::GetTable;
 use std::fs;
 use tiberius;
 use tokio::net;
 use tokio_util::compat::TokioAsyncWriteCompatExt;
-use mmsdm::sql_server;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
