@@ -1,9 +1,13 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
 use serde::{Deserialize, Serialize};
-use std::{collections, fmt, fs, io, iter, result, str, ops::{Sub, Div, Add}};
+use std::{
+    collections, fmt, fs, io, iter,
+    ops::{Add, Div, Sub},
+    result, str,
+};
 
-use chrono::{TimeZone, Datelike};
+use chrono::{Datelike, TimeZone};
 
 mod error;
 pub use error::*;
@@ -341,11 +345,13 @@ where
 
 // gets period, 1 based
 fn naive_time_to_five_min_period(nt: chrono::NaiveTime) -> u16 {
-    (nt.sub(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()).num_minutes().div(5).add(1)).try_into().unwrap()
+    (nt.sub(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap())
+        .num_minutes()
+        .div(5)
+        .add(1))
+    .try_into()
+    .unwrap()
 }
-
-
-
 
 // Represents a given dispatch period (5 min period)
 // Parsed from YYYYMMDDPPP
@@ -376,11 +382,13 @@ impl DispatchPeriod {
         })
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
-        self.date.and_hms_opt(
-            u32::from((self.period - 1) / 12),
-            u32::from((self.period - 1) % 12) * 5,
-            0,
-        ).unwrap()
+        self.date
+            .and_hms_opt(
+                u32::from((self.period - 1) / 12),
+                u32::from((self.period - 1) % 12) * 5,
+                0,
+            )
+            .unwrap()
     }
     //    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
     //        self.datetime_starting() + chrono::Duration::minutes(5)
@@ -420,10 +428,11 @@ impl<'de> serde::Deserialize<'de> for DispatchPeriod {
     {
         let s = String::deserialize(d)?;
 
-        match s.parse().or_else(|_| crate::DispatchPeriod::from_db_str(s.clone())) {
-            Err(e) => {
-                Err(serde::de::Error::custom(e))
-            }
+        match s
+            .parse()
+            .or_else(|_| crate::DispatchPeriod::from_db_str(s.clone()))
+        {
+            Err(e) => Err(serde::de::Error::custom(e)),
             Ok(o) => Ok(o),
         }
     }
@@ -465,11 +474,13 @@ impl TradingPeriod {
         "%Y%m%d"
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
-        self.date.and_hms_opt(
-            u32::from((self.period - 1) / 2),
-            30 * u32::from((self.period - 1) % 2),
-            0,
-        ).unwrap()
+        self.date
+            .and_hms_opt(
+                u32::from((self.period - 1) / 2),
+                30 * u32::from((self.period - 1) % 2),
+                0,
+            )
+            .unwrap()
     }
 }
 
@@ -630,12 +641,30 @@ mod tests {
 
     #[test]
     fn naive_time_to_dispatch_period() {
-        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()), 1);
-        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(1, 0, 0).unwrap()), 13);
-        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(6, 3, 0).unwrap()), 73);
-        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(12, 47, 0).unwrap()), 154);
-        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(14, 30, 0).unwrap()), 175);
-        assert_eq!(naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(23, 59, 59).unwrap()), 288);
+        assert_eq!(
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()),
+            1
+        );
+        assert_eq!(
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(1, 0, 0).unwrap()),
+            13
+        );
+        assert_eq!(
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(6, 3, 0).unwrap()),
+            73
+        );
+        assert_eq!(
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(12, 47, 0).unwrap()),
+            154
+        );
+        assert_eq!(
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(14, 30, 0).unwrap()),
+            175
+        );
+        assert_eq!(
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(23, 59, 59).unwrap()),
+            288
+        );
     }
 
     #[test]
@@ -647,22 +676,34 @@ mod tests {
 
         assert_eq!(
             "20211101001".parse::<DispatchPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(0, 0, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(0, 0, 0)
+                .unwrap(),
         );
 
         assert_eq!(
             "20211101002".parse::<DispatchPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(0, 5, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(0, 5, 0)
+                .unwrap(),
         );
 
         assert_eq!(
             "20211101287".parse::<DispatchPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(23, 50, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(23, 50, 0)
+                .unwrap(),
         );
 
         assert_eq!(
             "20211101288".parse::<DispatchPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(23, 55, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(23, 55, 0)
+                .unwrap(),
         );
     }
 
@@ -675,22 +716,34 @@ mod tests {
 
         assert_eq!(
             "2021110101".parse::<TradingPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(0, 0, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(0, 0, 0)
+                .unwrap(),
         );
 
         assert_eq!(
             "2021110102".parse::<TradingPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(0, 30, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(0, 30, 0)
+                .unwrap(),
         );
 
         assert_eq!(
             "2021110147".parse::<TradingPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(23, 0, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(23, 0, 0)
+                .unwrap(),
         );
 
         assert_eq!(
             "2021110148".parse::<TradingPeriod>().unwrap().start(),
-            chrono::NaiveDate::from_ymd_opt(2021, 11, 1).unwrap().and_hms_opt(23, 30, 0).unwrap(),
+            chrono::NaiveDate::from_ymd_opt(2021, 11, 1)
+                .unwrap()
+                .and_hms_opt(23, 30, 0)
+                .unwrap(),
         );
     }
 }
