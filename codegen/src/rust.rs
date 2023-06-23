@@ -1,5 +1,5 @@
-use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
-use std::{collections, fmt::Debug, fs, ops::ControlFlow, str};
+use heck::{ToShoutySnakeCase, ToSnakeCase, ToTitleCase, ToUpperCamelCase};
+use std::{collections::{self, HashMap}, fmt::Debug, fs, ops::ControlFlow, str};
 
 use crate::{mms, pdr};
 use serde::Deserialize;
@@ -323,12 +323,12 @@ impl pdr::Report {
         if let Some(sub_type) = &self.sub_type {
             format!(
                 "{}{}{}",
-                self.name.to_camel_case(),
-                sub_type.to_camel_case(),
+                self.name.to_upper_camel_case(),
+                sub_type.to_upper_camel_case(),
                 self.version
             )
         } else {
-            format!("{}{}", self.name.to_camel_case(), self.version)
+            format!("{}{}", self.name.to_upper_camel_case(), self.version)
         }
     }
     pub fn get_rust_pk_name(&self) -> String {
@@ -864,62 +864,73 @@ default = []"#,
     Ok(())
 }
 
-pub const VERSION: &str = "5.1";
+pub const VERSION: &str = "5.2";
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[allow(dead_code)]
 pub struct TableMapping {
-    row: usize,
-    mmsdm_package_name: String, //	Package name as per the MMS Data Model documentation	DISPATCH
-    mmsdm_table_name: String,   //	Table name as per the MMS Data Model documentation	DISPATCHPRICE
-    file_identifier: String, //	File identifier as per the MMS Data Subscriptions web page	DISPATCHIS
-    file_name: String, //	File name. Note parameters in the table below	<#VISIBILITY_ID>_DISPATCHIS_<#CASE_DATETIME>_<#EVENT_QUEUE_ID>.CSV
-    pdr_record_type: String, //	PDR Loader record type (File configuration) as shown in Replication Manager	DISPATCHIS
-    pdr_report_name: String, //	PDR Loader report name (CSV Record configuration) as shown in Replication Manager	DISPATCH
-    pdr_report_sub_type: Option<String>, //	PDR Loader report sub type (CSV Record configuration) as shown in Replication Manager	PRICE
-    pdr_report_version: u8, //	PDR Loader report version (CSV Record configuration) as shown in Replication Manager	2
-    pdr_report_transaction_type: String, //	PDR Loader report transaction type - data loading action	INSERT-UPDATE
-    pdr_report_row_filter_type: String, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+    report_name: String, //	PDR Loader report name (CSV Record configuration) as shown in Replication Manager	DISPATCH
+    report_sub_type: Option<String>, //	PDR Loader report sub type (CSV Record configuration) as shown in Replication Manager	PRICE
+    version: u8, //	PDR Loader report version (CSV Record configuration) as shown in Replication Manager	2
+    destination_table: String,   //	Table name as per the MMS Data Model documentation	DISPATCHPRICE
+    transaction_type: String, //	PDR Loader report transaction type - data loading action	INSERT-UPDATE
+    row_filter_type: String, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+}
+
+impl TableMapping {
+    pub fn read() -> anyhow::Result<HashMap<mms::Report, pdr::Report>> {
+        let mut mapping = csv::ReaderBuilder::new().delimiter(b'\t').from_path(format!("table_config_v{VERSION}.csv"))?;
+
+        let mut map = collections::HashMap::<_, pdr::Report>::new();
+
+        for row in mapping.deserialize::<TableMapping>() {
+            let row = row?;
+    
+            
+            map.entry(row.mms()).and_modify(|e| {
+                let other_pdr = row.pdr();
+                if other_pdr.version > e.version {
+                    *e = other_pdr;
+                }
+    
+            })
+            .or_insert(row.pdr());
+        }
+        Ok(map)
+    }
 }
 
 impl TableMapping {
     pub fn mms(&self) -> mms::Report {
         mms::Report {
-            name: self.mmsdm_package_name.clone(),
-            sub_type: self.mmsdm_table_name.clone(),
+            sub_type: self.destination_table.clone(),
         }
     }
     pub fn pdr(&self) -> pdr::Report {
         pdr::Report {
-            name: self.pdr_report_name.clone(),
-            sub_type: self.pdr_report_sub_type.clone(),
-            version: self.pdr_report_version,
-            transaction_type: self.pdr_report_transaction_type.clone(),
-            row_filter: self.pdr_report_row_filter_type.clone(),
+            name: self.report_name.clone(),
+            sub_type: self.report_sub_type.clone(),
+            version: self.version,
+            transaction_type: self.transaction_type.clone(),
+            row_filter: self.row_filter_type.clone(),
         }
     }
 }
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
-    let mut mapping = csv::Reader::from_path(format!("table_mapping_v{VERSION}.csv"))?;
-    let mut map = collections::HashMap::new();
-
-    for row in mapping.deserialize::<TableMapping>() {
-        let row = row?;
-        map.insert(row.mms(), row.pdr());
-    }
+    let map = TableMapping::read()?;
 
     // abv
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
 
-    for (mut data_set, tables) in local_info.into_iter() {
-        dbg!(&data_set);
-        if data_set == "MTPASA" {
-            // dbg!(&tables);
-            data_set.push_str("_SOLUTION");
-        }
+    for (data_set, tables) in local_info.into_iter() {
+        // dbg!(&data_set);
+        // if data_set == "MTPASA" {
+        //     // dbg!(&tables);
+        //     data_set.push_str("_SOLUTION");
+        // }
         prepare_data_set_crate(&data_set)?;
 
         let mut fmt_str = String::new();
@@ -928,13 +939,14 @@ pub fn run() -> anyhow::Result<()> {
 
         for (table_key, table) in tables.clone().into_iter() {
             let mms_report = mms::Report {
-                name: data_set.clone(),
-                sub_type: table_key,
+                sub_type: table_key.clone(),
             };
 
             if mms_report.should_skip() {
                 continue;
             }
+
+            // dbg!(&data_set, &table_key, &table);
 
             match map.get(&mms_report) {
                 Some(pdr_report) => {
@@ -981,7 +993,6 @@ pub fn run() -> anyhow::Result<()> {
         let mut rendered_match_arms = 0;
         for (table_key, _) in tables.into_iter() {
             let mms_report = mms::Report {
-                name: data_set.clone(),
                 sub_type: table_key,
             };
 

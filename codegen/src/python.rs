@@ -58,7 +58,6 @@ pub fn run() -> anyhow::Result<()> {
         if row.contains(',') {
             let pieces = row.split(',').collect::<Vec<&str>>();
             let mms = mms::Report {
-                name: pieces[0].to_string(),
                 sub_type: pieces[1].to_string(),
             };
             let pdr = pdr::Report {
@@ -93,7 +92,6 @@ def get_row_partition_name(row: List[str]) -> str:
     for (data_set, tables) in local_info.iter() {
         for (table_key, table) in tables.iter() {
             let mms_report = mms::Report {
-                name: data_set.clone(),
                 sub_type: table_key.clone(),
             };
 
@@ -151,7 +149,6 @@ import pyarrow.csv as pc
     for (data_set, tables) in local_info.iter() {
         for (table_key, table) in tables.iter() {
             let mms_report = mms::Report {
-                name: data_set.clone(),
                 sub_type: table_key.clone(),
             };
 

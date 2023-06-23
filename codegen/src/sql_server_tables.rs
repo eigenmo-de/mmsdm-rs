@@ -1,4 +1,5 @@
 use std::{collections, fs, str};
+use heck::ToSnakeCase;
 
 use crate::{
     mms,
@@ -7,7 +8,6 @@ use crate::{
 
 impl mms::PkColumns {
     fn get_sql(&self) -> String {
-        use heck::SnakeCase;
         let cols = self
             .cols
             .iter()
@@ -17,7 +17,6 @@ impl mms::PkColumns {
     }
 
     fn merge_check(&self) -> String {
-        use heck::SnakeCase;
         let mut sql = String::new();
         for (idx, col) in self.cols.iter().enumerate() {
             let col = col.to_snake_case();
@@ -99,13 +98,8 @@ impl mms::DataType {
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
-    let mut mapping = csv::Reader::from_path(format!("table_mapping_v{VERSION}.csv"))?;
-    let mut map = collections::HashMap::new();
+    let map = TableMapping::read()?;
 
-    for row in mapping.deserialize::<TableMapping>() {
-        let row = row?;
-        map.insert(row.mms(), row.pdr());
-    }
     // abv
     let mut table_str = r#"
 create schema mmsdm
@@ -138,10 +132,9 @@ go
     .to_string();
     let mut proc_str = String::new();
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
-    for (data_set, tables) in local_info.into_iter() {
+    for (_, tables) in local_info.into_iter() {
         for (table_key, table) in tables.into_iter() {
             let mms_report = mms::Report {
-                name: data_set.clone(),
                 sub_type: table_key,
             };
             if let Some(pdr_report) = map.get(&mms_report) {

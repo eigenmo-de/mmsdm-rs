@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -122,8 +121,7 @@ impl mmsdm_core::ArrowSchema for MccCasesolution1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///

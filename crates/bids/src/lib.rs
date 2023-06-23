@@ -5,15 +5,14 @@ use chrono::Datelike as _;
 /// ## BIDDAYOFFER
 ///  _BIDDAYOFFER shows the Energy and Ancillary Service bid data for each Market Day. BIDDAYOFFER is the parent table to BIDOFFERPERIOD. BIDDAYOFFER is a child table to BIDOFFERFILETRK_
 ///
-/// * Data Set Name: Bids
+/// * Data Set Name: Offer
 /// * File Name: Biddayoffer
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///  The ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) facilitate ancillary service bidding and include energy bidding.  BIDDAYOFFER data is confidential to the submitting participant until made public after 4am the next day. Source BIDDAYOFFER updates as ancillary service bids are processed. BIDDAYOFFER includes all accepted energy and ancillary service bids. Volume Approximately 1,500,000 records per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -22,7 +21,7 @@ use chrono::Datelike as _;
 /// * OFFERDATE
 /// * SETTLEMENTDATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BidsBiddayoffer1 {
+pub struct OfferBiddayoffer2 {
     /// Dispatchable unit identifier
     pub duid: String,
     /// Bid Type Identifier
@@ -36,7 +35,7 @@ pub struct BidsBiddayoffer1 {
     /// Version No. for given offer date
     pub versionno: Option<rust_decimal::Decimal>,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: Option<String>,
     /// Maximum energy available from Energy Constrained Plant. (Energy Bids Only)
     pub dailyenergyconstraint: Option<rust_decimal::Decimal>,
     /// Explanation for all rebids and inflexibilities
@@ -91,18 +90,18 @@ pub struct BidsBiddayoffer1 {
     /// A participants unique Reference Id
     pub reference_id: Option<String>,
 }
-impl mmsdm_core::GetTable for BidsBiddayoffer1 {
-    type PrimaryKey = BidsBiddayoffer1PrimaryKey;
+impl mmsdm_core::GetTable for OfferBiddayoffer2 {
+    type PrimaryKey = OfferBiddayoffer2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
-            data_set_name: "BIDS".into(),
+            data_set_name: "OFFER".into(),
             table_name: Some("BIDDAYOFFER".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> BidsBiddayoffer1PrimaryKey {
-        BidsBiddayoffer1PrimaryKey {
+    fn primary_key(&self) -> OfferBiddayoffer2PrimaryKey {
+        OfferBiddayoffer2PrimaryKey {
             bidtype: self.bidtype.clone(),
             duid: self.duid.clone(),
             offerdate: self.offerdate,
@@ -118,45 +117,45 @@ impl mmsdm_core::GetTable for BidsBiddayoffer1 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "bids_biddayoffer_v1_{}_{}", self.partition_suffix().year, self
+            "offer_biddayoffer_v2_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct BidsBiddayoffer1PrimaryKey {
+pub struct OfferBiddayoffer2PrimaryKey {
     pub bidtype: String,
     pub duid: String,
     pub offerdate: chrono::NaiveDateTime,
     pub settlementdate: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for BidsBiddayoffer1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for BidsBiddayoffer1 {
-    type Row = BidsBiddayoffer1;
+impl mmsdm_core::PrimaryKey for OfferBiddayoffer2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for OfferBiddayoffer2 {
+    type Row = OfferBiddayoffer2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.bidtype == row.bidtype && self.duid == row.duid
             && self.offerdate == row.offerdate
             && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BidsBiddayoffer1 {
-    type PrimaryKey = BidsBiddayoffer1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for OfferBiddayoffer2 {
+    type PrimaryKey = OfferBiddayoffer2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.bidtype == key.bidtype && self.duid == key.duid
             && self.offerdate == key.offerdate
             && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for BidsBiddayoffer1PrimaryKey {
-    type Row = BidsBiddayoffer1;
+impl mmsdm_core::CompareWithRow for OfferBiddayoffer2PrimaryKey {
+    type Row = OfferBiddayoffer2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.bidtype == row.bidtype && self.duid == row.duid
             && self.offerdate == row.offerdate
             && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BidsBiddayoffer1PrimaryKey {
-    type PrimaryKey = BidsBiddayoffer1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for OfferBiddayoffer2PrimaryKey {
+    type PrimaryKey = OfferBiddayoffer2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.bidtype == key.bidtype && self.duid == key.duid
             && self.offerdate == key.offerdate
@@ -164,7 +163,7 @@ impl mmsdm_core::CompareWithPrimaryKey for BidsBiddayoffer1PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BidsBiddayoffer1 {
+impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -179,7 +178,7 @@ impl mmsdm_core::ArrowSchema for BidsBiddayoffer1 {
                 None), false), arrow2::datatypes::Field::new("versionno",
                 arrow2::datatypes::DataType::Decimal(22, 0), true),
                 arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::DataType::LargeUtf8, true),
                 arrow2::datatypes::Field::new("dailyenergyconstraint",
                 arrow2::datatypes::DataType::Decimal(12, 6), true),
                 arrow2::datatypes::Field::new("rebidexplanation",
@@ -450,7 +449,7 @@ impl mmsdm_core::ArrowSchema for BidsBiddayoffer1 {
                     .to(arrow2::datatypes::DataType::Decimal(22, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    >::from(participantid_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(dailyenergyconstraint_array)
                     .to(arrow2::datatypes::DataType::Decimal(12, 6))) as std::sync::Arc <
@@ -547,8 +546,7 @@ impl mmsdm_core::ArrowSchema for BidsBiddayoffer1 {
 /// # Description
 ///  BIDDAYOFFER_D data is made public after 4am the next day. Source BIDDAYOFFER_D updates as ancillary service bids are processed. BIDDAYOFFER_D shows latest accepted energy and ancillary service bids. Volume Summary - approximately 1,000 rows per day
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1041,8 +1039,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
 /// # Description
 ///  BIDOFFERFILETRK data is confidential to the submitting participant. The new ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three new tables facilitate ancillary service bidding. The new tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) are similar in structure to energy bidding tables (OFFERFILETRK, DAYOFFER and PEROFFER). The significant differences with the new tables are. ·  The OFFERDATE field reflects the time the bid was loaded and this field alone provides the key for versioning of bids. The VERSIONNO field is retained for participant use as information only. ·  The new tables support bids for multiple services. The BIDTYPE field defines the service to which the bid applies. ·  There are no default bids. In the absence of a bid for a specific settlement date, the latest bid submitted for a previous settlement date applies. Source This data is updated as bids are processed. It includes all bids submitted including corrupt bids. Volume Approximately 100,000 records per year Note Confirmation is via CSV bid acknowledgement file
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1255,8 +1252,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1715,8 +1711,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod1 {
 /// # Description
 ///  BIDPEROFFER_D is public data, so is available to all participants. Source BIDPEROFFER_D updates daily shortly after 4am.  See also BIDPEROFFER.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2253,8 +2248,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2618,15 +2612,14 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
 /// ## MNSP_DAYOFFER
 ///  _MNSP_DAYOFFER updates as bids are processed. All bids are available as part of next day market data. MNSP_DAYOFFER is the parent table to MNSP_BIDOFFERPERIOD, and joins to BIDOFFERFILETRK for 5MS Bids._
 ///
-/// * Data Set Name: Bids
+/// * Data Set Name: Bid
 /// * File Name: Mnsp Dayoffer
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///  MNSP_DAYOFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 4, 000 per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2636,7 +2629,7 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
 /// * SETTLEMENTDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BidsMnspDayoffer1 {
+pub struct BidMnspDayoffer2 {
     /// Market Date from which bid is active
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -2689,18 +2682,18 @@ pub struct BidsMnspDayoffer1 {
     /// A participants unique Reference Id
     pub reference_id: Option<String>,
 }
-impl mmsdm_core::GetTable for BidsMnspDayoffer1 {
-    type PrimaryKey = BidsMnspDayoffer1PrimaryKey;
+impl mmsdm_core::GetTable for BidMnspDayoffer2 {
+    type PrimaryKey = BidMnspDayoffer2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
-            data_set_name: "BIDS".into(),
+            data_set_name: "BID".into(),
             table_name: Some("MNSP_DAYOFFER".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> BidsMnspDayoffer1PrimaryKey {
-        BidsMnspDayoffer1PrimaryKey {
+    fn primary_key(&self) -> BidMnspDayoffer2PrimaryKey {
+        BidMnspDayoffer2PrimaryKey {
             linkid: self.linkid.clone(),
             offerdate: self.offerdate,
             participantid: self.participantid.clone(),
@@ -2717,22 +2710,22 @@ impl mmsdm_core::GetTable for BidsMnspDayoffer1 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "bids_mnsp_dayoffer_v1_{}_{}", self.partition_suffix().year, self
+            "bid_mnsp_dayoffer_v2_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct BidsMnspDayoffer1PrimaryKey {
+pub struct BidMnspDayoffer2PrimaryKey {
     pub linkid: String,
     pub offerdate: chrono::NaiveDateTime,
     pub participantid: String,
     pub settlementdate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BidsMnspDayoffer1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for BidsMnspDayoffer1 {
-    type Row = BidsMnspDayoffer1;
+impl mmsdm_core::PrimaryKey for BidMnspDayoffer2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BidMnspDayoffer2 {
+    type Row = BidMnspDayoffer2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.linkid == row.linkid && self.offerdate == row.offerdate
             && self.participantid == row.participantid
@@ -2740,8 +2733,8 @@ impl mmsdm_core::CompareWithRow for BidsMnspDayoffer1 {
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BidsMnspDayoffer1 {
-    type PrimaryKey = BidsMnspDayoffer1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BidMnspDayoffer2 {
+    type PrimaryKey = BidMnspDayoffer2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.linkid == key.linkid && self.offerdate == key.offerdate
             && self.participantid == key.participantid
@@ -2749,8 +2742,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BidsMnspDayoffer1 {
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for BidsMnspDayoffer1PrimaryKey {
-    type Row = BidsMnspDayoffer1;
+impl mmsdm_core::CompareWithRow for BidMnspDayoffer2PrimaryKey {
+    type Row = BidMnspDayoffer2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.linkid == row.linkid && self.offerdate == row.offerdate
             && self.participantid == row.participantid
@@ -2758,8 +2751,8 @@ impl mmsdm_core::CompareWithRow for BidsMnspDayoffer1PrimaryKey {
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BidsMnspDayoffer1PrimaryKey {
-    type PrimaryKey = BidsMnspDayoffer1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BidMnspDayoffer2PrimaryKey {
+    type PrimaryKey = BidMnspDayoffer2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.linkid == key.linkid && self.offerdate == key.offerdate
             && self.participantid == key.participantid
@@ -2768,7 +2761,7 @@ impl mmsdm_core::CompareWithPrimaryKey for BidsMnspDayoffer1PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BidsMnspDayoffer1 {
+impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -3046,12 +3039,11 @@ impl mmsdm_core::ArrowSchema for BidsMnspDayoffer1 {
 ///
 /// * Data Set Name: Offer
 /// * File Name: Mtpasa Offerdata
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private;
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3060,7 +3052,7 @@ impl mmsdm_core::ArrowSchema for BidsMnspDayoffer1 {
 /// * PARTICIPANTID
 /// * UNITID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OfferMtpasaOfferdata1 {
+pub struct OfferMtpasaOfferdata2 {
     /// Unique participant identifier
     pub participantid: String,
     /// Date time file processed
@@ -3090,19 +3082,47 @@ pub struct OfferMtpasaOfferdata1 {
     /// timestamp when record last changed
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The unit state value for day 1 Sunday
+    pub unitstate1: Option<String>,
+    /// The unit state value for day 2 Monday
+    pub unitstate2: Option<String>,
+    /// The unit state value for day 3 Tuesday
+    pub unitstate3: Option<String>,
+    /// The unit state value for 4 Wednesday
+    pub unitstate4: Option<String>,
+    /// The unit state value for day 5 Thursday
+    pub unitstate5: Option<String>,
+    /// The unit state value for day 6 Friday
+    pub unitstate6: Option<String>,
+    /// The unit state value for day 7 Saturday
+    pub unitstate7: Option<String>,
+    /// The recall time associated with the unit state for day 1 Sunday
+    pub recalltime1: Option<i64>,
+    /// The recall time associated with the unit state for day 2 Monday
+    pub recalltime2: Option<i64>,
+    /// The recall time associated with the unit state for day 3 Tuesday
+    pub recalltime3: Option<i64>,
+    /// The recall time associated with the unit state for day 4 Wednesday
+    pub recalltime4: Option<i64>,
+    /// The recall time associated with the unit state for day 5 Thursday
+    pub recalltime5: Option<i64>,
+    /// The recall time associated with the unit state for day 6 Friday
+    pub recalltime6: Option<i64>,
+    /// The recall time associated with the unit state for day 7 Saturday
+    pub recalltime7: Option<i64>,
 }
-impl mmsdm_core::GetTable for OfferMtpasaOfferdata1 {
-    type PrimaryKey = OfferMtpasaOfferdata1PrimaryKey;
+impl mmsdm_core::GetTable for OfferMtpasaOfferdata2 {
+    type PrimaryKey = OfferMtpasaOfferdata2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "OFFER".into(),
             table_name: Some("MTPASA_OFFERDATA".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> OfferMtpasaOfferdata1PrimaryKey {
-        OfferMtpasaOfferdata1PrimaryKey {
+    fn primary_key(&self) -> OfferMtpasaOfferdata2PrimaryKey {
+        OfferMtpasaOfferdata2PrimaryKey {
             effectivedate: self.effectivedate,
             offerdatetime: self.offerdatetime,
             participantid: self.participantid.clone(),
@@ -3118,45 +3138,45 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferdata1 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "offer_mtpasa_offerdata_v1_{}_{}", self.partition_suffix().year, self
+            "offer_mtpasa_offerdata_v2_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct OfferMtpasaOfferdata1PrimaryKey {
+pub struct OfferMtpasaOfferdata2PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub offerdatetime: chrono::NaiveDateTime,
     pub participantid: String,
     pub unitid: String,
 }
-impl mmsdm_core::PrimaryKey for OfferMtpasaOfferdata1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for OfferMtpasaOfferdata1 {
-    type Row = OfferMtpasaOfferdata1;
+impl mmsdm_core::PrimaryKey for OfferMtpasaOfferdata2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for OfferMtpasaOfferdata2 {
+    type Row = OfferMtpasaOfferdata2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.offerdatetime == row.offerdatetime
             && self.participantid == row.participantid && self.unitid == row.unitid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for OfferMtpasaOfferdata1 {
-    type PrimaryKey = OfferMtpasaOfferdata1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for OfferMtpasaOfferdata2 {
+    type PrimaryKey = OfferMtpasaOfferdata2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.offerdatetime == key.offerdatetime
             && self.participantid == key.participantid && self.unitid == key.unitid
     }
 }
-impl mmsdm_core::CompareWithRow for OfferMtpasaOfferdata1PrimaryKey {
-    type Row = OfferMtpasaOfferdata1;
+impl mmsdm_core::CompareWithRow for OfferMtpasaOfferdata2PrimaryKey {
+    type Row = OfferMtpasaOfferdata2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.effectivedate == row.effectivedate
             && self.offerdatetime == row.offerdatetime
             && self.participantid == row.participantid && self.unitid == row.unitid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for OfferMtpasaOfferdata1PrimaryKey {
-    type PrimaryKey = OfferMtpasaOfferdata1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for OfferMtpasaOfferdata2PrimaryKey {
+    type PrimaryKey = OfferMtpasaOfferdata2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.offerdatetime == key.offerdatetime
@@ -3164,7 +3184,7 @@ impl mmsdm_core::CompareWithPrimaryKey for OfferMtpasaOfferdata1PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata1 {
+impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -3194,7 +3214,34 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata1 {
                 arrow2::datatypes::DataType::Int64, true),
                 arrow2::datatypes::Field::new("lastchanged",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
+                None), true), arrow2::datatypes::Field::new("unitstate1",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("unitstate2",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("unitstate3",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("unitstate4",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("unitstate5",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("unitstate6",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("unitstate7",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("recalltime1",
+                arrow2::datatypes::DataType::Int64, true),
+                arrow2::datatypes::Field::new("recalltime2",
+                arrow2::datatypes::DataType::Int64, true),
+                arrow2::datatypes::Field::new("recalltime3",
+                arrow2::datatypes::DataType::Int64, true),
+                arrow2::datatypes::Field::new("recalltime4",
+                arrow2::datatypes::DataType::Int64, true),
+                arrow2::datatypes::Field::new("recalltime5",
+                arrow2::datatypes::DataType::Int64, true),
+                arrow2::datatypes::Field::new("recalltime6",
+                arrow2::datatypes::DataType::Int64, true),
+                arrow2::datatypes::Field::new("recalltime7",
+                arrow2::datatypes::DataType::Int64, true)
             ],
         )
     }
@@ -3216,6 +3263,20 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata1 {
         let mut capacity6_array = Vec::new();
         let mut capacity7_array = Vec::new();
         let mut lastchanged_array = Vec::new();
+        let mut unitstate1_array = Vec::new();
+        let mut unitstate2_array = Vec::new();
+        let mut unitstate3_array = Vec::new();
+        let mut unitstate4_array = Vec::new();
+        let mut unitstate5_array = Vec::new();
+        let mut unitstate6_array = Vec::new();
+        let mut unitstate7_array = Vec::new();
+        let mut recalltime1_array = Vec::new();
+        let mut recalltime2_array = Vec::new();
+        let mut recalltime3_array = Vec::new();
+        let mut recalltime4_array = Vec::new();
+        let mut recalltime5_array = Vec::new();
+        let mut recalltime6_array = Vec::new();
+        let mut recalltime7_array = Vec::new();
         for row in partition {
             participantid_array.push(row.participantid);
             offerdatetime_array.push(row.offerdatetime.timestamp());
@@ -3230,6 +3291,20 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata1 {
             capacity6_array.push(row.capacity6);
             capacity7_array.push(row.capacity7);
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+            unitstate1_array.push(row.unitstate1);
+            unitstate2_array.push(row.unitstate2);
+            unitstate3_array.push(row.unitstate3);
+            unitstate4_array.push(row.unitstate4);
+            unitstate5_array.push(row.unitstate5);
+            unitstate6_array.push(row.unitstate6);
+            unitstate7_array.push(row.unitstate7);
+            recalltime1_array.push(row.recalltime1);
+            recalltime2_array.push(row.recalltime2);
+            recalltime3_array.push(row.recalltime3);
+            recalltime4_array.push(row.recalltime4);
+            recalltime5_array.push(row.recalltime5);
+            recalltime6_array.push(row.recalltime6);
+            recalltime7_array.push(row.recalltime7);
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -3264,6 +3339,41 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata1 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
                     .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                     None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate1_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate2_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate3_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate4_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate5_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate6_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(unitstate7_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime1_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime2_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime3_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime4_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime5_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime6_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltime7_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -3281,8 +3391,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata1 {
 /// # Description
 ///  MTPASA_OFFERFILETRK is confidential to the relevant participant. Source MTPASA_OFFERFILETRK updates for every submitted MTPASA bid. Volume 4000 per year, being one per bid containing an MTPASA bid
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3416,14 +3525,14 @@ where
     S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 {
     match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("BIDDAYOFFER"), version) if version <= 1_i32 => {
-            let d: Vec<BidsBiddayoffer1> = mms_file.get_table()?;
+        (Some("BIDDAYOFFER"), version) if version <= 2_i32 => {
+            let d: Vec<OfferBiddayoffer2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertBidsBiddayoffer1 @P1, @P2",
+                    "exec mmsdm_proc.InsertOfferBiddayoffer2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -3488,26 +3597,26 @@ where
                 )
                 .await?;
         }
-        (Some("MNSP_DAYOFFER"), version) if version <= 1_i32 => {
-            let d: Vec<BidsMnspDayoffer1> = mms_file.get_table()?;
+        (Some("MNSP_DAYOFFER"), version) if version <= 2_i32 => {
+            let d: Vec<BidMnspDayoffer2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertBidsMnspDayoffer1 @P1, @P2",
+                    "exec mmsdm_proc.InsertBidMnspDayoffer2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
         }
-        (Some("MTPASA_OFFERDATA"), version) if version <= 1_i32 => {
-            let d: Vec<OfferMtpasaOfferdata1> = mms_file.get_table()?;
+        (Some("MTPASA_OFFERDATA"), version) if version <= 2_i32 => {
+            let d: Vec<OfferMtpasaOfferdata2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertOfferMtpasaOfferdata1 @P1, @P2",
+                    "exec mmsdm_proc.InsertOfferMtpasaOfferdata2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

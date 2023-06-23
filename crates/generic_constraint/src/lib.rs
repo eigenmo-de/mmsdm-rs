@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -153,8 +152,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
 /// # Description
 ///  GENCONDATA is a public data, and is available to all participants. Source GENCONDATA updates as constraint details are updated by AEMO. Note The following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes: · DISPATCH · PREDISPATCH · STPASA · MTPASA The flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA . The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -526,8 +524,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
 /// # Description
 ///  GENCONSET is public data, and is available to all participants. Source GENCONSET updates as sets are updated by AEMO.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -712,22 +709,21 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
 /// ## GENCONSETINVOKE
 ///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc.<br>_
 ///
-/// * Data Set Name: Generic Constraint
-/// * File Name: Genconsetinvoke
+/// * Data Set Name: Genconsetinvoke
+/// * File Name: Null
 /// * Data Version: 2
 ///
 /// # Description
 ///  GENCONSETINVOKE is public data. All participants have access to this data. Source GENCONSETINVOKE updates each time a generic constraint is invoked or revoke time is altered. Once past the time, these times cannot be altered. Note The Replica software does not handle the deletion of GENCONSETINVOKE records. To workaround this problem, the field STARTAUTHORISEDBY indicates whether a constraint set invocation is applicable. A non-null value for the STARTAUTHORISEDBY field indicates that the constraint invocation is active. Essentially inactive invocations have a null value for the STARTAUTHORISEDBY field. To remove inactive invocations from queries on the GENCONSETINVOKE table, add the following text to the where clause "and STARTAUTHORISEDBY is not null".
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * INVOCATION_ID
 /// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct GenericConstraintGenconsetinvoke2 {
+pub struct GenconsetinvokeNull2 {
     /// Abstract unique identifier for the record. Allows Invocations to be modified without affecting PK values
     pub invocation_id: i64,
     /// Market date of start
@@ -762,59 +758,59 @@ pub struct GenericConstraintGenconsetinvoke2 {
     /// Flag to indicate if the constraint set is a system normal (1) or an outage set (0)
     pub systemnormal: Option<String>,
 }
-impl mmsdm_core::GetTable for GenericConstraintGenconsetinvoke2 {
-    type PrimaryKey = GenericConstraintGenconsetinvoke2PrimaryKey;
+impl mmsdm_core::GetTable for GenconsetinvokeNull2 {
+    type PrimaryKey = GenconsetinvokeNull2PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
-            data_set_name: "GENERIC_CONSTRAINT".into(),
-            table_name: Some("GENCONSETINVOKE".into()),
+            data_set_name: "GENCONSETINVOKE".into(),
+            table_name: Some("NULL".into()),
             version: 2,
         }
     }
-    fn primary_key(&self) -> GenericConstraintGenconsetinvoke2PrimaryKey {
-        GenericConstraintGenconsetinvoke2PrimaryKey {
+    fn primary_key(&self) -> GenconsetinvokeNull2PrimaryKey {
+        GenconsetinvokeNull2PrimaryKey {
             invocation_id: self.invocation_id,
             intervention: self.intervention.clone(),
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "generic_constraint_genconsetinvoke_v2".to_string()
+        "genconsetinvoke_null_v2".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct GenericConstraintGenconsetinvoke2PrimaryKey {
+pub struct GenconsetinvokeNull2PrimaryKey {
     pub invocation_id: i64,
     pub intervention: String,
 }
-impl mmsdm_core::PrimaryKey for GenericConstraintGenconsetinvoke2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for GenericConstraintGenconsetinvoke2 {
-    type Row = GenericConstraintGenconsetinvoke2;
+impl mmsdm_core::PrimaryKey for GenconsetinvokeNull2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for GenconsetinvokeNull2 {
+    type Row = GenconsetinvokeNull2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.invocation_id == row.invocation_id && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for GenericConstraintGenconsetinvoke2 {
-    type PrimaryKey = GenericConstraintGenconsetinvoke2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for GenconsetinvokeNull2 {
+    type PrimaryKey = GenconsetinvokeNull2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.invocation_id == key.invocation_id && self.intervention == key.intervention
     }
 }
-impl mmsdm_core::CompareWithRow for GenericConstraintGenconsetinvoke2PrimaryKey {
-    type Row = GenericConstraintGenconsetinvoke2;
+impl mmsdm_core::CompareWithRow for GenconsetinvokeNull2PrimaryKey {
+    type Row = GenconsetinvokeNull2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.invocation_id == row.invocation_id && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for GenericConstraintGenconsetinvoke2PrimaryKey {
-    type PrimaryKey = GenericConstraintGenconsetinvoke2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for GenconsetinvokeNull2PrimaryKey {
+    type PrimaryKey = GenconsetinvokeNull2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.invocation_id == key.invocation_id && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for GenericConstraintGenconsetinvoke2 {
+impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -958,8 +954,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintGenconsetinvoke2 {
 /// # Description
 ///  GENCONSETTRK data is public to all participants. Source Ad hoc updates occur to GENCONSETTRK.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1175,8 +1170,7 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
 /// # Description
 ///  GENERICCONSTRAINTRHS is public data, and is available to all participants. Source GENERICCONSTRAINTRHS updates whenever a new generic constraint RHS or expression is created or modified Volume Approximately 70,000 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1464,8 +1458,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
 /// # Description
 ///  GENERICEQUATIONDESC data is public to all participants. Source GENERICEQUATIONDESC updates when new a generic equation is created for the first time. Volume Approximately 100 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1635,8 +1628,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
 /// # Description
 ///  GENERICEQUATIONRHS data is public to all participants. Source GENERICEQUATIONRHS updates whenever a generic equation is created or modified. Volume Approximately 1,000 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS. To reference a generic equation from a generic constraint RHS definition, specify a SPD_TYPE of ‘X’ and the SPD_ID equivalent to the EQUATIONID field in GENERICEQUATIONRHS.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1908,8 +1900,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
 /// # Description
 ///  The addition of the BIDTYPE field to SPDCONNECTIONPOINTCONSTRAINT allows constraints to be applied to a dispatchable unit energy and/or Frequency Controlled Ancillary Services dispatch. SPDCONNECTIONPOINTCONSTRAINTdata is public, so is available to all participants. Source SPDCONNECTIONPOINTCONSTRAINT updates whenever new connection point constraints are created.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2106,8 +2097,7 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
 /// # Description
 ///  SPDINTERCONNECTORCONSTRAINT is public data, and is available to all participants. Source SPDINTERCONNECTORCONSTRAINT updates whenever new connection point constraints are created.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2293,8 +2283,7 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
 /// # Description
 ///  SPDREGIONCONSTRAINT is public data, and is available to all participants. Source SPDREGIONCONSTRAINT is updated whenever AEMO creates new regional constraints.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2526,14 +2515,14 @@ where
                 )
                 .await?;
         }
-        (Some("GENCONSETINVOKE"), version) if version <= 2_i32 => {
-            let d: Vec<GenericConstraintGenconsetinvoke2> = mms_file.get_table()?;
+        (Some("NULL"), version) if version <= 2_i32 => {
+            let d: Vec<GenconsetinvokeNull2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertGenericConstraintGenconsetinvoke2 @P1, @P2",
+                    "exec mmsdm_proc.InsertGenconsetinvokeNull2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

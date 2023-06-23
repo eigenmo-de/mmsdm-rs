@@ -16,5 +16,5 @@ name = "xtask"
 #   - fsio
 [dependencies]
 anyhow = "1"
-cargo = "0.65.0"
+cargo = "0.71.0"
 

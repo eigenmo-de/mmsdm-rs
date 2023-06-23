@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  AUCTION is public data, and is available to all participants. Source Static. Volume 4 records per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -192,8 +191,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
 /// # Description
 ///  AUCTION_CALENDAR is public data, and is available to all participants. Source Updates are usually quarterly by the SRA team. Volume AUCTION_CALENDAR shows a maximum of 16 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -421,8 +419,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
 /// # Description
 ///  AUCTION_IC_ALLOCATIONS is public data, and is available to all participants. Source Updates are usually quarterly as auctions are held from Settlement Residue Auction team's SRIS interface. Volume AUCTION_IC_ALLOCATIONS contains a maximum of 100 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -687,8 +684,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
 /// # Description
 ///  AUCTION_REVENUE_ESTIMATE is public data, and is available to all participants. Source Updates are quarterly from SRA team via SRIS interface Volume AUCTION_REVENUE_ESTIMATE contains a maximum of 300 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -940,8 +936,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
 /// # Description
 ///  AUCTION_REVENUE_TRACK is public data, and is available to all participants. Source Updates are quarterly after SRA team updates SRIS interface. Volume AUCTION_REVENUE_TRACK contains a maximum of 100 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1154,8 +1149,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
 /// # Description
 ///  AUCTION_RP_ESTIMATE is public data, and is available to all participants. Source Updates are quarterly by SRA team via SRIS interface. Volume This view contains a maximum of 100 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1369,8 +1363,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
 /// # Description
 ///  AUCTION_TRANCHE is public data, and is available to all participants. Source Updates are quarterly from SRA team via SRIS interface. Volume AUCTION_TRANCHE contains a maximum of 100 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1596,8 +1589,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
 /// # Description
 ///  RESIDUECONTRACTPAYMENTS data is confidential to the relevant participant.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1721,8 +1713,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
 /// # Description
 ///  RESIDUEFILETRK data is confidential to each participant Source RESIDUEFILETRK updates are ad hoc from participants Volume Assuming quarterly contracts RESIDUEFILETRK contains a maximum of 5,000 records per annum. Each bid file can contain many bids for each auction. Participants can input multiple bids (with the last acknowledged file being used in the auction).
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1896,8 +1887,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
 /// # Description
 ///  Source RESIDUE_BID_TRK updates are usually quarterly from participants before an Auction. RESIDUE_BID_TRK data is confidential to the relevant participant. RESIDUE_BID_TRK excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume Assuming monthly contracts, RESIDUE_BID_TRK shows a maximum of 500 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2059,8 +2049,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
 /// # Description
 ///  RESIDUE_CONTRACTS data is public, so is available to all participants. Source RESIDUE_CONTRACTS updates are quarterly by AEMO. Volume Assuming quarterly contracts, RESIDUE_CONTRACTS contains a maximum of 50 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2346,8 +2335,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
 /// # Description
 ///  Source RESIDUE_CON_DATA refreshes whenever a Settlement Residue Auction is run (i.e. quarterly). RESIDUE_CON_DATA data is confidential to the relevant participant. RESIDUE_CON_DATA excludes contracts and versions without a valid publication date (i.e invalid bids are ignored). Volume RESIDUE_CON_DATA shows a maximum of 6000 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2566,8 +2554,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
 /// # Description
 ///  Source RESIDUE_CON_ESTIMATES_TRK updates are quarterly by SRA team. Volume Assuming monthly contracts, RESIDUE_CON_ESTIMATES_TRK shows a maximum of 50 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2744,8 +2731,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
 /// # Description
 ///  RESIDUE_CON_FUNDS data is public, so is available to all participants. Source RESIDUE_CON_FUNDS updates are quarterly from SRA team via SRIS interface. Volume Assuming quarterly contracts, RESIDUE_CON_FUNDS contains a maximum of 600 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2996,8 +2982,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
 /// # Description
 ///  Source Participant's bid file. RESIDUE_FUNDS_BID data is confidential to the relevant participant. RESIDUE_FUNDS_BID shows a maximum of 30,000 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3195,15 +3180,14 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
 /// ## RESIDUE_PRICE_BID
 ///  _RESIDUE_PRICE_BID supports the Settlement Residue Auction, holding the unit and bid price details for each participant._
 ///
-/// * Data Set Name: Irauction Bids
-/// * File Name: Price Bid
+/// * Data Set Name: Irauction
+/// * File Name: Residue Price Bid
 /// * Data Version: 1
 ///
 /// # Description
 ///  Source The participant's own bid file RESIDUE_PRICE_BID data is confidential to the relevant participant. The public version of the data is available to all auction participants post the associated auction date in RESIDUE_PRICE_FUNDS_BID. Volume RESIDUE_PRICE_BID shows a maximum of 10,000 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3212,7 +3196,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
 /// * OPTIONID
 /// * PARTICIPANTID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionBidsPriceBid1 {
+pub struct IrauctionResiduePriceBid1 {
     /// Not to be used. Unique id for each SRA contract (specified by AEMO)
     pub contractid: Option<String>,
     /// Participant identifier
@@ -3230,18 +3214,18 @@ pub struct IrauctionBidsPriceBid1 {
     /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
     pub auctionid: String,
 }
-impl mmsdm_core::GetTable for IrauctionBidsPriceBid1 {
-    type PrimaryKey = IrauctionBidsPriceBid1PrimaryKey;
+impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
+    type PrimaryKey = IrauctionResiduePriceBid1PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_BIDS".into(),
-            table_name: Some("PRICE_BID".into()),
+            data_set_name: "IRAUCTION".into(),
+            table_name: Some("RESIDUE_PRICE_BID".into()),
             version: 1,
         }
     }
-    fn primary_key(&self) -> IrauctionBidsPriceBid1PrimaryKey {
-        IrauctionBidsPriceBid1PrimaryKey {
+    fn primary_key(&self) -> IrauctionResiduePriceBid1PrimaryKey {
+        IrauctionResiduePriceBid1PrimaryKey {
             auctionid: self.auctionid.clone(),
             loaddate: self.loaddate,
             optionid: self.optionid,
@@ -3250,47 +3234,47 @@ impl mmsdm_core::GetTable for IrauctionBidsPriceBid1 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "irauction_bids_price_bid_v1".to_string()
+        "irauction_residue_price_bid_v1".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct IrauctionBidsPriceBid1PrimaryKey {
+pub struct IrauctionResiduePriceBid1PrimaryKey {
     pub auctionid: String,
     pub loaddate: chrono::NaiveDateTime,
     pub optionid: rust_decimal::Decimal,
     pub participantid: String,
 }
-impl mmsdm_core::PrimaryKey for IrauctionBidsPriceBid1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionBidsPriceBid1 {
-    type Row = IrauctionBidsPriceBid1;
+impl mmsdm_core::PrimaryKey for IrauctionResiduePriceBid1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for IrauctionResiduePriceBid1 {
+    type Row = IrauctionResiduePriceBid1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.auctionid == row.auctionid && self.loaddate == row.loaddate
             && self.optionid == row.optionid && self.participantid == row.participantid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsPriceBid1 {
-    type PrimaryKey = IrauctionBidsPriceBid1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceBid1 {
+    type PrimaryKey = IrauctionResiduePriceBid1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.auctionid == key.auctionid && self.loaddate == key.loaddate
             && self.optionid == key.optionid && self.participantid == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionBidsPriceBid1PrimaryKey {
-    type Row = IrauctionBidsPriceBid1;
+impl mmsdm_core::CompareWithRow for IrauctionResiduePriceBid1PrimaryKey {
+    type Row = IrauctionResiduePriceBid1;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.auctionid == row.auctionid && self.loaddate == row.loaddate
             && self.optionid == row.optionid && self.participantid == row.participantid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsPriceBid1PrimaryKey {
-    type PrimaryKey = IrauctionBidsPriceBid1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceBid1PrimaryKey {
+    type PrimaryKey = IrauctionResiduePriceBid1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.auctionid == key.auctionid && self.loaddate == key.loaddate
             && self.optionid == key.optionid && self.participantid == key.participantid
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for IrauctionBidsPriceBid1 {
+impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -3384,8 +3368,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsPriceBid1 {
 /// # Description
 ///  RESIDUE_PRICE_FUNDS_BID data is public. The data is available to all auction participants post the associated auction date. Volume The volume is very dependent on the number of active bids. An indication is about 250,000 per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3593,8 +3576,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
 /// # Description
 ///  RESIDUE_PUBLIC_DATA excludes contracts and versions without a valid publication date (i.e. invalid bids are ignored).  The data is available to all auction participants post the associated auction date. Source RESIDUE_PUBLIC_DATA updates are quarterly from NEMMCO. Volume RESIDUE_PUBLIC_DATA shows a maximum of 120 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3818,8 +3800,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
 /// # Description
 ///  Source RESIDUE_TRK updates whenever Settlement Residue Auctions are run and the results published (i.e. quarterly). The RESIDUE_TRK data is available to all participants post the associated auction date. Volume Assuming quarterly contracts, RESIDUE_TRK shows a maximum of 50 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4010,8 +3991,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4211,8 +4191,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4551,8 +4530,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4779,8 +4757,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4968,8 +4945,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMardetail1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5169,8 +5145,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMargin1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5444,8 +5419,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5625,8 +5599,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5827,8 +5800,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5993,8 +5965,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6158,8 +6129,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6339,8 +6309,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6621,8 +6590,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6738,8 +6706,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
 /// # Description
 ///  VALUATIONID is public data, and is available to all participants. Source VALUATIONID updates are quarterly from the Settlement Residues Information System [SRIS]. Volume VALUATIONID shows up to five (5) records. Updates are rare.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7038,14 +7005,14 @@ where
                 )
                 .await?;
         }
-        (Some("PRICE_BID"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionBidsPriceBid1> = mms_file.get_table()?;
+        (Some("RESIDUE_PRICE_BID"), version) if version <= 1_i32 => {
+            let d: Vec<IrauctionResiduePriceBid1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertIrauctionBidsPriceBid1 @P1, @P2",
+                    "exec mmsdm_proc.InsertIrauctionResiduePriceBid1 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

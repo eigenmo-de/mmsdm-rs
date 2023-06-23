@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -137,8 +136,7 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
 /// # Description
 ///  PREDISPATCHCASESOLUTION data is public, so is available to all participants. Source PREDISPATCHCASESOLUTION updates every half-hour. Volume Approximately 48 records per day.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -544,8 +542,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
 /// # Description
 ///  PREDISPATCHCONSTRAINT data is confidential on the day of creation, and public to all participants after the end of the market day. Source PREDISPATCHCONSTRAINT updates with every thirty-minute predispatch run. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -822,8 +819,7 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
 /// # Description
 ///  Source PREDISPATCHINTERCONNECTORRES updates with every thirty-minute predispatch run. Note MW losses can be negative depending on the flow. The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in INTERCONNECTOR.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1242,8 +1238,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2121,13 +2116,12 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Unit Solution
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 /// # Description
 ///  Source Own (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled. 1 001 Not stranded, not trapped, is enabled. 3 011 Not stranded, is trapped, is enabled. 4 100 Is stranded, not trapped, not enabled. For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2135,7 +2129,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
 /// * DUID
 /// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchUnitSolution2 {
+pub struct PredispatchUnitSolution3 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
@@ -2204,7 +2198,7 @@ pub struct PredispatchUnitSolution2 {
     pub lowerreg: Option<rust_decimal::Decimal>,
     /// Raise Regulation reserve target
     pub raisereg: Option<rust_decimal::Decimal>,
-    /// Bid energy availability
+    /// For Scheduled units, this is the MAXAVAIL bid availability For Semi-scheduled units, this is the lower of MAXAVAIL bid availability and UIGF
     pub availability: Option<rust_decimal::Decimal>,
     /// Raise 6sec status flag
     pub raise6secflags: Option<rust_decimal::Decimal>,
@@ -2240,19 +2234,35 @@ pub struct PredispatchUnitSolution2 {
     pub lowerregactualavailability: Option<rust_decimal::Decimal>,
     /// Boolean representation flagging if the Target is Capped
     pub semidispatchcap: Option<rust_decimal::Decimal>,
+    /// Mode specific to units within an aggregate. 0 - no monitoring, 1 - aggregate monitoring, 2 - individual monitoring due to constraint
+    pub conformance_mode: Option<rust_decimal::Decimal>,
+    /// For Semi-Scheduled units. Unconstrained Intermittent Generation Forecast value provided to NEMDE
+    pub uigf: Option<rust_decimal::Decimal>,
+    /// Dispatched Raise1Sec - TraderSolution element R1Target attribute
+    pub raise1sec: Option<rust_decimal::Decimal>,
+    /// TraderSolution element R1Flags attribute
+    pub raise1secflags: Option<rust_decimal::Decimal>,
+    /// Dispatched Lower1Sec - TraderSolution element L1Target attribute
+    pub lower1sec: Option<rust_decimal::Decimal>,
+    /// TraderSolution element L1Flags attribute
+    pub lower1secflags: Option<rust_decimal::Decimal>,
+    /// Trapezium adjusted Raise 1Sec Availability
+    pub raise1secactualavailability: Option<rust_decimal::Decimal>,
+    /// Trapezium adjusted Lower 1Sec Availability
+    pub lower1secactualavailability: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for PredispatchUnitSolution2 {
-    type PrimaryKey = PredispatchUnitSolution2PrimaryKey;
+impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
+    type PrimaryKey = PredispatchUnitSolution3PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
             table_name: Some("UNIT_SOLUTION".into()),
-            version: 2,
+            version: 3,
         }
     }
-    fn primary_key(&self) -> PredispatchUnitSolution2PrimaryKey {
-        PredispatchUnitSolution2PrimaryKey {
+    fn primary_key(&self) -> PredispatchUnitSolution3PrimaryKey {
+        PredispatchUnitSolution3PrimaryKey {
             datetime: self.datetime,
             duid: self.duid.clone(),
             intervention: self.intervention,
@@ -2260,46 +2270,46 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution2 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "predispatch_unit_solution_v2".to_string()
+        "predispatch_unit_solution_v3".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct PredispatchUnitSolution2PrimaryKey {
+pub struct PredispatchUnitSolution3PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub duid: String,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for PredispatchUnitSolution2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for PredispatchUnitSolution2 {
-    type Row = PredispatchUnitSolution2;
+impl mmsdm_core::PrimaryKey for PredispatchUnitSolution3PrimaryKey {}
+impl mmsdm_core::CompareWithRow for PredispatchUnitSolution3 {
+    type Row = PredispatchUnitSolution3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.duid == row.duid
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution2 {
-    type PrimaryKey = PredispatchUnitSolution2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution3 {
+    type PrimaryKey = PredispatchUnitSolution3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.duid == key.duid
             && self.intervention == key.intervention
     }
 }
-impl mmsdm_core::CompareWithRow for PredispatchUnitSolution2PrimaryKey {
-    type Row = PredispatchUnitSolution2;
+impl mmsdm_core::CompareWithRow for PredispatchUnitSolution3PrimaryKey {
+    type Row = PredispatchUnitSolution3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.duid == row.duid
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution2PrimaryKey {
-    type PrimaryKey = PredispatchUnitSolution2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution3PrimaryKey {
+    type PrimaryKey = PredispatchUnitSolution3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.duid == key.duid
             && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
+impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -2404,7 +2414,23 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
                 arrow2::datatypes::Field::new("lowerregactualavailability",
                 arrow2::datatypes::DataType::Decimal(16, 6), true),
                 arrow2::datatypes::Field::new("semidispatchcap",
-                arrow2::datatypes::DataType::Decimal(3, 0), true)
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("conformance_mode",
+                arrow2::datatypes::DataType::Decimal(6, 0), true),
+                arrow2::datatypes::Field::new("uigf",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1sec",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secflags",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("lower1sec",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secflags",
+                arrow2::datatypes::DataType::Decimal(3, 0), true),
+                arrow2::datatypes::Field::new("raise1secactualavailability",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("lower1secactualavailability",
+                arrow2::datatypes::DataType::Decimal(16, 6), true)
             ],
         )
     }
@@ -2464,6 +2490,14 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
         let mut lower5minactualavailability_array = Vec::new();
         let mut lowerregactualavailability_array = Vec::new();
         let mut semidispatchcap_array = Vec::new();
+        let mut conformance_mode_array = Vec::new();
+        let mut uigf_array = Vec::new();
+        let mut raise1sec_array = Vec::new();
+        let mut raise1secflags_array = Vec::new();
+        let mut lower1sec_array = Vec::new();
+        let mut lower1secflags_array = Vec::new();
+        let mut raise1secactualavailability_array = Vec::new();
+        let mut lower1secactualavailability_array = Vec::new();
         for row in partition {
             predispatchseqno_array.push(row.predispatchseqno.start().timestamp());
             runno_array
@@ -2829,6 +2863,70 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
                             val.mantissa()
                         })
                 });
+            conformance_mode_array
+                .push({
+                    row.conformance_mode
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            uigf_array
+                .push({
+                    row.uigf
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1sec_array
+                .push({
+                    row.raise1sec
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1secflags_array
+                .push({
+                    row.raise1secflags
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_array
+                .push({
+                    row.lower1sec
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secflags_array
+                .push({
+                    row.lower1secflags
+                        .map(|mut val| {
+                            val.rescale(0);
+                            val.mantissa()
+                        })
+                });
+            raise1secactualavailability_array
+                .push({
+                    row.raise1secactualavailability
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            lower1secactualavailability_array
+                .push({
+                    row.lower1secactualavailability
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -2985,6 +3083,30 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(semidispatchcap_array)
                     .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(conformance_mode_array)
+                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uigf_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secflags_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secflags_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secactualavailability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secactualavailability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -3002,8 +3124,7 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution2 {
 /// # Description
 ///  Source PREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day.  Volume Approximately 45,000 records per day.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3193,13 +3314,12 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Prices
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///  PREDISPATCHPRICE data is public, so is available to all participants. Source PREDISPATCHPRICE updates with every thirty-minute predispatch run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3207,7 +3327,7 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
 /// * REGIONID
 /// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchRegionPrices1 {
+pub struct PredispatchRegionPrices2 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// LP Solver Predispatch run no, typically 1. It increments if the case is re-run.
@@ -3276,19 +3396,23 @@ pub struct PredispatchRegionPrices1 {
     pub lower5minrrp: Option<rust_decimal::Decimal>,
     /// Regional reference price for this dispatch period
     pub lowerregrrp: Option<rust_decimal::Decimal>,
+    /// Regional Raise 1Sec Price - R1Price attribute after capping /flooring
+    pub raise1secrrp: Option<rust_decimal::Decimal>,
+    /// Regional Lower 1Sec Price - RegionSolution element L1Price attribute
+    pub lower1secrrp: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for PredispatchRegionPrices1 {
-    type PrimaryKey = PredispatchRegionPrices1PrimaryKey;
+impl mmsdm_core::GetTable for PredispatchRegionPrices2 {
+    type PrimaryKey = PredispatchRegionPrices2PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
             table_name: Some("REGION_PRICES".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> PredispatchRegionPrices1PrimaryKey {
-        PredispatchRegionPrices1PrimaryKey {
+    fn primary_key(&self) -> PredispatchRegionPrices2PrimaryKey {
+        PredispatchRegionPrices2PrimaryKey {
             datetime: self.datetime,
             regionid: self.regionid.clone(),
             intervention: self.intervention,
@@ -3296,46 +3420,46 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices1 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "predispatch_region_prices_v1".to_string()
+        "predispatch_region_prices_v2".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct PredispatchRegionPrices1PrimaryKey {
+pub struct PredispatchRegionPrices2PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for PredispatchRegionPrices1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for PredispatchRegionPrices1 {
-    type Row = PredispatchRegionPrices1;
+impl mmsdm_core::PrimaryKey for PredispatchRegionPrices2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for PredispatchRegionPrices2 {
+    type Row = PredispatchRegionPrices2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionPrices1 {
-    type PrimaryKey = PredispatchRegionPrices1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionPrices2 {
+    type PrimaryKey = PredispatchRegionPrices2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
             && self.intervention == key.intervention
     }
 }
-impl mmsdm_core::CompareWithRow for PredispatchRegionPrices1PrimaryKey {
-    type Row = PredispatchRegionPrices1;
+impl mmsdm_core::CompareWithRow for PredispatchRegionPrices2PrimaryKey {
+    type Row = PredispatchRegionPrices2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionPrices1PrimaryKey {
-    type PrimaryKey = PredispatchRegionPrices1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionPrices2PrimaryKey {
+    type PrimaryKey = PredispatchRegionPrices2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
             && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
+impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -3404,6 +3528,10 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
                 arrow2::datatypes::Field::new("lower5minrrp",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("lowerregrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secrrp",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1secrrp",
                 arrow2::datatypes::DataType::Decimal(15, 5), true)
             ],
         )
@@ -3446,6 +3574,8 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
         let mut lower60secrrp_array = Vec::new();
         let mut lower5minrrp_array = Vec::new();
         let mut lowerregrrp_array = Vec::new();
+        let mut raise1secrrp_array = Vec::new();
+        let mut lower1secrrp_array = Vec::new();
         for row in partition {
             predispatchseqno_array.push(row.predispatchseqno.start().timestamp());
             runno_array
@@ -3674,6 +3804,22 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
                             val.mantissa()
                         })
                 });
+            raise1secrrp_array
+                .push({
+                    row.raise1secrrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1secrrp_array
+                .push({
+                    row.lower1secrrp
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -3776,6 +3922,12 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lowerregrrp_array)
                     .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secrrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secrrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -3793,8 +3945,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices1 {
 /// # Description
 ///  Source The plan is to provide this data every half-hour.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4671,13 +4822,12 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period. Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load) Source PREDISPATCHREGIONSUM updates every thirty minutes. Note *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4685,7 +4835,7 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
 /// * REGIONID
 /// * INTERVENTION
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PredispatchRegionSolution6 {
+pub struct PredispatchRegionSolution7 {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// LP Solver Pre-Dispatch run no, typically 1. It increments if the case is re-run.
@@ -4916,19 +5066,31 @@ pub struct PredispatchRegionSolution6 {
     pub wdr_available: Option<rust_decimal::Decimal>,
     /// Regional aggregated dispatched MW for Wholesale Demand Response (WDR) units
     pub wdr_dispatched: Option<rust_decimal::Decimal>,
+    /// For Semi-Scheduled units. Aggregate Energy Availability from Solar units in that region
+    pub ss_solar_availability: Option<rust_decimal::Decimal>,
+    /// For Semi-Scheduled units. Aggregate Energy Availability from Wind units in that region
+    pub ss_wind_availability: Option<rust_decimal::Decimal>,
+    /// Total Raise1Sec Dispatched in Region - RegionSolution element R1Dispatch attribute
+    pub raise1seclocaldispatch: Option<rust_decimal::Decimal>,
+    /// Total Lower1Sec Dispatched in Region - RegionSolution element L1Dispatch attribute
+    pub lower1seclocaldispatch: Option<rust_decimal::Decimal>,
+    /// Trapezium adjusted Raise1Sec availability (summated from UnitSolution)
+    pub raise1secactualavailability: Option<rust_decimal::Decimal>,
+    /// Trapezium adjusted Lower1Sec availability (summated from UnitSolution)
+    pub lower1secactualavailability: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for PredispatchRegionSolution6 {
-    type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
+impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
+    type PrimaryKey = PredispatchRegionSolution7PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PREDISPATCH".into(),
             table_name: Some("REGION_SOLUTION".into()),
-            version: 6,
+            version: 7,
         }
     }
-    fn primary_key(&self) -> PredispatchRegionSolution6PrimaryKey {
-        PredispatchRegionSolution6PrimaryKey {
+    fn primary_key(&self) -> PredispatchRegionSolution7PrimaryKey {
+        PredispatchRegionSolution7PrimaryKey {
             datetime: self.datetime,
             regionid: self.regionid.clone(),
             intervention: self.intervention,
@@ -4936,46 +5098,46 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution6 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "predispatch_region_solution_v6".to_string()
+        "predispatch_region_solution_v7".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct PredispatchRegionSolution6PrimaryKey {
+pub struct PredispatchRegionSolution7PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: String,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for PredispatchRegionSolution6PrimaryKey {}
-impl mmsdm_core::CompareWithRow for PredispatchRegionSolution6 {
-    type Row = PredispatchRegionSolution6;
+impl mmsdm_core::PrimaryKey for PredispatchRegionSolution7PrimaryKey {}
+impl mmsdm_core::CompareWithRow for PredispatchRegionSolution7 {
+    type Row = PredispatchRegionSolution7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution6 {
-    type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution7 {
+    type PrimaryKey = PredispatchRegionSolution7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
             && self.intervention == key.intervention
     }
 }
-impl mmsdm_core::CompareWithRow for PredispatchRegionSolution6PrimaryKey {
-    type Row = PredispatchRegionSolution6;
+impl mmsdm_core::CompareWithRow for PredispatchRegionSolution7PrimaryKey {
+    type Row = PredispatchRegionSolution7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution6PrimaryKey {
-    type PrimaryKey = PredispatchRegionSolution6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution7PrimaryKey {
+    type PrimaryKey = PredispatchRegionSolution7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
             && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
+impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -5206,7 +5368,19 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
                 arrow2::datatypes::Field::new("wdr_available",
                 arrow2::datatypes::DataType::Decimal(15, 5), true),
                 arrow2::datatypes::Field::new("wdr_dispatched",
-                arrow2::datatypes::DataType::Decimal(15, 5), true)
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("ss_solar_availability",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("ss_wind_availability",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1seclocaldispatch",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("lower1seclocaldispatch",
+                arrow2::datatypes::DataType::Decimal(15, 5), true),
+                arrow2::datatypes::Field::new("raise1secactualavailability",
+                arrow2::datatypes::DataType::Decimal(16, 6), true),
+                arrow2::datatypes::Field::new("lower1secactualavailability",
+                arrow2::datatypes::DataType::Decimal(16, 6), true)
             ],
         )
     }
@@ -5329,6 +5503,12 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
         let mut wdr_initialmw_array = Vec::new();
         let mut wdr_available_array = Vec::new();
         let mut wdr_dispatched_array = Vec::new();
+        let mut ss_solar_availability_array = Vec::new();
+        let mut ss_wind_availability_array = Vec::new();
+        let mut raise1seclocaldispatch_array = Vec::new();
+        let mut lower1seclocaldispatch_array = Vec::new();
+        let mut raise1secactualavailability_array = Vec::new();
+        let mut lower1secactualavailability_array = Vec::new();
         for row in partition {
             predispatchseqno_array.push(row.predispatchseqno.start().timestamp());
             runno_array
@@ -6205,6 +6385,54 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
                             val.mantissa()
                         })
                 });
+            ss_solar_availability_array
+                .push({
+                    row.ss_solar_availability
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            ss_wind_availability_array
+                .push({
+                    row.ss_wind_availability
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1seclocaldispatch_array
+                .push({
+                    row.raise1seclocaldispatch
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            lower1seclocaldispatch_array
+                .push({
+                    row.lower1seclocaldispatch
+                        .map(|mut val| {
+                            val.rescale(5);
+                            val.mantissa()
+                        })
+                });
+            raise1secactualavailability_array
+                .push({
+                    row.raise1secactualavailability
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
+            lower1secactualavailability_array
+                .push({
+                    row.lower1secactualavailability
+                        .map(|mut val| {
+                            val.rescale(6);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -6550,6 +6778,24 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_dispatched_array)
                     .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_solar_availability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ss_wind_availability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1seclocaldispatch_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1seclocaldispatch_array)
+                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1secactualavailability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1secactualavailability_array)
+                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -6566,8 +6812,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution6 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6722,8 +6967,7 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemand1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6874,8 +7118,7 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
 /// # Description
 ///  Source PREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly) Volume Approximately 2,000 rows per day. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7218,8 +7461,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7393,8 +7635,7 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
 /// # Description
 ///  Source Own (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data. Volume 1, 700, 000 per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7656,14 +7897,14 @@ where
                 )
                 .await?;
         }
-        (Some("UNIT_SOLUTION"), version) if version <= 2_i32 => {
-            let d: Vec<PredispatchUnitSolution2> = mms_file.get_table()?;
+        (Some("UNIT_SOLUTION"), version) if version <= 3_i32 => {
+            let d: Vec<PredispatchUnitSolution3> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertPredispatchUnitSolution2 @P1, @P2",
+                    "exec mmsdm_proc.InsertPredispatchUnitSolution3 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -7680,14 +7921,14 @@ where
                 )
                 .await?;
         }
-        (Some("REGION_PRICES"), version) if version <= 1_i32 => {
-            let d: Vec<PredispatchRegionPrices1> = mms_file.get_table()?;
+        (Some("REGION_PRICES"), version) if version <= 2_i32 => {
+            let d: Vec<PredispatchRegionPrices2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertPredispatchRegionPrices1 @P1, @P2",
+                    "exec mmsdm_proc.InsertPredispatchRegionPrices2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -7704,14 +7945,14 @@ where
                 )
                 .await?;
         }
-        (Some("REGION_SOLUTION"), version) if version <= 6_i32 => {
-            let d: Vec<PredispatchRegionSolution6> = mms_file.get_table()?;
+        (Some("REGION_SOLUTION"), version) if version <= 7_i32 => {
+            let d: Vec<PredispatchRegionSolution7> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertPredispatchRegionSolution6 @P1, @P2",
+                    "exec mmsdm_proc.InsertPredispatchRegionSolution7 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

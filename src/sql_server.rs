@@ -17,6 +17,25 @@ where
             continue;
         }
         match file_key.data_set_name.as_str() {
+            "ANCILLIARY_SERVICES" => {
+                #[cfg(feature = "ancillary_services")]
+                {
+                    mmsdm_ancillary_services::save(
+                            &mut mms_file,
+                            &file_key,
+                            client,
+                            chunk_size,
+                        )
+                        .await?;
+                }
+                #[cfg(not(feature = "ancillary_services"))]
+                {
+                    log::warn!(
+                        "File key {:?} is not handled as the feature ancillary_services is not activated",
+                        file_key
+                    );
+                }
+            }
             "ASOFFER" => {
                 #[cfg(feature = "asoffer")]
                 {
@@ -97,7 +116,7 @@ where
                     );
                 }
             }
-            "DISPATCH" | "PRICELOAD" => {
+            "DISPATCH" | "DISPATCHOCD" | "PRICELOAD" => {
                 #[cfg(feature = "dispatch")]
                 {
                     mmsdm_dispatch::save(&mut mms_file, &file_key, client, chunk_size)
@@ -144,8 +163,9 @@ where
                     );
                 }
             }
-            "GCRHS" | "GENCONDATA" | "GENCONSET" | "GENCONSETTRK" | "GENERIC_CONSTRAINT"
-            | "GEQDESC" | "GEQRHS" | "SPDCPC" | "SPDICC" | "SPDRC" => {
+            "GCRHS" | "GENCONDATA" | "GENCONSET" | "GENCONSETINVOKE" | "GENCONSETTRK"
+            | "GENERIC_CONSTRAINT" | "GEQDESC" | "GEQRHS" | "SPDCPC" | "SPDICC"
+            | "SPDRC" => {
                 #[cfg(feature = "generic_constraint")]
                 {
                     mmsdm_generic_constraint::save(
@@ -160,6 +180,21 @@ where
                 {
                     log::warn!(
                         "File key {:?} is not handled as the feature generic_constraint is not activated",
+                        file_key
+                    );
+                }
+            }
+            "BID" | "DISPATCHBNC" | "DISPATCHOCD" | "METERDATA" | "METER_DATA" | "MR"
+            | "OFFER" | "SETTLEMENTS" | "TRADING" => {
+                #[cfg(feature = "historical")]
+                {
+                    mmsdm_historical::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
+                }
+                #[cfg(not(feature = "historical"))]
+                {
+                    log::warn!(
+                        "File key {:?} is not handled as the feature historical is not activated",
                         file_key
                     );
                 }
@@ -245,6 +280,20 @@ where
                 {
                     log::warn!(
                         "File key {:?} is not handled as the feature meter_data is not activated",
+                        file_key
+                    );
+                }
+            }
+            "MTPASA" => {
+                #[cfg(feature = "mtpasa")]
+                {
+                    mmsdm_mtpasa::save(&mut mms_file, &file_key, client, chunk_size)
+                        .await?;
+                }
+                #[cfg(not(feature = "mtpasa"))]
+                {
+                    log::warn!(
+                        "File key {:?} is not handled as the feature mtpasa is not activated",
                         file_key
                     );
                 }

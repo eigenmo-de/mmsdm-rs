@@ -1,5 +1,5 @@
-use crate::mms;
-use std::{collections, fs, iter, string};
+use crate::{mms, rust::VERSION};
+use std::{collections, fs, iter, string, time::Duration, thread};
 
 lazy_static::lazy_static! {
     static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();
@@ -16,6 +16,12 @@ const BASE_URL: &str = "https://nemweb.com.au/Reports/Current/MMSDataModelReport
 lazy_static::lazy_static! {
     static ref LINK_MATCH: regex::Regex = regex::Regex::new(r"MMS_[0-9]{3}_[0-9]").unwrap();
 }
+
+const PACKAGES_TO_SKIP: &[&str] = &[
+    "CONFIGURATION",
+    "HISTORICAL_TABLES",
+    "VOLTAGE_INSTRUCTIONS",
+];
 
 pub async fn run() -> anyhow::Result<()> {
     let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS%20Data%20Model%20Report_toc.htm";
@@ -46,42 +52,45 @@ pub async fn run() -> anyhow::Result<()> {
         dbg!(&current_package);
         let text = el.inner_html();
         if text.starts_with("Package:") {
+            dbg!(&text);
             let package = text.split(' ').nth(1).map(string::ToString::to_string);
-
+            
             // We need to keep the name of the package that we are
             // currently getting tables for
             current_package = package.clone();
         } else if text.starts_with("Table:") {
+            // slow down so we don't get rate limited
+            thread::sleep(Duration::from_millis(300));
+
             // We can only deal with a "Table" link
             // if we are dealing with a "Package".
-            if let Some(current) = current_package.clone() {
+            if let Some(current) = current_package.clone()  {
                 // get the link and remove everything after the #
                 let link_val = el
-                    .value()
-                    .attr("href")
-                    .unwrap()
-                    .split(".htm#")
-                    .next()
-                    .unwrap();
+                .value()
+                .attr("href")
+                .unwrap()
+                .split(".htm#")
+                .next()
+                .unwrap();
+
                 dbg!(&link_val);
-
-                // let test = "https://visualisations.aemo.com.au/aemo/nemweb/MMSDataModelReport/Electricity/MMS%20Data%20Model%20Report_files/MMS_128.htm";
-                // continue;
-
-                // if link_val != "MMS_128" {
-                //     continue;
-                // }
-
+            
                 // some tables have tons of columns and have a paginated
                 // column listing, such that for each page we have to ask
                 // for the base url, as well as _1, _2, etc, until we
                 // stop recieving a successfull HTTP response.
                 let mut docs = Vec::new();
                 let inner_url = format!("{}/{}.htm", BASE_URL, link_val);
-
+                
                 let res = client.get(&inner_url).send().await?;
+            
+                // skip tables from packages we don't want to deal with
+                if res.status().as_u16() != 200 {
+                    panic!("Link: {}, {}", inner_url, res.status());
+                }
 
-                if res.status().as_u16() == 200 {
+                if !PACKAGES_TO_SKIP.contains(&current.as_str()) {
                     let body = res.text().await?;
                     let inner_doc = scraper::Html::parse_document(&body);
                     let mut doc_pages_to_get = Vec::new();
@@ -100,36 +109,31 @@ pub async fn run() -> anyhow::Result<()> {
                     for l in doc_pages_to_get {
                         let get_url = format!("{}/{}", BASE_URL, l);
                         let res = client.get(&get_url).send().await?;
-                        if res.status().as_u16() == 200 {
-                            let body = res.text().await?;
-                            let inner_doc = scraper::Html::parse_document(&body);
-                            docs.push(inner_doc);
-                        } else {
-                            panic!("Link: {}, {}", get_url, res.status());
+
+                        if res.status().as_u16() != 200 {
+                            panic!("Link a: {}, {}", get_url, res.status());
                         }
+
+                        let body = res.text().await?;
+                        let inner_doc = scraper::Html::parse_document(&body);
+
+                        docs.push(inner_doc);
                     }
-                } else {
-                    panic!("Link: {}, {}", inner_url, res.status());
-                };
-                // }
 
-                //let body = reqwest::get(&url).await?.text().await?;
-                //let doc = scraper::Html::parse_document(&body);
-                let table_info = mms::TablePage::from_html(docs)?;
-                let key = table_info.get_summary_name();
-                info.entry(current)
-                    .and_modify(|e| {
-                        e.insert(key.clone(), table_info.clone());
-                    })
-                    .or_insert_with(|| iter::once((key, table_info)).collect());
-                // break;
+                    let table_info = mms::TablePage::from_html(docs)?;
+                    let key = table_info.get_summary_name();
+
+                    info.entry(current)
+                        .and_modify(|e| {
+                            e.insert(key.clone(), table_info.clone());
+                        })
+                        .or_insert_with(|| iter::once((key, table_info)).collect());
+                }
+               
             }
-
-            // tmp
-            // break;
         };
     }
     let asstr = serde_json::to_string(&info).unwrap();
-    fs::write("mmsdm.json", asstr).unwrap();
+    fs::write(format!("mmsdm_v{VERSION}.json"), asstr).unwrap();
     Ok(())
 }
