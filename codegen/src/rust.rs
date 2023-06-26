@@ -836,7 +836,7 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.14.2"
+version = "0.17.2"
 optional = true
 default-features = false
 
