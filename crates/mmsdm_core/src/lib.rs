@@ -143,6 +143,21 @@ pub struct YearMonth {
     pub month: chrono::Month,
 }
 
+impl PartialOrd for YearMonth {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.cmp(&other).into()
+    }
+}
+
+impl Ord for YearMonth {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.year.cmp(&other.year) {
+            core::cmp::Ordering::Equal => self.month.number_from_month().cmp(&other.month.number_from_month()),
+            ord => ord,
+        }
+    }
+}
+
 impl Partition for YearMonth {
     fn get_suffix(&self) -> String {
         format!("_{:02}_{:04}", self.month.number_from_month(), self.year)
