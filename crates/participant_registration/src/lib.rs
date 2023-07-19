@@ -2,6 +2,306 @@
 use chrono::Datelike as _;
 /// # Summary
 ///
+/// ## ADG_DETAIL
+///  _Table for tracking evolving Aggregate Dispatch Group attributes_
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Adg Detail
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * ADG_ID
+/// * EFFECTIVEDATE
+/// * VERSION_DATETIME
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct ParticipantRegistrationAdgDetail1 {
+    /// Identifies the Aggregate Dispatch Group
+    pub adg_id: String,
+    /// Effective calendar date of record
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Date and time of the version of Dispatchable Unit details
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub version_datetime: chrono::NaiveDateTime,
+    /// Conformance Type for the Aggregate Dispatch Group. &nbsp;&nbsp;One of the following: CAP, MIXED, TARGET
+    pub adg_type: Option<String>,
+    /// Date record authorised
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// User authorising record
+    pub authorisedby: Option<String>,
+    /// Last date and time record changed
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
+    type PrimaryKey = ParticipantRegistrationAdgDetail1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("ADG_DETAIL".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> ParticipantRegistrationAdgDetail1PrimaryKey {
+        ParticipantRegistrationAdgDetail1PrimaryKey {
+            adg_id: self.adg_id.clone(),
+            effectivedate: self.effectivedate,
+            version_datetime: self.version_datetime,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.effectivedate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+                .unwrap(),
+        }
+    }
+    fn partition_name(&self) -> String {
+        format!(
+            "participant_registration_adg_detail_v1_{}_{}", self.partition_suffix().year,
+            self.partition_suffix().month.number_from_month()
+        )
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct ParticipantRegistrationAdgDetail1PrimaryKey {
+    pub adg_id: String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub version_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationAdgDetail1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationAdgDetail1 {
+    type Row = ParticipantRegistrationAdgDetail1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adg_id == row.adg_id && self.effectivedate == row.effectivedate
+            && self.version_datetime == row.version_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationAdgDetail1 {
+    type PrimaryKey = ParticipantRegistrationAdgDetail1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adg_id == key.adg_id && self.effectivedate == key.effectivedate
+            && self.version_datetime == key.version_datetime
+    }
+}
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationAdgDetail1PrimaryKey {
+    type Row = ParticipantRegistrationAdgDetail1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adg_id == row.adg_id && self.effectivedate == row.effectivedate
+            && self.version_datetime == row.version_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationAdgDetail1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationAdgDetail1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adg_id == key.adg_id && self.effectivedate == key.effectivedate
+            && self.version_datetime == key.version_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("adg_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("effectivedate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("version_datetime",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("adg_type",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("authoriseddate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true), arrow2::datatypes::Field::new("authorisedby",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut adg_id_array = Vec::new();
+        let mut effectivedate_array = Vec::new();
+        let mut version_datetime_array = Vec::new();
+        let mut adg_type_array = Vec::new();
+        let mut authoriseddate_array = Vec::new();
+        let mut authorisedby_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            adg_id_array.push(row.adg_id);
+            effectivedate_array.push(row.effectivedate.timestamp());
+            version_datetime_array.push(row.version_datetime.timestamp());
+            adg_type_array.push(row.adg_type);
+            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
+            authorisedby_array.push(row.authorisedby);
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(adg_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(adg_type_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(authorisedby_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## AGGREGATE_DISPATCH_GROUP
+///  _Entity allowing for compliance monitoring over grouped DUIDs_
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Aggregate Dispatch Group
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * ADG_ID
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct ParticipantRegistrationAggregateDispatchGroup1 {
+    /// Aggregate Dispatch Group ID
+    pub adg_id: String,
+    /// A participant provided comment
+    pub comments: Option<String>,
+    /// Last date and time record changed
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
+    type PrimaryKey = ParticipantRegistrationAggregateDispatchGroup1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "PARTICIPANT_REGISTRATION".into(),
+            table_name: Some("AGGREGATE_DISPATCH_GROUP".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+        ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+            adg_id: self.adg_id.clone(),
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "participant_registration_aggregate_dispatch_group_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+    pub adg_id: String,
+}
+impl mmsdm_core::PrimaryKey
+for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationAggregateDispatchGroup1 {
+    type Row = ParticipantRegistrationAggregateDispatchGroup1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adg_id == row.adg_id
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey
+for ParticipantRegistrationAggregateDispatchGroup1 {
+    type PrimaryKey = ParticipantRegistrationAggregateDispatchGroup1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adg_id == key.adg_id
+    }
+}
+impl mmsdm_core::CompareWithRow
+for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+    type Row = ParticipantRegistrationAggregateDispatchGroup1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.adg_id == row.adg_id
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey
+for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationAggregateDispatchGroup1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.adg_id == key.adg_id
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("adg_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("comments",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut adg_id_array = Vec::new();
+        let mut comments_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            adg_id_array.push(row.adg_id);
+            comments_array.push(row.comments);
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(adg_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(comments_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## BIDDUIDDETAILS
 ///  _BIDDUIDDETAILS and the associated tracking object BIDDUIDDETAILSTRK define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service._
 ///
@@ -12,8 +312,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  BIDDUIDDETAILS data is public to participants. Source BIDDUIDDETAILS updates as dispatchable unit registration details are modified. Volume Approximately 1000 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -260,8 +559,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
 /// # Description
 ///  BIDDUIDDETAILSTRK data is public to participants. Source BIDDUIDDETAILSTRK updates as dispatchable unit registration details are modified. Volume Approximately 200 records per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -435,8 +733,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
 /// # Description
 ///  DISPATCHABLEUNIT data is public data, and is available to all participants. Source DISPATCHABLEUNIT pdates as new units added or names changed.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -565,8 +862,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
 /// # Description
 ///  Source DUALLOC updates where changed.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -727,13 +1023,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetail
-/// * Data Version: 4
+/// * Data Version: 5
 ///
 /// # Description
 ///  DUDETAIL is public data, and is available to all participants. Source DUDETAIL updates only when registration details change. Note To find the current set of details for selected dispatchable units, query the participant's local database as follows. Select du.* from dudetail du where (du.EFFECTIVEDATE, du.VERSIONNO) = ( select effectivedate, max(versionno) from dudetail where EFFECTIVEDATE = (select max(effectivedate) from  dudetail where EFFECTIVEDATE &lt;= sysdate and duid = du.duid and authoriseddate is not null) and duid = du.duid and authoriseddate is not null group by effectivedate ) and du.duid in ('UNIT1', 'UNIT2') ; The following notes apply to this SQL code: · This table is specific to dispatch units only. · If you wish to query details for a different date, substitute a date expression for "sysdate" in the "where EFFECTIVEDATE &lt;= sysdate" clause. · If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')" · The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER ) · If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC. · If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -741,7 +1036,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ParticipantRegistrationDudetail4 {
+pub struct ParticipantRegistrationDudetail5 {
     /// Effective calendar date of record
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
@@ -787,19 +1082,21 @@ pub struct ParticipantRegistrationDudetail4 {
     pub maxrateofchangedown: Option<rust_decimal::Decimal>,
     /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units. For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, the subtype value is NULL.
     pub dispatchsubtype: Option<String>,
+    /// Aggregate Dispatch Group to which this dispatch unit belongs
+    pub adg_id: Option<String>,
 }
-impl mmsdm_core::GetTable for ParticipantRegistrationDudetail4 {
-    type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
+impl mmsdm_core::GetTable for ParticipantRegistrationDudetail5 {
+    type PrimaryKey = ParticipantRegistrationDudetail5PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
             table_name: Some("DUDETAIL".into()),
-            version: 4,
+            version: 5,
         }
     }
-    fn primary_key(&self) -> ParticipantRegistrationDudetail4PrimaryKey {
-        ParticipantRegistrationDudetail4PrimaryKey {
+    fn primary_key(&self) -> ParticipantRegistrationDudetail5PrimaryKey {
+        ParticipantRegistrationDudetail5PrimaryKey {
             duid: self.duid.clone(),
             effectivedate: self.effectivedate,
             versionno: self.versionno,
@@ -814,48 +1111,48 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail4 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "participant_registration_dudetail_v4_{}_{}", self.partition_suffix().year,
+            "participant_registration_dudetail_v5_{}_{}", self.partition_suffix().year,
             self.partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct ParticipantRegistrationDudetail4PrimaryKey {
+pub struct ParticipantRegistrationDudetail5PrimaryKey {
     pub duid: String,
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetail4PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail4 {
-    type Row = ParticipantRegistrationDudetail4;
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetail5PrimaryKey {}
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail5 {
+    type Row = ParticipantRegistrationDudetail5;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail4 {
-    type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail5 {
+    type PrimaryKey = ParticipantRegistrationDudetail5PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail4PrimaryKey {
-    type Row = ParticipantRegistrationDudetail4;
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail5PrimaryKey {
+    type Row = ParticipantRegistrationDudetail5;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail4PrimaryKey {
-    type PrimaryKey = ParticipantRegistrationDudetail4PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail5PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationDudetail5PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail4 {
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -900,6 +1197,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail4 {
                 arrow2::datatypes::Field::new("maxrateofchangedown",
                 arrow2::datatypes::DataType::Decimal(6, 0), true),
                 arrow2::datatypes::Field::new("dispatchsubtype",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("adg_id",
                 arrow2::datatypes::DataType::LargeUtf8, true)
             ],
         )
@@ -930,6 +1229,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail4 {
         let mut maxrateofchangeup_array = Vec::new();
         let mut maxrateofchangedown_array = Vec::new();
         let mut dispatchsubtype_array = Vec::new();
+        let mut adg_id_array = Vec::new();
         for row in partition {
             effectivedate_array.push(row.effectivedate.timestamp());
             duid_array.push(row.duid);
@@ -985,6 +1285,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail4 {
                         })
                 });
             dispatchsubtype_array.push(row.dispatchsubtype);
+            adg_id_array.push(row.adg_id);
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -1051,6 +1352,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail4 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(dispatchsubtype_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(adg_id_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
                 ],
             )
             .map_err(Into::into)
@@ -1063,20 +1367,19 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail4 {
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetailsummary
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 ///  DUDETAILSUMMARY is a public table, and is available to all participants. Source DUDETAILSUMMARY updates only when registration details change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * DUID
 /// * START_DATE
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ParticipantRegistrationDudetailsummary5 {
+pub struct ParticipantRegistrationDudetailsummary6 {
     /// Dispatchable Unit Identifier
     pub duid: String,
     /// Start date for effective record
@@ -1122,61 +1425,63 @@ pub struct ParticipantRegistrationDudetailsummary5 {
     pub is_aggregated: Option<rust_decimal::Decimal>,
     /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, subtype value is NULL.
     pub dispatchsubtype: Option<String>,
+    /// Aggregate Dispatch Group to which this dispatch unit belongs.
+    pub adg_id: Option<String>,
 }
-impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary5 {
-    type PrimaryKey = ParticipantRegistrationDudetailsummary5PrimaryKey;
+impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary6 {
+    type PrimaryKey = ParticipantRegistrationDudetailsummary6PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "PARTICIPANT_REGISTRATION".into(),
             table_name: Some("DUDETAILSUMMARY".into()),
-            version: 5,
+            version: 6,
         }
     }
-    fn primary_key(&self) -> ParticipantRegistrationDudetailsummary5PrimaryKey {
-        ParticipantRegistrationDudetailsummary5PrimaryKey {
+    fn primary_key(&self) -> ParticipantRegistrationDudetailsummary6PrimaryKey {
+        ParticipantRegistrationDudetailsummary6PrimaryKey {
             duid: self.duid.clone(),
             start_date: self.start_date,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "participant_registration_dudetailsummary_v5".to_string()
+        "participant_registration_dudetailsummary_v6".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct ParticipantRegistrationDudetailsummary5PrimaryKey {
+pub struct ParticipantRegistrationDudetailsummary6PrimaryKey {
     pub duid: String,
     pub start_date: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetailsummary5PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetailsummary5 {
-    type Row = ParticipantRegistrationDudetailsummary5;
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetailsummary6PrimaryKey {}
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetailsummary6 {
+    type Row = ParticipantRegistrationDudetailsummary6;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.start_date == row.start_date
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary5 {
-    type PrimaryKey = ParticipantRegistrationDudetailsummary5PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary6 {
+    type PrimaryKey = ParticipantRegistrationDudetailsummary6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.start_date == key.start_date
     }
 }
-impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetailsummary5PrimaryKey {
-    type Row = ParticipantRegistrationDudetailsummary5;
+impl mmsdm_core::CompareWithRow for ParticipantRegistrationDudetailsummary6PrimaryKey {
+    type Row = ParticipantRegistrationDudetailsummary6;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.start_date == row.start_date
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDudetailsummary5PrimaryKey {
-    type PrimaryKey = ParticipantRegistrationDudetailsummary5PrimaryKey;
+for ParticipantRegistrationDudetailsummary6PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationDudetailsummary6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.start_date == key.start_date
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -1221,6 +1526,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
                 arrow2::datatypes::Field::new("is_aggregated",
                 arrow2::datatypes::DataType::Decimal(1, 0), true),
                 arrow2::datatypes::Field::new("dispatchsubtype",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("adg_id",
                 arrow2::datatypes::DataType::LargeUtf8, true)
             ],
         )
@@ -1251,6 +1558,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
         let mut max_ramp_rate_down_array = Vec::new();
         let mut is_aggregated_array = Vec::new();
         let mut dispatchsubtype_array = Vec::new();
+        let mut adg_id_array = Vec::new();
         for row in partition {
             duid_array.push(row.duid);
             start_date_array.push(row.start_date.timestamp());
@@ -1336,6 +1644,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
                         })
                 });
             dispatchsubtype_array.push(row.dispatchsubtype);
+            adg_id_array.push(row.adg_id);
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -1401,6 +1710,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
                     std::sync::Arc::new(arrow2::array::Utf8Array::< i64
                     >::from(dispatchsubtype_array)) as std::sync::Arc < dyn
                     arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(adg_id_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
                 ],
             )
             .map_err(Into::into)
@@ -1418,8 +1730,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary5 {
 /// # Description
 ///  GENMETER is a public table, and is available to all participants. Source GENMETER updates only when meter details change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1683,8 +1994,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
 /// # Description
 ///  GENUNITS is a public table, and is available to all participants. Source GENUNITS updates whenever plant details change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1980,8 +2290,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2216,8 +2525,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
 /// # Description
 ///  MNSP_INTERCONNECTOR data is public, so is available to all participants. Source MNSP_INTERCONNECTOR changes infrequently, typically annually. Volume Twice the number of MNSPs.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2514,8 +2822,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
 /// # Description
 ///  MNSP_PARTICIPANT data is public, so is available to all participants. Source MNSP_PARTICIPANT updates infrequently, typically annually. Volume Number of MNSPs.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2686,8 +2993,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
 /// # Description
 ///  PARTICIPANT is public data, so is available to all participants. Source PARTICIPANT updates as new participants register or existing participants change details.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2842,8 +3148,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
 /// # Description
 ///  PARTICIPANTACCOUNT data is confidential to the relevant participant. Source PARTICIPANTACCOUNT updates as new participants register or existing participants change details.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3101,8 +3406,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
 /// # Description
 ///  PARTICIPANTCATEGORY is public data, so is available to all participants. Source PARTICIPANTCATEGORY updates as categories change. PARTICIPANTCATEGORY changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3224,8 +3528,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
 /// # Description
 ///  PARTICIPANTCATEGORYALLOC data is public, so is available to all participants. Source PARTICIPANTCATEGORYALLOC updates for new participants or when categories change. PARTICIPANTCATEGORYALLOC changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3356,8 +3659,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
 /// # Description
 ///  PARTICIPANTCLASS data is public, so is available to all participants. Source PARTICIPANTCLASS updates only if classifications change. This table changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3478,8 +3780,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
 /// # Description
 ///  PARTICIPANTCREDITDETAIL data is confidential to each participant. Source PARTICIPANTCREDITDETAIL updates infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3654,8 +3955,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3780,8 +4080,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4071,8 +4370,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4339,8 +4637,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
 /// # Description
 ///  STADUALLOC is public data, and is available to all participants. Source STADUALLOC is updated whenever there is a station configuration change or new unit registration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4506,8 +4803,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
 /// # Description
 ///  STATION is public data, and is available to all participants. Source STATION updates whenever there is a station configuration change or new unit registration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4692,8 +4988,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
 /// # Description
 ///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4878,8 +5173,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
 /// # Description
 ///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5050,8 +5344,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
 /// # Description
 ///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5224,6 +5517,31 @@ where
     S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 {
     match (file_key.table_name.as_deref(), file_key.version) {
+        (Some("ADG_DETAIL"), version) if version <= 1_i32 => {
+            let d: Vec<ParticipantRegistrationAdgDetail1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertParticipantRegistrationAdgDetail1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("AGGREGATE_DISPATCH_GROUP"), version) if version <= 1_i32 => {
+            let d: Vec<ParticipantRegistrationAggregateDispatchGroup1> = mms_file
+                .get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertParticipantRegistrationAggregateDispatchGroup1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
         (Some("BIDDUIDDETAILS"), version) if version <= 1_i32 => {
             let d: Vec<ParticipantRegistrationBidduiddetails1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
@@ -5273,26 +5591,26 @@ where
                 )
                 .await?;
         }
-        (Some("DUDETAIL"), version) if version <= 4_i32 => {
-            let d: Vec<ParticipantRegistrationDudetail4> = mms_file.get_table()?;
+        (Some("DUDETAIL"), version) if version <= 5_i32 => {
+            let d: Vec<ParticipantRegistrationDudetail5> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertParticipantRegistrationDudetail4 @P1, @P2",
+                    "exec mmsdm_proc.InsertParticipantRegistrationDudetail5 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
         }
-        (Some("DUDETAILSUMMARY"), version) if version <= 5_i32 => {
-            let d: Vec<ParticipantRegistrationDudetailsummary5> = mms_file.get_table()?;
+        (Some("DUDETAILSUMMARY"), version) if version <= 6_i32 => {
+            let d: Vec<ParticipantRegistrationDudetailsummary6> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertParticipantRegistrationDudetailsummary5 @P1, @P2",
+                    "exec mmsdm_proc.InsertParticipantRegistrationDudetailsummary6 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

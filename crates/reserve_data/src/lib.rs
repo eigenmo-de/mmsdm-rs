@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  Source MTPASA_RESERVELIMIT is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~20 rows per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -192,8 +191,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
 /// # Description
 ///  Source MTPASA_RESERVELIMIT_REGION is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~50 rows per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -375,8 +373,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
 /// # Description
 ///  Source MTPASA_RESERVELIMIT_SET is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~2 rows per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -551,8 +548,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
 /// # Description
 ///  Two fields specify Frequency Controlled Ancillary Services requirements for the regulation ancillary services. Another two fields specify the Lack of Reserve levels to be applied in the ST PASA solver.  Change Notice 324 (for the FCAS Constraint enhancements project) means that Dispatch no longer utilises the static FCAS requirements defined in the DELTAMW and RESERVE tables. These tables are replaced with constraint data as a source of FCAS requirements. RESERVE data is public, so is available to all participants. Source RESERVE updates as AEMO updates forecasts, daily.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///

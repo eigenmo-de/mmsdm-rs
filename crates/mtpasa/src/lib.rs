@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  MTPASA_CASERESULT is public data. Holds one Record for entire solution
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -154,8 +153,7 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
 /// # Description
 ///  MTPASA_CONSTRAINTRESULT is public data. &nbsp;
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -469,8 +467,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
 /// # Description
 ///  MTPASA_CONSTRAINTSUMMARY is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -715,12 +712,11 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Duidavailability
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -729,7 +725,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
 /// * PUBLISH_DATETIME
 /// * REGIONID
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaDuidavailability2 {
+pub struct MtpasaDuidavailability3 {
     /// Date Time the report was published.
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub publish_datetime: chrono::NaiveDateTime,
@@ -750,19 +746,23 @@ pub struct MtpasaDuidavailability2 {
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Status of a reported capacity value (e.g. 1 for Yes, 0 for No)
     pub carryoverstatus: Option<rust_decimal::Decimal>,
+    /// The unit state value
+    pub pasaunitstate: Option<String>,
+    /// The recall time value
+    pub pasarecalltime: Option<i64>,
 }
-impl mmsdm_core::GetTable for MtpasaDuidavailability2 {
-    type PrimaryKey = MtpasaDuidavailability2PrimaryKey;
+impl mmsdm_core::GetTable for MtpasaDuidavailability3 {
+    type PrimaryKey = MtpasaDuidavailability3PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "MTPASA".into(),
             table_name: Some("DUIDAVAILABILITY".into()),
-            version: 2,
+            version: 3,
         }
     }
-    fn primary_key(&self) -> MtpasaDuidavailability2PrimaryKey {
-        MtpasaDuidavailability2PrimaryKey {
+    fn primary_key(&self) -> MtpasaDuidavailability3PrimaryKey {
+        MtpasaDuidavailability3PrimaryKey {
             day: self.day,
             duid: self.duid.clone(),
             publish_datetime: self.publish_datetime,
@@ -777,45 +777,45 @@ impl mmsdm_core::GetTable for MtpasaDuidavailability2 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "mtpasa_duidavailability_v2_{}_{}", self.partition_suffix().year, self
+            "mtpasa_duidavailability_v3_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct MtpasaDuidavailability2PrimaryKey {
+pub struct MtpasaDuidavailability3PrimaryKey {
     pub day: chrono::NaiveDateTime,
     pub duid: String,
     pub publish_datetime: chrono::NaiveDateTime,
     pub regionid: String,
 }
-impl mmsdm_core::PrimaryKey for MtpasaDuidavailability2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MtpasaDuidavailability2 {
-    type Row = MtpasaDuidavailability2;
+impl mmsdm_core::PrimaryKey for MtpasaDuidavailability3PrimaryKey {}
+impl mmsdm_core::CompareWithRow for MtpasaDuidavailability3 {
+    type Row = MtpasaDuidavailability3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.day == row.day && self.duid == row.duid
             && self.publish_datetime == row.publish_datetime
             && self.regionid == row.regionid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MtpasaDuidavailability2 {
-    type PrimaryKey = MtpasaDuidavailability2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for MtpasaDuidavailability3 {
+    type PrimaryKey = MtpasaDuidavailability3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.day == key.day && self.duid == key.duid
             && self.publish_datetime == key.publish_datetime
             && self.regionid == key.regionid
     }
 }
-impl mmsdm_core::CompareWithRow for MtpasaDuidavailability2PrimaryKey {
-    type Row = MtpasaDuidavailability2;
+impl mmsdm_core::CompareWithRow for MtpasaDuidavailability3PrimaryKey {
+    type Row = MtpasaDuidavailability3;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.day == row.day && self.duid == row.duid
             && self.publish_datetime == row.publish_datetime
             && self.regionid == row.regionid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MtpasaDuidavailability2PrimaryKey {
-    type PrimaryKey = MtpasaDuidavailability2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for MtpasaDuidavailability3PrimaryKey {
+    type PrimaryKey = MtpasaDuidavailability3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.day == key.day && self.duid == key.duid
             && self.publish_datetime == key.publish_datetime
@@ -823,7 +823,7 @@ impl mmsdm_core::CompareWithPrimaryKey for MtpasaDuidavailability2PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for MtpasaDuidavailability2 {
+impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -842,7 +842,11 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability2 {
                 None), true), arrow2::datatypes::Field::new("lastchanged",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                 None), true), arrow2::datatypes::Field::new("carryoverstatus",
-                arrow2::datatypes::DataType::Decimal(1, 0), true)
+                arrow2::datatypes::DataType::Decimal(1, 0), true),
+                arrow2::datatypes::Field::new("pasaunitstate",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("pasarecalltime",
+                arrow2::datatypes::DataType::Int64, true)
             ],
         )
     }
@@ -859,6 +863,8 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability2 {
         let mut latest_offer_datetime_array = Vec::new();
         let mut lastchanged_array = Vec::new();
         let mut carryoverstatus_array = Vec::new();
+        let mut pasaunitstate_array = Vec::new();
+        let mut pasarecalltime_array = Vec::new();
         for row in partition {
             publish_datetime_array.push(row.publish_datetime.timestamp());
             day_array.push(row.day.timestamp());
@@ -883,6 +889,8 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability2 {
                             val.mantissa()
                         })
                 });
+            pasaunitstate_array.push(row.pasaunitstate);
+            pasarecalltime_array.push(row.pasarecalltime);
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -910,6 +918,11 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability2 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(carryoverstatus_array)
                     .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(pasaunitstate_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(pasarecalltime_array))
+                    as std::sync::Arc < dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -927,8 +940,7 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability2 {
 /// # Description
 ///  MTPASA_INTERCONNECTORRESULT is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1248,8 +1260,7 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
 /// # Description
 ///  MTPASA_LOLPRESULT is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1514,8 +1525,7 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
 /// # Description
 ///  MTPASA_REGIONAVAILABILITY is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1882,8 +1892,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2025,8 +2034,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
 /// # Description
 ///  MTPASA_REGIONITERATION is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2282,8 +2290,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
 /// # Description
 ///  MTPASA_REGIONRESULT is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2934,8 +2941,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
 /// # Description
 ///  MTPASA_REGIONSUMMARY is public data.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3531,14 +3537,14 @@ where
                 )
                 .await?;
         }
-        (Some("DUIDAVAILABILITY"), version) if version <= 2_i32 => {
-            let d: Vec<MtpasaDuidavailability2> = mms_file.get_table()?;
+        (Some("DUIDAVAILABILITY"), version) if version <= 3_i32 => {
+            let d: Vec<MtpasaDuidavailability3> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertMtpasaDuidavailability2 @P1, @P2",
+                    "exec mmsdm_proc.InsertMtpasaDuidavailability3 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  PDPASA_CASESOLUTION is public data. Source PDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 48 Mb per month: &lt;1
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -376,8 +375,7 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -605,8 +603,7 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -885,8 +882,7 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
 /// # Description
 ///  PDPASA_REGIONSOLUTION is public so is available to all participants. Source PDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 32000 Notes LRC Determination SURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement. &nbsp; The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions. &nbsp; LOR Determination MAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions. &nbsp; Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -934,7 +930,7 @@ pub struct PdpasaRegionsolution7 {
     pub maxsparecapacity: Option<rust_decimal::Decimal>,
     /// Lack of Reserve Condition (LOR) flag for this region and interval   (3 = LOR3, 2 = LOR2, 1 = LOR1, 0 = No LOR)
     pub lorcondition: Option<rust_decimal::Decimal>,
-    /// Sum of  MAXAVAIL quantities offered by all Scheduled Generators in a given Region for a given PERIODID.
+    /// Sum of MAXAVAIL quantities offered by all Scheduled units and Availability of all semi-scheduled units limited by MAXAVAIL in a given Region for a given PERIODID
     pub aggregatecapacityavailable: Option<rust_decimal::Decimal>,
     /// Sum of  MAXAVAIL quantities bid by of all Scheduled Loads in a given Region for a given PERIODID.
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
@@ -961,9 +957,9 @@ pub struct PdpasaRegionsolution7 {
     pub demand_and_nonschedgen: Option<rust_decimal::Decimal>,
     /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW).
     pub uigf: Option<rust_decimal::Decimal>,
-    /// Aggregate Regional UIGF availability
+    /// Constrained generation forecast for semi-scheduled units for the region. For RELIABILITY_LRC run semi-scheduled generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run semi-scheduled generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
-    /// Aggregate Regional UIGF availability for LOR
+    /// Constrained generation forecast for semi-scheduled units for the region for the LOR run type. Semi-scheduled generation is constrained by both System Normal and Outage constraints, and incorporate MAXAVAIL limits.
     pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
@@ -971,17 +967,17 @@ pub struct PdpasaRegionsolution7 {
     pub lcr2: Option<rust_decimal::Decimal>,
     /// Forecasting Uncertainty Measure. MW value of reserve calculated as defined in the Reserve Level Declaration Guidelines
     pub fum: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW) where the primary fuel source is solar
+    /// Unconstrained Intermittent Generation Forecast for solar for the region. For RELIABILITY_LRC and OUTAGE_LRC run this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run this is the POE50 forecast
     pub ss_solar_uigf: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW) where the primary fuel source is wind
+    /// Unconstrained Intermittent Generation Forecast for wind for the region. For RELIABILITY_LRC and OUTAGE_LRC run this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run this is the POE50 forecast
     pub ss_wind_uigf: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled UIGF availability where the primary fuel source is solar
+    /// Constrained generation forecast for solar for the region. For RELIABILITY_LRC run solar generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run solar generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_solar_capacity: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled UIGF availability where the primary fuel source is wind
+    /// Constrained generation forecast for wind for the region. For RELIABILITY_LRC run wind generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run wind generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_wind_capacity: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is solar and StudyRegion = Region
+    /// Constrained generation forecast for solar for the region. For RELIABILITY_LRC run solar generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run solar generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_solar_cleared: Option<rust_decimal::Decimal>,
-    /// Regional aggregated Semi-scheduled cleared MW where the primary fuel source is wind and StudyRegion = Region
+    /// Constrained generation forecast for wind for the region. For RELIABILITY_LRC run wind generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run wind generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_wind_cleared: Option<rust_decimal::Decimal>,
     /// Regional aggregated Wholesale Demand Response (WDR) availability in MW.
     pub wdr_available: Option<rust_decimal::Decimal>,

@@ -7,13 +7,12 @@ use chrono::Datelike as _;
 ///
 /// * Data Set Name: Billing
 /// * File Name: Aspayments
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  BILLINGASPAYMENTS data is confidential to relevant participant. Source Updated  with each billing run. Volume The volume is according to the number of Transmission ConnectionPointIDs a Participant may have subject to ancillary payment per billrunno. An indicative maximum is approximately 20 records are inserted per billrunno, or about 220 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -23,7 +22,7 @@ use chrono::Datelike as _;
 /// * PARTICIPANTID
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingAspayments6 {
+pub struct BillingAspayments7 {
     /// Region Identifier
     pub regionid: Option<String>,
     /// Contract Year
@@ -73,19 +72,23 @@ pub struct BillingAspayments6 {
     pub availability_reactive: Option<rust_decimal::Decimal>,
     /// The total availability payment rebate
     pub availability_reactive_rbt: Option<rust_decimal::Decimal>,
+    /// Payment amount for the very fast raise service
+    pub raise1sec: Option<rust_decimal::Decimal>,
+    /// Payment amount for the very fast lower service
+    pub lower1sec: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for BillingAspayments6 {
-    type PrimaryKey = BillingAspayments6PrimaryKey;
+impl mmsdm_core::GetTable for BillingAspayments7 {
+    type PrimaryKey = BillingAspayments7PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("ASPAYMENTS".into()),
-            version: 6,
+            version: 7,
         }
     }
-    fn primary_key(&self) -> BillingAspayments6PrimaryKey {
-        BillingAspayments6PrimaryKey {
+    fn primary_key(&self) -> BillingAspayments7PrimaryKey {
+        BillingAspayments7PrimaryKey {
             billrunno: self.billrunno,
             connectionpointid: self.connectionpointid.clone(),
             contractyear: self.contractyear,
@@ -95,20 +98,20 @@ impl mmsdm_core::GetTable for BillingAspayments6 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "billing_aspayments_v6".to_string()
+        "billing_aspayments_v7".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct BillingAspayments6PrimaryKey {
+pub struct BillingAspayments7PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub connectionpointid: String,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingAspayments6PrimaryKey {}
-impl mmsdm_core::CompareWithRow for BillingAspayments6 {
-    type Row = BillingAspayments6;
+impl mmsdm_core::PrimaryKey for BillingAspayments7PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingAspayments7 {
+    type Row = BillingAspayments7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno
             && self.connectionpointid == row.connectionpointid
@@ -116,8 +119,8 @@ impl mmsdm_core::CompareWithRow for BillingAspayments6 {
             && self.participantid == row.participantid && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingAspayments6 {
-    type PrimaryKey = BillingAspayments6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingAspayments7 {
+    type PrimaryKey = BillingAspayments7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno
             && self.connectionpointid == key.connectionpointid
@@ -125,8 +128,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingAspayments6 {
             && self.participantid == key.participantid && self.weekno == key.weekno
     }
 }
-impl mmsdm_core::CompareWithRow for BillingAspayments6PrimaryKey {
-    type Row = BillingAspayments6;
+impl mmsdm_core::CompareWithRow for BillingAspayments7PrimaryKey {
+    type Row = BillingAspayments7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno
             && self.connectionpointid == row.connectionpointid
@@ -134,8 +137,8 @@ impl mmsdm_core::CompareWithRow for BillingAspayments6PrimaryKey {
             && self.participantid == row.participantid && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingAspayments6PrimaryKey {
-    type PrimaryKey = BillingAspayments6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingAspayments7PrimaryKey {
+    type PrimaryKey = BillingAspayments7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno
             && self.connectionpointid == key.connectionpointid
@@ -144,7 +147,7 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingAspayments6PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingAspayments6 {
+impl mmsdm_core::ArrowSchema for BillingAspayments7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -195,6 +198,10 @@ impl mmsdm_core::ArrowSchema for BillingAspayments6 {
                 arrow2::datatypes::Field::new("availability_reactive",
                 arrow2::datatypes::DataType::Decimal(18, 8), true),
                 arrow2::datatypes::Field::new("availability_reactive_rbt",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("raise1sec",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lower1sec",
                 arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
@@ -228,6 +235,8 @@ impl mmsdm_core::ArrowSchema for BillingAspayments6 {
         let mut raisereg_array = Vec::new();
         let mut availability_reactive_array = Vec::new();
         let mut availability_reactive_rbt_array = Vec::new();
+        let mut raise1sec_array = Vec::new();
+        let mut lower1sec_array = Vec::new();
         for row in partition {
             regionid_array.push(row.regionid);
             contractyear_array
@@ -387,6 +396,22 @@ impl mmsdm_core::ArrowSchema for BillingAspayments6 {
                             val.mantissa()
                         })
                 });
+            raise1sec_array
+                .push({
+                    row.raise1sec
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_array
+                .push({
+                    row.lower1sec
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -462,6 +487,12 @@ impl mmsdm_core::ArrowSchema for BillingAspayments6 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(availability_reactive_rbt_array)
                     .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -474,13 +505,12 @@ impl mmsdm_core::ArrowSchema for BillingAspayments6 {
 ///
 /// * Data Set Name: Billing
 /// * File Name: Asrecovery
-/// * Data Version: 7
+/// * Data Version: 8
 ///
 /// # Description
 ///  BILLINGASRECOVERY data is confidential to relevant participant. Source Updated  with each billing run. Volume Approximately 5 records are inserted per billrunno, or about 55 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -490,7 +520,7 @@ impl mmsdm_core::ArrowSchema for BillingAspayments6 {
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingAsrecovery7 {
+pub struct BillingAsrecovery8 {
     /// Region Identifier
     pub regionid: String,
     /// Contract Year
@@ -572,19 +602,27 @@ pub struct BillingAsrecovery7 {
     pub availability_reactive_gen: Option<rust_decimal::Decimal>,
     /// The total availability payment rebate recovery amount (Generator).
     pub availability_reactive_rbt_gen: Option<rust_decimal::Decimal>,
+    /// Customer recovery amount for the very fast raise service
+    pub raise1sec: Option<rust_decimal::Decimal>,
+    /// Customer recovery amount for the very fast lower service
+    pub lower1sec: Option<rust_decimal::Decimal>,
+    /// Generator recovery amount for the very fast raise service
+    pub raise1sec_gen: Option<rust_decimal::Decimal>,
+    /// Generator recovery amount for the very fast lower service
+    pub lower1sec_gen: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for BillingAsrecovery7 {
-    type PrimaryKey = BillingAsrecovery7PrimaryKey;
+impl mmsdm_core::GetTable for BillingAsrecovery8 {
+    type PrimaryKey = BillingAsrecovery8PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("ASRECOVERY".into()),
-            version: 7,
+            version: 8,
         }
     }
-    fn primary_key(&self) -> BillingAsrecovery7PrimaryKey {
-        BillingAsrecovery7PrimaryKey {
+    fn primary_key(&self) -> BillingAsrecovery8PrimaryKey {
+        BillingAsrecovery8PrimaryKey {
             billrunno: self.billrunno,
             contractyear: self.contractyear,
             participantid: self.participantid.clone(),
@@ -594,44 +632,44 @@ impl mmsdm_core::GetTable for BillingAsrecovery7 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "billing_asrecovery_v7".to_string()
+        "billing_asrecovery_v8".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct BillingAsrecovery7PrimaryKey {
+pub struct BillingAsrecovery8PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: String,
     pub regionid: String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingAsrecovery7PrimaryKey {}
-impl mmsdm_core::CompareWithRow for BillingAsrecovery7 {
-    type Row = BillingAsrecovery7;
+impl mmsdm_core::PrimaryKey for BillingAsrecovery8PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingAsrecovery8 {
+    type Row = BillingAsrecovery8;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid && self.regionid == row.regionid
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery7 {
-    type PrimaryKey = BillingAsrecovery7PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery8 {
+    type PrimaryKey = BillingAsrecovery8PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid && self.regionid == key.regionid
             && self.weekno == key.weekno
     }
 }
-impl mmsdm_core::CompareWithRow for BillingAsrecovery7PrimaryKey {
-    type Row = BillingAsrecovery7;
+impl mmsdm_core::CompareWithRow for BillingAsrecovery8PrimaryKey {
+    type Row = BillingAsrecovery8;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid && self.regionid == row.regionid
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery7PrimaryKey {
-    type PrimaryKey = BillingAsrecovery7PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery8PrimaryKey {
+    type PrimaryKey = BillingAsrecovery8PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid && self.regionid == key.regionid
@@ -639,7 +677,7 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery7PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
+impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -722,6 +760,14 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
                 arrow2::datatypes::Field::new("availability_reactive_gen",
                 arrow2::datatypes::DataType::Decimal(18, 8), true),
                 arrow2::datatypes::Field::new("availability_reactive_rbt_gen",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("raise1sec",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lower1sec",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("raise1sec_gen",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lower1sec_gen",
                 arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
@@ -771,6 +817,10 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
         let mut availability_reactive_rbt_array = Vec::new();
         let mut availability_reactive_gen_array = Vec::new();
         let mut availability_reactive_rbt_gen_array = Vec::new();
+        let mut raise1sec_array = Vec::new();
+        let mut lower1sec_array = Vec::new();
+        let mut raise1sec_gen_array = Vec::new();
+        let mut lower1sec_gen_array = Vec::new();
         for row in partition {
             regionid_array.push(row.regionid);
             contractyear_array
@@ -1065,6 +1115,38 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
                             val.mantissa()
                         })
                 });
+            raise1sec_array
+                .push({
+                    row.raise1sec
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_array
+                .push({
+                    row.lower1sec
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            raise1sec_gen_array
+                .push({
+                    row.raise1sec_gen
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_gen_array
+                .push({
+                    row.lower1sec_gen
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -1188,6 +1270,18 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(availability_reactive_rbt_gen_array)
                     .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_gen_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_gen_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -1200,13 +1294,12 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
 ///
 /// * Data Set Name: Billing
 /// * File Name: Cpdata
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  BILLINGCPDATA data is confidential to relevant participant. Source Populated by the posting of a billing run, being several times each week. Volume The number of records depends on  the number of Transmission ConnectionPointIDs a participant may use to purchase energy. An indicative maximum is approximately 150 records per billrunno, or about 1,500 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1217,7 +1310,7 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery7 {
 /// * PARTICIPANTID
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingCpdata6 {
+pub struct BillingCpdata7 {
     /// AEMO Contract Year number starting in week containing 1st January
     pub contractyear: rust_decimal::Decimal,
     /// Week no within the contract year. Week no 1 is the week containing 1st January
@@ -1230,7 +1323,7 @@ pub struct BillingCpdata6 {
     pub connectionpointid: String,
     /// Aggregate energy purchased/sold by customer, in MWh, plus UFEA. When GS commences, this includes the UFEA amount in the settlement runs.
     pub aggregateenergy: Option<rust_decimal::Decimal>,
-    /// Value of energy purchased/sold by customer, in $. Financial value of energy transactions for the Market Customer and FRMP and TNI in the Billing run.When GS commences, this includes the UFEA amount in the settlement runs.
+    /// The Purchase column has the dollar value of the Energy Purchased rather than Aggregate Energy Dollar
     pub purchases: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
@@ -1245,19 +1338,25 @@ pub struct BillingCpdata6 {
     pub ufea: Option<rust_decimal::Decimal>,
     /// Adjusted Gross Energy for this Market Customer FRMP and TNI in the trading interval. This will include the UFEA value once financial settlement of UFE commences with GS.
     pub age: Option<rust_decimal::Decimal>,
+    /// Energy sold at the connection point by the participant in this billing run
+    pub soldenergy: Option<rust_decimal::Decimal>,
+    /// The total cost of energy sold at the connection point by the participant in this billing run
+    pub sales: Option<rust_decimal::Decimal>,
+    /// The energy consumed at the connection point by the participant in this billing run
+    pub purchasedenergy: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for BillingCpdata6 {
-    type PrimaryKey = BillingCpdata6PrimaryKey;
+impl mmsdm_core::GetTable for BillingCpdata7 {
+    type PrimaryKey = BillingCpdata7PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("CPDATA".into()),
-            version: 6,
+            version: 7,
         }
     }
-    fn primary_key(&self) -> BillingCpdata6PrimaryKey {
-        BillingCpdata6PrimaryKey {
+    fn primary_key(&self) -> BillingCpdata7PrimaryKey {
+        BillingCpdata7PrimaryKey {
             billrunno: self.billrunno,
             connectionpointid: self.connectionpointid.clone(),
             contractyear: self.contractyear,
@@ -1268,11 +1367,11 @@ impl mmsdm_core::GetTable for BillingCpdata6 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "billing_cpdata_v6".to_string()
+        "billing_cpdata_v7".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct BillingCpdata6PrimaryKey {
+pub struct BillingCpdata7PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub connectionpointid: String,
     pub contractyear: rust_decimal::Decimal,
@@ -1280,9 +1379,9 @@ pub struct BillingCpdata6PrimaryKey {
     pub participantid: String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingCpdata6PrimaryKey {}
-impl mmsdm_core::CompareWithRow for BillingCpdata6 {
-    type Row = BillingCpdata6;
+impl mmsdm_core::PrimaryKey for BillingCpdata7PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingCpdata7 {
+    type Row = BillingCpdata7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno
             && self.connectionpointid == row.connectionpointid
@@ -1290,8 +1389,8 @@ impl mmsdm_core::CompareWithRow for BillingCpdata6 {
             && self.participantid == row.participantid && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata6 {
-    type PrimaryKey = BillingCpdata6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata7 {
+    type PrimaryKey = BillingCpdata7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno
             && self.connectionpointid == key.connectionpointid
@@ -1299,8 +1398,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata6 {
             && self.participantid == key.participantid && self.weekno == key.weekno
     }
 }
-impl mmsdm_core::CompareWithRow for BillingCpdata6PrimaryKey {
-    type Row = BillingCpdata6;
+impl mmsdm_core::CompareWithRow for BillingCpdata7PrimaryKey {
+    type Row = BillingCpdata7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno
             && self.connectionpointid == row.connectionpointid
@@ -1308,8 +1407,8 @@ impl mmsdm_core::CompareWithRow for BillingCpdata6PrimaryKey {
             && self.participantid == row.participantid && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata6PrimaryKey {
-    type PrimaryKey = BillingCpdata6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata7PrimaryKey {
+    type PrimaryKey = BillingCpdata7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno
             && self.connectionpointid == key.connectionpointid
@@ -1318,7 +1417,7 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata6PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingCpdata6 {
+impl mmsdm_core::ArrowSchema for BillingCpdata7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -1347,6 +1446,12 @@ impl mmsdm_core::ArrowSchema for BillingCpdata6 {
                 arrow2::datatypes::Field::new("ufea",
                 arrow2::datatypes::DataType::Decimal(18, 8), true),
                 arrow2::datatypes::Field::new("age",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("soldenergy",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("sales",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("purchasedenergy",
                 arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
@@ -1369,6 +1474,9 @@ impl mmsdm_core::ArrowSchema for BillingCpdata6 {
         let mut dme_array = Vec::new();
         let mut ufea_array = Vec::new();
         let mut age_array = Vec::new();
+        let mut soldenergy_array = Vec::new();
+        let mut sales_array = Vec::new();
+        let mut purchasedenergy_array = Vec::new();
         for row in partition {
             contractyear_array
                 .push({
@@ -1440,6 +1548,30 @@ impl mmsdm_core::ArrowSchema for BillingCpdata6 {
                             val.mantissa()
                         })
                 });
+            soldenergy_array
+                .push({
+                    row.soldenergy
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            sales_array
+                .push({
+                    row.sales
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            purchasedenergy_array
+                .push({
+                    row.purchasedenergy
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -1482,6 +1614,15 @@ impl mmsdm_core::ArrowSchema for BillingCpdata6 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(age_array)
                     .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(soldenergy_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(sales_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(purchasedenergy_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -1499,8 +1640,7 @@ impl mmsdm_core::ArrowSchema for BillingCpdata6 {
 /// # Description
 ///  BILLINGDAYTRK  is public data, and is available to all participants. Source BILLINGDAYTRK is populated by the posting of a billing run, being several times each week. Volume Each billing run inserts approximately 7 records, being about 77 records per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1692,8 +1832,7 @@ impl mmsdm_core::ArrowSchema for BillingDaytrk5 {
 /// # Description
 ///  BILLINGFEES data is confidential to the relevant participant. Source BILLINGFEES is populated by the posting of a billing run, being several times each week. Volume The number of records varies according to the number of pool fee types the participant may be subject to. An indicative maximum is about 13 records inserted per billrunno or 143 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1938,8 +2077,7 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
 /// # Description
 ///  BILLINGFINANCIALADJUSTMENTS data is confidential to the relevant participant. Source BILLINGFINANCIALADJUSTMENTS is populated by the posting of a billing run, being several times each week. The insertion of a manual adjustment in a billing run is infrequent. Volume Infrequent and, if included in a billing run, low volume. An indicative maximum is 15 records inserted.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2186,8 +2324,7 @@ impl mmsdm_core::ArrowSchema for BillingFinancialadjustments5 {
 /// # Description
 ///  BILLINGGENDATA data is confidential to the the relevant participant. Source BILLINGGENDATA is populated by the posting of a billing run, being several times each week. Volume The number of records depends on the number of transmission ConnectionPointIDs a Participant may have sold energy from per billrunno.  An indicative maximum is approximately 15 records inserted per billrunno, or about 165 records inserted per week. BILLINGGENDATA is confidential to the the relevant participant.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2461,8 +2598,7 @@ impl mmsdm_core::ArrowSchema for BillingGendata5 {
 /// # Description
 ///  Source Obsolete, was weekly with billing run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2707,8 +2843,7 @@ impl mmsdm_core::ArrowSchema for BillingInterresidues5 {
 /// # Description
 ///  BILLINGINTRARESIDUES is confidential to the relevant participant. Source BILLINGINTRARESIDUES is populated by the posting of a billing run, being several times each week. Volume An indicative maximum is two records inserted per billing run, or 22 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2937,8 +3072,7 @@ impl mmsdm_core::ArrowSchema for BillingIntraresidues5 {
 /// # Description
 ///  Source Obsolete Volume This view contains a maximum of 30, 000 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3216,8 +3350,7 @@ impl mmsdm_core::ArrowSchema for BillingIraucsurplus5 {
 /// # Description
 ///  BILLINGIRAUCSURPLUSSUM is confidential to the relevant participant. Source BILLINGIRAUCSURPLUSSUM is populated by the posting of a billing run where there are unpurchased auction units. Volume An indicative maximum is eight records inserted per billing run, or 88 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3564,8 +3697,7 @@ impl mmsdm_core::ArrowSchema for BillingIraucsurplussum7 {
 /// # Description
 ///  BILLINGIRNSPSURPLUS data is confidential to the relevant participant. Source BILLINGIRNSPSURPLUS updates in a billing run where any derogated Settlement Residue Auction purchase flows to a TNSP. Volume BILLINGIRNSPSURPLUS contains a maximum of 30, 000 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3843,8 +3975,7 @@ impl mmsdm_core::ArrowSchema for BillingIrnspsurplus5 {
 /// # Description
 ///  BILLINGIRNSPSURPLUSSUM data is confidential to the relevant participant. Source BILLINGIRNSPSURPLUSSUM is populated by the posting of a billing run where derogated payments apply. Volume An indicative maximum is two records inserted per billing run, or 22 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4159,8 +4290,7 @@ impl mmsdm_core::ArrowSchema for BillingIrnspsurplussum6 {
 /// # Description
 ///  BILLINGIRPARTSURPLUS data is confidential to the relevant participant. Source BILLINGIRPARTSURPLUS is populated by the posting of a billing run where the participant has purchased auction units relating to that billing run. Volume An indicative maximum is 64 records inserted per billing run, or 700 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4453,8 +4583,7 @@ impl mmsdm_core::ArrowSchema for BillingIrpartsurplus5 {
 /// # Description
 ///  BILLINGIRPARTSURPLUSSUM data is confidential to the relevant participant. Source BILLINGIRPARTSURPLUSSUM is populated by the posting of a billing run where the participant has purchased auction units relating to that billing run. Volume An indicative maximum is 16 records inserted per billing run, or 166 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4801,8 +4930,7 @@ impl mmsdm_core::ArrowSchema for BillingIrpartsurplussum7 {
 /// # Description
 ///  BILLINGPRIORADJUSTMENTS data is confidential to the relevant participant. Source BILLINGPRIORADJUSTMENTS is populated on the posting of a Final billing run only. Volume Approximately two records inserted per week. Note Actual adjustment payable is ADJAMOUNT - PERAMOUNT + INTEREST AMOUNT.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5158,8 +5286,7 @@ impl mmsdm_core::ArrowSchema for BillingPrioradjustments5 {
 /// # Description
 ///  BILLINGREALLOC data is confidential to the relevant participant. Source BILLINGREALLOC is populated by the posting of a billing run. Volume An indicative maximum is two records inserted per billing run, or 22 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5357,8 +5484,7 @@ impl mmsdm_core::ArrowSchema for BillingRealloc5 {
 /// # Description
 ///  The BILLINGREALLOC_DETAIL table that will give a breakdown of the reallocations that form part of that billing run. This assists participants in their settlement reconciliation process. &nbsp; Private data Volume max 100 rows per day
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5572,8 +5698,7 @@ impl mmsdm_core::ArrowSchema for BillingReallocDetail5 {
 /// # Description
 ///  BILLINGREGIONEXPORTS  data is public, and is available to all participants. Source BILLINGREGIONEXPORTS is populated by the posting of a billing run. Volume Eight records inserted per billing run, or 88 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5819,8 +5944,7 @@ impl mmsdm_core::ArrowSchema for BillingRegionexports5 {
 /// # Description
 ///  BILLINGREGIONFIGURES is public data, and is available to all participants. Source BILLINGREGIONFIGURES is populated by the posting of a billing run. Volume Five records inserted per billing run, or 55 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6193,8 +6317,7 @@ impl mmsdm_core::ArrowSchema for BillingRegionfigures6 {
 /// # Description
 ///  BILLINGREGIONIMPORTS is public data, and is available to all participants. Source BILLINGREGIONIMPORTS is populated by the posting of a billing run. Volume Eight records inserted per billing run, or 88 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6440,8 +6563,7 @@ impl mmsdm_core::ArrowSchema for BillingRegionimports5 {
 /// # Description
 ///  BILLINGRUNTRK is public data, and is available to all participants. Source BILLINGRUNTRK is populated by the posting of a billing run. Volume An indicative maximum is one record inserted per billing run, or 11 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6719,8 +6841,7 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
 /// # Description
 ///  Updated with each billing run
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6925,8 +7046,7 @@ impl mmsdm_core::ArrowSchema for BillingApcCompensation2 {
 /// # Description
 ///  Updated with each billing run
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7185,8 +7305,7 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7389,8 +7508,7 @@ impl mmsdm_core::ArrowSchema for BillingBillingCo2ePublication1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7519,8 +7637,7 @@ impl mmsdm_core::ArrowSchema for BillingBillingCo2ePublicationTrk1 {
 /// # Description
 ///  BILLING_DAILY_ENERGY_SUMMARY data is confidential  to the relevant participant. Source Populated by the posting of a billing run. Volume Approximately 20 records per billrunno.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7760,8 +7877,7 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8078,6 +8194,1175 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
 }
 /// # Summary
 ///
+/// ## BILLING_DIR_FINAL_AMOUNT
+///  _The Billing Final Directions Payment Amount for Directed/Affected/Eligible participants_
+///
+/// * Data Set Name: Billing
+/// * File Name: Dir Final Amount
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * COMPENSATION_TYPE
+/// * CONTRACTYEAR
+/// * DIRECTION_ID
+/// * PARTICIPANTID
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingDirFinalAmount1 {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Direction Unique Identifier
+    pub direction_id: String,
+    /// The Direction Payment Participant ID
+    pub participantid: String,
+    /// The Direction Payment Type, Directed_Comp, Affected_Comp, Eligible_Comp.
+    pub compensation_type: String,
+    /// The Direction Provisional Payment Amount
+    pub provisional_amount: Option<rust_decimal::Decimal>,
+    /// The Direction Final Payment Amount
+    pub final_amount: Option<rust_decimal::Decimal>,
+    /// The Last datetime record is updated
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
+    type PrimaryKey = BillingDirFinalAmount1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DIR_FINAL_AMOUNT".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> BillingDirFinalAmount1PrimaryKey {
+        BillingDirFinalAmount1PrimaryKey {
+            billrunno: self.billrunno,
+            compensation_type: self.compensation_type.clone(),
+            contractyear: self.contractyear,
+            direction_id: self.direction_id.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "billing_dir_final_amount_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BillingDirFinalAmount1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub compensation_type: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub direction_id: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingDirFinalAmount1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingDirFinalAmount1 {
+    type Row = BillingDirFinalAmount1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.compensation_type == row.compensation_type
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirFinalAmount1 {
+    type PrimaryKey = BillingDirFinalAmount1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.compensation_type == key.compensation_type
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+impl mmsdm_core::CompareWithRow for BillingDirFinalAmount1PrimaryKey {
+    type Row = BillingDirFinalAmount1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.compensation_type == row.compensation_type
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirFinalAmount1PrimaryKey {
+    type PrimaryKey = BillingDirFinalAmount1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.compensation_type == key.compensation_type
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingDirFinalAmount1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("direction_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("compensation_type",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("provisional_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("final_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut compensation_type_array = Vec::new();
+        let mut provisional_amount_array = Vec::new();
+        let mut final_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            contractyear_array
+                .push({
+                    let mut val = row.contractyear;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            weekno_array
+                .push({
+                    let mut val = row.weekno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            billrunno_array
+                .push({
+                    let mut val = row.billrunno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            direction_id_array.push(row.direction_id);
+            participantid_array.push(row.participantid);
+            compensation_type_array.push(row.compensation_type);
+            provisional_amount_array
+                .push({
+                    row.provisional_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            final_amount_array
+                .push({
+                    row.final_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(weekno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(billrunno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(direction_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(compensation_type_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(provisional_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(final_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_DIR_FINAL_RECOVERY
+///  _The Billing Final Directions Recovery Amount for the participants_
+///
+/// * Data Set Name: Billing
+/// * File Name: Dir Final Recovery
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * DIRECTION_ID
+/// * PARTICIPANTID
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingDirFinalRecovery1 {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Direction Unique Identifier
+    pub direction_id: String,
+    /// The Direction Payment Participant ID
+    pub participantid: String,
+    /// The Direction Compensation Recovery Amount
+    pub cra_amount: Option<rust_decimal::Decimal>,
+    /// The Provisional Recovery Amount
+    pub provisional_amount: Option<rust_decimal::Decimal>,
+    /// The Final Recovery Amount
+    pub final_amount: Option<rust_decimal::Decimal>,
+    /// The Last datetime record is updated
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
+    type PrimaryKey = BillingDirFinalRecovery1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DIR_FINAL_RECOVERY".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> BillingDirFinalRecovery1PrimaryKey {
+        BillingDirFinalRecovery1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            direction_id: self.direction_id.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "billing_dir_final_recovery_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BillingDirFinalRecovery1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub direction_id: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingDirFinalRecovery1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingDirFinalRecovery1 {
+    type Row = BillingDirFinalRecovery1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirFinalRecovery1 {
+    type PrimaryKey = BillingDirFinalRecovery1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+impl mmsdm_core::CompareWithRow for BillingDirFinalRecovery1PrimaryKey {
+    type Row = BillingDirFinalRecovery1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirFinalRecovery1PrimaryKey {
+    type PrimaryKey = BillingDirFinalRecovery1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingDirFinalRecovery1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("direction_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("cra_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("provisional_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("final_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut cra_amount_array = Vec::new();
+        let mut provisional_amount_array = Vec::new();
+        let mut final_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            contractyear_array
+                .push({
+                    let mut val = row.contractyear;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            weekno_array
+                .push({
+                    let mut val = row.weekno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            billrunno_array
+                .push({
+                    let mut val = row.billrunno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            direction_id_array.push(row.direction_id);
+            participantid_array.push(row.participantid);
+            cra_amount_array
+                .push({
+                    row.cra_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            provisional_amount_array
+                .push({
+                    row.provisional_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            final_amount_array
+                .push({
+                    row.final_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(weekno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(billrunno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(direction_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(cra_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(provisional_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(final_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_DIR_PROV_AMOUNT
+///  _The Billing Provisional Directions Payment Amount for Directed/Affected/Eligible participants_
+///
+/// * Data Set Name: Billing
+/// * File Name: Dir Prov Amount
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * COMPENSATION_TYPE
+/// * CONTRACTYEAR
+/// * DIRECTION_ID
+/// * PARTICIPANTID
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingDirProvAmount1 {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Direction Unique Identifier
+    pub direction_id: String,
+    /// The Direction Payment Participant ID
+    pub participantid: String,
+    /// The Direction Payment Type, Directed_Comp, Affected_Comp, Eligible_Comp
+    pub compensation_type: String,
+    /// The Direction Payment Amount
+    pub compensation_amount: Option<rust_decimal::Decimal>,
+    /// The Last datetime record is updated
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for BillingDirProvAmount1 {
+    type PrimaryKey = BillingDirProvAmount1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DIR_PROV_AMOUNT".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> BillingDirProvAmount1PrimaryKey {
+        BillingDirProvAmount1PrimaryKey {
+            billrunno: self.billrunno,
+            compensation_type: self.compensation_type.clone(),
+            contractyear: self.contractyear,
+            direction_id: self.direction_id.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "billing_dir_prov_amount_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BillingDirProvAmount1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub compensation_type: String,
+    pub contractyear: rust_decimal::Decimal,
+    pub direction_id: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingDirProvAmount1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingDirProvAmount1 {
+    type Row = BillingDirProvAmount1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.compensation_type == row.compensation_type
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirProvAmount1 {
+    type PrimaryKey = BillingDirProvAmount1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.compensation_type == key.compensation_type
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+impl mmsdm_core::CompareWithRow for BillingDirProvAmount1PrimaryKey {
+    type Row = BillingDirProvAmount1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno
+            && self.compensation_type == row.compensation_type
+            && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirProvAmount1PrimaryKey {
+    type PrimaryKey = BillingDirProvAmount1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.compensation_type == key.compensation_type
+            && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingDirProvAmount1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("direction_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("compensation_type",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("compensation_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut compensation_type_array = Vec::new();
+        let mut compensation_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            contractyear_array
+                .push({
+                    let mut val = row.contractyear;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            weekno_array
+                .push({
+                    let mut val = row.weekno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            billrunno_array
+                .push({
+                    let mut val = row.billrunno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            direction_id_array.push(row.direction_id);
+            participantid_array.push(row.participantid);
+            compensation_type_array.push(row.compensation_type);
+            compensation_amount_array
+                .push({
+                    row.compensation_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(weekno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(billrunno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(direction_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(compensation_type_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(compensation_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_DIR_PROV_RECOVERY
+///  _The Billing Provisional Directions Recovery Amount for the participants_
+///
+/// * Data Set Name: Billing
+/// * File Name: Dir Prov Recovery
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * DIRECTION_ID
+/// * PARTICIPANTID
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingDirProvRecovery1 {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Direction Unique Identifier
+    pub direction_id: String,
+    /// The Direction Payment Participant ID
+    pub participantid: String,
+    /// The Direction Compensation Recovery Amount
+    pub cra_amount: Option<rust_decimal::Decimal>,
+    /// The Direction Recovery Amount
+    pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Last datetime record is updated
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
+    type PrimaryKey = BillingDirProvRecovery1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DIR_PROV_RECOVERY".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> BillingDirProvRecovery1PrimaryKey {
+        BillingDirProvRecovery1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            direction_id: self.direction_id.clone(),
+            participantid: self.participantid.clone(),
+            weekno: self.weekno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "billing_dir_prov_recovery_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BillingDirProvRecovery1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub direction_id: String,
+    pub participantid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingDirProvRecovery1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingDirProvRecovery1 {
+    type Row = BillingDirProvRecovery1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirProvRecovery1 {
+    type PrimaryKey = BillingDirProvRecovery1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+impl mmsdm_core::CompareWithRow for BillingDirProvRecovery1PrimaryKey {
+    type Row = BillingDirProvRecovery1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantid == row.participantid && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirProvRecovery1PrimaryKey {
+    type PrimaryKey = BillingDirProvRecovery1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantid == key.participantid && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingDirProvRecovery1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("direction_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("cra_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut cra_amount_array = Vec::new();
+        let mut recovery_amount_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            contractyear_array
+                .push({
+                    let mut val = row.contractyear;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            weekno_array
+                .push({
+                    let mut val = row.weekno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            billrunno_array
+                .push({
+                    let mut val = row.billrunno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            direction_id_array.push(row.direction_id);
+            participantid_array.push(row.participantid);
+            cra_amount_array
+                .push({
+                    row.cra_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            recovery_amount_array
+                .push({
+                    row.recovery_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(weekno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(billrunno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(direction_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(cra_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recovery_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
+/// ## BILLING_DIR_RECOVERY_DETAIL
+///  _The Billing Directions Recovery Details for the participants_
+///
+/// * Data Set Name: Billing
+/// * File Name: Dir Recovery Detail
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * DIRECTION_ID
+/// * PARTICIPANTCATEGORYID
+/// * PARTICIPANTID
+/// * REGIONID
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingDirRecoveryDetail1 {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Direction Unique Identifier
+    pub direction_id: String,
+    /// The Direction Payment Participant ID
+    pub participantid: String,
+    /// The Participant Category for recovery Customer/Generator /SmallGen
+    pub participantcategoryid: String,
+    /// The Region ID for the recovery
+    pub regionid: String,
+    /// The Direction Recovery Amount
+    pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Energy Value used for the Recovery
+    pub recovery_energy: Option<rust_decimal::Decimal>,
+    /// The total Energy at the Region ID
+    pub region_energy: Option<rust_decimal::Decimal>,
+    /// The Energy Value (Scheduled Loads) that is excluded
+    pub excluded_energy: Option<rust_decimal::Decimal>,
+    /// The Last datetime record is updated
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
+    type PrimaryKey = BillingDirRecoveryDetail1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("DIR_RECOVERY_DETAIL".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> BillingDirRecoveryDetail1PrimaryKey {
+        BillingDirRecoveryDetail1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            direction_id: self.direction_id.clone(),
+            participantcategoryid: self.participantcategoryid.clone(),
+            participantid: self.participantid.clone(),
+            regionid: self.regionid.clone(),
+            weekno: self.weekno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "billing_dir_recovery_detail_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BillingDirRecoveryDetail1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub direction_id: String,
+    pub participantcategoryid: String,
+    pub participantid: String,
+    pub regionid: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingDirRecoveryDetail1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingDirRecoveryDetail1 {
+    type Row = BillingDirRecoveryDetail1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantcategoryid == row.participantcategoryid
+            && self.participantid == row.participantid && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirRecoveryDetail1 {
+    type PrimaryKey = BillingDirRecoveryDetail1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantcategoryid == key.participantcategoryid
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+impl mmsdm_core::CompareWithRow for BillingDirRecoveryDetail1PrimaryKey {
+    type Row = BillingDirRecoveryDetail1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.direction_id == row.direction_id
+            && self.participantcategoryid == row.participantcategoryid
+            && self.participantid == row.participantid && self.regionid == row.regionid
+            && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingDirRecoveryDetail1PrimaryKey {
+    type PrimaryKey = BillingDirRecoveryDetail1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.direction_id == key.direction_id
+            && self.participantcategoryid == key.participantcategoryid
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingDirRecoveryDetail1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("direction_id",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("participantcategoryid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("recovery_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("region_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("excluded_energy",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut direction_id_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut participantcategoryid_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut recovery_amount_array = Vec::new();
+        let mut recovery_energy_array = Vec::new();
+        let mut region_energy_array = Vec::new();
+        let mut excluded_energy_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            contractyear_array
+                .push({
+                    let mut val = row.contractyear;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            weekno_array
+                .push({
+                    let mut val = row.weekno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            billrunno_array
+                .push({
+                    let mut val = row.billrunno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            direction_id_array.push(row.direction_id);
+            participantid_array.push(row.participantid);
+            participantcategoryid_array.push(row.participantcategoryid);
+            regionid_array.push(row.regionid);
+            recovery_amount_array
+                .push({
+                    row.recovery_amount
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            recovery_energy_array
+                .push({
+                    row.recovery_energy
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            region_energy_array
+                .push({
+                    row.region_energy
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            excluded_energy_array
+                .push({
+                    row.excluded_energy
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(weekno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(billrunno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(direction_id_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantcategoryid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recovery_amount_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recovery_energy_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(region_energy_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(excluded_energy_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## BILLING_EFTSHORTFALL_AMOUNT
 ///  _The billing shortfall run amounts_
 ///
@@ -8088,8 +9373,7 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
 /// # Description
 ///  BILLING_EFTSHORTFALL_AMOUNT data is confidential, and is available only to the relevant participant.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8333,8 +9617,7 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallAmount1 {
 /// # Description
 ///  BILLING_EFTSHORTFALL_DETAIL data is confidential, and is available only to the relevant participant.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private &amp; Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8511,6 +9794,260 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallDetail1 {
 }
 /// # Summary
 ///
+/// ## BILLING_ENERGY_TRAN_SAPS
+///  _The SAP Billing Transaction Details for the Participants_
+///
+/// * Data Set Name: Billing
+/// * File Name: Energy Tran Saps
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * TNI
+/// * WEEKNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct BillingEnergyTranSaps1 {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The SAP Participant ID
+    pub participantid: String,
+    /// The SAPS Connection Point ID
+    pub tni: String,
+    /// The Region ID associated with the TNI
+    pub regionid: Option<String>,
+    /// The Energy MWh Consumed for that TNI for the Participant Id in that Billing Week
+    pub consumed_energy_mwh: Option<rust_decimal::Decimal>,
+    /// The Energy MWh Sent Out for the TNI for the Participant Id in that Billing Week
+    pub sentout_energy_mwh: Option<rust_decimal::Decimal>,
+    /// The Cost of the Consumed Energy
+    pub consumed_energy_cost: Option<rust_decimal::Decimal>,
+    /// The Cost of the Sent Out Energy
+    pub sentout_energy_cost: Option<rust_decimal::Decimal>,
+    /// The Last datetime record is updated
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
+    type PrimaryKey = BillingEnergyTranSaps1PrimaryKey;
+    type Partition = ();
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "BILLING".into(),
+            table_name: Some("ENERGY_TRAN_SAPS".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> BillingEnergyTranSaps1PrimaryKey {
+        BillingEnergyTranSaps1PrimaryKey {
+            billrunno: self.billrunno,
+            contractyear: self.contractyear,
+            participantid: self.participantid.clone(),
+            tni: self.tni.clone(),
+            weekno: self.weekno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {}
+    fn partition_name(&self) -> String {
+        "billing_energy_tran_saps_v1".to_string()
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct BillingEnergyTranSaps1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: String,
+    pub tni: String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingEnergyTranSaps1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingEnergyTranSaps1 {
+    type Row = BillingEnergyTranSaps1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.participantid == row.participantid && self.tni == row.tni
+            && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingEnergyTranSaps1 {
+    type PrimaryKey = BillingEnergyTranSaps1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.participantid == key.participantid && self.tni == key.tni
+            && self.weekno == key.weekno
+    }
+}
+impl mmsdm_core::CompareWithRow for BillingEnergyTranSaps1PrimaryKey {
+    type Row = BillingEnergyTranSaps1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.participantid == row.participantid && self.tni == row.tni
+            && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingEnergyTranSaps1PrimaryKey {
+    type PrimaryKey = BillingEnergyTranSaps1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.participantid == key.participantid && self.tni == key.tni
+            && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingEnergyTranSaps1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("contractyear",
+                arrow2::datatypes::DataType::Decimal(4, 0), false),
+                arrow2::datatypes::Field::new("weekno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("billrunno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("tni",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("consumed_energy_mwh",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("sentout_energy_mwh",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("consumed_energy_cost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("sentout_energy_cost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut contractyear_array = Vec::new();
+        let mut weekno_array = Vec::new();
+        let mut billrunno_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut tni_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut consumed_energy_mwh_array = Vec::new();
+        let mut sentout_energy_mwh_array = Vec::new();
+        let mut consumed_energy_cost_array = Vec::new();
+        let mut sentout_energy_cost_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            contractyear_array
+                .push({
+                    let mut val = row.contractyear;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            weekno_array
+                .push({
+                    let mut val = row.weekno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            billrunno_array
+                .push({
+                    let mut val = row.billrunno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            participantid_array.push(row.participantid);
+            tni_array.push(row.tni);
+            regionid_array.push(row.regionid);
+            consumed_energy_mwh_array
+                .push({
+                    row.consumed_energy_mwh
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            sentout_energy_mwh_array
+                .push({
+                    row.sentout_energy_mwh
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            consumed_energy_cost_array
+                .push({
+                    row.consumed_energy_cost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            sentout_energy_cost_array
+                .push({
+                    row.sentout_energy_cost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
+                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(weekno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(billrunno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(tni_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(consumed_energy_mwh_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(sentout_energy_mwh_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(consumed_energy_cost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(sentout_energy_cost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## BILLING_GST_DETAIL
 ///  _BILLING_GST_DETAIL shows the BAS class, GST_Exclusive and GST amount (if any) attributable to a participant for each transaction type._
 ///
@@ -8521,8 +10058,7 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallDetail1 {
 /// # Description
 ///  BILLING_GST_DETAIL data is confidential to NSP participants. Source Populated by the posting of a billing run. Volume Approximately 20 records are inserted per billrunno, or about 220 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8752,8 +10288,7 @@ impl mmsdm_core::ArrowSchema for BillingGstDetail5 {
 /// # Description
 ///  BILLING_GST_SUMMARY data is confidential to NSP participants. Source Populated by the posting of a billing run. Volume Approximately 5 records are inserted per billrunno, or about 55 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8966,8 +10501,7 @@ impl mmsdm_core::ArrowSchema for BillingGstSummary5 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9169,8 +10703,7 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstPayments1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9561,8 +11094,7 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9803,8 +11335,7 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecvryRbf1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -10006,8 +11537,7 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecvryTrk1 {
 /// # Description
 ///  BILLING_SECDEPOSIT_APPLICATION data is confidential, and is available only to the relevant participant.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -10178,8 +11708,7 @@ impl mmsdm_core::ArrowSchema for BillingSecdepositApplication1 {
 /// # Description
 ///  BILLING_SECDEP_INTEREST_PAY data is confidential, and is available only to the relevant participant.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -10403,8 +11932,7 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestPay1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -10600,8 +12128,7 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestRate1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -10822,8 +12349,7 @@ impl mmsdm_core::ArrowSchema for BillingSubstDemand1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -11003,8 +12529,7 @@ impl mmsdm_core::ArrowSchema for BillingSubstRunVersion1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -11190,8 +12715,7 @@ impl mmsdm_core::ArrowSchema for BillingWdr1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -11437,8 +12961,7 @@ impl mmsdm_core::ArrowSchema for BillingWdrDetail1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -11643,12 +13166,11 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderpayment1 {
 ///
 /// * Data Set Name: Billing
 /// * File Name: Reservetraderrecovery
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -11660,7 +13182,7 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderpayment1 {
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct BillingReservetraderrecovery1 {
+pub struct BillingReservetraderrecovery2 {
     /// Billing contract year
     pub contractyear: rust_decimal::Decimal,
     /// Billing week number
@@ -11689,19 +13211,21 @@ pub struct BillingReservetraderrecovery1 {
     pub eligibility_end_interval: Option<chrono::NaiveDateTime>,
     /// Recovery Amount applicable for each Market Customer
     pub recovery_amount: Option<rust_decimal::Decimal>,
+    /// The Energy Value (Scheduled Loads) that is excluded
+    pub excluded_energy: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for BillingReservetraderrecovery1 {
-    type PrimaryKey = BillingReservetraderrecovery1PrimaryKey;
+impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
+    type PrimaryKey = BillingReservetraderrecovery2PrimaryKey;
     type Partition = ();
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "BILLING".into(),
             table_name: Some("RESERVETRADERRECOVERY".into()),
-            version: 1,
+            version: 2,
         }
     }
-    fn primary_key(&self) -> BillingReservetraderrecovery1PrimaryKey {
-        BillingReservetraderrecovery1PrimaryKey {
+    fn primary_key(&self) -> BillingReservetraderrecovery2PrimaryKey {
+        BillingReservetraderrecovery2PrimaryKey {
             billrunno: self.billrunno,
             contractyear: self.contractyear,
             participantid: self.participantid.clone(),
@@ -11713,11 +13237,11 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery1 {
     }
     fn partition_suffix(&self) -> Self::Partition {}
     fn partition_name(&self) -> String {
-        "billing_reservetraderrecovery_v1".to_string()
+        "billing_reservetraderrecovery_v2".to_string()
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct BillingReservetraderrecovery1PrimaryKey {
+pub struct BillingReservetraderrecovery2PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: String,
@@ -11726,9 +13250,9 @@ pub struct BillingReservetraderrecovery1PrimaryKey {
     pub regionid: String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingReservetraderrecovery1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for BillingReservetraderrecovery1 {
-    type Row = BillingReservetraderrecovery1;
+impl mmsdm_core::PrimaryKey for BillingReservetraderrecovery2PrimaryKey {}
+impl mmsdm_core::CompareWithRow for BillingReservetraderrecovery2 {
+    type Row = BillingReservetraderrecovery2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid
@@ -11737,8 +13261,8 @@ impl mmsdm_core::CompareWithRow for BillingReservetraderrecovery1 {
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery1 {
-    type PrimaryKey = BillingReservetraderrecovery1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery2 {
+    type PrimaryKey = BillingReservetraderrecovery2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid
@@ -11747,8 +13271,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery1 {
             && self.weekno == key.weekno
     }
 }
-impl mmsdm_core::CompareWithRow for BillingReservetraderrecovery1PrimaryKey {
-    type Row = BillingReservetraderrecovery1;
+impl mmsdm_core::CompareWithRow for BillingReservetraderrecovery2PrimaryKey {
+    type Row = BillingReservetraderrecovery2;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid
@@ -11757,8 +13281,8 @@ impl mmsdm_core::CompareWithRow for BillingReservetraderrecovery1PrimaryKey {
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery1PrimaryKey {
-    type PrimaryKey = BillingReservetraderrecovery1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery2PrimaryKey {
+    type PrimaryKey = BillingReservetraderrecovery2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid
@@ -11768,7 +13292,7 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery1PrimaryK
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery1 {
+impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery2 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -11797,6 +13321,8 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery1 {
                 None), true), arrow2::datatypes::Field::new("eligibility_end_interval",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                 None), true), arrow2::datatypes::Field::new("recovery_amount",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("excluded_energy",
                 arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
@@ -11819,6 +13345,7 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery1 {
         let mut eligibility_start_interval_array = Vec::new();
         let mut eligibility_end_interval_array = Vec::new();
         let mut recovery_amount_array = Vec::new();
+        let mut excluded_energy_array = Vec::new();
         for row in partition {
             contractyear_array
                 .push({
@@ -11883,6 +13410,14 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery1 {
                             val.mantissa()
                         })
                 });
+            excluded_energy_array
+                .push({
+                    row.excluded_energy
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -11925,6 +13460,9 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery1 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recovery_amount_array)
                     .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(excluded_energy_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -11941,38 +13479,38 @@ where
     S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
 {
     match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("ASPAYMENTS"), version) if version <= 6_i32 => {
-            let d: Vec<BillingAspayments6> = mms_file.get_table()?;
+        (Some("ASPAYMENTS"), version) if version <= 7_i32 => {
+            let d: Vec<BillingAspayments7> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertBillingAspayments6 @P1, @P2",
+                    "exec mmsdm_proc.InsertBillingAspayments7 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
         }
-        (Some("ASRECOVERY"), version) if version <= 7_i32 => {
-            let d: Vec<BillingAsrecovery7> = mms_file.get_table()?;
+        (Some("ASRECOVERY"), version) if version <= 8_i32 => {
+            let d: Vec<BillingAsrecovery8> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertBillingAsrecovery7 @P1, @P2",
+                    "exec mmsdm_proc.InsertBillingAsrecovery8 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
         }
-        (Some("CPDATA"), version) if version <= 6_i32 => {
-            let d: Vec<BillingCpdata6> = mms_file.get_table()?;
+        (Some("CPDATA"), version) if version <= 7_i32 => {
+            let d: Vec<BillingCpdata7> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertBillingCpdata6 @P1, @P2",
+                    "exec mmsdm_proc.InsertBillingCpdata7 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -12277,6 +13815,66 @@ where
                 )
                 .await?;
         }
+        (Some("DIR_FINAL_AMOUNT"), version) if version <= 1_i32 => {
+            let d: Vec<BillingDirFinalAmount1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertBillingDirFinalAmount1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("DIR_FINAL_RECOVERY"), version) if version <= 1_i32 => {
+            let d: Vec<BillingDirFinalRecovery1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertBillingDirFinalRecovery1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("DIR_PROV_AMOUNT"), version) if version <= 1_i32 => {
+            let d: Vec<BillingDirProvAmount1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertBillingDirProvAmount1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("DIR_PROV_RECOVERY"), version) if version <= 1_i32 => {
+            let d: Vec<BillingDirProvRecovery1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertBillingDirProvRecovery1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("DIR_RECOVERY_DETAIL"), version) if version <= 1_i32 => {
+            let d: Vec<BillingDirRecoveryDetail1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertBillingDirRecoveryDetail1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
         (Some("EFTSHORTFALL_AMOUNT"), version) if version <= 1_i32 => {
             let d: Vec<BillingEftshortfallAmount1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
@@ -12297,6 +13895,18 @@ where
                     mms_file.header(),
                     &d,
                     "exec mmsdm_proc.InsertBillingEftshortfallDetail1 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("ENERGY_TRAN_SAPS"), version) if version <= 1_i32 => {
+            let d: Vec<BillingEnergyTranSaps1> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertBillingEnergyTranSaps1 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -12469,14 +14079,14 @@ where
                 )
                 .await?;
         }
-        (Some("RESERVETRADERRECOVERY"), version) if version <= 1_i32 => {
-            let d: Vec<BillingReservetraderrecovery1> = mms_file.get_table()?;
+        (Some("RESERVETRADERRECOVERY"), version) if version <= 2_i32 => {
+            let d: Vec<BillingReservetraderrecovery2> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertBillingReservetraderrecovery1 @P1, @P2",
+                    "exec mmsdm_proc.InsertBillingReservetraderrecovery2 @P1, @P2",
                     chunk_size,
                 )
                 .await?;

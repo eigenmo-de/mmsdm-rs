@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  BIDTYPES  is public to participants Source BIDTYPES updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -225,8 +224,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
 /// # Description
 ///  BIDTYPESTRK is public to participants Source BIDTYPESTRK updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -383,8 +381,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
 /// # Description
 ///  INTERCONNECTOR is public data, available to all participants. Source INTERCONNECTOR changes infrequently, usually annually.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -529,8 +526,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
 /// # Description
 ///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -732,8 +728,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
 /// # Description
 ///  INTERCONNECTORCONSTRAINT is public data, available to all participants. Source INTERCONNECTORCONSTRAINT changes infrequently, typically annually.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1145,8 +1140,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
 /// # Description
 ///  INTRAREGIONALLOC data is confidential to the relevant participant. Source The data in INTRAREGIONALLOC changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1332,8 +1326,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
 /// # Description
 ///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1519,8 +1512,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
 /// # Description
 ///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1736,8 +1728,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
 /// # Description
 ///  MARKET_PRICE_THRESHOLDS data is public, so is available to all participants. Source MARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1942,8 +1933,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
 /// # Description
 ///  REGION data is public, so is available to all participants. Source REGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2072,8 +2062,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
 /// # Description
 ///  REGIONSTANDINGDATA data is public, so is available to all participants. Source REGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2295,8 +2284,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
 /// # Description
 ///  TRANSMISSIONLOSSFACTOR is public data, and is available to all participants. Source TRANSMISSIONLOSSFACTOR updates when new connection points are created or loss factors change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///

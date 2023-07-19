@@ -11,8 +11,7 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -210,8 +209,7 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -348,8 +346,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -677,8 +674,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -797,8 +793,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -991,8 +986,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1127,8 +1121,7 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1337,8 +1330,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///

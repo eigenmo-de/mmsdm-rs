@@ -1,5 +1,5 @@
 [package]
-name = "mmsdm_mtpasa_solution"
+name = "mmsdm_mtpasa"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
@@ -58,7 +58,7 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.14.2"
+version = "0.17.2"
 optional = true
 default-features = false
 

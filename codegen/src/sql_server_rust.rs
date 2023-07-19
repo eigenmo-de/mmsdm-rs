@@ -5,16 +5,12 @@ use crate::{
     rust::{TableMapping, VERSION},
 };
 use std::{collections, fs};
+use heck::ToSnakeCase;
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
-    let mut mapping = csv::Reader::from_path(format!("table_mapping_v{VERSION}.csv"))?;
-    let mut map = collections::HashMap::new();
+    let map = TableMapping::read()?;
 
-    for row in mapping.deserialize::<TableMapping>() {
-        let row = row?;
-        map.insert(row.mms(), row.pdr());
-    }
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
     let mut fmt_str = String::new();
     fmt_str.push_str(
@@ -37,11 +33,9 @@ where S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
         // let fmtr = codegen::Formatter::new(&mut fmt_str);
         for (table_key, _) in tables.into_iter() {
             let mms_report = mms::Report {
-                name: data_set.clone(),
                 sub_type: table_key,
             };
             if let Some(pdr_report) = map.get(&mms_report) {
-                use heck::SnakeCase;
 
                 data_map
                     .entry(data_set.to_snake_case())

@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  Source GDINSTRUCT updates on issue of an instruction by AEMO, with visibility restricted on the day of issue to the relevant participant. All participants have previous days' data available.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -255,8 +254,7 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
 /// # Description
 ///  INSTRUCTIONSUBTYPE is public data, and is available to all participants. Source INSTRUCTIONSUBTYPE shows ad hoc updates to market configuration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -392,8 +390,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
 /// # Description
 ///  INSTRUCTIONTYPE data is public to all participants. Source INSTRUCTIONTYPE shows ad hoc updates to market configuration.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///

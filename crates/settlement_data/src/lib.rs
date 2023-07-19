@@ -12,8 +12,7 @@ use chrono::Datelike as _;
 /// # Description
 ///  DAYTRACK is a public data, and is available to all participants. Source DAYTRACK is populated by the posting of a billing run. Volume Daily billing runs insert one row per day. A non-interim statement has seven records inserted per week. An indicative maximum is 35 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -203,13 +202,12 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack6 {
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Cpdata
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  The Connection point details (in SETCPDATA) are confidential to the participant and host retailer that the connection points relate to. By comparison, the regional data (SETCPDATAREGION) is publically available. Source SETCPDATA updates with each Settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -220,7 +218,7 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack6 {
 /// * TCPID
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsCpdata6 {
+pub struct SettlementsCpdata7 {
     /// Calendar Settlement Date
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -275,7 +273,7 @@ pub struct SettlementsCpdata6 {
     pub hostdistributor: Option<String>,
     /// Metering Data Agent
     pub mda: String,
-    /// Adjusted Gross Energy for this Market Customer FRMP and TNI in the Settlements Trading Interval, excluding any UFEA component.
+    /// Accounted For Energy for this Market Customer FRMP and TNI in the Settlements Trading Interval, excluding any UFEA component
     pub afe: Option<rust_decimal::Decimal>,
     /// Sum of ME- for all NMIs at this Market Customer FRMP and TNI in the Settlements Trading Interval.
     pub dme: Option<rust_decimal::Decimal>,
@@ -283,19 +281,23 @@ pub struct SettlementsCpdata6 {
     pub ufea: Option<rust_decimal::Decimal>,
     /// Adjusted Gross Energy for this Market Customer FRMP and TNI in the Settlements Trading Interval. When GS commences, this includes the UFEA amount in the settlement runs.
     pub age: Option<rust_decimal::Decimal>,
+    /// The total cost of energy sold at the connection point by the participant in this settlement interval
+    pub importenergycost: Option<rust_decimal::Decimal>,
+    /// The total cost of energy purchased at the connection point by the participant in this settlement interval
+    pub exportenergycost: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for SettlementsCpdata6 {
-    type PrimaryKey = SettlementsCpdata6PrimaryKey;
+impl mmsdm_core::GetTable for SettlementsCpdata7 {
+    type PrimaryKey = SettlementsCpdata7PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENTS".into(),
             table_name: Some("CPDATA".into()),
-            version: 6,
+            version: 7,
         }
     }
-    fn primary_key(&self) -> SettlementsCpdata6PrimaryKey {
-        SettlementsCpdata6PrimaryKey {
+    fn primary_key(&self) -> SettlementsCpdata7PrimaryKey {
+        SettlementsCpdata7PrimaryKey {
             mda: self.mda.clone(),
             participantid: self.participantid.clone(),
             periodid: self.periodid,
@@ -313,13 +315,13 @@ impl mmsdm_core::GetTable for SettlementsCpdata6 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_cpdata_v6_{}_{}", self.partition_suffix().year, self
+            "settlements_cpdata_v7_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct SettlementsCpdata6PrimaryKey {
+pub struct SettlementsCpdata7PrimaryKey {
     pub mda: String,
     pub participantid: String,
     pub periodid: rust_decimal::Decimal,
@@ -327,33 +329,33 @@ pub struct SettlementsCpdata6PrimaryKey {
     pub tcpid: String,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for SettlementsCpdata6PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementsCpdata6 {
-    type Row = SettlementsCpdata6;
+impl mmsdm_core::PrimaryKey for SettlementsCpdata7PrimaryKey {}
+impl mmsdm_core::CompareWithRow for SettlementsCpdata7 {
+    type Row = SettlementsCpdata7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.mda == row.mda && self.participantid == row.participantid
             && self.periodid == row.periodid && self.settlementdate == row.settlementdate
             && self.tcpid == row.tcpid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsCpdata6 {
-    type PrimaryKey = SettlementsCpdata6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsCpdata7 {
+    type PrimaryKey = SettlementsCpdata7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.mda == key.mda && self.participantid == key.participantid
             && self.periodid == key.periodid && self.settlementdate == key.settlementdate
             && self.tcpid == key.tcpid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementsCpdata6PrimaryKey {
-    type Row = SettlementsCpdata6;
+impl mmsdm_core::CompareWithRow for SettlementsCpdata7PrimaryKey {
+    type Row = SettlementsCpdata7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.mda == row.mda && self.participantid == row.participantid
             && self.periodid == row.periodid && self.settlementdate == row.settlementdate
             && self.tcpid == row.tcpid && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsCpdata6PrimaryKey {
-    type PrimaryKey = SettlementsCpdata6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsCpdata7PrimaryKey {
+    type PrimaryKey = SettlementsCpdata7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.mda == key.mda && self.participantid == key.participantid
             && self.periodid == key.periodid && self.settlementdate == key.settlementdate
@@ -361,7 +363,7 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementsCpdata6PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for SettlementsCpdata6 {
+impl mmsdm_core::ArrowSchema for SettlementsCpdata7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -424,6 +426,10 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata6 {
                 arrow2::datatypes::Field::new("ufea",
                 arrow2::datatypes::DataType::Decimal(18, 8), true),
                 arrow2::datatypes::Field::new("age",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("importenergycost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("exportenergycost",
                 arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
@@ -463,6 +469,8 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata6 {
         let mut dme_array = Vec::new();
         let mut ufea_array = Vec::new();
         let mut age_array = Vec::new();
+        let mut importenergycost_array = Vec::new();
+        let mut exportenergycost_array = Vec::new();
         for row in partition {
             settlementdate_array.push(row.settlementdate.timestamp());
             versionno_array
@@ -651,6 +659,22 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata6 {
                             val.mantissa()
                         })
                 });
+            importenergycost_array
+                .push({
+                    row.importenergycost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            exportenergycost_array
+                .push({
+                    row.exportenergycost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -744,6 +768,12 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata6 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(age_array)
                     .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(importenergycost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(exportenergycost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -761,8 +791,7 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata6 {
 /// # Description
 ///  SETCPDATAREGION data is public, so is available to all participants. Source SETCPDATAREGION is a summary based on grouping on SETCPDATA and is updated with each settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1048,8 +1077,7 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdataregion5 {
 /// # Description
 ///  SETFCASREGIONRECOVERY contains public data and is available to all participants. Source SETFCASREGIONRECOVERY updates with each settlements run. Volume Approximately 10,000 rows per day
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1284,8 +1312,7 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasregionrecovery5 {
 /// # Description
 ///  SETGENDATA shows generator meter details, and SETGENDATA data is confidential to the participant. By comparison, the regional summary (SETGENDATAREGION) is public data. Source SETGENDATA updates with each Settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1820,8 +1847,7 @@ impl mmsdm_core::ArrowSchema for SettlementsGendata6 {
 /// # Description
 ///  SETGENDATAREGION shows the regional summary. SETGENDATAREGION is public data. Source SETGENDATAREGION updates with each Settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2140,8 +2166,7 @@ impl mmsdm_core::ArrowSchema for SettlementsGendataregion5 {
 /// # Description
 ///  SETINTRAREGIONRESIDUES data is public to all participants. Source SETINTRAREGIONRESIDUES updates with each settlement run. Note The relationship between the data columns for each key is expressed in the following formula: EP + EC + (EXP * RRP) = IRSS
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2380,8 +2405,7 @@ impl mmsdm_core::ArrowSchema for SettlementsIntraregionresidues5 {
 /// # Description
 ///  SETIRAUCSURPLUS data is confidential to the relevant participant. Source SETIRAUCSURPLUS updates with each settlement run. Volume SETIRAUCSURPLUS contains a maximum of 10 million records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2679,8 +2703,7 @@ impl mmsdm_core::ArrowSchema for SettlementsIraucsurplus6 {
 /// # Description
 ///  SETIRNSPSURPLUS data is confidential to the relevant participant. Source SETIRNSPSURPLUS updates with each settlement run. Volume SETIRNSPSURPLUS contains a maximum of 10 million records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2978,8 +3001,7 @@ impl mmsdm_core::ArrowSchema for SettlementsIrnspsurplus6 {
 /// # Description
 ///  SETIRPARTSURPLUS data is confidential to each participant. Source SETIRPARTSURPLUS updates with each settlement run. Volume SETIRPARTSURPLUS contains a maximum of 20 million records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3277,8 +3299,7 @@ impl mmsdm_core::ArrowSchema for SettlementsIrpartsurplus6 {
 /// # Description
 ///  SETIRSURPLUS data is public, so is available to all participants. Source SETIRSURPLUS updates once a day at 8am. Note MWFLOW and LOSSFACTOR are now both calculated as MWh (energy) values for the half hour, and not MW (average demand) values. By way of clarification, the MWFLOW value is derived from half-hour revenue class metering, adjusted by a fixed fraction of the LOSSFACTOR value. The LOSSFACTOR value is taken to be exactly half of the MWLOSSES value in the TRADINGINTERCONNECT table. The METEREDMWFLOW field in the TRADINGINTERCONNECT table contains averaged SCADA metering demand values available in “real time”, whereas the MWFLOW field in the SETIRSURPLUS table contains settlement energy metering values available only after a settlement run is posted.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3543,8 +3564,7 @@ impl mmsdm_core::ArrowSchema for SettlementsIrsurplus6 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3798,8 +3818,7 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareaenergy1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -3965,8 +3984,7 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareatni1 {
 /// # Description
 ///  SETLSHEDPAYMENT data is confidential to the relevant participant. Source SETLSHEDPAYMENT updates with each settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4418,8 +4436,7 @@ impl mmsdm_core::ArrowSchema for SettlementsLshedpayment5 {
 /// # Description
 ///  SETMARKETFEES is confidential data. Source SETMARKETFEES updates with each settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4685,8 +4702,7 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees6 {
 /// # Description
 ///  SETREALLOCATIONS data is confidential to participants party to the reallocation. Source SETREALLOCATIONS updates by the posting of a billing run. Volume Generally, there are approximately 550 records inserted per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -4921,8 +4937,7 @@ impl mmsdm_core::ArrowSchema for SettlementsReallocations5 {
 /// # Description
 ///  SETRESTARTPAYMENT data is confidential to the relevant participant. Source SETRESTARTPAYMENT updates with each settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5255,8 +5270,7 @@ impl mmsdm_core::ArrowSchema for SettlementsRestartpayment6 {
 /// # Description
 ///  SETRESTARTRECOVERY data is confidential to the relevant participant. Source SETRESTARTRECOVERY updates with each settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -5611,8 +5625,7 @@ impl mmsdm_core::ArrowSchema for SettlementsRestartrecovery6 {
 /// # Description
 ///  SETRPOWERPAYMENT data is confidential to the relevant participant. Source SETRPOWERPAYMENT updates with each settlement run.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6143,8 +6156,7 @@ impl mmsdm_core::ArrowSchema for SettlementsRpowerpayment6 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6440,8 +6452,7 @@ impl mmsdm_core::ArrowSchema for SettlementsSmallgendata1 {
 /// # Description
 ///  SET_ANCILLARY_SUMMARY data is available to all participants. Volume Approximately 30, 000 per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6659,8 +6670,7 @@ impl mmsdm_core::ArrowSchema for SettlementsAncillarySummary5 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -6853,8 +6863,7 @@ impl mmsdm_core::ArrowSchema for SettlementsApcCompensation1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7066,18 +7075,292 @@ impl mmsdm_core::ArrowSchema for SettlementsApcRecovery1 {
 }
 /// # Summary
 ///
+/// ## SET_ENERGY_TRAN_SAPS
+///  _The table shows the Transaction Details for the SAPS Connection Points. The table contains both the MSRPs and Retailers data_
+///
+/// * Data Set Name: Settlements
+/// * File Name: Energy Tran Saps
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * PARTICIPANTID
+/// * PERIODID
+/// * SETTLEMENTDATE
+/// * TNI
+/// * VERSIONNO
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+pub struct SettlementsEnergyTranSaps1 {
+    /// The Settlement Date of the Billing Week
+    #[serde(with = "mmsdm_core::mms_datetime")]
+    pub settlementdate: chrono::NaiveDateTime,
+    /// The Settlement Run No
+    pub versionno: rust_decimal::Decimal,
+    /// The Period Id identifier
+    pub periodid: rust_decimal::Decimal,
+    /// The Participant ID for the SAPS TNI
+    pub participantid: String,
+    /// The SAPS Connection Point Identifier
+    pub tni: String,
+    /// The SAPS Region ID
+    pub regionid: Option<String>,
+    /// The SAPS Settlement Price for the Region
+    pub saps_rrp: Option<rust_decimal::Decimal>,
+    /// The Energy MWh Consumed for that TNI for the Participant ID
+    pub consumed_energy_mwh: Option<rust_decimal::Decimal>,
+    /// The Energy MWh Sent Out for the TNI for the Participant Id
+    pub sentout_energy_mwh: Option<rust_decimal::Decimal>,
+    /// The Cost of the Consumed Energy
+    pub consumed_energy_cost: Option<rust_decimal::Decimal>,
+    /// The Cost of the Sent Out Energy
+    pub sentout_energy_cost: Option<rust_decimal::Decimal>,
+    /// The Last changed Date time of the record
+    #[serde(with = "mmsdm_core::mms_datetime_opt")]
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+}
+impl mmsdm_core::GetTable for SettlementsEnergyTranSaps1 {
+    type PrimaryKey = SettlementsEnergyTranSaps1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn get_file_key() -> mmsdm_core::FileKey {
+        mmsdm_core::FileKey {
+            data_set_name: "SETTLEMENTS".into(),
+            table_name: Some("ENERGY_TRAN_SAPS".into()),
+            version: 1,
+        }
+    }
+    fn primary_key(&self) -> SettlementsEnergyTranSaps1PrimaryKey {
+        SettlementsEnergyTranSaps1PrimaryKey {
+            participantid: self.participantid.clone(),
+            periodid: self.periodid,
+            settlementdate: self.settlementdate,
+            tni: self.tni.clone(),
+            versionno: self.versionno,
+        }
+    }
+    fn partition_suffix(&self) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: self.settlementdate.year(),
+            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+                .unwrap(),
+        }
+    }
+    fn partition_name(&self) -> String {
+        format!(
+            "settlements_energy_tran_saps_v1_{}_{}", self.partition_suffix().year, self
+            .partition_suffix().month.number_from_month()
+        )
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+pub struct SettlementsEnergyTranSaps1PrimaryKey {
+    pub participantid: String,
+    pub periodid: rust_decimal::Decimal,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub tni: String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for SettlementsEnergyTranSaps1PrimaryKey {}
+impl mmsdm_core::CompareWithRow for SettlementsEnergyTranSaps1 {
+    type Row = SettlementsEnergyTranSaps1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.participantid == row.participantid && self.periodid == row.periodid
+            && self.settlementdate == row.settlementdate && self.tni == row.tni
+            && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsEnergyTranSaps1 {
+    type PrimaryKey = SettlementsEnergyTranSaps1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.participantid == key.participantid && self.periodid == key.periodid
+            && self.settlementdate == key.settlementdate && self.tni == key.tni
+            && self.versionno == key.versionno
+    }
+}
+impl mmsdm_core::CompareWithRow for SettlementsEnergyTranSaps1PrimaryKey {
+    type Row = SettlementsEnergyTranSaps1;
+    fn compare_with_row(&self, row: &Self::Row) -> bool {
+        self.participantid == row.participantid && self.periodid == row.periodid
+            && self.settlementdate == row.settlementdate && self.tni == row.tni
+            && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsEnergyTranSaps1PrimaryKey {
+    type PrimaryKey = SettlementsEnergyTranSaps1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.participantid == key.participantid && self.periodid == key.periodid
+            && self.settlementdate == key.settlementdate && self.tni == key.tni
+            && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for SettlementsEnergyTranSaps1 {
+    fn arrow_schema() -> arrow2::datatypes::Schema {
+        arrow2::datatypes::Schema::from(
+            vec![
+                arrow2::datatypes::Field::new("settlementdate",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), false), arrow2::datatypes::Field::new("versionno",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("periodid",
+                arrow2::datatypes::DataType::Decimal(3, 0), false),
+                arrow2::datatypes::Field::new("participantid",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("tni",
+                arrow2::datatypes::DataType::LargeUtf8, false),
+                arrow2::datatypes::Field::new("regionid",
+                arrow2::datatypes::DataType::LargeUtf8, true),
+                arrow2::datatypes::Field::new("saps_rrp",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("consumed_energy_mwh",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("sentout_energy_mwh",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("consumed_energy_cost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("sentout_energy_cost",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lastchanged",
+                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                None), true)
+            ],
+        )
+    }
+    fn partition_to_chunk(
+        partition: impl Iterator<Item = Self>,
+    ) -> mmsdm_core::Result<
+        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
+    > {
+        let mut settlementdate_array = Vec::new();
+        let mut versionno_array = Vec::new();
+        let mut periodid_array = Vec::new();
+        let mut participantid_array = Vec::new();
+        let mut tni_array = Vec::new();
+        let mut regionid_array = Vec::new();
+        let mut saps_rrp_array = Vec::new();
+        let mut consumed_energy_mwh_array = Vec::new();
+        let mut sentout_energy_mwh_array = Vec::new();
+        let mut consumed_energy_cost_array = Vec::new();
+        let mut sentout_energy_cost_array = Vec::new();
+        let mut lastchanged_array = Vec::new();
+        for row in partition {
+            settlementdate_array.push(row.settlementdate.timestamp());
+            versionno_array
+                .push({
+                    let mut val = row.versionno;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            periodid_array
+                .push({
+                    let mut val = row.periodid;
+                    val.rescale(0);
+                    val.mantissa()
+                });
+            participantid_array.push(row.participantid);
+            tni_array.push(row.tni);
+            regionid_array.push(row.regionid);
+            saps_rrp_array
+                .push({
+                    row.saps_rrp
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            consumed_energy_mwh_array
+                .push({
+                    row.consumed_energy_mwh
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            sentout_energy_mwh_array
+                .push({
+                    row.sentout_energy_mwh
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            consumed_energy_cost_array
+                .push({
+                    row.consumed_energy_cost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            sentout_energy_cost_array
+                .push({
+                    row.sentout_energy_cost
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+        }
+        arrow2::chunk::Chunk::try_new(
+                vec![
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
+                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from_slice(tni_array)) as std::sync::Arc < dyn
+                    arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
+                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
+                    >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(saps_rrp_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(consumed_energy_mwh_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(sentout_energy_mwh_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(consumed_energy_cost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(sentout_energy_cost_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
+                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
+                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                ],
+            )
+            .map_err(Into::into)
+    }
+}
+/// # Summary
+///
 /// ## SET_FCAS_PAYMENT
 ///  _SET_FCAS_PAYMENT sets out the enabling payment details for frequency controlled Ancillary Services._
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Fcas Payment
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 ///  SET_FCAS_PAYMENT data is confidential to the relevant participant. Volume Approximately 150,000 per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7086,7 +7369,7 @@ impl mmsdm_core::ArrowSchema for SettlementsApcRecovery1 {
 /// * SETTLEMENTDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsFcasPayment5 {
+pub struct SettlementsFcasPayment6 {
     /// Settlement Date
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -7119,19 +7402,23 @@ pub struct SettlementsFcasPayment5 {
     /// Last date and time record changed
     #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// Payment amount for the very fast raise service
+    pub raise1sec_payment: Option<rust_decimal::Decimal>,
+    /// Payment amount for the very fast lower service
+    pub lower1sec_payment: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for SettlementsFcasPayment5 {
-    type PrimaryKey = SettlementsFcasPayment5PrimaryKey;
+impl mmsdm_core::GetTable for SettlementsFcasPayment6 {
+    type PrimaryKey = SettlementsFcasPayment6PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENTS".into(),
             table_name: Some("FCAS_PAYMENT".into()),
-            version: 5,
+            version: 6,
         }
     }
-    fn primary_key(&self) -> SettlementsFcasPayment5PrimaryKey {
-        SettlementsFcasPayment5PrimaryKey {
+    fn primary_key(&self) -> SettlementsFcasPayment6PrimaryKey {
+        SettlementsFcasPayment6PrimaryKey {
             duid: self.duid.clone(),
             periodid: self.periodid,
             settlementdate: self.settlementdate,
@@ -7147,45 +7434,45 @@ impl mmsdm_core::GetTable for SettlementsFcasPayment5 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_fcas_payment_v5_{}_{}", self.partition_suffix().year, self
+            "settlements_fcas_payment_v6_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct SettlementsFcasPayment5PrimaryKey {
+pub struct SettlementsFcasPayment6PrimaryKey {
     pub duid: String,
     pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for SettlementsFcasPayment5PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementsFcasPayment5 {
-    type Row = SettlementsFcasPayment5;
+impl mmsdm_core::PrimaryKey for SettlementsFcasPayment6PrimaryKey {}
+impl mmsdm_core::CompareWithRow for SettlementsFcasPayment6 {
+    type Row = SettlementsFcasPayment6;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasPayment5 {
-    type PrimaryKey = SettlementsFcasPayment5PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasPayment6 {
+    type PrimaryKey = SettlementsFcasPayment6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.periodid == key.periodid
             && self.settlementdate == key.settlementdate
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementsFcasPayment5PrimaryKey {
-    type Row = SettlementsFcasPayment5;
+impl mmsdm_core::CompareWithRow for SettlementsFcasPayment6PrimaryKey {
+    type Row = SettlementsFcasPayment6;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.duid == row.duid && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasPayment5PrimaryKey {
-    type PrimaryKey = SettlementsFcasPayment5PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasPayment6PrimaryKey {
+    type PrimaryKey = SettlementsFcasPayment6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.periodid == key.periodid
             && self.settlementdate == key.settlementdate
@@ -7193,7 +7480,7 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasPayment5PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
+impl mmsdm_core::ArrowSchema for SettlementsFcasPayment6 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -7227,7 +7514,10 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
                 arrow2::datatypes::DataType::Decimal(18, 8), true),
                 arrow2::datatypes::Field::new("lastchanged",
                 arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
+                None), true), arrow2::datatypes::Field::new("raise1sec_payment",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lower1sec_payment",
+                arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
     }
@@ -7251,6 +7541,8 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
         let mut lowerreg_payment_array = Vec::new();
         let mut raisereg_payment_array = Vec::new();
         let mut lastchanged_array = Vec::new();
+        let mut raise1sec_payment_array = Vec::new();
+        let mut lower1sec_payment_array = Vec::new();
         for row in partition {
             settlementdate_array.push(row.settlementdate.timestamp());
             versionno_array
@@ -7333,6 +7625,22 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
                         })
                 });
             lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+            raise1sec_payment_array
+                .push({
+                    row.raise1sec_payment
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_payment_array
+                .push({
+                    row.lower1sec_payment
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -7381,6 +7689,12 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
                     .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
                     None))) as std::sync::Arc < dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_payment_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_payment_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -7393,13 +7707,12 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Fcas Recovery
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 ///  SET_FCAS_RECOVERY data is confidential to the relevant participant. Volume Approximately 1, 500, 000 per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -7409,7 +7722,7 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment5 {
 /// * SETTLEMENTDATE
 /// * VERSIONNO
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsFcasRecovery6 {
+pub struct SettlementsFcasRecovery7 {
     /// Settlement Date
     #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
@@ -7456,19 +7769,27 @@ pub struct SettlementsFcasRecovery6 {
     pub lowerreg_recovery_gen: Option<rust_decimal::Decimal>,
     /// Recovery amount for the Raise Regulation Second service attributable to generator connection points
     pub raisereg_recovery_gen: Option<rust_decimal::Decimal>,
+    /// Customer recovery amount for the very fast raise service
+    pub raise1sec_recovery: Option<rust_decimal::Decimal>,
+    /// Customer recovery amount for the very fast lower service
+    pub lower1sec_recovery: Option<rust_decimal::Decimal>,
+    /// Generator recovery amount for the very fast raise service
+    pub raise1sec_recovery_gen: Option<rust_decimal::Decimal>,
+    /// Generator recovery amount for the very fast lower service
+    pub lower1sec_recovery_gen: Option<rust_decimal::Decimal>,
 }
-impl mmsdm_core::GetTable for SettlementsFcasRecovery6 {
-    type PrimaryKey = SettlementsFcasRecovery6PrimaryKey;
+impl mmsdm_core::GetTable for SettlementsFcasRecovery7 {
+    type PrimaryKey = SettlementsFcasRecovery7PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn get_file_key() -> mmsdm_core::FileKey {
         mmsdm_core::FileKey {
             data_set_name: "SETTLEMENTS".into(),
             table_name: Some("FCAS_RECOVERY".into()),
-            version: 6,
+            version: 7,
         }
     }
-    fn primary_key(&self) -> SettlementsFcasRecovery6PrimaryKey {
-        SettlementsFcasRecovery6PrimaryKey {
+    fn primary_key(&self) -> SettlementsFcasRecovery7PrimaryKey {
+        SettlementsFcasRecovery7PrimaryKey {
             participantid: self.participantid.clone(),
             periodid: self.periodid,
             regionid: self.regionid.clone(),
@@ -7485,46 +7806,46 @@ impl mmsdm_core::GetTable for SettlementsFcasRecovery6 {
     }
     fn partition_name(&self) -> String {
         format!(
-            "settlements_fcas_recovery_v6_{}_{}", self.partition_suffix().year, self
+            "settlements_fcas_recovery_v7_{}_{}", self.partition_suffix().year, self
             .partition_suffix().month.number_from_month()
         )
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
-pub struct SettlementsFcasRecovery6PrimaryKey {
+pub struct SettlementsFcasRecovery7PrimaryKey {
     pub participantid: String,
     pub periodid: rust_decimal::Decimal,
     pub regionid: String,
     pub settlementdate: chrono::NaiveDateTime,
     pub versionno: String,
 }
-impl mmsdm_core::PrimaryKey for SettlementsFcasRecovery6PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementsFcasRecovery6 {
-    type Row = SettlementsFcasRecovery6;
+impl mmsdm_core::PrimaryKey for SettlementsFcasRecovery7PrimaryKey {}
+impl mmsdm_core::CompareWithRow for SettlementsFcasRecovery7 {
+    type Row = SettlementsFcasRecovery7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.participantid == row.participantid && self.periodid == row.periodid
             && self.regionid == row.regionid && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasRecovery6 {
-    type PrimaryKey = SettlementsFcasRecovery6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasRecovery7 {
+    type PrimaryKey = SettlementsFcasRecovery7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantid == key.participantid && self.periodid == key.periodid
             && self.regionid == key.regionid && self.settlementdate == key.settlementdate
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementsFcasRecovery6PrimaryKey {
-    type Row = SettlementsFcasRecovery6;
+impl mmsdm_core::CompareWithRow for SettlementsFcasRecovery7PrimaryKey {
+    type Row = SettlementsFcasRecovery7;
     fn compare_with_row(&self, row: &Self::Row) -> bool {
         self.participantid == row.participantid && self.periodid == row.periodid
             && self.regionid == row.regionid && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasRecovery6PrimaryKey {
-    type PrimaryKey = SettlementsFcasRecovery6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasRecovery7PrimaryKey {
+    type PrimaryKey = SettlementsFcasRecovery7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantid == key.participantid && self.periodid == key.periodid
             && self.regionid == key.regionid && self.settlementdate == key.settlementdate
@@ -7532,7 +7853,7 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementsFcasRecovery6PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery6 {
+impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery7 {
     fn arrow_schema() -> arrow2::datatypes::Schema {
         arrow2::datatypes::Schema::from(
             vec![
@@ -7579,6 +7900,14 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery6 {
                 arrow2::datatypes::Field::new("lowerreg_recovery_gen",
                 arrow2::datatypes::DataType::Decimal(18, 8), true),
                 arrow2::datatypes::Field::new("raisereg_recovery_gen",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("raise1sec_recovery",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lower1sec_recovery",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("raise1sec_recovery_gen",
+                arrow2::datatypes::DataType::Decimal(18, 8), true),
+                arrow2::datatypes::Field::new("lower1sec_recovery_gen",
                 arrow2::datatypes::DataType::Decimal(18, 8), true)
             ],
         )
@@ -7610,6 +7939,10 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery6 {
         let mut raise5min_recovery_gen_array = Vec::new();
         let mut lowerreg_recovery_gen_array = Vec::new();
         let mut raisereg_recovery_gen_array = Vec::new();
+        let mut raise1sec_recovery_array = Vec::new();
+        let mut lower1sec_recovery_array = Vec::new();
+        let mut raise1sec_recovery_gen_array = Vec::new();
+        let mut lower1sec_recovery_gen_array = Vec::new();
         for row in partition {
             settlementdate_array.push(row.settlementdate.timestamp());
             versionno_array.push(row.versionno);
@@ -7750,6 +8083,38 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery6 {
                             val.mantissa()
                         })
                 });
+            raise1sec_recovery_array
+                .push({
+                    row.raise1sec_recovery
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_recovery_array
+                .push({
+                    row.lower1sec_recovery
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            raise1sec_recovery_gen_array
+                .push({
+                    row.raise1sec_recovery_gen
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
+            lower1sec_recovery_gen_array
+                .push({
+                    row.lower1sec_recovery_gen
+                        .map(|mut val| {
+                            val.rescale(8);
+                            val.mantissa()
+                        })
+                });
         }
         arrow2::chunk::Chunk::try_new(
                 vec![
@@ -7819,6 +8184,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery6 {
                     std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raisereg_recovery_gen_array)
                     .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
                     dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_recovery_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_recovery_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise1sec_recovery_gen_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
+                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower1sec_recovery_gen_array)
+                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
+                    dyn arrow2::array::Array >,
                 ],
             )
             .map_err(Into::into)
@@ -7836,8 +8213,7 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery6 {
 /// # Description
 ///  SET_FCAS_REGULATION_TRK contains public data and is available to all participants. Volume Approximately 350,000 per week.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8106,8 +8482,7 @@ impl mmsdm_core::ArrowSchema for SettlementsSetFcasRegulationTrk2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8480,8 +8855,7 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecovery2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -8743,8 +9117,7 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecoveryRbf1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9080,8 +9453,7 @@ impl mmsdm_core::ArrowSchema for SettlementsRecoveryEnergy1 {
 /// # Description
 ///  Change History 19 August 2005 for 4.5.0: Changed index name again to have suffix of _LCX Note: primary key shows PK_ as prefix in Oracle SQL script, even though name of key has _PK as suffix - but cannot change since would not improve participant systems . &nbsp; 17 August 2005 for v4.5.0 Added tablespace (02) for recently added index, and gave index a better name
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9244,8 +9616,7 @@ impl mmsdm_core::ArrowSchema for SettlementsRunParameter5 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9428,8 +9799,7 @@ impl mmsdm_core::ArrowSchema for SettlementsSubstDemand1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9597,8 +9967,7 @@ impl mmsdm_core::ArrowSchema for SettlementsSubstRunVersion1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -9987,8 +10356,7 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -10227,14 +10595,14 @@ where
                 )
                 .await?;
         }
-        (Some("CPDATA"), version) if version <= 6_i32 => {
-            let d: Vec<SettlementsCpdata6> = mms_file.get_table()?;
+        (Some("CPDATA"), version) if version <= 7_i32 => {
+            let d: Vec<SettlementsCpdata7> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertSettlementsCpdata6 @P1, @P2",
+                    "exec mmsdm_proc.InsertSettlementsCpdata7 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
@@ -10491,26 +10859,38 @@ where
                 )
                 .await?;
         }
-        (Some("FCAS_PAYMENT"), version) if version <= 5_i32 => {
-            let d: Vec<SettlementsFcasPayment5> = mms_file.get_table()?;
+        (Some("ENERGY_TRAN_SAPS"), version) if version <= 1_i32 => {
+            let d: Vec<SettlementsEnergyTranSaps1> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertSettlementsFcasPayment5 @P1, @P2",
+                    "exec mmsdm_proc.InsertSettlementsEnergyTranSaps1 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
         }
-        (Some("FCAS_RECOVERY"), version) if version <= 6_i32 => {
-            let d: Vec<SettlementsFcasRecovery6> = mms_file.get_table()?;
+        (Some("FCAS_PAYMENT"), version) if version <= 6_i32 => {
+            let d: Vec<SettlementsFcasPayment6> = mms_file.get_table()?;
             mmsdm_core::sql_server::batched_insert(
                     client,
                     file_key,
                     mms_file.header(),
                     &d,
-                    "exec mmsdm_proc.InsertSettlementsFcasRecovery6 @P1, @P2",
+                    "exec mmsdm_proc.InsertSettlementsFcasPayment6 @P1, @P2",
+                    chunk_size,
+                )
+                .await?;
+        }
+        (Some("FCAS_RECOVERY"), version) if version <= 7_i32 => {
+            let d: Vec<SettlementsFcasRecovery7> = mms_file.get_table()?;
+            mmsdm_core::sql_server::batched_insert(
+                    client,
+                    file_key,
+                    mms_file.header(),
+                    &d,
+                    "exec mmsdm_proc.InsertSettlementsFcasRecovery7 @P1, @P2",
                     chunk_size,
                 )
                 .await?;
