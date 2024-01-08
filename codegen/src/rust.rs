@@ -36,6 +36,7 @@ impl mms::TableColumn {
     fn clone_or_nothing(&self) -> String {
         if self.comment.contains("YYYYMMDDPPP")
             || self.comment.contains("YYYYMMDDPP")
+            || self.name.to_lowercase() == "predispatchseqno"
             || !matches!(self.data_type, mms::DataType::Varchar { .. })
         {
             ""
@@ -711,7 +712,7 @@ fn codegen_impl_arrow_schema(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_struct_name());
+    let mut arrow_trait = codegen::Impl::new(pdr_report.get_rust_struct_name());
     arrow_trait.impl_trait("mmsdm_core::ArrowSchema");
     arrow_trait.r#macro("#[cfg(feature = \"arrow\")]");
 
@@ -836,7 +837,7 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.17.2"
+version = "0.18.0"
 optional = true
 default-features = false
 
@@ -880,7 +881,7 @@ pub struct TableMapping {
 
 impl TableMapping {
     pub fn read() -> anyhow::Result<HashMap<mms::Report, pdr::Report>> {
-        let mut mapping = csv::ReaderBuilder::new().delimiter(b'\t').from_path(format!("table_config_v{VERSION}.csv"))?;
+        let mut mapping = csv::ReaderBuilder::new().delimiter(b',').from_path(format!("table_config_v{VERSION}.csv"))?;
 
         let mut map = collections::HashMap::<_, pdr::Report>::new();
 

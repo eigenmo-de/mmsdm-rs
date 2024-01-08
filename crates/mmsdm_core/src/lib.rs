@@ -146,7 +146,7 @@ pub struct YearMonth {
 
 impl PartialOrd for YearMonth {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.cmp(&other).into()
+        Some(self.cmp(other))
     }
 }
 
@@ -688,10 +688,10 @@ mod tests {
 
     #[test]
     fn dispatch_period() {
-        assert!(matches!("20211101000".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211101289".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211501288".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211132288".parse::<DispatchPeriod>(), Err(_)));
+        assert!("20211101000".parse::<DispatchPeriod>().is_err());
+        assert!("20211101289".parse::<DispatchPeriod>().is_err());
+        assert!("20211501288".parse::<DispatchPeriod>().is_err());
+        assert!("20211132288".parse::<DispatchPeriod>().is_err());
 
         assert_eq!(
             "20211101001".parse::<DispatchPeriod>().unwrap().start(),
@@ -728,10 +728,10 @@ mod tests {
 
     #[test]
     fn trading_period() {
-        assert!(matches!("2021110100".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021110149".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021150148".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021113248".parse::<TradingPeriod>(), Err(_)));
+        assert!("2021110100".parse::<TradingPeriod>().is_err());
+        assert!("2021110149".parse::<TradingPeriod>().is_err());
+        assert!("2021150148".parse::<TradingPeriod>().is_err());
+        assert!("2021113248".parse::<TradingPeriod>().is_err());
 
         assert_eq!(
             "2021110101".parse::<TradingPeriod>().unwrap().start(),
