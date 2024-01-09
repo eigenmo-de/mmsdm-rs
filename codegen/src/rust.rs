@@ -837,7 +837,7 @@ features = ["serde", "std"]
 default-features = false
 
 [dependencies.arrow2]
-version = "0.18.0"
+version = "0.17.2"
 optional = true
 default-features = false
 
@@ -881,7 +881,7 @@ pub struct TableMapping {
 
 impl TableMapping {
     pub fn read() -> anyhow::Result<HashMap<mms::Report, pdr::Report>> {
-        let mut mapping = csv::ReaderBuilder::new().delimiter(b',').from_path(format!("table_config_v{VERSION}.csv"))?;
+        let mut mapping = csv::ReaderBuilder::new().delimiter(b'\t').from_path(format!("table_config_v{VERSION}.tsv"))?;
 
         let mut map = collections::HashMap::<_, pdr::Report>::new();
 
