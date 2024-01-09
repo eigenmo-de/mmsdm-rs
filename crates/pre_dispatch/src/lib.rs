@@ -7681,7 +7681,7 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
         PredispatchMnspbidtrk1PrimaryKey {
             linkid: self.linkid.clone(),
             periodid: self.periodid.clone(),
-            predispatchseqno: self.predispatchseqno.clone(),
+            predispatchseqno: self.predispatchseqno,
         }
     }
     fn partition_suffix(&self) -> Self::Partition {
