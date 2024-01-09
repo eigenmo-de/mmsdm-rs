@@ -12,11 +12,11 @@ fn main() -> anyhow::Result<()> {
         mmsdm::AemoDiskFile::from_path("./data/PUBLIC_DVD_DISPATCHLOAD_202110010000.zip")?;
     dbg!(MmsFile::Disk(&mut handle).file_keys());
     let partitions = handle
-        .get_table::<data_model::DispatchUnitSolution3>()?
+        .get_table::<data_model::DispatchUnitSolution4>()?
         .map(|r| r.unwrap().partition_suffix())
         .collect::<collections::HashSet<_>>();
     dbg!(partitions);
-    // let dispatch = handle.get_table::<data_model::DispatchUnitSolution3>()?;
+    // let dispatch = handle.get_table::<data_model::DispatchUnitSolution4>()?;
     // for (num, row) in dispatch.enumerate() {
     //     if num % 100000 == 0 {
     //         println!("Up to row: {num}")
@@ -33,8 +33,8 @@ fn main() -> anyhow::Result<()> {
 
     // for tree in db.tree_names() {
     //     println!("Tree: {}", String::from_utf8(tree.to_vec()).unwrap());
-    //     let partition = db.open_tree(tree)?.iter().map(|r| bincode::deserialize::<data_model::DispatchUnitSolution3>(&r.unwrap().1).unwrap());
-    //     // let partition = db.open_tree(tree)?.iter().map(|r| serde_json::from_slice::<data_model::DispatchUnitSolution3>(&r.unwrap().1).unwrap());
+    //     let partition = db.open_tree(tree)?.iter().map(|r| bincode::deserialize::<data_model::DispatchUnitSolution4>(&r.unwrap().1).unwrap());
+    //     // let partition = db.open_tree(tree)?.iter().map(|r| serde_json::from_slice::<data_model::DispatchUnitSolution4>(&r.unwrap().1).unwrap());
     //     let chunk = mmsdm_core::ArrowSchema::partition_to_chunk(partition)?;
     //     for col in chunk.columns() {
     //         dbg!(col.data_type());
@@ -43,7 +43,7 @@ fn main() -> anyhow::Result<()> {
     // }
 
     let partition = handle
-        .get_table::<data_model::DispatchUnitSolution3>()?
+        .get_table::<data_model::DispatchUnitSolution4>()?
         .map(|r| r.unwrap());
     let chunk = mmsdm_core::ArrowSchema::partition_to_chunk(partition)?;
     for col in chunk.columns() {
@@ -56,9 +56,10 @@ fn main() -> anyhow::Result<()> {
         write_statistics: true,
         compression: CompressionOptions::Snappy,
         version: Version::V2,
+        data_pagesize_limit: None,
     };
 
-    let encodings = data_model::DispatchUnitSolution3::arrow_schema()
+    let encodings = data_model::DispatchUnitSolution4::arrow_schema()
         .fields
         .iter()
         .map(|f| match f.data_type {
@@ -68,7 +69,7 @@ fn main() -> anyhow::Result<()> {
 
     let row_groups = RowGroupIterator::try_new(
         std::iter::once(Ok(chunk)),
-        &data_model::DispatchUnitSolution3::arrow_schema(),
+        &data_model::DispatchUnitSolution4::arrow_schema(),
         options,
         encodings,
     )?;
@@ -77,7 +78,7 @@ fn main() -> anyhow::Result<()> {
 
     let mut writer = FileWriter::try_new(
         file,
-        data_model::DispatchUnitSolution3::arrow_schema(),
+        data_model::DispatchUnitSolution4::arrow_schema(),
         options,
     )?;
 
