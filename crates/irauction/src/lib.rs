@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct IrauctionConfigAuction1;
+pub struct IrauctionConfigAuction1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## AUCTION
@@ -17,74 +24,218 @@ use chrono::Datelike as _;
 /// # Primary Key Columns
 ///
 /// * AUCTIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuction1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuction1Row<'data> {
     /// Unique id for each auction date
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
     /// Auction date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub auctiondate: Option<chrono::NaiveDateTime>,
     /// &nbsp;
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
     /// Open date for bidding
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// Close date for bidding
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Description of an auction
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// &nbsp;
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// &nbsp;
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// &nbsp;
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionConfigAuction1Row<'data> {
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionConfigAuction1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuction1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "AUCTIONID",
+        "AUCTIONDATE",
+        "NOTIFYDATE",
+        "STARTDATE",
+        "ENDDATE",
+        "DESCRIPTION",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionConfigAuction1Row<'row>;
+    type FieldMapping = IrauctionConfigAuction1Mapping;
     type PrimaryKey = IrauctionConfigAuction1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuction1Row {
+            auctionid: row.get_range("auctionid", field_mapping.0[0])?,
+            auctiondate: row
+                .get_opt_custom_parsed_at_idx(
+                    "auctiondate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            notifydate: row
+                .get_opt_custom_parsed_at_idx(
+                    "notifydate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            description: row.get_opt_range("description", field_mapping.0[5])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[7])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuction1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuction1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionConfigAuction1PrimaryKey {
         IrauctionConfigAuction1PrimaryKey {
-            auctionid: self.auctionid.clone(),
+            auctionid: row.auctionid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuction1Row {
+            auctionid: row.auctionid.clone(),
+            auctiondate: row.auctiondate.clone(),
+            notifydate: row.notifydate.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            description: row.description.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuction1PrimaryKey {
-    pub auctionid: String,
+    pub auctionid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuction1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuction1 {
-    type Row = IrauctionConfigAuction1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuction1Row<'data> {
+    type Row<'other> = IrauctionConfigAuction1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuction1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuction1Row<'data> {
     type PrimaryKey = IrauctionConfigAuction1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid
+        self.auctionid() == key.auctionid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuction1PrimaryKey {
-    type Row = IrauctionConfigAuction1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuction1PrimaryKey {
+    type Row<'other> = IrauctionConfigAuction1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuction1PrimaryKey {
@@ -95,90 +246,151 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuction1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("auctiondate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("notifydate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionConfigAuction1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctiondate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "notifydate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut auctionid_array = Vec::new();
-        let mut auctiondate_array = Vec::new();
-        let mut notifydate_array = Vec::new();
-        let mut startdate_array = Vec::new();
-        let mut enddate_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            auctionid_array.push(row.auctionid);
-            auctiondate_array.push(row.auctiondate.map(|val| val.timestamp()));
-            notifydate_array.push(row.notifydate.map(|val| val.timestamp()));
-            startdate_array.push(row.startdate.map(|val| val.timestamp()));
-            enddate_array.push(row.enddate.map(|val| val.timestamp()));
-            description_array.push(row.description);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuction1Builder {
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(auctiondate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(notifydate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.auctionid_array.append_value(row.auctionid());
+        builder
+            .auctiondate_array
+            .append_option(row.auctiondate.map(|val| val.timestamp()));
+        builder
+            .notifydate_array
+            .append_option(row.notifydate.map(|val| val.timestamp()));
+        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder.description_array.append_option(row.description());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctiondate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.notifydate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuction1Builder {
+    auctionid_array: arrow::array::builder::StringBuilder,
+    auctiondate_array: arrow::array::builder::TimestampSecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionConfigAuctionCalendar2;
+pub struct IrauctionConfigAuctionCalendar2Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## AUCTION_CALENDAR
@@ -197,85 +409,240 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
 ///
 /// * CONTRACTYEAR
 /// * QUARTER
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionCalendar2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuctionCalendar2Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
     pub quarter: rust_decimal::Decimal,
     /// First day of SRA Contract Quarter expressed as Date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// Last day of SRA Contract Quarter expressed as Date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Default notification date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
     /// Date for payment by Participant
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub paymentdate: Option<chrono::NaiveDateTime>,
     /// Date of reconciliation for the quarter
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub reconciliationdate: Option<chrono::NaiveDateTime>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The date the Prelim Purchase Statement is generated
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub prelimpurchasestmtdate: Option<chrono::NaiveDateTime>,
     /// The date the Prelim Proceeds Statement is generated
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub prelimproceedsstmtdate: Option<chrono::NaiveDateTime>,
     /// The date the Final Purchase Statement is generated
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub finalpurchasestmtdate: Option<chrono::NaiveDateTime>,
     /// The date the Final Proceeds Statement is generated
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub finalproceedsstmtdate: Option<chrono::NaiveDateTime>,
+    backing_data: core::marker::PhantomData<&'data ()>,
 }
+impl<'data> IrauctionConfigAuctionCalendar2Row<'data> {}
 impl mmsdm_core::GetTable for IrauctionConfigAuctionCalendar2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION_CALENDAR";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionCalendar2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "STARTDATE",
+        "ENDDATE",
+        "NOTIFYDATE",
+        "PAYMENTDATE",
+        "RECONCILIATIONDATE",
+        "LASTCHANGED",
+        "PRELIMPURCHASESTMTDATE",
+        "PRELIMPROCEEDSSTMTDATE",
+        "FINALPURCHASESTMTDATE",
+        "FINALPROCEEDSSTMTDATE",
+    ];
+    type Row<'row> = IrauctionConfigAuctionCalendar2Row<'row>;
+    type FieldMapping = IrauctionConfigAuctionCalendar2Mapping;
     type PrimaryKey = IrauctionConfigAuctionCalendar2PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION_CALENDAR".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuctionCalendar2Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            notifydate: row
+                .get_opt_custom_parsed_at_idx(
+                    "notifydate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            paymentdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "paymentdate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            reconciliationdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "reconciliationdate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prelimpurchasestmtdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "prelimpurchasestmtdate",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prelimproceedsstmtdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "prelimproceedsstmtdate",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            finalpurchasestmtdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "finalpurchasestmtdate",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            finalproceedsstmtdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "finalproceedsstmtdate",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: core::marker::PhantomData,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuctionCalendar2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuctionCalendar2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionConfigAuctionCalendar2PrimaryKey {
         IrauctionConfigAuctionCalendar2PrimaryKey {
-            contractyear: self.contractyear,
-            quarter: self.quarter,
+            contractyear: row.contractyear,
+            quarter: row.quarter,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_calendar_v2".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuctionCalendar2Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            notifydate: row.notifydate.clone(),
+            paymentdate: row.paymentdate.clone(),
+            reconciliationdate: row.reconciliationdate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            prelimpurchasestmtdate: row.prelimpurchasestmtdate.clone(),
+            prelimproceedsstmtdate: row.prelimproceedsstmtdate.clone(),
+            finalpurchasestmtdate: row.finalpurchasestmtdate.clone(),
+            finalproceedsstmtdate: row.finalproceedsstmtdate.clone(),
+            backing_data: core::marker::PhantomData,
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuctionCalendar2PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuctionCalendar2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionCalendar2 {
-    type Row = IrauctionConfigAuctionCalendar2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuctionCalendar2Row<'data> {
+    type Row<'other> = IrauctionConfigAuctionCalendar2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionCalendar2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionConfigAuctionCalendar2Row<'data> {
     type PrimaryKey = IrauctionConfigAuctionCalendar2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.contractyear == key.contractyear && self.quarter == key.quarter
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionCalendar2PrimaryKey {
-    type Row = IrauctionConfigAuctionCalendar2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuctionCalendar2PrimaryKey {
+    type Row<'other> = IrauctionConfigAuctionCalendar2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
     }
 }
@@ -287,126 +654,215 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionCalendar2Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("notifydate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("paymentdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("reconciliationdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("prelimpurchasestmtdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("prelimproceedsstmtdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("finalpurchasestmtdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("finalproceedsstmtdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionConfigAuctionCalendar2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "notifydate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymentdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reconciliationdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "prelimpurchasestmtdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "prelimproceedsstmtdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "finalpurchasestmtdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "finalproceedsstmtdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut startdate_array = Vec::new();
-        let mut enddate_array = Vec::new();
-        let mut notifydate_array = Vec::new();
-        let mut paymentdate_array = Vec::new();
-        let mut reconciliationdate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut prelimpurchasestmtdate_array = Vec::new();
-        let mut prelimproceedsstmtdate_array = Vec::new();
-        let mut finalpurchasestmtdate_array = Vec::new();
-        let mut finalproceedsstmtdate_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            startdate_array.push(row.startdate.map(|val| val.timestamp()));
-            enddate_array.push(row.enddate.map(|val| val.timestamp()));
-            notifydate_array.push(row.notifydate.map(|val| val.timestamp()));
-            paymentdate_array.push(row.paymentdate.map(|val| val.timestamp()));
-            reconciliationdate_array
-                .push(row.reconciliationdate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            prelimpurchasestmtdate_array
-                .push(row.prelimpurchasestmtdate.map(|val| val.timestamp()));
-            prelimproceedsstmtdate_array
-                .push(row.prelimproceedsstmtdate.map(|val| val.timestamp()));
-            finalpurchasestmtdate_array
-                .push(row.finalpurchasestmtdate.map(|val| val.timestamp()));
-            finalproceedsstmtdate_array
-                .push(row.finalproceedsstmtdate.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuctionCalendar2Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            paymentdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            reconciliationdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prelimpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prelimproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            finalpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            finalproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(notifydate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(paymentdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reconciliationdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(prelimpurchasestmtdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(prelimproceedsstmtdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(finalpurchasestmtdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(finalproceedsstmtdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .notifydate_array
+            .append_option(row.notifydate.map(|val| val.timestamp()));
+        builder
+            .paymentdate_array
+            .append_option(row.paymentdate.map(|val| val.timestamp()));
+        builder
+            .reconciliationdate_array
+            .append_option(row.reconciliationdate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .prelimpurchasestmtdate_array
+            .append_option(row.prelimpurchasestmtdate.map(|val| val.timestamp()));
+        builder
+            .prelimproceedsstmtdate_array
+            .append_option(row.prelimproceedsstmtdate.map(|val| val.timestamp()));
+        builder
+            .finalpurchasestmtdate_array
+            .append_option(row.finalpurchasestmtdate.map(|val| val.timestamp()));
+        builder
+            .finalproceedsstmtdate_array
+            .append_option(row.finalproceedsstmtdate.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.notifydate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymentdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reconciliationdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prelimpurchasestmtdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prelimproceedsstmtdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.finalpurchasestmtdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.finalproceedsstmtdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuctionCalendar2Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
+    paymentdate_array: arrow::array::builder::TimestampSecondBuilder,
+    reconciliationdate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    prelimpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder,
+    prelimproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder,
+    finalpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder,
+    finalproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionConfigAuctionIcAllocations2;
+pub struct IrauctionConfigAuctionIcAllocations2Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## AUCTION_IC_ALLOCATIONS
@@ -428,8 +884,8 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
 /// * INTERCONNECTORID
 /// * QUARTER
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionIcAllocations2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuctionIcAllocations2Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
@@ -437,9 +893,9 @@ pub struct IrauctionConfigAuctionIcAllocations2 {
     /// Version of data for other key data - a higher version for same key data takes precedence
     pub versionno: rust_decimal::Decimal,
     /// Contracted Interconnector Identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Number of units on the interconnector
     pub maximumunits: Option<rust_decimal::Decimal>,
     /// Percentage of the total residue for each Unit
@@ -447,70 +903,245 @@ pub struct IrauctionConfigAuctionIcAllocations2 {
     /// Daily auction fee
     pub auctionfee: Option<rust_decimal::Decimal>,
     /// Authorisation date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub changedate: Option<chrono::NaiveDateTime>,
     /// Name of person authorising this data set
-    pub changedby: Option<String>,
+    pub changedby: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Fees for Cancelled Units.
     pub auctionfee_sales: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionConfigAuctionIcAllocations2Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
+    pub fn changedby(&self) -> Option<&str> {
+        if self.changedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.changedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionConfigAuctionIcAllocations2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION_IC_ALLOCATIONS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionIcAllocations2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "MAXIMUMUNITS",
+        "PROPORTION",
+        "AUCTIONFEE",
+        "CHANGEDATE",
+        "CHANGEDBY",
+        "LASTCHANGED",
+        "AUCTIONFEE_SALES",
+    ];
+    type Row<'row> = IrauctionConfigAuctionIcAllocations2Row<'row>;
+    type FieldMapping = IrauctionConfigAuctionIcAllocations2Mapping;
     type PrimaryKey = IrauctionConfigAuctionIcAllocations2PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION_IC_ALLOCATIONS".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuctionIcAllocations2Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[3])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[4])?,
+            maximumunits: row
+                .get_opt_custom_parsed_at_idx(
+                    "maximumunits",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            proportion: row
+                .get_opt_custom_parsed_at_idx(
+                    "proportion",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            auctionfee: row
+                .get_opt_custom_parsed_at_idx(
+                    "auctionfee",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            changedate: row
+                .get_opt_custom_parsed_at_idx(
+                    "changedate",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            changedby: row.get_opt_range("changedby", field_mapping.0[9])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            auctionfee_sales: row
+                .get_opt_custom_parsed_at_idx(
+                    "auctionfee_sales",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuctionIcAllocations2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuctionIcAllocations2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> IrauctionConfigAuctionIcAllocations2PrimaryKey {
         IrauctionConfigAuctionIcAllocations2PrimaryKey {
-            contractyear: self.contractyear,
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            quarter: self.quarter,
-            versionno: self.versionno,
+            contractyear: row.contractyear,
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            quarter: row.quarter,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_ic_allocations_v2".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuctionIcAllocations2Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            maximumunits: row.maximumunits.clone(),
+            proportion: row.proportion.clone(),
+            auctionfee: row.auctionfee.clone(),
+            changedate: row.changedate.clone(),
+            changedby: row.changedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            auctionfee_sales: row.auctionfee_sales.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuctionIcAllocations2PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
     pub quarter: rust_decimal::Decimal,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuctionIcAllocations2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionIcAllocations2 {
-    type Row = IrauctionConfigAuctionIcAllocations2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionConfigAuctionIcAllocations2Row<'data> {
+    type Row<'other> = IrauctionConfigAuctionIcAllocations2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractyear == row.contractyear
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
             && self.quarter == row.quarter && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionIcAllocations2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionConfigAuctionIcAllocations2Row<'data> {
     type PrimaryKey = IrauctionConfigAuctionIcAllocations2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractyear == key.contractyear && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
+        self.contractyear == key.contractyear && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
             && self.quarter == key.quarter && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionIcAllocations2PrimaryKey {
-    type Row = IrauctionConfigAuctionIcAllocations2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionConfigAuctionIcAllocations2PrimaryKey {
+    type Row<'other> = IrauctionConfigAuctionIcAllocations2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
             && self.quarter == row.quarter && self.versionno == row.versionno
     }
 }
@@ -525,153 +1156,222 @@ for IrauctionConfigAuctionIcAllocations2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("maximumunits",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("proportion",
-                arrow2::datatypes::DataType::Decimal(8, 5), true),
-                arrow2::datatypes::Field::new("auctionfee",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("changedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("changedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("auctionfee_sales",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionConfigAuctionIcAllocations2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "maximumunits",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "proportion",
+                    arrow::datatypes::DataType::Decimal128(8, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionfee",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "changedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "changedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionfee_sales",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut maximumunits_array = Vec::new();
-        let mut proportion_array = Vec::new();
-        let mut auctionfee_array = Vec::new();
-        let mut changedate_array = Vec::new();
-        let mut changedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut auctionfee_sales_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            maximumunits_array
-                .push({
-                    row.maximumunits
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            proportion_array
-                .push({
-                    row.proportion
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            auctionfee_array
-                .push({
-                    row.auctionfee
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            changedate_array.push(row.changedate.map(|val| val.timestamp()));
-            changedby_array.push(row.changedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            auctionfee_sales_array
-                .push({
-                    row.auctionfee_sales
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuctionIcAllocations2Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            maximumunits_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            proportion_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
+            auctionfee_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            changedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            changedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctionfee_sales_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maximumunits_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(proportion_array)
-                    .to(arrow2::datatypes::DataType::Decimal(8, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(auctionfee_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(changedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(changedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(auctionfee_sales_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .maximumunits_array
+            .append_option({
+                row.maximumunits
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .proportion_array
+            .append_option({
+                row.proportion
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .auctionfee_array
+            .append_option({
+                row.auctionfee
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .changedate_array
+            .append_option(row.changedate.map(|val| val.timestamp()));
+        builder.changedby_array.append_option(row.changedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .auctionfee_sales_array
+            .append_option({
+                row.auctionfee_sales
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.maximumunits_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.proportion_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionfee_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.changedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.changedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionfee_sales_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuctionIcAllocations2Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    maximumunits_array: arrow::array::builder::Decimal128Builder,
+    proportion_array: arrow::array::builder::Decimal128Builder,
+    auctionfee_array: arrow::array::builder::Decimal128Builder,
+    changedate_array: arrow::array::builder::TimestampSecondBuilder,
+    changedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    auctionfee_sales_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionConfigAuctionRevenueEstimate1;
+pub struct IrauctionConfigAuctionRevenueEstimate1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## AUCTION_REVENUE_ESTIMATE
@@ -695,96 +1395,252 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
 /// * QUARTER
 /// * VALUATIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionRevenueEstimate1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuctionRevenueEstimate1Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
     pub quarter: rust_decimal::Decimal,
     /// Identifier of the estimator
-    pub valuationid: String,
+    pub valuationid: core::ops::Range<usize>,
     /// Version of data for other key data - a higher version for same key data will take precedence
     pub versionno: rust_decimal::Decimal,
     /// Contracted Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Month number within quarter (1..3)
     pub monthno: rust_decimal::Decimal,
     /// First day of month as date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// Last day of month as date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Estimated Revenue
     pub revenue: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionConfigAuctionRevenueEstimate1Row<'data> {
+    pub fn valuationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.valuationid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION_REVENUE_ESTIMATE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRevenueEstimate1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "VALUATIONID",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "MONTHNO",
+        "STARTDATE",
+        "ENDDATE",
+        "REVENUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionConfigAuctionRevenueEstimate1Row<'row>;
+    type FieldMapping = IrauctionConfigAuctionRevenueEstimate1Mapping;
     type PrimaryKey = IrauctionConfigAuctionRevenueEstimate1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION_REVENUE_ESTIMATE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuctionRevenueEstimate1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            valuationid: row.get_range("valuationid", field_mapping.0[2])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[4])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[5])?,
+            monthno: row
+                .get_custom_parsed_at_idx(
+                    "monthno",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            revenue: row
+                .get_opt_custom_parsed_at_idx(
+                    "revenue",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuctionRevenueEstimate1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
         IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
-            contractyear: self.contractyear,
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            monthno: self.monthno,
-            quarter: self.quarter,
-            valuationid: self.valuationid.clone(),
-            versionno: self.versionno,
+            contractyear: row.contractyear,
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            monthno: row.monthno,
+            quarter: row.quarter,
+            valuationid: row.valuationid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_revenue_estimate_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuctionRevenueEstimate1Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            valuationid: row.valuationid.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            monthno: row.monthno.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            revenue: row.revenue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
     pub monthno: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
-    pub valuationid: String,
+    pub valuationid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuctionRevenueEstimate1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionRevenueEstimate1 {
-    type Row = IrauctionConfigAuctionRevenueEstimate1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionConfigAuctionRevenueEstimate1Row<'data> {
+    type Row<'other> = IrauctionConfigAuctionRevenueEstimate1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractyear == row.contractyear
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
             && self.monthno == row.monthno && self.quarter == row.quarter
-            && self.valuationid == row.valuationid && self.versionno == row.versionno
+            && self.valuationid() == row.valuationid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionRevenueEstimate1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionConfigAuctionRevenueEstimate1Row<'data> {
     type PrimaryKey = IrauctionConfigAuctionRevenueEstimate1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractyear == key.contractyear && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
+        self.contractyear == key.contractyear && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
             && self.monthno == key.monthno && self.quarter == key.quarter
-            && self.valuationid == key.valuationid && self.versionno == key.versionno
+            && self.valuationid() == key.valuationid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
-    type Row = IrauctionConfigAuctionRevenueEstimate1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
+    type Row<'other> = IrauctionConfigAuctionRevenueEstimate1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
             && self.monthno == row.monthno && self.quarter == row.quarter
-            && self.valuationid == row.valuationid && self.versionno == row.versionno
+            && self.valuationid == row.valuationid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -799,131 +1655,193 @@ for IrauctionConfigAuctionRevenueEstimate1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("valuationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("monthno",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("revenue",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionConfigAuctionRevenueEstimate1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "valuationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "monthno",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "revenue",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut valuationid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut monthno_array = Vec::new();
-        let mut startdate_array = Vec::new();
-        let mut enddate_array = Vec::new();
-        let mut revenue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            valuationid_array.push(row.valuationid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            monthno_array
-                .push({
-                    let mut val = row.monthno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            startdate_array.push(row.startdate.map(|val| val.timestamp()));
-            enddate_array.push(row.enddate.map(|val| val.timestamp()));
-            revenue_array
-                .push({
-                    row.revenue
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuctionRevenueEstimate1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            monthno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            revenue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(valuationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(monthno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(revenue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.valuationid_array.append_value(row.valuationid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .monthno_array
+            .append_value({
+                let mut val = row.monthno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .revenue_array
+            .append_option({
+                row.revenue
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.valuationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.monthno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.revenue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuctionRevenueEstimate1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    valuationid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    monthno_array: arrow::array::builder::Decimal128Builder,
+    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    revenue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionConfigAuctionRevenueTrack1;
+pub struct IrauctionConfigAuctionRevenueTrack1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## AUCTION_REVENUE_TRACK
@@ -944,82 +1862,250 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
 /// * QUARTER
 /// * VALUATIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionRevenueTrack1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuctionRevenueTrack1Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
     pub quarter: rust_decimal::Decimal,
     /// Identifier of the estimator
-    pub valuationid: String,
+    pub valuationid: core::ops::Range<usize>,
     /// Version of data for other key data - a higher version for same key data takes precedence
     pub versionno: rust_decimal::Decimal,
     /// Date from which the record change is applicable
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// Internal use
-    pub status: Option<String>,
+    pub status: core::ops::Range<usize>,
     /// Reference to methodology document
-    pub documentref: Option<String>,
+    pub documentref: core::ops::Range<usize>,
     /// Date of authorisation for this record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Name of person authorising this record
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date and time this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionConfigAuctionRevenueTrack1Row<'data> {
+    pub fn valuationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.valuationid.clone())
+    }
+    pub fn status(&self) -> Option<&str> {
+        if self.status.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.status.clone(),
+                ),
+            )
+        }
+    }
+    pub fn documentref(&self) -> Option<&str> {
+        if self.documentref.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.documentref.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueTrack1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION_REVENUE_TRACK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRevenueTrack1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "VALUATIONID",
+        "VERSIONNO",
+        "EFFECTIVEDATE",
+        "STATUS",
+        "DOCUMENTREF",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionConfigAuctionRevenueTrack1Row<'row>;
+    type FieldMapping = IrauctionConfigAuctionRevenueTrack1Mapping;
     type PrimaryKey = IrauctionConfigAuctionRevenueTrack1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION_REVENUE_TRACK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuctionRevenueTrack1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            valuationid: row.get_range("valuationid", field_mapping.0[2])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            effectivedate: row
+                .get_opt_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            status: row.get_opt_range("status", field_mapping.0[5])?,
+            documentref: row.get_opt_range("documentref", field_mapping.0[6])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[8])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuctionRevenueTrack1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuctionRevenueTrack1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> IrauctionConfigAuctionRevenueTrack1PrimaryKey {
         IrauctionConfigAuctionRevenueTrack1PrimaryKey {
-            contractyear: self.contractyear,
-            quarter: self.quarter,
-            valuationid: self.valuationid.clone(),
-            versionno: self.versionno,
+            contractyear: row.contractyear,
+            quarter: row.quarter,
+            valuationid: row.valuationid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_revenue_track_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuctionRevenueTrack1Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            valuationid: row.valuationid.clone(),
+            versionno: row.versionno.clone(),
+            effectivedate: row.effectivedate.clone(),
+            status: row.status.clone(),
+            documentref: row.documentref.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuctionRevenueTrack1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
-    pub valuationid: String,
+    pub valuationid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuctionRevenueTrack1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionRevenueTrack1 {
-    type Row = IrauctionConfigAuctionRevenueTrack1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionConfigAuctionRevenueTrack1Row<'data> {
+    type Row<'other> = IrauctionConfigAuctionRevenueTrack1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
-            && self.valuationid == row.valuationid && self.versionno == row.versionno
+            && self.valuationid() == row.valuationid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionRevenueTrack1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionConfigAuctionRevenueTrack1Row<'data> {
     type PrimaryKey = IrauctionConfigAuctionRevenueTrack1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.contractyear == key.contractyear && self.quarter == key.quarter
-            && self.valuationid == key.valuationid && self.versionno == key.versionno
+            && self.valuationid() == key.valuationid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionRevenueTrack1PrimaryKey {
-    type Row = IrauctionConfigAuctionRevenueTrack1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionConfigAuctionRevenueTrack1PrimaryKey {
+    type Row<'other> = IrauctionConfigAuctionRevenueTrack1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
-            && self.valuationid == row.valuationid && self.versionno == row.versionno
+            && self.valuationid == row.valuationid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -1032,111 +2118,171 @@ for IrauctionConfigAuctionRevenueTrack1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("valuationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("status",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("documentref",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionConfigAuctionRevenueTrack1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "valuationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "status",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "documentref",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut valuationid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut status_array = Vec::new();
-        let mut documentref_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            valuationid_array.push(row.valuationid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            effectivedate_array.push(row.effectivedate.map(|val| val.timestamp()));
-            status_array.push(row.status);
-            documentref_array.push(row.documentref);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuctionRevenueTrack1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            status_array: arrow::array::builder::StringBuilder::new(),
+            documentref_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(valuationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(status_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(documentref_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.valuationid_array.append_value(row.valuationid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .effectivedate_array
+            .append_option(row.effectivedate.map(|val| val.timestamp()));
+        builder.status_array.append_option(row.status());
+        builder.documentref_array.append_option(row.documentref());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.valuationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.status_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.documentref_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuctionRevenueTrack1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    valuationid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    status_array: arrow::array::builder::StringBuilder,
+    documentref_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionConfigAuctionRpEstimate1;
+pub struct IrauctionConfigAuctionRpEstimate1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## AUCTION_RP_ESTIMATE
@@ -1159,85 +2305,212 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
 /// * QUARTER
 /// * VALUATIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionRpEstimate1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuctionRpEstimate1Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
     pub quarter: rust_decimal::Decimal,
     /// Identifier of the estimator
-    pub valuationid: String,
+    pub valuationid: core::ops::Range<usize>,
     /// Version of data for other key data - a higher version for same key data takes precedence
     pub versionno: rust_decimal::Decimal,
     /// Contracted Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Estimate of reserve price
     pub rpestimate: Option<rust_decimal::Decimal>,
     /// Last date and time record was changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionConfigAuctionRpEstimate1Row<'data> {
+    pub fn valuationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.valuationid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionConfigAuctionRpEstimate1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION_RP_ESTIMATE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRpEstimate1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "VALUATIONID",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "RPESTIMATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionConfigAuctionRpEstimate1Row<'row>;
+    type FieldMapping = IrauctionConfigAuctionRpEstimate1Mapping;
     type PrimaryKey = IrauctionConfigAuctionRpEstimate1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION_RP_ESTIMATE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuctionRpEstimate1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            valuationid: row.get_range("valuationid", field_mapping.0[2])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[4])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[5])?,
+            rpestimate: row
+                .get_opt_custom_parsed_at_idx(
+                    "rpestimate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuctionRpEstimate1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuctionRpEstimate1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionConfigAuctionRpEstimate1PrimaryKey {
         IrauctionConfigAuctionRpEstimate1PrimaryKey {
-            contractyear: self.contractyear,
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            quarter: self.quarter,
-            valuationid: self.valuationid.clone(),
-            versionno: self.versionno,
+            contractyear: row.contractyear,
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            quarter: row.quarter,
+            valuationid: row.valuationid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_rp_estimate_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuctionRpEstimate1Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            valuationid: row.valuationid.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            rpestimate: row.rpestimate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuctionRpEstimate1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
     pub quarter: rust_decimal::Decimal,
-    pub valuationid: String,
+    pub valuationid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuctionRpEstimate1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionRpEstimate1 {
-    type Row = IrauctionConfigAuctionRpEstimate1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.quarter == row.quarter && self.valuationid == row.valuationid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuctionRpEstimate1Row<'data> {
+    type Row<'other> = IrauctionConfigAuctionRpEstimate1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractyear == row.contractyear
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
+            && self.quarter == row.quarter && self.valuationid() == row.valuationid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionRpEstimate1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionConfigAuctionRpEstimate1Row<'data> {
     type PrimaryKey = IrauctionConfigAuctionRpEstimate1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractyear == key.contractyear && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
-            && self.quarter == key.quarter && self.valuationid == key.valuationid
+        self.contractyear == key.contractyear && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
+            && self.quarter == key.quarter && self.valuationid() == key.valuationid
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionRpEstimate1PrimaryKey {
-    type Row = IrauctionConfigAuctionRpEstimate1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.quarter == row.quarter && self.valuationid == row.valuationid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuctionRpEstimate1PrimaryKey {
+    type Row<'other> = IrauctionConfigAuctionRpEstimate1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractyear == row.contractyear && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
+            && self.quarter == row.quarter && self.valuationid == row.valuationid()
             && self.versionno == row.versionno
     }
 }
@@ -1252,105 +2525,150 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionRpEstimate1Prim
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("valuationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("rpestimate",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionConfigAuctionRpEstimate1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "valuationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "rpestimate",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut valuationid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut rpestimate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            valuationid_array.push(row.valuationid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            rpestimate_array
-                .push({
-                    row.rpestimate
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuctionRpEstimate1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            rpestimate_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(valuationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rpestimate_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.valuationid_array.append_value(row.valuationid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .rpestimate_array
+            .append_option({
+                row.rpestimate
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.valuationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rpestimate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuctionRpEstimate1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    valuationid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    rpestimate_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionConfigAuctionTranche1;
+pub struct IrauctionConfigAuctionTranche1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## AUCTION_TRANCHE
@@ -1371,8 +2689,8 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
 /// * QUARTER
 /// * TRANCHE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionConfigAuctionTranche1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionConfigAuctionTranche1Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
@@ -1382,46 +2700,196 @@ pub struct IrauctionConfigAuctionTranche1 {
     /// Label identifying the arbitrary segmented share of the Interconnector flow
     pub tranche: rust_decimal::Decimal,
     /// Default date of the auction
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub auctiondate: Option<chrono::NaiveDateTime>,
     /// Default date participants notified of details
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
     /// Percentage of units allocated to the tranche
     pub unitallocation: Option<rust_decimal::Decimal>,
     /// Date of changing this record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub changedate: Option<chrono::NaiveDateTime>,
     /// Name of person who changed this record
-    pub changedby: Option<String>,
+    pub changedby: core::ops::Range<usize>,
     /// Date and time record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionConfigAuctionTranche1Row<'data> {
+    pub fn changedby(&self) -> Option<&str> {
+        if self.changedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.changedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionConfigAuctionTranche1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
+    const TABLE_NAME: &'static str = "AUCTION_TRANCHE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionTranche1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "VERSIONNO",
+        "TRANCHE",
+        "AUCTIONDATE",
+        "NOTIFYDATE",
+        "UNITALLOCATION",
+        "CHANGEDATE",
+        "CHANGEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionConfigAuctionTranche1Row<'row>;
+    type FieldMapping = IrauctionConfigAuctionTranche1Mapping;
     type PrimaryKey = IrauctionConfigAuctionTranche1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_CONFIG".into(),
-            table_name: Some("AUCTION_TRANCHE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionConfigAuctionTranche1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            tranche: row
+                .get_custom_parsed_at_idx(
+                    "tranche",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            auctiondate: row
+                .get_opt_custom_parsed_at_idx(
+                    "auctiondate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            notifydate: row
+                .get_opt_custom_parsed_at_idx(
+                    "notifydate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            unitallocation: row
+                .get_opt_custom_parsed_at_idx(
+                    "unitallocation",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            changedate: row
+                .get_opt_custom_parsed_at_idx(
+                    "changedate",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            changedby: row.get_opt_range("changedby", field_mapping.0[8])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionConfigAuctionTranche1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionConfigAuctionTranche1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionConfigAuctionTranche1PrimaryKey {
         IrauctionConfigAuctionTranche1PrimaryKey {
-            contractyear: self.contractyear,
-            quarter: self.quarter,
-            tranche: self.tranche,
-            versionno: self.versionno,
+            contractyear: row.contractyear,
+            quarter: row.quarter,
+            tranche: row.tranche,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_config_auction_tranche_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionConfigAuctionTranche1Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            versionno: row.versionno.clone(),
+            tranche: row.tranche.clone(),
+            auctiondate: row.auctiondate.clone(),
+            notifydate: row.notifydate.clone(),
+            unitallocation: row.unitallocation.clone(),
+            changedate: row.changedate.clone(),
+            changedby: row.changedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionConfigAuctionTranche1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
@@ -1429,23 +2897,24 @@ pub struct IrauctionConfigAuctionTranche1PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionConfigAuctionTranche1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionTranche1 {
-    type Row = IrauctionConfigAuctionTranche1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuctionTranche1Row<'data> {
+    type Row<'other> = IrauctionConfigAuctionTranche1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
             && self.tranche == row.tranche && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionTranche1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionConfigAuctionTranche1Row<'data> {
     type PrimaryKey = IrauctionConfigAuctionTranche1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.contractyear == key.contractyear && self.quarter == key.quarter
             && self.tranche == key.tranche && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionConfigAuctionTranche1PrimaryKey {
-    type Row = IrauctionConfigAuctionTranche1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionConfigAuctionTranche1PrimaryKey {
+    type Row<'other> = IrauctionConfigAuctionTranche1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
             && self.tranche == row.tranche && self.versionno == row.versionno
     }
@@ -1459,124 +2928,192 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionConfigAuctionTranche1Primary
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("tranche",
-                arrow2::datatypes::DataType::Decimal(2, 0), false),
-                arrow2::datatypes::Field::new("auctiondate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("notifydate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("unitallocation",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("changedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("changedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionConfigAuctionTranche1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "tranche",
+                    arrow::datatypes::DataType::Decimal128(2, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctiondate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "notifydate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unitallocation",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "changedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "changedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut tranche_array = Vec::new();
-        let mut auctiondate_array = Vec::new();
-        let mut notifydate_array = Vec::new();
-        let mut unitallocation_array = Vec::new();
-        let mut changedate_array = Vec::new();
-        let mut changedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            tranche_array
-                .push({
-                    let mut val = row.tranche;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            auctiondate_array.push(row.auctiondate.map(|val| val.timestamp()));
-            notifydate_array.push(row.notifydate.map(|val| val.timestamp()));
-            unitallocation_array
-                .push({
-                    row.unitallocation
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            changedate_array.push(row.changedate.map(|val| val.timestamp()));
-            changedby_array.push(row.changedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionConfigAuctionTranche1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            tranche_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
+            auctiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            unitallocation_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            changedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            changedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tranche_array)
-                    .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(auctiondate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(notifydate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(unitallocation_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(changedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(changedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .tranche_array
+            .append_value({
+                let mut val = row.tranche;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .auctiondate_array
+            .append_option(row.auctiondate.map(|val| val.timestamp()));
+        builder
+            .notifydate_array
+            .append_option(row.notifydate.map(|val| val.timestamp()));
+        builder
+            .unitallocation_array
+            .append_option({
+                row.unitallocation
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .changedate_array
+            .append_option(row.changedate.map(|val| val.timestamp()));
+        builder.changedby_array.append_option(row.changedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.tranche_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctiondate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.notifydate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unitallocation_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.changedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.changedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionConfigAuctionTranche1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    tranche_array: arrow::array::builder::Decimal128Builder,
+    auctiondate_array: arrow::array::builder::TimestampSecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
+    unitallocation_array: arrow::array::builder::Decimal128Builder,
+    changedate_array: arrow::array::builder::TimestampSecondBuilder,
+    changedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigResiduecontractpayments1;
+pub struct SettlementConfigResiduecontractpayments1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## RESIDUECONTRACTPAYMENTS
@@ -1595,59 +3132,144 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
 ///
 /// * CONTRACTID
 /// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigResiduecontractpayments1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigResiduecontractpayments1Row<'data> {
     /// SRA Contract ID
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// Participant Identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date and time this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigResiduecontractpayments1Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigResiduecontractpayments1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "RESIDUECONTRACTPAYMENTS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigResiduecontractpayments1Mapping([
+        4,
+        5,
+        6,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "PARTICIPANTID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigResiduecontractpayments1Row<'row>;
+    type FieldMapping = SettlementConfigResiduecontractpayments1Mapping;
     type PrimaryKey = SettlementConfigResiduecontractpayments1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("RESIDUECONTRACTPAYMENTS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigResiduecontractpayments1Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            participantid: row.get_range("participantid", field_mapping.0[1])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigResiduecontractpayments1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigResiduecontractpayments1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigResiduecontractpayments1PrimaryKey {
         SettlementConfigResiduecontractpayments1PrimaryKey {
-            contractid: self.contractid.clone(),
-            participantid: self.participantid.clone(),
+            contractid: row.contractid().to_string(),
+            participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "settlement_config_residuecontractpayments_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigResiduecontractpayments1Row {
+            contractid: row.contractid.clone(),
+            participantid: row.participantid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigResiduecontractpayments1PrimaryKey {
-    pub contractid: String,
-    pub participantid: String,
+    pub contractid: alloc::string::String,
+    pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigResiduecontractpayments1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigResiduecontractpayments1 {
-    type Row = SettlementConfigResiduecontractpayments1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigResiduecontractpayments1Row<'data> {
+    type Row<'other> = SettlementConfigResiduecontractpayments1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.participantid() == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigResiduecontractpayments1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigResiduecontractpayments1Row<'data> {
     type PrimaryKey = SettlementConfigResiduecontractpayments1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.participantid == key.participantid
+        self.contractid() == key.contractid && self.participantid() == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigResiduecontractpayments1PrimaryKey {
-    type Row = SettlementConfigResiduecontractpayments1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigResiduecontractpayments1PrimaryKey {
+    type Row<'other> = SettlementConfigResiduecontractpayments1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -1659,48 +3281,70 @@ for SettlementConfigResiduecontractpayments1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigResiduecontractpayments1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            participantid_array.push(row.participantid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigResiduecontractpayments1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigResiduecontractpayments1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionBidsFileTrk1;
+pub struct IrauctionBidsFileTrk1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## RESIDUEFILETRK
@@ -1720,75 +3364,226 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
 /// * AUCTIONID
 /// * LOADDATE
 /// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionBidsFileTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionBidsFileTrk1Row<'data> {
     /// SRA ContractID
-    pub contractid: Option<String>,
+    pub contractid: core::ops::Range<usize>,
     /// Participant Identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date-Time SRA offer was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// SRA offer file name
-    pub filename: Option<String>,
+    pub filename: core::ops::Range<usize>,
     /// SRA acknowledgment file name
-    pub ackfilename: Option<String>,
+    pub ackfilename: core::ops::Range<usize>,
     /// Load status [SUCCESSFUL/CORRUPT]
-    pub status: Option<String>,
+    pub status: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionBidsFileTrk1Row<'data> {
+    pub fn contractid(&self) -> Option<&str> {
+        if self.contractid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.contractid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn filename(&self) -> Option<&str> {
+        if self.filename.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.filename.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ackfilename(&self) -> Option<&str> {
+        if self.ackfilename.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ackfilename.clone(),
+                ),
+            )
+        }
+    }
+    pub fn status(&self) -> Option<&str> {
+        if self.status.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.status.clone(),
+                ),
+            )
+        }
+    }
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionBidsFileTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_BIDS";
+    const TABLE_NAME: &'static str = "FILE_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionBidsFileTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "PARTICIPANTID",
+        "LOADDATE",
+        "FILENAME",
+        "ACKFILENAME",
+        "STATUS",
+        "LASTCHANGED",
+        "AUCTIONID",
+    ];
+    type Row<'row> = IrauctionBidsFileTrk1Row<'row>;
+    type FieldMapping = IrauctionBidsFileTrk1Mapping;
     type PrimaryKey = IrauctionBidsFileTrk1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_BIDS".into(),
-            table_name: Some("FILE_TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionBidsFileTrk1Row {
+            contractid: row.get_opt_range("contractid", field_mapping.0[0])?,
+            participantid: row.get_range("participantid", field_mapping.0[1])?,
+            loaddate: row
+                .get_custom_parsed_at_idx(
+                    "loaddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            filename: row.get_opt_range("filename", field_mapping.0[3])?,
+            ackfilename: row.get_opt_range("ackfilename", field_mapping.0[4])?,
+            status: row.get_opt_range("status", field_mapping.0[5])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            auctionid: row.get_range("auctionid", field_mapping.0[7])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionBidsFileTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionBidsFileTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionBidsFileTrk1PrimaryKey {
         IrauctionBidsFileTrk1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate,
-            participantid: self.participantid.clone(),
+            auctionid: row.auctionid().to_string(),
+            loaddate: row.loaddate,
+            participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_bids_file_trk_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionBidsFileTrk1Row {
+            contractid: row.contractid.clone(),
+            participantid: row.participantid.clone(),
+            loaddate: row.loaddate.clone(),
+            filename: row.filename.clone(),
+            ackfilename: row.ackfilename.clone(),
+            status: row.status.clone(),
+            lastchanged: row.lastchanged.clone(),
+            auctionid: row.auctionid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionBidsFileTrk1PrimaryKey {
-    pub auctionid: String,
+    pub auctionid: alloc::string::String,
     pub loaddate: chrono::NaiveDateTime,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionBidsFileTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionBidsFileTrk1 {
-    type Row = IrauctionBidsFileTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionBidsFileTrk1Row<'data> {
+    type Row<'other> = IrauctionBidsFileTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid() && self.loaddate == row.loaddate
+            && self.participantid() == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFileTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFileTrk1Row<'data> {
     type PrimaryKey = IrauctionBidsFileTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.loaddate == key.loaddate
-            && self.participantid == key.participantid
+        self.auctionid() == key.auctionid && self.loaddate == key.loaddate
+            && self.participantid() == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionBidsFileTrk1PrimaryKey {
-    type Row = IrauctionBidsFileTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionBidsFileTrk1PrimaryKey {
+    type Row<'other> = IrauctionBidsFileTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.loaddate == row.loaddate
+            && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFileTrk1PrimaryKey {
@@ -1800,81 +3595,123 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFileTrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("loaddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("filename",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("ackfilename",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("status",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false)
-            ],
+    type Builder = IrauctionBidsFileTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "loaddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "filename",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ackfilename",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "status",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut loaddate_array = Vec::new();
-        let mut filename_array = Vec::new();
-        let mut ackfilename_array = Vec::new();
-        let mut status_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            participantid_array.push(row.participantid);
-            loaddate_array.push(row.loaddate.timestamp());
-            filename_array.push(row.filename);
-            ackfilename_array.push(row.ackfilename);
-            status_array.push(row.status);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            auctionid_array.push(row.auctionid);
+    fn new_builder() -> Self::Builder {
+        IrauctionBidsFileTrk1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            filename_array: arrow::array::builder::StringBuilder::new(),
+            ackfilename_array: arrow::array::builder::StringBuilder::new(),
+            status_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(loaddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(ackfilename_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(status_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_option(row.contractid());
+        builder.participantid_array.append_value(row.participantid());
+        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.filename_array.append_option(row.filename());
+        builder.ackfilename_array.append_option(row.ackfilename());
+        builder.status_array.append_option(row.status());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.auctionid_array.append_value(row.auctionid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.loaddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.filename_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ackfilename_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.status_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionBidsFileTrk1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    filename_array: arrow::array::builder::StringBuilder,
+    ackfilename_array: arrow::array::builder::StringBuilder,
+    status_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+}
+pub struct IrauctionResidueBidTrk1;
+pub struct IrauctionResidueBidTrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## RESIDUE_BID_TRK
@@ -1894,70 +3731,183 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
 /// * AUCTIONID
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueBidTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResidueBidTrk1Row<'data> {
     /// SRA Contract unique identifier
-    pub contractid: Option<String>,
+    pub contractid: core::ops::Range<usize>,
     /// Version of Bid used
     pub versionno: rust_decimal::Decimal,
     /// Identifier of participant
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date and time bid used
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub bidloaddate: Option<chrono::NaiveDateTime>,
     /// Date and time this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResidueBidTrk1Row<'data> {
+    pub fn contractid(&self) -> Option<&str> {
+        if self.contractid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.contractid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResidueBidTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_BID_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueBidTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "VERSIONNO",
+        "PARTICIPANTID",
+        "BIDLOADDATE",
+        "LASTCHANGED",
+        "AUCTIONID",
+    ];
+    type Row<'row> = IrauctionResidueBidTrk1Row<'row>;
+    type FieldMapping = IrauctionResidueBidTrk1Mapping;
     type PrimaryKey = IrauctionResidueBidTrk1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_BID_TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResidueBidTrk1Row {
+            contractid: row.get_opt_range("contractid", field_mapping.0[0])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[2])?,
+            bidloaddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "bidloaddate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            auctionid: row.get_range("auctionid", field_mapping.0[5])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResidueBidTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResidueBidTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResidueBidTrk1PrimaryKey {
         IrauctionResidueBidTrk1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
+            auctionid: row.auctionid().to_string(),
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_bid_trk_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResidueBidTrk1Row {
+            contractid: row.contractid.clone(),
+            versionno: row.versionno.clone(),
+            participantid: row.participantid.clone(),
+            bidloaddate: row.bidloaddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            auctionid: row.auctionid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResidueBidTrk1PrimaryKey {
-    pub auctionid: String,
-    pub participantid: String,
+    pub auctionid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResidueBidTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResidueBidTrk1 {
-    type Row = IrauctionResidueBidTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueBidTrk1Row<'data> {
+    type Row<'other> = IrauctionResidueBidTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid()
+            && self.participantid() == row.participantid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueBidTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResidueBidTrk1Row<'data> {
     type PrimaryKey = IrauctionResidueBidTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.participantid == key.participantid
+        self.auctionid() == key.auctionid && self.participantid() == key.participantid
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResidueBidTrk1PrimaryKey {
-    type Row = IrauctionResidueBidTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueBidTrk1PrimaryKey {
+    type Row<'other> = IrauctionResidueBidTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.participantid == row.participantid()
             && self.versionno == row.versionno
     }
 }
@@ -1970,73 +3920,112 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueBidTrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("bidloaddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false)
-            ],
+    type Builder = IrauctionResidueBidTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidloaddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut bidloaddate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            participantid_array.push(row.participantid);
-            bidloaddate_array.push(row.bidloaddate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            auctionid_array.push(row.auctionid);
+    fn new_builder() -> Self::Builder {
+        IrauctionResidueBidTrk1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            bidloaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(bidloaddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_option(row.contractid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .bidloaddate_array
+            .append_option(row.bidloaddate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.auctionid_array.append_value(row.auctionid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidloaddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResidueBidTrk1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    bidloaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+}
+pub struct IrauctionResidueContracts1;
+pub struct IrauctionResidueContracts1Mapping([usize; 18]);
 /// # Summary
 ///
 /// ## RESIDUE_CONTRACTS
@@ -2056,8 +4045,8 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
 /// * CONTRACTYEAR
 /// * QUARTER
 /// * TRANCHE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueContracts1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResidueContracts1Row<'data> {
     /// SRA Contracted Year
     pub contractyear: rust_decimal::Decimal,
     /// SRA Contracted Quarter
@@ -2065,90 +4054,350 @@ pub struct IrauctionResidueContracts1 {
     /// Label identifying the arbitrary segmented share of the Interconnector flow
     pub tranche: rust_decimal::Decimal,
     /// Unique identifier for each SRA Contract as specified by AEMO
-    pub contractid: Option<String>,
+    pub contractid: core::ops::Range<usize>,
     /// SRA Quarter start date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// SRA Quarter end date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Open date of bidding, calculated as RNOTIFYDATE business days before the auction date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub notifydate: Option<chrono::NaiveDateTime>,
     /// Close date of bidding, calculated as RAUCDATE business days before the contract start date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub auctiondate: Option<chrono::NaiveDateTime>,
     /// Identifies methodology used
-    pub calcmethod: Option<String>,
+    pub calcmethod: core::ops::Range<usize>,
     /// Authorisation date for this record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Name of authorising officer or process
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date notification posted
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub notifypostdate: Option<chrono::NaiveDateTime>,
     /// Name of notifying person
-    pub notifyby: Option<String>,
+    pub notifyby: core::ops::Range<usize>,
     /// Date of publishing the auction results
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub postdate: Option<chrono::NaiveDateTime>,
     /// Name of publishing officer or process
-    pub postedby: Option<String>,
+    pub postedby: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Description of Contract
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
-    pub auctionid: Option<String>,
+    pub auctionid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResidueContracts1Row<'data> {
+    pub fn contractid(&self) -> Option<&str> {
+        if self.contractid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.contractid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn calcmethod(&self) -> Option<&str> {
+        if self.calcmethod.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.calcmethod.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn notifyby(&self) -> Option<&str> {
+        if self.notifyby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.notifyby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn postedby(&self) -> Option<&str> {
+        if self.postedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.postedby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn auctionid(&self) -> Option<&str> {
+        if self.auctionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.auctionid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResidueContracts1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_CONTRACTS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueContracts1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "QUARTER",
+        "TRANCHE",
+        "CONTRACTID",
+        "STARTDATE",
+        "ENDDATE",
+        "NOTIFYDATE",
+        "AUCTIONDATE",
+        "CALCMETHOD",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "NOTIFYPOSTDATE",
+        "NOTIFYBY",
+        "POSTDATE",
+        "POSTEDBY",
+        "LASTCHANGED",
+        "DESCRIPTION",
+        "AUCTIONID",
+    ];
+    type Row<'row> = IrauctionResidueContracts1Row<'row>;
+    type FieldMapping = IrauctionResidueContracts1Mapping;
     type PrimaryKey = IrauctionResidueContracts1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_CONTRACTS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResidueContracts1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            tranche: row
+                .get_custom_parsed_at_idx(
+                    "tranche",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            contractid: row.get_opt_range("contractid", field_mapping.0[3])?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            notifydate: row
+                .get_opt_custom_parsed_at_idx(
+                    "notifydate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            auctiondate: row
+                .get_opt_custom_parsed_at_idx(
+                    "auctiondate",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            calcmethod: row.get_opt_range("calcmethod", field_mapping.0[8])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[10])?,
+            notifypostdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "notifypostdate",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            notifyby: row.get_opt_range("notifyby", field_mapping.0[12])?,
+            postdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "postdate",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            postedby: row.get_opt_range("postedby", field_mapping.0[14])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            description: row.get_opt_range("description", field_mapping.0[16])?,
+            auctionid: row.get_opt_range("auctionid", field_mapping.0[17])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResidueContracts1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResidueContracts1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResidueContracts1PrimaryKey {
         IrauctionResidueContracts1PrimaryKey {
-            contractyear: self.contractyear,
-            quarter: self.quarter,
-            tranche: self.tranche,
+            contractyear: row.contractyear,
+            quarter: row.quarter,
+            tranche: row.tranche,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_contracts_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResidueContracts1Row {
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            tranche: row.tranche.clone(),
+            contractid: row.contractid.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            notifydate: row.notifydate.clone(),
+            auctiondate: row.auctiondate.clone(),
+            calcmethod: row.calcmethod.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            notifypostdate: row.notifypostdate.clone(),
+            notifyby: row.notifyby.clone(),
+            postdate: row.postdate.clone(),
+            postedby: row.postedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            description: row.description.clone(),
+            auctionid: row.auctionid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResidueContracts1PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
     pub tranche: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResidueContracts1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResidueContracts1 {
-    type Row = IrauctionResidueContracts1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueContracts1Row<'data> {
+    type Row<'other> = IrauctionResidueContracts1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
             && self.tranche == row.tranche
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueContracts1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResidueContracts1Row<'data> {
     type PrimaryKey = IrauctionResidueContracts1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.contractyear == key.contractyear && self.quarter == key.quarter
             && self.tranche == key.tranche
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResidueContracts1PrimaryKey {
-    type Row = IrauctionResidueContracts1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueContracts1PrimaryKey {
+    type Row<'other> = IrauctionResidueContracts1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.quarter == row.quarter
             && self.tranche == row.tranche
     }
@@ -2162,167 +4411,270 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueContracts1PrimaryKey 
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("tranche",
-                arrow2::datatypes::DataType::Decimal(2, 0), false),
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("notifydate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("auctiondate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("calcmethod",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("notifypostdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("notifyby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("postdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("postedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = IrauctionResidueContracts1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "tranche",
+                    arrow::datatypes::DataType::Decimal128(2, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "notifydate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctiondate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "calcmethod",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "notifypostdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "notifyby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "postdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "postedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut tranche_array = Vec::new();
-        let mut contractid_array = Vec::new();
-        let mut startdate_array = Vec::new();
-        let mut enddate_array = Vec::new();
-        let mut notifydate_array = Vec::new();
-        let mut auctiondate_array = Vec::new();
-        let mut calcmethod_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut notifypostdate_array = Vec::new();
-        let mut notifyby_array = Vec::new();
-        let mut postdate_array = Vec::new();
-        let mut postedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        for row in partition {
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            tranche_array
-                .push({
-                    let mut val = row.tranche;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            contractid_array.push(row.contractid);
-            startdate_array.push(row.startdate.map(|val| val.timestamp()));
-            enddate_array.push(row.enddate.map(|val| val.timestamp()));
-            notifydate_array.push(row.notifydate.map(|val| val.timestamp()));
-            auctiondate_array.push(row.auctiondate.map(|val| val.timestamp()));
-            calcmethod_array.push(row.calcmethod);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            notifypostdate_array.push(row.notifypostdate.map(|val| val.timestamp()));
-            notifyby_array.push(row.notifyby);
-            postdate_array.push(row.postdate.map(|val| val.timestamp()));
-            postedby_array.push(row.postedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            description_array.push(row.description);
-            auctionid_array.push(row.auctionid);
+    fn new_builder() -> Self::Builder {
+        IrauctionResidueContracts1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            tranche_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            calcmethod_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            notifypostdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            notifyby_array: arrow::array::builder::StringBuilder::new(),
+            postdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            postedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tranche_array)
-                    .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(notifydate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(auctiondate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(calcmethod_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(notifypostdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(notifyby_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(postdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(postedby_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .tranche_array
+            .append_value({
+                let mut val = row.tranche;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.contractid_array.append_option(row.contractid());
+        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .notifydate_array
+            .append_option(row.notifydate.map(|val| val.timestamp()));
+        builder
+            .auctiondate_array
+            .append_option(row.auctiondate.map(|val| val.timestamp()));
+        builder.calcmethod_array.append_option(row.calcmethod());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .notifypostdate_array
+            .append_option(row.notifypostdate.map(|val| val.timestamp()));
+        builder.notifyby_array.append_option(row.notifyby());
+        builder.postdate_array.append_option(row.postdate.map(|val| val.timestamp()));
+        builder.postedby_array.append_option(row.postedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.description_array.append_option(row.description());
+        builder.auctionid_array.append_option(row.auctionid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.tranche_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.notifydate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctiondate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.calcmethod_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.notifypostdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.notifyby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.postdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.postedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResidueContracts1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    tranche_array: arrow::array::builder::Decimal128Builder,
+    contractid_array: arrow::array::builder::StringBuilder,
+    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
+    auctiondate_array: arrow::array::builder::TimestampSecondBuilder,
+    calcmethod_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    notifypostdate_array: arrow::array::builder::TimestampSecondBuilder,
+    notifyby_array: arrow::array::builder::StringBuilder,
+    postdate_array: arrow::array::builder::TimestampSecondBuilder,
+    postedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+}
+pub struct IrauctionResidueConData2;
+pub struct IrauctionResidueConData2Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## RESIDUE_CON_DATA
@@ -2344,83 +4696,219 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
 /// * INTERCONNECTORID
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueConData2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResidueConData2Row<'data> {
     /// SRA Contract unique identifier
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// Contract run version
     pub versionno: rust_decimal::Decimal,
     /// Identifier of Contracted Participant
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Identifier of Contracted Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Units purchased on the directional interconnector (i.e. Contracted quantity)
     pub unitspurchased: Option<rust_decimal::Decimal>,
     /// Payment due (i.e. total purchase price)
     pub linkpayment: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The number of cancelled Units for all Auction Participants.
     pub secondary_units_sold: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResidueConData2Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResidueConData2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_CON_DATA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConData2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "VERSIONNO",
+        "PARTICIPANTID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "UNITSPURCHASED",
+        "LINKPAYMENT",
+        "LASTCHANGED",
+        "SECONDARY_UNITS_SOLD",
+    ];
+    type Row<'row> = IrauctionResidueConData2Row<'row>;
+    type FieldMapping = IrauctionResidueConData2Mapping;
     type PrimaryKey = IrauctionResidueConData2PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_CON_DATA".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResidueConData2Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[2])?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[3])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[4])?,
+            unitspurchased: row
+                .get_opt_custom_parsed_at_idx(
+                    "unitspurchased",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            linkpayment: row
+                .get_opt_custom_parsed_at_idx(
+                    "linkpayment",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            secondary_units_sold: row
+                .get_opt_custom_parsed_at_idx(
+                    "secondary_units_sold",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResidueConData2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResidueConData2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResidueConData2PrimaryKey {
         IrauctionResidueConData2PrimaryKey {
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_con_data_v2".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResidueConData2Row {
+            contractid: row.contractid.clone(),
+            versionno: row.versionno.clone(),
+            participantid: row.participantid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            unitspurchased: row.unitspurchased.clone(),
+            linkpayment: row.linkpayment.clone(),
+            lastchanged: row.lastchanged.clone(),
+            secondary_units_sold: row.secondary_units_sold.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResidueConData2PrimaryKey {
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
-    pub participantid: String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResidueConData2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResidueConData2 {
-    type Row = IrauctionResidueConData2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueConData2Row<'data> {
+    type Row<'other> = IrauctionResidueConData2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
+            && self.participantid() == row.participantid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConData2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConData2Row<'data> {
     type PrimaryKey = IrauctionResidueConData2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid && self.versionno == key.versionno
+        self.contractid() == key.contractid && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
+            && self.participantid() == key.participantid
+            && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResidueConData2PrimaryKey {
-    type Row = IrauctionResidueConData2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueConData2PrimaryKey {
+    type Row<'other> = IrauctionResidueConData2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
+            && self.participantid == row.participantid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConData2PrimaryKey {
@@ -2433,115 +4921,164 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConData2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("unitspurchased",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("linkpayment",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("secondary_units_sold",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionResidueConData2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "unitspurchased",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "linkpayment",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "secondary_units_sold",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut unitspurchased_array = Vec::new();
-        let mut linkpayment_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut secondary_units_sold_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            participantid_array.push(row.participantid);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            unitspurchased_array
-                .push({
-                    row.unitspurchased
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            linkpayment_array
-                .push({
-                    row.linkpayment
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            secondary_units_sold_array
-                .push({
-                    row.secondary_units_sold
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionResidueConData2Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            unitspurchased_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            linkpayment_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            secondary_units_sold_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(unitspurchased_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(linkpayment_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(secondary_units_sold_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .unitspurchased_array
+            .append_option({
+                row.unitspurchased
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .linkpayment_array
+            .append_option({
+                row.linkpayment
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .secondary_units_sold_array
+            .append_option({
+                row.secondary_units_sold
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unitspurchased_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.linkpayment_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.secondary_units_sold_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResidueConData2Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    unitspurchased_array: arrow::array::builder::Decimal128Builder,
+    linkpayment_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    secondary_units_sold_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionResidueConEstimatesTrk1;
+pub struct IrauctionResidueConEstimatesTrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## RESIDUE_CON_ESTIMATES_TRK
@@ -2562,72 +5099,179 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
 /// * CONTRACTYEAR
 /// * QUARTER
 /// * VALUATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueConEstimatesTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResidueConEstimatesTrk1Row<'data> {
     /// SRA Contract unique identifier
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// AEMO Contract Year number starting in week containing 1st January
     pub contractyear: rust_decimal::Decimal,
     /// Contract Quarter
     pub quarter: rust_decimal::Decimal,
     /// Identifier of the estimator
-    pub valuationid: String,
+    pub valuationid: core::ops::Range<usize>,
     /// Version of a record, as nominated by the participant
     pub versionno: Option<rust_decimal::Decimal>,
     /// Date and time this record was changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResidueConEstimatesTrk1Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn valuationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.valuationid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResidueConEstimatesTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_CON_ESTIMATES_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConEstimatesTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "CONTRACTYEAR",
+        "QUARTER",
+        "VALUATIONID",
+        "VERSIONNO",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionResidueConEstimatesTrk1Row<'row>;
+    type FieldMapping = IrauctionResidueConEstimatesTrk1Mapping;
     type PrimaryKey = IrauctionResidueConEstimatesTrk1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_CON_ESTIMATES_TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResidueConEstimatesTrk1Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            quarter: row
+                .get_custom_parsed_at_idx(
+                    "quarter",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            valuationid: row.get_range("valuationid", field_mapping.0[3])?,
+            versionno: row
+                .get_opt_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResidueConEstimatesTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResidueConEstimatesTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResidueConEstimatesTrk1PrimaryKey {
         IrauctionResidueConEstimatesTrk1PrimaryKey {
-            contractid: self.contractid.clone(),
-            contractyear: self.contractyear,
-            quarter: self.quarter,
-            valuationid: self.valuationid.clone(),
+            contractid: row.contractid().to_string(),
+            contractyear: row.contractyear,
+            quarter: row.quarter,
+            valuationid: row.valuationid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_con_estimates_trk_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResidueConEstimatesTrk1Row {
+            contractid: row.contractid.clone(),
+            contractyear: row.contractyear.clone(),
+            quarter: row.quarter.clone(),
+            valuationid: row.valuationid.clone(),
+            versionno: row.versionno.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResidueConEstimatesTrk1PrimaryKey {
-    pub contractid: String,
+    pub contractid: alloc::string::String,
     pub contractyear: rust_decimal::Decimal,
     pub quarter: rust_decimal::Decimal,
-    pub valuationid: String,
+    pub valuationid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResidueConEstimatesTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResidueConEstimatesTrk1 {
-    type Row = IrauctionResidueConEstimatesTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.contractyear == row.contractyear
-            && self.quarter == row.quarter && self.valuationid == row.valuationid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueConEstimatesTrk1Row<'data> {
+    type Row<'other> = IrauctionResidueConEstimatesTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid() && self.contractyear == row.contractyear
+            && self.quarter == row.quarter && self.valuationid() == row.valuationid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConEstimatesTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionResidueConEstimatesTrk1Row<'data> {
     type PrimaryKey = IrauctionResidueConEstimatesTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.contractyear == key.contractyear
-            && self.quarter == key.quarter && self.valuationid == key.valuationid
+        self.contractid() == key.contractid && self.contractyear == key.contractyear
+            && self.quarter == key.quarter && self.valuationid() == key.valuationid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResidueConEstimatesTrk1PrimaryKey {
-    type Row = IrauctionResidueConEstimatesTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.contractyear == row.contractyear
-            && self.quarter == row.quarter && self.valuationid == row.valuationid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueConEstimatesTrk1PrimaryKey {
+    type Row<'other> = IrauctionResidueConEstimatesTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.contractyear == row.contractyear
+            && self.quarter == row.quarter && self.valuationid == row.valuationid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConEstimatesTrk1PrimaryKey {
@@ -2639,86 +5283,123 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConEstimatesTrk1Prima
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("contractyear",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("quarter",
-                arrow2::datatypes::DataType::Decimal(1, 0), false),
-                arrow2::datatypes::Field::new("valuationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionResidueConEstimatesTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "quarter",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "valuationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut contractyear_array = Vec::new();
-        let mut quarter_array = Vec::new();
-        let mut valuationid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            contractyear_array
-                .push({
-                    let mut val = row.contractyear;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            quarter_array
-                .push({
-                    let mut val = row.quarter;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            valuationid_array.push(row.valuationid);
-            versionno_array
-                .push({
-                    row.versionno
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionResidueConEstimatesTrk1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            quarter_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(contractyear_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(quarter_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(valuationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .quarter_array
+            .append_value({
+                let mut val = row.quarter;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.valuationid_array.append_value(row.valuationid());
+        builder
+            .versionno_array
+            .append_option({
+                row.versionno
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.valuationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResidueConEstimatesTrk1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    quarter_array: arrow::array::builder::Decimal128Builder,
+    valuationid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionResidueConFunds1;
+pub struct IrauctionResidueConFunds1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## RESIDUE_CON_FUNDS
@@ -2738,14 +5419,14 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
 /// * CONTRACTID
 /// * FROMREGIONID
 /// * INTERCONNECTORID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueConFunds1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResidueConFunds1Row<'data> {
     /// SRA Contract unique identifier as specified by AEMO
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// Identifier for the Contracted Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Actual number of units allocated based on the auction default percentage for the tranche and the total number of units to be auctioned for this quarter
     pub defaultunits: Option<rust_decimal::Decimal>,
     /// Units reallocated from the previous tranche of this quarter
@@ -2761,57 +5442,210 @@ pub struct IrauctionResidueConFunds1 {
     /// Actual reserve price
     pub actualreserveprice: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResidueConFunds1Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResidueConFunds1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_CON_FUNDS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConFunds1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "DEFAULTUNITS",
+        "ROLLOVERUNITS",
+        "REALLOCATEDUNITS",
+        "UNITSOFFERED",
+        "MEANRESERVEPRICE",
+        "SCALEFACTOR",
+        "ACTUALRESERVEPRICE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionResidueConFunds1Row<'row>;
+    type FieldMapping = IrauctionResidueConFunds1Mapping;
     type PrimaryKey = IrauctionResidueConFunds1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_CON_FUNDS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResidueConFunds1Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[1])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[2])?,
+            defaultunits: row
+                .get_opt_custom_parsed_at_idx(
+                    "defaultunits",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rolloverunits: row
+                .get_opt_custom_parsed_at_idx(
+                    "rolloverunits",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            reallocatedunits: row
+                .get_opt_custom_parsed_at_idx(
+                    "reallocatedunits",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unitsoffered: row
+                .get_opt_custom_parsed_at_idx(
+                    "unitsoffered",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            meanreserveprice: row
+                .get_opt_custom_parsed_at_idx(
+                    "meanreserveprice",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            scalefactor: row
+                .get_opt_custom_parsed_at_idx(
+                    "scalefactor",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            actualreserveprice: row
+                .get_opt_custom_parsed_at_idx(
+                    "actualreserveprice",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResidueConFunds1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResidueConFunds1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResidueConFunds1PrimaryKey {
         IrauctionResidueConFunds1PrimaryKey {
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_con_funds_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResidueConFunds1Row {
+            contractid: row.contractid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            defaultunits: row.defaultunits.clone(),
+            rolloverunits: row.rolloverunits.clone(),
+            reallocatedunits: row.reallocatedunits.clone(),
+            unitsoffered: row.unitsoffered.clone(),
+            meanreserveprice: row.meanreserveprice.clone(),
+            scalefactor: row.scalefactor.clone(),
+            actualreserveprice: row.actualreserveprice.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResidueConFunds1PrimaryKey {
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResidueConFunds1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResidueConFunds1 {
-    type Row = IrauctionResidueConFunds1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueConFunds1Row<'data> {
+    type Row<'other> = IrauctionResidueConFunds1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConFunds1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConFunds1Row<'data> {
     type PrimaryKey = IrauctionResidueConFunds1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
+        self.contractid() == key.contractid && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResidueConFunds1PrimaryKey {
-    type Row = IrauctionResidueConFunds1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueConFunds1PrimaryKey {
+    type Row<'other> = IrauctionResidueConFunds1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConFunds1PrimaryKey {
@@ -2823,153 +5657,213 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueConFunds1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("defaultunits",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("rolloverunits",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("reallocatedunits",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("unitsoffered",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("meanreserveprice",
-                arrow2::datatypes::DataType::Decimal(9, 2), true),
-                arrow2::datatypes::Field::new("scalefactor",
-                arrow2::datatypes::DataType::Decimal(8, 5), true),
-                arrow2::datatypes::Field::new("actualreserveprice",
-                arrow2::datatypes::DataType::Decimal(9, 2), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionResidueConFunds1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "defaultunits",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rolloverunits",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reallocatedunits",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unitsoffered",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "meanreserveprice",
+                    arrow::datatypes::DataType::Decimal128(9, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "scalefactor",
+                    arrow::datatypes::DataType::Decimal128(8, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "actualreserveprice",
+                    arrow::datatypes::DataType::Decimal128(9, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut defaultunits_array = Vec::new();
-        let mut rolloverunits_array = Vec::new();
-        let mut reallocatedunits_array = Vec::new();
-        let mut unitsoffered_array = Vec::new();
-        let mut meanreserveprice_array = Vec::new();
-        let mut scalefactor_array = Vec::new();
-        let mut actualreserveprice_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            defaultunits_array
-                .push({
-                    row.defaultunits
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            rolloverunits_array
-                .push({
-                    row.rolloverunits
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            reallocatedunits_array
-                .push({
-                    row.reallocatedunits
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            unitsoffered_array
-                .push({
-                    row.unitsoffered
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            meanreserveprice_array
-                .push({
-                    row.meanreserveprice
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            scalefactor_array
-                .push({
-                    row.scalefactor
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            actualreserveprice_array
-                .push({
-                    row.actualreserveprice
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionResidueConFunds1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            defaultunits_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            rolloverunits_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            reallocatedunits_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            unitsoffered_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            meanreserveprice_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
+            scalefactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
+            actualreserveprice_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(defaultunits_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rolloverunits_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reallocatedunits_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(unitsoffered_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(meanreserveprice_array)
-                    .to(arrow2::datatypes::DataType::Decimal(9, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(scalefactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(8, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(actualreserveprice_array)
-                    .to(arrow2::datatypes::DataType::Decimal(9, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .defaultunits_array
+            .append_option({
+                row.defaultunits
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .rolloverunits_array
+            .append_option({
+                row.rolloverunits
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .reallocatedunits_array
+            .append_option({
+                row.reallocatedunits
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unitsoffered_array
+            .append_option({
+                row.unitsoffered
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .meanreserveprice_array
+            .append_option({
+                row.meanreserveprice
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .scalefactor_array
+            .append_option({
+                row.scalefactor
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .actualreserveprice_array
+            .append_option({
+                row.actualreserveprice
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.defaultunits_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rolloverunits_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reallocatedunits_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unitsoffered_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meanreserveprice_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.scalefactor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.actualreserveprice_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResidueConFunds1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    defaultunits_array: arrow::array::builder::Decimal128Builder,
+    rolloverunits_array: arrow::array::builder::Decimal128Builder,
+    reallocatedunits_array: arrow::array::builder::Decimal128Builder,
+    unitsoffered_array: arrow::array::builder::Decimal128Builder,
+    meanreserveprice_array: arrow::array::builder::Decimal128Builder,
+    scalefactor_array: arrow::array::builder::Decimal128Builder,
+    actualreserveprice_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionBidsFundsBid1;
+pub struct IrauctionBidsFundsBid1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## RESIDUE_FUNDS_BID
@@ -2992,87 +5886,210 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
 /// * LOADDATE
 /// * OPTIONID
 /// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionBidsFundsBid1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionBidsFundsBid1Row<'data> {
     /// SRA Contract identifier
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// Participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date and time the batcher loaded the SRA offer
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// Unique option identifier (1..20)
     pub optionid: rust_decimal::Decimal,
     /// Interconnector Identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Quantity of units bid for
     pub units: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionBidsFundsBid1Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionBidsFundsBid1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION_BIDS";
+    const TABLE_NAME: &'static str = "FUNDS_BID";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionBidsFundsBid1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "PARTICIPANTID",
+        "LOADDATE",
+        "OPTIONID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "UNITS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionBidsFundsBid1Row<'row>;
+    type FieldMapping = IrauctionBidsFundsBid1Mapping;
     type PrimaryKey = IrauctionBidsFundsBid1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION_BIDS".into(),
-            table_name: Some("FUNDS_BID".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionBidsFundsBid1Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            participantid: row.get_range("participantid", field_mapping.0[1])?,
+            loaddate: row
+                .get_custom_parsed_at_idx(
+                    "loaddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            optionid: row
+                .get_custom_parsed_at_idx(
+                    "optionid",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[4])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[5])?,
+            units: row
+                .get_opt_custom_parsed_at_idx(
+                    "units",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionBidsFundsBid1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionBidsFundsBid1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionBidsFundsBid1PrimaryKey {
         IrauctionBidsFundsBid1PrimaryKey {
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            loaddate: self.loaddate,
-            optionid: self.optionid,
-            participantid: self.participantid.clone(),
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            loaddate: row.loaddate,
+            optionid: row.optionid,
+            participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_bids_funds_bid_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionBidsFundsBid1Row {
+            contractid: row.contractid.clone(),
+            participantid: row.participantid.clone(),
+            loaddate: row.loaddate.clone(),
+            optionid: row.optionid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            units: row.units.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionBidsFundsBid1PrimaryKey {
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
     pub loaddate: chrono::NaiveDateTime,
     pub optionid: rust_decimal::Decimal,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionBidsFundsBid1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionBidsFundsBid1 {
-    type Row = IrauctionBidsFundsBid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionBidsFundsBid1Row<'data> {
+    type Row<'other> = IrauctionBidsFundsBid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
             && self.loaddate == row.loaddate && self.optionid == row.optionid
-            && self.participantid == row.participantid
+            && self.participantid() == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFundsBid1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFundsBid1Row<'data> {
     type PrimaryKey = IrauctionBidsFundsBid1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
+        self.contractid() == key.contractid && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
             && self.loaddate == key.loaddate && self.optionid == key.optionid
-            && self.participantid == key.participantid
+            && self.participantid() == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionBidsFundsBid1PrimaryKey {
-    type Row = IrauctionBidsFundsBid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionBidsFundsBid1PrimaryKey {
+    type Row<'other> = IrauctionBidsFundsBid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
             && self.loaddate == row.loaddate && self.optionid == row.optionid
-            && self.participantid == row.participantid
+            && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFundsBid1PrimaryKey {
@@ -3086,95 +6103,139 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionBidsFundsBid1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("loaddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("optionid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("units",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionBidsFundsBid1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "loaddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "optionid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "units",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut loaddate_array = Vec::new();
-        let mut optionid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut units_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            participantid_array.push(row.participantid);
-            loaddate_array.push(row.loaddate.timestamp());
-            optionid_array
-                .push({
-                    let mut val = row.optionid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            units_array
-                .push({
-                    row.units
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionBidsFundsBid1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            optionid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            units_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(loaddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(optionid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(units_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder.participantid_array.append_value(row.participantid());
+        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder
+            .optionid_array
+            .append_value({
+                let mut val = row.optionid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .units_array
+            .append_option({
+                row.units
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.loaddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.optionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.units_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionBidsFundsBid1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    optionid_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    units_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionResiduePriceBid1;
+pub struct IrauctionResiduePriceBid1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## RESIDUE_PRICE_BID
@@ -3195,75 +6256,197 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
 /// * LOADDATE
 /// * OPTIONID
 /// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResiduePriceBid1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResiduePriceBid1Row<'data> {
     /// Not to be used. Unique id for each SRA contract (specified by AEMO)
-    pub contractid: Option<String>,
+    pub contractid: core::ops::Range<usize>,
     /// Participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date and Time the batcher loaded the bid
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// Unique option (bid) identifier (1..800)
     pub optionid: rust_decimal::Decimal,
     /// Price offered for each unit
     pub bidprice: Option<rust_decimal::Decimal>,
     /// Date and time this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Unique id for each auction date (new in March 2003 to support SRA Inter-Temporal Linking)
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResiduePriceBid1Row<'data> {
+    pub fn contractid(&self) -> Option<&str> {
+        if self.contractid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.contractid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_PRICE_BID";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePriceBid1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "PARTICIPANTID",
+        "LOADDATE",
+        "OPTIONID",
+        "BIDPRICE",
+        "LASTCHANGED",
+        "AUCTIONID",
+    ];
+    type Row<'row> = IrauctionResiduePriceBid1Row<'row>;
+    type FieldMapping = IrauctionResiduePriceBid1Mapping;
     type PrimaryKey = IrauctionResiduePriceBid1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_PRICE_BID".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResiduePriceBid1Row {
+            contractid: row.get_opt_range("contractid", field_mapping.0[0])?,
+            participantid: row.get_range("participantid", field_mapping.0[1])?,
+            loaddate: row
+                .get_custom_parsed_at_idx(
+                    "loaddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            optionid: row
+                .get_custom_parsed_at_idx(
+                    "optionid",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bidprice: row
+                .get_opt_custom_parsed_at_idx(
+                    "bidprice",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            auctionid: row.get_range("auctionid", field_mapping.0[6])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResiduePriceBid1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResiduePriceBid1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResiduePriceBid1PrimaryKey {
         IrauctionResiduePriceBid1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate,
-            optionid: self.optionid,
-            participantid: self.participantid.clone(),
+            auctionid: row.auctionid().to_string(),
+            loaddate: row.loaddate,
+            optionid: row.optionid,
+            participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_price_bid_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResiduePriceBid1Row {
+            contractid: row.contractid.clone(),
+            participantid: row.participantid.clone(),
+            loaddate: row.loaddate.clone(),
+            optionid: row.optionid.clone(),
+            bidprice: row.bidprice.clone(),
+            lastchanged: row.lastchanged.clone(),
+            auctionid: row.auctionid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResiduePriceBid1PrimaryKey {
-    pub auctionid: String,
+    pub auctionid: alloc::string::String,
     pub loaddate: chrono::NaiveDateTime,
     pub optionid: rust_decimal::Decimal,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResiduePriceBid1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResiduePriceBid1 {
-    type Row = IrauctionResiduePriceBid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.optionid == row.optionid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResiduePriceBid1Row<'data> {
+    type Row<'other> = IrauctionResiduePriceBid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid() && self.loaddate == row.loaddate
+            && self.optionid == row.optionid
+            && self.participantid() == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceBid1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceBid1Row<'data> {
     type PrimaryKey = IrauctionResiduePriceBid1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.loaddate == key.loaddate
-            && self.optionid == key.optionid && self.participantid == key.participantid
+        self.auctionid() == key.auctionid && self.loaddate == key.loaddate
+            && self.optionid == key.optionid && self.participantid() == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResiduePriceBid1PrimaryKey {
-    type Row = IrauctionResiduePriceBid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.optionid == row.optionid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResiduePriceBid1PrimaryKey {
+    type Row<'other> = IrauctionResiduePriceBid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.loaddate == row.loaddate
+            && self.optionid == row.optionid && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceBid1PrimaryKey {
@@ -3275,87 +6458,129 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceBid1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("loaddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("optionid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("bidprice",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false)
-            ],
+    type Builder = IrauctionResiduePriceBid1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "loaddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "optionid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidprice",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut loaddate_array = Vec::new();
-        let mut optionid_array = Vec::new();
-        let mut bidprice_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            participantid_array.push(row.participantid);
-            loaddate_array.push(row.loaddate.timestamp());
-            optionid_array
-                .push({
-                    let mut val = row.optionid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            bidprice_array
-                .push({
-                    row.bidprice
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            auctionid_array.push(row.auctionid);
+    fn new_builder() -> Self::Builder {
+        IrauctionResiduePriceBid1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            optionid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            bidprice_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(loaddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(optionid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(bidprice_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_option(row.contractid());
+        builder.participantid_array.append_value(row.participantid());
+        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder
+            .optionid_array
+            .append_value({
+                let mut val = row.optionid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .bidprice_array
+            .append_option({
+                row.bidprice
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.auctionid_array.append_value(row.auctionid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.loaddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.optionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidprice_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResiduePriceBid1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    optionid_array: arrow::array::builder::Decimal128Builder,
+    bidprice_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+}
+pub struct IrauctionResiduePriceFundsBid1;
+pub struct IrauctionResiduePriceFundsBid1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## RESIDUE_PRICE_FUNDS_BID
@@ -3377,14 +6602,14 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
 /// * FROMREGIONID
 /// * INTERCONNECTORID
 /// * LINKEDBIDFLAG
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResiduePriceFundsBid1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResiduePriceFundsBid1Row<'data> {
     /// Unique id for each contract specified by AEMO
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// Unique interconnector identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Unique region identifier
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Quantity of units bid
     pub units: Option<rust_decimal::Decimal>,
     /// Price bid for each unit
@@ -3392,68 +6617,192 @@ pub struct IrauctionResiduePriceFundsBid1 {
     /// A unique option id, with respect to the auction, created to show which bid elements are linked.
     pub linkedbidflag: rust_decimal::Decimal,
     /// Unique id for each auction date
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
     /// Date and time this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResiduePriceFundsBid1Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResiduePriceFundsBid1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_PRICE_FUNDS_BID";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePriceFundsBid1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "UNITS",
+        "BIDPRICE",
+        "LINKEDBIDFLAG",
+        "AUCTIONID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionResiduePriceFundsBid1Row<'row>;
+    type FieldMapping = IrauctionResiduePriceFundsBid1Mapping;
     type PrimaryKey = IrauctionResiduePriceFundsBid1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_PRICE_FUNDS_BID".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResiduePriceFundsBid1Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[1])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[2])?,
+            units: row
+                .get_opt_custom_parsed_at_idx(
+                    "units",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bidprice: row
+                .get_opt_custom_parsed_at_idx(
+                    "bidprice",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            linkedbidflag: row
+                .get_custom_parsed_at_idx(
+                    "linkedbidflag",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            auctionid: row.get_range("auctionid", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResiduePriceFundsBid1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResiduePriceFundsBid1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResiduePriceFundsBid1PrimaryKey {
         IrauctionResiduePriceFundsBid1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            linkedbidflag: self.linkedbidflag,
+            auctionid: row.auctionid().to_string(),
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            linkedbidflag: row.linkedbidflag,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_price_funds_bid_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResiduePriceFundsBid1Row {
+            contractid: row.contractid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            units: row.units.clone(),
+            bidprice: row.bidprice.clone(),
+            linkedbidflag: row.linkedbidflag.clone(),
+            auctionid: row.auctionid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResiduePriceFundsBid1PrimaryKey {
-    pub auctionid: String,
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub auctionid: alloc::string::String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
     pub linkedbidflag: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResiduePriceFundsBid1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResiduePriceFundsBid1 {
-    type Row = IrauctionResiduePriceFundsBid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.contractid == row.contractid
-            && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResiduePriceFundsBid1Row<'data> {
+    type Row<'other> = IrauctionResiduePriceFundsBid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid() && self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
             && self.linkedbidflag == row.linkedbidflag
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceFundsBid1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionResiduePriceFundsBid1Row<'data> {
     type PrimaryKey = IrauctionResiduePriceFundsBid1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.contractid == key.contractid
-            && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
+        self.auctionid() == key.auctionid && self.contractid() == key.contractid
+            && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
             && self.linkedbidflag == key.linkedbidflag
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResiduePriceFundsBid1PrimaryKey {
-    type Row = IrauctionResiduePriceFundsBid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.contractid == row.contractid
-            && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResiduePriceFundsBid1PrimaryKey {
+    type Row<'other> = IrauctionResiduePriceFundsBid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.contractid == row.contractid()
+            && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
             && self.linkedbidflag == row.linkedbidflag
     }
 }
@@ -3468,102 +6817,145 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePriceFundsBid1Primary
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("units",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("bidprice",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("linkedbidflag",
-                arrow2::datatypes::DataType::Decimal(6, 0), false),
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionResiduePriceFundsBid1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "units",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidprice",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "linkedbidflag",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut units_array = Vec::new();
-        let mut bidprice_array = Vec::new();
-        let mut linkedbidflag_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            units_array
-                .push({
-                    row.units
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            bidprice_array
-                .push({
-                    row.bidprice
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            linkedbidflag_array
-                .push({
-                    let mut val = row.linkedbidflag;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            auctionid_array.push(row.auctionid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionResiduePriceFundsBid1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            units_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            bidprice_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            linkedbidflag_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(units_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(bidprice_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(linkedbidflag_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .units_array
+            .append_option({
+                row.units
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bidprice_array
+            .append_option({
+                row.bidprice
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .linkedbidflag_array
+            .append_value({
+                let mut val = row.linkedbidflag;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.auctionid_array.append_value(row.auctionid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.units_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidprice_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.linkedbidflag_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResiduePriceFundsBid1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    units_array: arrow::array::builder::Decimal128Builder,
+    bidprice_array: arrow::array::builder::Decimal128Builder,
+    linkedbidflag_array: arrow::array::builder::Decimal128Builder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionResiduePublicData1;
+pub struct IrauctionResiduePublicData1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## RESIDUE_PUBLIC_DATA
@@ -3584,16 +6976,16 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
 /// * FROMREGIONID
 /// * INTERCONNECTORID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResiduePublicData1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResiduePublicData1Row<'data> {
     /// Unique id for each contract to be specified by AEMO
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// Version Number
     pub versionno: rust_decimal::Decimal,
     /// Unique interconnector identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Nominated source region for Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// Total units offered for auction
     pub unitsoffered: Option<rust_decimal::Decimal>,
     /// Units Sold (modified format and usage in March 2003 to support SRA Inter-Temporal Linking)
@@ -3603,61 +6995,196 @@ pub struct IrauctionResiduePublicData1 {
     /// Reserve price
     pub reserveprice: Option<rust_decimal::Decimal>,
     /// Date and time this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResiduePublicData1Row<'data> {
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResiduePublicData1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_PUBLIC_DATA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePublicData1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "UNITSOFFERED",
+        "UNITSSOLD",
+        "CLEARINGPRICE",
+        "RESERVEPRICE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionResiduePublicData1Row<'row>;
+    type FieldMapping = IrauctionResiduePublicData1Mapping;
     type PrimaryKey = IrauctionResiduePublicData1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_PUBLIC_DATA".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResiduePublicData1Row {
+            contractid: row.get_range("contractid", field_mapping.0[0])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[2])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[3])?,
+            unitsoffered: row
+                .get_opt_custom_parsed_at_idx(
+                    "unitsoffered",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unitssold: row
+                .get_opt_custom_parsed_at_idx(
+                    "unitssold",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearingprice: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearingprice",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            reserveprice: row
+                .get_opt_custom_parsed_at_idx(
+                    "reserveprice",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResiduePublicData1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResiduePublicData1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResiduePublicData1PrimaryKey {
         IrauctionResiduePublicData1PrimaryKey {
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            versionno: self.versionno,
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_public_data_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResiduePublicData1Row {
+            contractid: row.contractid.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            unitsoffered: row.unitsoffered.clone(),
+            unitssold: row.unitssold.clone(),
+            clearingprice: row.clearingprice.clone(),
+            reserveprice: row.reserveprice.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResiduePublicData1PrimaryKey {
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResiduePublicData1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResiduePublicData1 {
-    type Row = IrauctionResiduePublicData1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResiduePublicData1Row<'data> {
+    type Row<'other> = IrauctionResiduePublicData1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePublicData1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePublicData1Row<'data> {
     type PrimaryKey = IrauctionResiduePublicData1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
+        self.contractid() == key.contractid && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResiduePublicData1PrimaryKey {
-    type Row = IrauctionResiduePublicData1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResiduePublicData1PrimaryKey {
+    type Row<'other> = IrauctionResiduePublicData1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
             && self.versionno == row.versionno
     }
 }
@@ -3671,123 +7198,173 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResiduePublicData1PrimaryKey
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("unitsoffered",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("unitssold",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("clearingprice",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("reserveprice",
-                arrow2::datatypes::DataType::Decimal(17, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionResiduePublicData1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "unitsoffered",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unitssold",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearingprice",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reserveprice",
+                    arrow::datatypes::DataType::Decimal128(17, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut unitsoffered_array = Vec::new();
-        let mut unitssold_array = Vec::new();
-        let mut clearingprice_array = Vec::new();
-        let mut reserveprice_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            unitsoffered_array
-                .push({
-                    row.unitsoffered
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            unitssold_array
-                .push({
-                    row.unitssold
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            clearingprice_array
-                .push({
-                    row.clearingprice
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            reserveprice_array
-                .push({
-                    row.reserveprice
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionResiduePublicData1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            unitsoffered_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            unitssold_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            clearingprice_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            reserveprice_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(unitsoffered_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(unitssold_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(clearingprice_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reserveprice_array)
-                    .to(arrow2::datatypes::DataType::Decimal(17, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_value(row.contractid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder
+            .unitsoffered_array
+            .append_option({
+                row.unitsoffered
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unitssold_array
+            .append_option({
+                row.unitssold
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearingprice_array
+            .append_option({
+                row.clearingprice
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .reserveprice_array
+            .append_option({
+                row.reserveprice
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unitsoffered_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unitssold_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearingprice_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reserveprice_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResiduePublicData1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    unitsoffered_array: arrow::array::builder::Decimal128Builder,
+    unitssold_array: arrow::array::builder::Decimal128Builder,
+    clearingprice_array: arrow::array::builder::Decimal128Builder,
+    reserveprice_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionResidueTrk1;
+pub struct IrauctionResidueTrk1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## RESIDUE_TRK
@@ -3806,76 +7383,245 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
 ///
 /// * AUCTIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionResidueTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionResidueTrk1Row<'data> {
     /// SRA Contract identifier
-    pub contractid: Option<String>,
+    pub contractid: core::ops::Range<usize>,
     /// Contract run version
     pub versionno: rust_decimal::Decimal,
     /// Date auction results determined
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub rundate: Option<chrono::NaiveDateTime>,
     /// Date results published
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Authorising officer or process
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date the run is authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub postdate: Option<chrono::NaiveDateTime>,
     /// Name of authorising officer or process
-    pub postedby: Option<String>,
+    pub postedby: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Load status [SUCCESSFUL/CORRUPT]
-    pub status: Option<String>,
+    pub status: core::ops::Range<usize>,
     /// Unique id for each auction date. (new in March 2003 to support SRA Inter-Temporal Linking)
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionResidueTrk1Row<'data> {
+    pub fn contractid(&self) -> Option<&str> {
+        if self.contractid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.contractid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn postedby(&self) -> Option<&str> {
+        if self.postedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.postedby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn status(&self) -> Option<&str> {
+        if self.status.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.status.clone(),
+                ),
+            )
+        }
+    }
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionResidueTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "RESIDUE_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTID",
+        "VERSIONNO",
+        "RUNDATE",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "POSTDATE",
+        "POSTEDBY",
+        "LASTCHANGED",
+        "STATUS",
+        "AUCTIONID",
+    ];
+    type Row<'row> = IrauctionResidueTrk1Row<'row>;
+    type FieldMapping = IrauctionResidueTrk1Mapping;
     type PrimaryKey = IrauctionResidueTrk1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("RESIDUE_TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionResidueTrk1Row {
+            contractid: row.get_opt_range("contractid", field_mapping.0[0])?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rundate: row
+                .get_opt_custom_parsed_at_idx(
+                    "rundate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[4])?,
+            postdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "postdate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            postedby: row.get_opt_range("postedby", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            status: row.get_opt_range("status", field_mapping.0[8])?,
+            auctionid: row.get_range("auctionid", field_mapping.0[9])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionResidueTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionResidueTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionResidueTrk1PrimaryKey {
         IrauctionResidueTrk1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            versionno: self.versionno,
+            auctionid: row.auctionid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_residue_trk_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionResidueTrk1Row {
+            contractid: row.contractid.clone(),
+            versionno: row.versionno.clone(),
+            rundate: row.rundate.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            postdate: row.postdate.clone(),
+            postedby: row.postedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            status: row.status.clone(),
+            auctionid: row.auctionid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionResidueTrk1PrimaryKey {
-    pub auctionid: String,
+    pub auctionid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for IrauctionResidueTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionResidueTrk1 {
-    type Row = IrauctionResidueTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueTrk1Row<'data> {
+    type Row<'other> = IrauctionResidueTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionResidueTrk1Row<'data> {
     type PrimaryKey = IrauctionResidueTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.versionno == key.versionno
+        self.auctionid() == key.auctionid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionResidueTrk1PrimaryKey {
-    type Row = IrauctionResidueTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow for IrauctionResidueTrk1PrimaryKey {
+    type Row<'other> = IrauctionResidueTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueTrk1PrimaryKey {
@@ -3886,100 +7632,158 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionResidueTrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("rundate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("postdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("postedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("status",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false)
-            ],
+    type Builder = IrauctionResidueTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "rundate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "postdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "postedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "status",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut contractid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut rundate_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut postdate_array = Vec::new();
-        let mut postedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut status_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        for row in partition {
-            contractid_array.push(row.contractid);
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            rundate_array.push(row.rundate.map(|val| val.timestamp()));
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            postdate_array.push(row.postdate.map(|val| val.timestamp()));
-            postedby_array.push(row.postedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            status_array.push(row.status);
-            auctionid_array.push(row.auctionid);
+    fn new_builder() -> Self::Builder {
+        IrauctionResidueTrk1Builder {
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            rundate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            postdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            postedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            status_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rundate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(postdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(postedby_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(status_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contractid_array.append_option(row.contractid());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.rundate_array.append_option(row.rundate.map(|val| val.timestamp()));
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder.postdate_array.append_option(row.postdate.map(|val| val.timestamp()));
+        builder.postedby_array.append_option(row.postedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.status_array.append_option(row.status());
+        builder.auctionid_array.append_value(row.auctionid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rundate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.postdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.postedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.status_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionResidueTrk1Builder {
+    contractid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    rundate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    postdate_array: arrow::array::builder::TimestampSecondBuilder,
+    postedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    status_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+}
+pub struct IrauctionSraCashSecurity1;
+pub struct IrauctionSraCashSecurity1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## SRA_CASH_SECURITY
@@ -3996,75 +7800,232 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
 /// # Primary Key Columns
 ///
 /// * CASH_SECURITY_ID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraCashSecurity1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraCashSecurity1Row<'data> {
     /// Unique identifier for the cash security.
-    pub cash_security_id: String,
+    pub cash_security_id: core::ops::Range<usize>,
     /// Unique identifier for the auction participant lodging the cash security.
-    pub participantid: Option<String>,
+    pub participantid: core::ops::Range<usize>,
     /// Date AEMO received the Cash Security deposit
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub provision_date: Option<chrono::NaiveDateTime>,
     /// Dollar amount of the cash security.
     pub cash_amount: Option<rust_decimal::Decimal>,
     /// The interest account ID for calculating the interest payment
-    pub interest_acct_id: Option<String>,
+    pub interest_acct_id: core::ops::Range<usize>,
     /// Authorised date
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Date the entire Cash Security amount was returned to the Auction Participant
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub finalreturndate: Option<chrono::NaiveDateTime>,
     /// Returned Dollar amount of the Cash Security.
     pub cash_security_returned: Option<rust_decimal::Decimal>,
     /// Cash Security deleted date. For valid records, DeletionDate will be Null.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub deletiondate: Option<chrono::NaiveDateTime>,
     /// The date and time this record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraCashSecurity1Row<'data> {
+    pub fn cash_security_id(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.cash_security_id.clone(),
+        )
+    }
+    pub fn participantid(&self) -> Option<&str> {
+        if self.participantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.participantid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn interest_acct_id(&self) -> Option<&str> {
+        if self.interest_acct_id.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.interest_acct_id.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraCashSecurity1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_CASH_SECURITY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraCashSecurity1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CASH_SECURITY_ID",
+        "PARTICIPANTID",
+        "PROVISION_DATE",
+        "CASH_AMOUNT",
+        "INTEREST_ACCT_ID",
+        "AUTHORISEDDATE",
+        "FINALRETURNDATE",
+        "CASH_SECURITY_RETURNED",
+        "DELETIONDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionSraCashSecurity1Row<'row>;
+    type FieldMapping = IrauctionSraCashSecurity1Mapping;
     type PrimaryKey = IrauctionSraCashSecurity1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_CASH_SECURITY".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraCashSecurity1Row {
+            cash_security_id: row.get_range("cash_security_id", field_mapping.0[0])?,
+            participantid: row.get_opt_range("participantid", field_mapping.0[1])?,
+            provision_date: row
+                .get_opt_custom_parsed_at_idx(
+                    "provision_date",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            cash_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "cash_amount",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interest_acct_id: row.get_opt_range("interest_acct_id", field_mapping.0[4])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            finalreturndate: row
+                .get_opt_custom_parsed_at_idx(
+                    "finalreturndate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            cash_security_returned: row
+                .get_opt_custom_parsed_at_idx(
+                    "cash_security_returned",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            deletiondate: row
+                .get_opt_custom_parsed_at_idx(
+                    "deletiondate",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraCashSecurity1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraCashSecurity1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraCashSecurity1PrimaryKey {
         IrauctionSraCashSecurity1PrimaryKey {
-            cash_security_id: self.cash_security_id.clone(),
+            cash_security_id: row.cash_security_id().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_cash_security_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraCashSecurity1Row {
+            cash_security_id: row.cash_security_id.clone(),
+            participantid: row.participantid.clone(),
+            provision_date: row.provision_date.clone(),
+            cash_amount: row.cash_amount.clone(),
+            interest_acct_id: row.interest_acct_id.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            finalreturndate: row.finalreturndate.clone(),
+            cash_security_returned: row.cash_security_returned.clone(),
+            deletiondate: row.deletiondate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraCashSecurity1PrimaryKey {
-    pub cash_security_id: String,
+    pub cash_security_id: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraCashSecurity1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraCashSecurity1 {
-    type Row = IrauctionSraCashSecurity1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.cash_security_id == row.cash_security_id
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraCashSecurity1Row<'data> {
+    type Row<'other> = IrauctionSraCashSecurity1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.cash_security_id() == row.cash_security_id()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraCashSecurity1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionSraCashSecurity1Row<'data> {
     type PrimaryKey = IrauctionSraCashSecurity1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.cash_security_id == key.cash_security_id
+        self.cash_security_id() == key.cash_security_id
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraCashSecurity1PrimaryKey {
-    type Row = IrauctionSraCashSecurity1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.cash_security_id == row.cash_security_id
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraCashSecurity1PrimaryKey {
+    type Row<'other> = IrauctionSraCashSecurity1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.cash_security_id == row.cash_security_id()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraCashSecurity1PrimaryKey {
@@ -4075,111 +8036,178 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraCashSecurity1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("cash_security_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("provision_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("cash_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("interest_acct_id",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("finalreturndate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("cash_security_returned",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("deletiondate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionSraCashSecurity1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "cash_security_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "provision_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "cash_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "interest_acct_id",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "finalreturndate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "cash_security_returned",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "deletiondate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut cash_security_id_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut provision_date_array = Vec::new();
-        let mut cash_amount_array = Vec::new();
-        let mut interest_acct_id_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut finalreturndate_array = Vec::new();
-        let mut cash_security_returned_array = Vec::new();
-        let mut deletiondate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            cash_security_id_array.push(row.cash_security_id);
-            participantid_array.push(row.participantid);
-            provision_date_array.push(row.provision_date.map(|val| val.timestamp()));
-            cash_amount_array
-                .push({
-                    row.cash_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            interest_acct_id_array.push(row.interest_acct_id);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            finalreturndate_array.push(row.finalreturndate.map(|val| val.timestamp()));
-            cash_security_returned_array
-                .push({
-                    row.cash_security_returned
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            deletiondate_array.push(row.deletiondate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionSraCashSecurity1Builder {
+            cash_security_id_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            provision_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            cash_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            finalreturndate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            cash_security_returned_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            deletiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(cash_security_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(provision_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(cash_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(interest_acct_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(finalreturndate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(cash_security_returned_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(deletiondate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.cash_security_id_array.append_value(row.cash_security_id());
+        builder.participantid_array.append_option(row.participantid());
+        builder
+            .provision_date_array
+            .append_option(row.provision_date.map(|val| val.timestamp()));
+        builder
+            .cash_amount_array
+            .append_option({
+                row.cash_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder.interest_acct_id_array.append_option(row.interest_acct_id());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder
+            .finalreturndate_array
+            .append_option(row.finalreturndate.map(|val| val.timestamp()));
+        builder
+            .cash_security_returned_array
+            .append_option({
+                row.cash_security_returned
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .deletiondate_array
+            .append_option(row.deletiondate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.cash_security_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.provision_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cash_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interest_acct_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.finalreturndate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cash_security_returned_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.deletiondate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraCashSecurity1Builder {
+    cash_security_id_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    provision_date_array: arrow::array::builder::TimestampSecondBuilder,
+    cash_amount_array: arrow::array::builder::Decimal128Builder,
+    interest_acct_id_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    finalreturndate_array: arrow::array::builder::TimestampSecondBuilder,
+    cash_security_returned_array: arrow::array::builder::Decimal128Builder,
+    deletiondate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionSraFinancialAucpayDetail1;
+pub struct IrauctionSraFinancialAucpayDetail1Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## SRA_FINANCIAL_AUCPAY_DETAIL
@@ -4202,8 +8230,8 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucpayDetail1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraFinancialAucpayDetail1Row<'data> {
     /// Year of the Tranche
     pub sra_year: i64,
     /// Relevant Quarter of the Tranche
@@ -4211,13 +8239,13 @@ pub struct IrauctionSraFinancialAucpayDetail1 {
     /// SRA Run Number
     pub sra_runno: i64,
     /// Unique  participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// The identifier for the Directional Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// The source Region identifier for the Directional Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// The SRA contract identifier
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// The Maximum Units Available for purchase in the Auction
     pub maximum_units: Option<rust_decimal::Decimal>,
     /// The total number of Allocated Units in the Auction, including Cancelled Units by an Auction Participant
@@ -4237,72 +8265,263 @@ pub struct IrauctionSraFinancialAucpayDetail1 {
     /// The payment amount owed by AEMO, including shortfall
     pub net_payment_amount: Option<rust_decimal::Decimal>,
     /// The date and time this record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraFinancialAucpayDetail1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraFinancialAucpayDetail1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUCPAY_DETAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucpayDetail1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "SRA_RUNNO",
+        "PARTICIPANTID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "CONTRACTID",
+        "MAXIMUM_UNITS",
+        "UNITS_SOLD",
+        "SHORTFALL_UNITS",
+        "RESERVE_PRICE",
+        "CLEARING_PRICE",
+        "PAYMENT_AMOUNT",
+        "SHORTFALL_AMOUNT",
+        "ALLOCATION",
+        "NET_PAYMENT_AMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionSraFinancialAucpayDetail1Row<'row>;
+    type FieldMapping = IrauctionSraFinancialAucpayDetail1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucpayDetail1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_FINANCIAL_AUCPAY_DETAIL".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraFinancialAucpayDetail1Row {
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[0])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[1])?,
+            sra_runno: row.get_parsed_at_idx("sra_runno", field_mapping.0[2])?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[4])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[5])?,
+            contractid: row.get_range("contractid", field_mapping.0[6])?,
+            maximum_units: row
+                .get_opt_custom_parsed_at_idx(
+                    "maximum_units",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            units_sold: row
+                .get_opt_custom_parsed_at_idx(
+                    "units_sold",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            shortfall_units: row
+                .get_opt_custom_parsed_at_idx(
+                    "shortfall_units",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            reserve_price: row
+                .get_opt_custom_parsed_at_idx(
+                    "reserve_price",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearing_price: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearing_price",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            payment_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "payment_amount",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            shortfall_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "shortfall_amount",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            allocation: row
+                .get_opt_custom_parsed_at_idx(
+                    "allocation",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            net_payment_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "net_payment_amount",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraFinancialAucpayDetail1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraFinancialAucpayDetail1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraFinancialAucpayDetail1PrimaryKey {
         IrauctionSraFinancialAucpayDetail1PrimaryKey {
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter,
-            sra_runno: self.sra_runno,
-            sra_year: self.sra_year,
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            participantid: row.participantid().to_string(),
+            sra_quarter: row.sra_quarter,
+            sra_runno: row.sra_runno,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_financial_aucpay_detail_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraFinancialAucpayDetail1Row {
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            sra_runno: row.sra_runno.clone(),
+            participantid: row.participantid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            contractid: row.contractid.clone(),
+            maximum_units: row.maximum_units.clone(),
+            units_sold: row.units_sold.clone(),
+            shortfall_units: row.shortfall_units.clone(),
+            reserve_price: row.reserve_price.clone(),
+            clearing_price: row.clearing_price.clone(),
+            payment_amount: row.payment_amount.clone(),
+            shortfall_amount: row.shortfall_amount.clone(),
+            allocation: row.allocation.clone(),
+            net_payment_amount: row.net_payment_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraFinancialAucpayDetail1PrimaryKey {
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
-    pub participantid: String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub sra_quarter: i64,
     pub sra_runno: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraFinancialAucpayDetail1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpayDetail1 {
-    type Row = IrauctionSraFinancialAucpayDetail1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpayDetail1Row<'data> {
+    type Row<'other> = IrauctionSraFinancialAucpayDetail1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
+            && self.participantid() == row.participantid()
             && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucpayDetail1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraFinancialAucpayDetail1Row<'data> {
     type PrimaryKey = IrauctionSraFinancialAucpayDetail1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
+        self.contractid() == key.contractid && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
+            && self.participantid() == key.participantid
             && self.sra_quarter == key.sra_quarter && self.sra_runno == key.sra_runno
             && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpayDetail1PrimaryKey {
-    type Row = IrauctionSraFinancialAucpayDetail1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpayDetail1PrimaryKey {
+    type Row<'other> = IrauctionSraFinancialAucpayDetail1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
+            && self.participantid == row.participantid()
             && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
@@ -4319,206 +8538,291 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucpayDetail1Pri
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("maximum_units",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("units_sold",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("shortfall_units",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("reserve_price",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("clearing_price",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("payment_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("shortfall_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("allocation",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("net_payment_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionSraFinancialAucpayDetail1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "maximum_units",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "units_sold",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "shortfall_units",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reserve_price",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearing_price",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "payment_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "shortfall_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "allocation",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "net_payment_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut sra_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut contractid_array = Vec::new();
-        let mut maximum_units_array = Vec::new();
-        let mut units_sold_array = Vec::new();
-        let mut shortfall_units_array = Vec::new();
-        let mut reserve_price_array = Vec::new();
-        let mut clearing_price_array = Vec::new();
-        let mut payment_amount_array = Vec::new();
-        let mut shortfall_amount_array = Vec::new();
-        let mut allocation_array = Vec::new();
-        let mut net_payment_amount_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            sra_runno_array.push(row.sra_runno);
-            participantid_array.push(row.participantid);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            contractid_array.push(row.contractid);
-            maximum_units_array
-                .push({
-                    row.maximum_units
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            units_sold_array
-                .push({
-                    row.units_sold
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            shortfall_units_array
-                .push({
-                    row.shortfall_units
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            reserve_price_array
-                .push({
-                    row.reserve_price
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            clearing_price_array
-                .push({
-                    row.clearing_price
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            payment_amount_array
-                .push({
-                    row.payment_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            shortfall_amount_array
-                .push({
-                    row.shortfall_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            allocation_array
-                .push({
-                    row.allocation
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            net_payment_amount_array
-                .push({
-                    row.net_payment_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionSraFinancialAucpayDetail1Builder {
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            sra_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            maximum_units_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            units_sold_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            shortfall_units_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            reserve_price_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            clearing_price_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            payment_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            shortfall_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            allocation_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            net_payment_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maximum_units_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(units_sold_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(shortfall_units_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reserve_price_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(clearing_price_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(payment_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(shortfall_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(allocation_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(net_payment_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.sra_runno_array.append_value(row.sra_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder.contractid_array.append_value(row.contractid());
+        builder
+            .maximum_units_array
+            .append_option({
+                row.maximum_units
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .units_sold_array
+            .append_option({
+                row.units_sold
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .shortfall_units_array
+            .append_option({
+                row.shortfall_units
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .reserve_price_array
+            .append_option({
+                row.reserve_price
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearing_price_array
+            .append_option({
+                row.clearing_price
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .payment_amount_array
+            .append_option({
+                row.payment_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .shortfall_amount_array
+            .append_option({
+                row.shortfall_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .allocation_array
+            .append_option({
+                row.allocation
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .net_payment_amount_array
+            .append_option({
+                row.net_payment_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.maximum_units_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.units_sold_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.shortfall_units_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reserve_price_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearing_price_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.payment_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.shortfall_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.allocation_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.net_payment_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraFinancialAucpayDetail1Builder {
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    sra_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::builder::StringBuilder,
+    maximum_units_array: arrow::array::builder::Decimal128Builder,
+    units_sold_array: arrow::array::builder::Decimal128Builder,
+    shortfall_units_array: arrow::array::builder::Decimal128Builder,
+    reserve_price_array: arrow::array::builder::Decimal128Builder,
+    clearing_price_array: arrow::array::builder::Decimal128Builder,
+    payment_amount_array: arrow::array::builder::Decimal128Builder,
+    shortfall_amount_array: arrow::array::builder::Decimal128Builder,
+    allocation_array: arrow::array::builder::Decimal128Builder,
+    net_payment_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionSraFinancialAucpaySum1;
+pub struct IrauctionSraFinancialAucpaySum1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## SRA_FINANCIAL_AUCPAY_SUM
@@ -4538,8 +8842,8 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucpaySum1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraFinancialAucpaySum1Row<'data> {
     /// Year of the Tranche
     pub sra_year: i64,
     /// Relevant Quarter of the Tranche
@@ -4547,7 +8851,7 @@ pub struct IrauctionSraFinancialAucpaySum1 {
     /// SRA Run Number
     pub sra_runno: i64,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// The total auction proceeds allocated to the TNSP
     pub gross_proceeds_amount: Option<rust_decimal::Decimal>,
     /// The total auction proceeds allocated to all TNSPs in the SRA quarter
@@ -4559,58 +8863,189 @@ pub struct IrauctionSraFinancialAucpaySum1 {
     /// The net payment amount owed by AEMO to the TNSP
     pub net_payment_amount: Option<rust_decimal::Decimal>,
     /// The date and time this record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraFinancialAucpaySum1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraFinancialAucpaySum1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUCPAY_SUM";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucpaySum1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "SRA_RUNNO",
+        "PARTICIPANTID",
+        "GROSS_PROCEEDS_AMOUNT",
+        "TOTAL_GROSS_PROCEEDS_AMOUNT",
+        "SHORTFALL_AMOUNT",
+        "TOTAL_SHORTFALL_AMOUNT",
+        "NET_PAYMENT_AMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionSraFinancialAucpaySum1Row<'row>;
+    type FieldMapping = IrauctionSraFinancialAucpaySum1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucpaySum1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_FINANCIAL_AUCPAY_SUM".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraFinancialAucpaySum1Row {
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[0])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[1])?,
+            sra_runno: row.get_parsed_at_idx("sra_runno", field_mapping.0[2])?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            gross_proceeds_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "gross_proceeds_amount",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_gross_proceeds_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_gross_proceeds_amount",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            shortfall_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "shortfall_amount",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_shortfall_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_shortfall_amount",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            net_payment_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "net_payment_amount",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraFinancialAucpaySum1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraFinancialAucpaySum1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraFinancialAucpaySum1PrimaryKey {
         IrauctionSraFinancialAucpaySum1PrimaryKey {
-            participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter,
-            sra_runno: self.sra_runno,
-            sra_year: self.sra_year,
+            participantid: row.participantid().to_string(),
+            sra_quarter: row.sra_quarter,
+            sra_runno: row.sra_runno,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_financial_aucpay_sum_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraFinancialAucpaySum1Row {
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            sra_runno: row.sra_runno.clone(),
+            participantid: row.participantid.clone(),
+            gross_proceeds_amount: row.gross_proceeds_amount.clone(),
+            total_gross_proceeds_amount: row.total_gross_proceeds_amount.clone(),
+            shortfall_amount: row.shortfall_amount.clone(),
+            total_shortfall_amount: row.total_shortfall_amount.clone(),
+            net_payment_amount: row.net_payment_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraFinancialAucpaySum1PrimaryKey {
-    pub participantid: String,
+    pub participantid: alloc::string::String,
     pub sra_quarter: i64,
     pub sra_runno: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraFinancialAucpaySum1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpaySum1 {
-    type Row = IrauctionSraFinancialAucpaySum1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid && self.sra_quarter == row.sra_quarter
-            && self.sra_runno == row.sra_runno && self.sra_year == row.sra_year
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpaySum1Row<'data> {
+    type Row<'other> = IrauctionSraFinancialAucpaySum1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.participantid() == row.participantid()
+            && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
+            && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucpaySum1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraFinancialAucpaySum1Row<'data> {
     type PrimaryKey = IrauctionSraFinancialAucpaySum1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid && self.sra_quarter == key.sra_quarter
+        self.participantid() == key.participantid && self.sra_quarter == key.sra_quarter
             && self.sra_runno == key.sra_runno && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpaySum1PrimaryKey {
-    type Row = IrauctionSraFinancialAucpaySum1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid && self.sra_quarter == row.sra_quarter
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucpaySum1PrimaryKey {
+    type Row<'other> = IrauctionSraFinancialAucpaySum1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.participantid == row.participantid() && self.sra_quarter == row.sra_quarter
             && self.sra_runno == row.sra_runno && self.sra_year == row.sra_year
     }
 }
@@ -4623,129 +9058,186 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucpaySum1Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("gross_proceeds_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("total_gross_proceeds_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("shortfall_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("total_shortfall_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("net_payment_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionSraFinancialAucpaySum1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "gross_proceeds_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_gross_proceeds_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "shortfall_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_shortfall_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "net_payment_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut sra_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut gross_proceeds_amount_array = Vec::new();
-        let mut total_gross_proceeds_amount_array = Vec::new();
-        let mut shortfall_amount_array = Vec::new();
-        let mut total_shortfall_amount_array = Vec::new();
-        let mut net_payment_amount_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            sra_runno_array.push(row.sra_runno);
-            participantid_array.push(row.participantid);
-            gross_proceeds_amount_array
-                .push({
-                    row.gross_proceeds_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            total_gross_proceeds_amount_array
-                .push({
-                    row.total_gross_proceeds_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            shortfall_amount_array
-                .push({
-                    row.shortfall_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            total_shortfall_amount_array
-                .push({
-                    row.total_shortfall_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            net_payment_amount_array
-                .push({
-                    row.net_payment_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionSraFinancialAucpaySum1Builder {
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            sra_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            shortfall_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_shortfall_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            net_payment_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(gross_proceeds_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(total_gross_proceeds_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(shortfall_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(total_shortfall_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(net_payment_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.sra_runno_array.append_value(row.sra_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .gross_proceeds_amount_array
+            .append_option({
+                row.gross_proceeds_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_gross_proceeds_amount_array
+            .append_option({
+                row.total_gross_proceeds_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .shortfall_amount_array
+            .append_option({
+                row.shortfall_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_shortfall_amount_array
+            .append_option({
+                row.total_shortfall_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .net_payment_amount_array
+            .append_option({
+                row.net_payment_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.gross_proceeds_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.total_gross_proceeds_amount_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.shortfall_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_shortfall_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.net_payment_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraFinancialAucpaySum1Builder {
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    sra_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder,
+    total_gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder,
+    shortfall_amount_array: arrow::array::builder::Decimal128Builder,
+    total_shortfall_amount_array: arrow::array::builder::Decimal128Builder,
+    net_payment_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionSraFinancialAucMardetail1;
+pub struct IrauctionSraFinancialAucMardetail1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## SRA_FINANCIAL_AUC_MARDETAIL
@@ -4766,8 +9258,8 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucMardetail1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraFinancialAucMardetail1Row<'data> {
     /// Year of the Tranche
     pub sra_year: i64,
     /// Relevant Quarter of the Tranche
@@ -4775,70 +9267,175 @@ pub struct IrauctionSraFinancialAucMardetail1 {
     /// SRA Run Number
     pub sra_runno: i64,
     /// The participant identifier.
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Unique identifier for the cash security.
-    pub cash_security_id: String,
+    pub cash_security_id: core::ops::Range<usize>,
     /// The amount returned to the Auction participant from this cash security.
     pub returned_amount: Option<rust_decimal::Decimal>,
     /// The amount of interest applicable to the returned amount.
     pub returned_interest: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraFinancialAucMardetail1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn cash_security_id(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.cash_security_id.clone(),
+        )
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraFinancialAucMardetail1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_MARDETAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucMardetail1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "SRA_RUNNO",
+        "PARTICIPANTID",
+        "CASH_SECURITY_ID",
+        "RETURNED_AMOUNT",
+        "RETURNED_INTEREST",
+    ];
+    type Row<'row> = IrauctionSraFinancialAucMardetail1Row<'row>;
+    type FieldMapping = IrauctionSraFinancialAucMardetail1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucMardetail1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_FINANCIAL_AUC_MARDETAIL".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraFinancialAucMardetail1Row {
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[0])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[1])?,
+            sra_runno: row.get_parsed_at_idx("sra_runno", field_mapping.0[2])?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            cash_security_id: row.get_range("cash_security_id", field_mapping.0[4])?,
+            returned_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "returned_amount",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            returned_interest: row
+                .get_opt_custom_parsed_at_idx(
+                    "returned_interest",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraFinancialAucMardetail1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraFinancialAucMardetail1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraFinancialAucMardetail1PrimaryKey {
         IrauctionSraFinancialAucMardetail1PrimaryKey {
-            cash_security_id: self.cash_security_id.clone(),
-            participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter,
-            sra_runno: self.sra_runno,
-            sra_year: self.sra_year,
+            cash_security_id: row.cash_security_id().to_string(),
+            participantid: row.participantid().to_string(),
+            sra_quarter: row.sra_quarter,
+            sra_runno: row.sra_runno,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_financial_auc_mardetail_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraFinancialAucMardetail1Row {
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            sra_runno: row.sra_runno.clone(),
+            participantid: row.participantid.clone(),
+            cash_security_id: row.cash_security_id.clone(),
+            returned_amount: row.returned_amount.clone(),
+            returned_interest: row.returned_interest.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraFinancialAucMardetail1PrimaryKey {
-    pub cash_security_id: String,
-    pub participantid: String,
+    pub cash_security_id: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub sra_quarter: i64,
     pub sra_runno: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraFinancialAucMardetail1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMardetail1 {
-    type Row = IrauctionSraFinancialAucMardetail1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.cash_security_id == row.cash_security_id
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMardetail1Row<'data> {
+    type Row<'other> = IrauctionSraFinancialAucMardetail1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.cash_security_id() == row.cash_security_id()
+            && self.participantid() == row.participantid()
             && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucMardetail1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraFinancialAucMardetail1Row<'data> {
     type PrimaryKey = IrauctionSraFinancialAucMardetail1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.cash_security_id == key.cash_security_id
-            && self.participantid == key.participantid
+        self.cash_security_id() == key.cash_security_id
+            && self.participantid() == key.participantid
             && self.sra_quarter == key.sra_quarter && self.sra_runno == key.sra_runno
             && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMardetail1PrimaryKey {
-    type Row = IrauctionSraFinancialAucMardetail1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.cash_security_id == row.cash_security_id
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMardetail1PrimaryKey {
+    type Row<'other> = IrauctionSraFinancialAucMardetail1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.cash_security_id == row.cash_security_id()
+            && self.participantid == row.participantid()
             && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
@@ -4854,86 +9451,123 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucMardetail1Pri
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMardetail1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("cash_security_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("returned_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("returned_interest",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionSraFinancialAucMardetail1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "cash_security_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "returned_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "returned_interest",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut sra_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut cash_security_id_array = Vec::new();
-        let mut returned_amount_array = Vec::new();
-        let mut returned_interest_array = Vec::new();
-        for row in partition {
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            sra_runno_array.push(row.sra_runno);
-            participantid_array.push(row.participantid);
-            cash_security_id_array.push(row.cash_security_id);
-            returned_amount_array
-                .push({
-                    row.returned_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            returned_interest_array
-                .push({
-                    row.returned_interest
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionSraFinancialAucMardetail1Builder {
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            sra_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            cash_security_id_array: arrow::array::builder::StringBuilder::new(),
+            returned_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            returned_interest_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(cash_security_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(returned_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(returned_interest_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.sra_runno_array.append_value(row.sra_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder.cash_security_id_array.append_value(row.cash_security_id());
+        builder
+            .returned_amount_array
+            .append_option({
+                row.returned_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .returned_interest_array
+            .append_option({
+                row.returned_interest
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cash_security_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.returned_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.returned_interest_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraFinancialAucMardetail1Builder {
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    sra_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    cash_security_id_array: arrow::array::builder::StringBuilder,
+    returned_amount_array: arrow::array::builder::Decimal128Builder,
+    returned_interest_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionSraFinancialAucMargin1;
+pub struct IrauctionSraFinancialAucMargin1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## SRA_FINANCIAL_AUC_MARGIN
@@ -4953,8 +9587,8 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMardetail1 {
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucMargin1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraFinancialAucMargin1Row<'data> {
     /// Year of the Tranche
     pub sra_year: i64,
     /// Relevant Quarter of the Tranche
@@ -4962,7 +9596,7 @@ pub struct IrauctionSraFinancialAucMargin1 {
     /// SRA Run Number
     pub sra_runno: i64,
     /// Unique  participant identifier.
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Total cash security held by the participant.
     pub total_cash_security: Option<rust_decimal::Decimal>,
     /// The amount of trading  cash security required to be held by the participant after settlement.
@@ -4971,56 +9605,170 @@ pub struct IrauctionSraFinancialAucMargin1 {
     pub returned_margin: Option<rust_decimal::Decimal>,
     /// The amount of interest applicable to returned cash security amounts.
     pub returned_margin_interest: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraFinancialAucMargin1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraFinancialAucMargin1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_MARGIN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucMargin1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "SRA_RUNNO",
+        "PARTICIPANTID",
+        "TOTAL_CASH_SECURITY",
+        "REQUIRED_MARGIN",
+        "RETURNED_MARGIN",
+        "RETURNED_MARGIN_INTEREST",
+    ];
+    type Row<'row> = IrauctionSraFinancialAucMargin1Row<'row>;
+    type FieldMapping = IrauctionSraFinancialAucMargin1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucMargin1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_FINANCIAL_AUC_MARGIN".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraFinancialAucMargin1Row {
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[0])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[1])?,
+            sra_runno: row.get_parsed_at_idx("sra_runno", field_mapping.0[2])?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            total_cash_security: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_cash_security",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            required_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "required_margin",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            returned_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "returned_margin",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            returned_margin_interest: row
+                .get_opt_custom_parsed_at_idx(
+                    "returned_margin_interest",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraFinancialAucMargin1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraFinancialAucMargin1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraFinancialAucMargin1PrimaryKey {
         IrauctionSraFinancialAucMargin1PrimaryKey {
-            participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter,
-            sra_runno: self.sra_runno,
-            sra_year: self.sra_year,
+            participantid: row.participantid().to_string(),
+            sra_quarter: row.sra_quarter,
+            sra_runno: row.sra_runno,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_financial_auc_margin_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraFinancialAucMargin1Row {
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            sra_runno: row.sra_runno.clone(),
+            participantid: row.participantid.clone(),
+            total_cash_security: row.total_cash_security.clone(),
+            required_margin: row.required_margin.clone(),
+            returned_margin: row.returned_margin.clone(),
+            returned_margin_interest: row.returned_margin_interest.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraFinancialAucMargin1PrimaryKey {
-    pub participantid: String,
+    pub participantid: alloc::string::String,
     pub sra_quarter: i64,
     pub sra_runno: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraFinancialAucMargin1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMargin1 {
-    type Row = IrauctionSraFinancialAucMargin1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid && self.sra_quarter == row.sra_quarter
-            && self.sra_runno == row.sra_runno && self.sra_year == row.sra_year
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMargin1Row<'data> {
+    type Row<'other> = IrauctionSraFinancialAucMargin1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.participantid() == row.participantid()
+            && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
+            && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucMargin1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraFinancialAucMargin1Row<'data> {
     type PrimaryKey = IrauctionSraFinancialAucMargin1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid && self.sra_quarter == key.sra_quarter
+        self.participantid() == key.participantid && self.sra_quarter == key.sra_quarter
             && self.sra_runno == key.sra_runno && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMargin1PrimaryKey {
-    type Row = IrauctionSraFinancialAucMargin1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid && self.sra_quarter == row.sra_quarter
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucMargin1PrimaryKey {
+    type Row<'other> = IrauctionSraFinancialAucMargin1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.participantid == row.participantid() && self.sra_quarter == row.sra_quarter
             && self.sra_runno == row.sra_runno && self.sra_year == row.sra_year
     }
 }
@@ -5033,107 +9781,152 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucMargin1Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMargin1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("total_cash_security",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("required_margin",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("returned_margin",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("returned_margin_interest",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionSraFinancialAucMargin1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_cash_security",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "required_margin",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "returned_margin",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "returned_margin_interest",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut sra_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut total_cash_security_array = Vec::new();
-        let mut required_margin_array = Vec::new();
-        let mut returned_margin_array = Vec::new();
-        let mut returned_margin_interest_array = Vec::new();
-        for row in partition {
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            sra_runno_array.push(row.sra_runno);
-            participantid_array.push(row.participantid);
-            total_cash_security_array
-                .push({
-                    row.total_cash_security
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            required_margin_array
-                .push({
-                    row.required_margin
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            returned_margin_array
-                .push({
-                    row.returned_margin
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            returned_margin_interest_array
-                .push({
-                    row.returned_margin_interest
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionSraFinancialAucMargin1Builder {
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            sra_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            total_cash_security_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            required_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            returned_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            returned_margin_interest_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(total_cash_security_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(required_margin_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(returned_margin_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(returned_margin_interest_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.sra_runno_array.append_value(row.sra_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .total_cash_security_array
+            .append_option({
+                row.total_cash_security
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .required_margin_array
+            .append_option({
+                row.required_margin
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .returned_margin_array
+            .append_option({
+                row.returned_margin
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .returned_margin_interest_array
+            .append_option({
+                row.returned_margin_interest
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_cash_security_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.required_margin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.returned_margin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.returned_margin_interest_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraFinancialAucMargin1Builder {
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    sra_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    total_cash_security_array: arrow::array::builder::Decimal128Builder,
+    required_margin_array: arrow::array::builder::Decimal128Builder,
+    returned_margin_array: arrow::array::builder::Decimal128Builder,
+    returned_margin_interest_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionSraFinancialAucReceipts1;
+pub struct IrauctionSraFinancialAucReceipts1Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## SRA_FINANCIAL_AUC_RECEIPTS
@@ -5156,8 +9949,8 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMargin1 {
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialAucReceipts1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraFinancialAucReceipts1Row<'data> {
     /// Year of the Tranche
     pub sra_year: i64,
     /// Relevant Quarter of the Tranche
@@ -5165,13 +9958,13 @@ pub struct IrauctionSraFinancialAucReceipts1 {
     /// SRA Run Number
     pub sra_runno: i64,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// The identifier for the Directional Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// The source region identifier for the Directional Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// The SRA contract identifier
-    pub contractid: String,
+    pub contractid: core::ops::Range<usize>,
     /// The number of units purchased
     pub units_purchased: Option<rust_decimal::Decimal>,
     /// The clearing price of the auction
@@ -5179,76 +9972,231 @@ pub struct IrauctionSraFinancialAucReceipts1 {
     /// The payment amount owed to AEMO
     pub receipt_amount: Option<rust_decimal::Decimal>,
     /// The last changed date for the record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Dollar value of Cancelled Units in the Auction for the Auction Participant
     pub proceeds_amount: Option<rust_decimal::Decimal>,
     /// Units cancelled in the auction by the Auction  participant.
     pub units_sold: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraFinancialAucReceipts1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraFinancialAucReceipts1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_RECEIPTS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucReceipts1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "SRA_RUNNO",
+        "PARTICIPANTID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "CONTRACTID",
+        "UNITS_PURCHASED",
+        "CLEARING_PRICE",
+        "RECEIPT_AMOUNT",
+        "LASTCHANGED",
+        "PROCEEDS_AMOUNT",
+        "UNITS_SOLD",
+    ];
+    type Row<'row> = IrauctionSraFinancialAucReceipts1Row<'row>;
+    type FieldMapping = IrauctionSraFinancialAucReceipts1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucReceipts1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_FINANCIAL_AUC_RECEIPTS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraFinancialAucReceipts1Row {
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[0])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[1])?,
+            sra_runno: row.get_parsed_at_idx("sra_runno", field_mapping.0[2])?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[4])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[5])?,
+            contractid: row.get_range("contractid", field_mapping.0[6])?,
+            units_purchased: row
+                .get_opt_custom_parsed_at_idx(
+                    "units_purchased",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearing_price: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearing_price",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            receipt_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "receipt_amount",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            proceeds_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "proceeds_amount",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            units_sold: row
+                .get_opt_custom_parsed_at_idx(
+                    "units_sold",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraFinancialAucReceipts1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraFinancialAucReceipts1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraFinancialAucReceipts1PrimaryKey {
         IrauctionSraFinancialAucReceipts1PrimaryKey {
-            contractid: self.contractid.clone(),
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            participantid: self.participantid.clone(),
-            sra_quarter: self.sra_quarter,
-            sra_runno: self.sra_runno,
-            sra_year: self.sra_year,
+            contractid: row.contractid().to_string(),
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            participantid: row.participantid().to_string(),
+            sra_quarter: row.sra_quarter,
+            sra_runno: row.sra_runno,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_financial_auc_receipts_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraFinancialAucReceipts1Row {
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            sra_runno: row.sra_runno.clone(),
+            participantid: row.participantid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            contractid: row.contractid.clone(),
+            units_purchased: row.units_purchased.clone(),
+            clearing_price: row.clearing_price.clone(),
+            receipt_amount: row.receipt_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            proceeds_amount: row.proceeds_amount.clone(),
+            units_sold: row.units_sold.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraFinancialAucReceipts1PrimaryKey {
-    pub contractid: String,
-    pub fromregionid: String,
-    pub interconnectorid: String,
-    pub participantid: String,
+    pub contractid: alloc::string::String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub sra_quarter: i64,
     pub sra_runno: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraFinancialAucReceipts1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucReceipts1 {
-    type Row = IrauctionSraFinancialAucReceipts1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucReceipts1Row<'data> {
+    type Row<'other> = IrauctionSraFinancialAucReceipts1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid()
+            && self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
+            && self.participantid() == row.participantid()
             && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucReceipts1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraFinancialAucReceipts1Row<'data> {
     type PrimaryKey = IrauctionSraFinancialAucReceipts1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.contractid == key.contractid && self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
+        self.contractid() == key.contractid && self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
+            && self.participantid() == key.participantid
             && self.sra_quarter == key.sra_quarter && self.sra_runno == key.sra_runno
             && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialAucReceipts1PrimaryKey {
-    type Row = IrauctionSraFinancialAucReceipts1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.contractid == row.contractid && self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialAucReceipts1PrimaryKey {
+    type Row<'other> = IrauctionSraFinancialAucReceipts1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
+            && self.participantid == row.participantid()
             && self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
@@ -5265,149 +10213,215 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialAucReceipts1Prim
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("contractid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("units_purchased",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("clearing_price",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("receipt_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("proceeds_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("units_sold",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionSraFinancialAucReceipts1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "units_purchased",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearing_price",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "receipt_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "proceeds_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "units_sold",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut sra_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut contractid_array = Vec::new();
-        let mut units_purchased_array = Vec::new();
-        let mut clearing_price_array = Vec::new();
-        let mut receipt_amount_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut proceeds_amount_array = Vec::new();
-        let mut units_sold_array = Vec::new();
-        for row in partition {
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            sra_runno_array.push(row.sra_runno);
-            participantid_array.push(row.participantid);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            contractid_array.push(row.contractid);
-            units_purchased_array
-                .push({
-                    row.units_purchased
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            clearing_price_array
-                .push({
-                    row.clearing_price
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            receipt_amount_array
-                .push({
-                    row.receipt_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            proceeds_amount_array
-                .push({
-                    row.proceeds_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            units_sold_array
-                .push({
-                    row.units_sold
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionSraFinancialAucReceipts1Builder {
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            sra_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            units_purchased_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            clearing_price_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            receipt_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            proceeds_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            units_sold_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(contractid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(units_purchased_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(clearing_price_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(receipt_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(proceeds_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(units_sold_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.sra_runno_array.append_value(row.sra_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder.contractid_array.append_value(row.contractid());
+        builder
+            .units_purchased_array
+            .append_option({
+                row.units_purchased
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearing_price_array
+            .append_option({
+                row.clearing_price
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .receipt_amount_array
+            .append_option({
+                row.receipt_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .proceeds_amount_array
+            .append_option({
+                row.proceeds_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .units_sold_array
+            .append_option({
+                row.units_sold
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.units_purchased_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearing_price_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.receipt_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.proceeds_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.units_sold_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraFinancialAucReceipts1Builder {
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    sra_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::builder::StringBuilder,
+    units_purchased_array: arrow::array::builder::Decimal128Builder,
+    clearing_price_array: arrow::array::builder::Decimal128Builder,
+    receipt_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    proceeds_amount_array: arrow::array::builder::Decimal128Builder,
+    units_sold_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionSraFinancialRuntrk1;
+pub struct IrauctionSraFinancialRuntrk1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## SRA_FINANCIAL_RUNTRK
@@ -5426,8 +10440,8 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
 /// * SRA_QUARTER
 /// * SRA_RUNNO
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraFinancialRuntrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraFinancialRuntrk1Row<'data> {
     /// Year of the Tranche
     pub sra_year: i64,
     /// Relevant Quarter of the Tranche
@@ -5435,67 +10449,187 @@ pub struct IrauctionSraFinancialRuntrk1 {
     /// SRA Run Number
     pub sra_runno: i64,
     /// The type of SRA run
-    pub runtype: Option<String>,
+    pub runtype: core::ops::Range<usize>,
     /// The date and time the run was triggered
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub rundate: Option<chrono::NaiveDateTime>,
     /// The date/time the run was posted
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub posteddate: Option<chrono::NaiveDateTime>,
     /// Version number of the interest component used in the payments run
     pub interest_versionno: Option<i64>,
     /// Version number of the makeup component used in the makeup run
     pub makeup_versionno: Option<i64>,
     /// The date and time this record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraFinancialRuntrk1Row<'data> {
+    pub fn runtype(&self) -> Option<&str> {
+        if self.runtype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.runtype.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraFinancialRuntrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_FINANCIAL_RUNTRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialRuntrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "SRA_RUNNO",
+        "RUNTYPE",
+        "RUNDATE",
+        "POSTEDDATE",
+        "INTEREST_VERSIONNO",
+        "MAKEUP_VERSIONNO",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionSraFinancialRuntrk1Row<'row>;
+    type FieldMapping = IrauctionSraFinancialRuntrk1Mapping;
     type PrimaryKey = IrauctionSraFinancialRuntrk1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_FINANCIAL_RUNTRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraFinancialRuntrk1Row {
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[0])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[1])?,
+            sra_runno: row.get_parsed_at_idx("sra_runno", field_mapping.0[2])?,
+            runtype: row.get_opt_range("runtype", field_mapping.0[3])?,
+            rundate: row
+                .get_opt_custom_parsed_at_idx(
+                    "rundate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            posteddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "posteddate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interest_versionno: row
+                .get_opt_parsed_at_idx("interest_versionno", field_mapping.0[6])?,
+            makeup_versionno: row
+                .get_opt_parsed_at_idx("makeup_versionno", field_mapping.0[7])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraFinancialRuntrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraFinancialRuntrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraFinancialRuntrk1PrimaryKey {
         IrauctionSraFinancialRuntrk1PrimaryKey {
-            sra_quarter: self.sra_quarter,
-            sra_runno: self.sra_runno,
-            sra_year: self.sra_year,
+            sra_quarter: row.sra_quarter,
+            sra_runno: row.sra_runno,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_financial_runtrk_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraFinancialRuntrk1Row {
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            sra_runno: row.sra_runno.clone(),
+            runtype: row.runtype.clone(),
+            rundate: row.rundate.clone(),
+            posteddate: row.posteddate.clone(),
+            interest_versionno: row.interest_versionno.clone(),
+            makeup_versionno: row.makeup_versionno.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraFinancialRuntrk1PrimaryKey {
     pub sra_quarter: i64,
     pub sra_runno: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraFinancialRuntrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialRuntrk1 {
-    type Row = IrauctionSraFinancialRuntrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialRuntrk1Row<'data> {
+    type Row<'other> = IrauctionSraFinancialRuntrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialRuntrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraFinancialRuntrk1Row<'data> {
     type PrimaryKey = IrauctionSraFinancialRuntrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.sra_quarter == key.sra_quarter && self.sra_runno == key.sra_runno
             && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraFinancialRuntrk1PrimaryKey {
-    type Row = IrauctionSraFinancialRuntrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraFinancialRuntrk1PrimaryKey {
+    type Row<'other> = IrauctionSraFinancialRuntrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.sra_quarter == row.sra_quarter && self.sra_runno == row.sra_runno
             && self.sra_year == row.sra_year
     }
@@ -5509,85 +10643,138 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraFinancialRuntrk1PrimaryKe
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("runtype",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("rundate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("posteddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("interest_versionno",
-                arrow2::datatypes::DataType::Int64, true),
-                arrow2::datatypes::Field::new("makeup_versionno",
-                arrow2::datatypes::DataType::Int64, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionSraFinancialRuntrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runtype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rundate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "posteddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "interest_versionno",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "makeup_versionno",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut sra_runno_array = Vec::new();
-        let mut runtype_array = Vec::new();
-        let mut rundate_array = Vec::new();
-        let mut posteddate_array = Vec::new();
-        let mut interest_versionno_array = Vec::new();
-        let mut makeup_versionno_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            sra_runno_array.push(row.sra_runno);
-            runtype_array.push(row.runtype);
-            rundate_array.push(row.rundate.map(|val| val.timestamp()));
-            posteddate_array.push(row.posteddate.map(|val| val.timestamp()));
-            interest_versionno_array.push(row.interest_versionno);
-            makeup_versionno_array.push(row.makeup_versionno);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionSraFinancialRuntrk1Builder {
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            sra_runno_array: arrow::array::builder::Int64Builder::new(),
+            runtype_array: arrow::array::builder::StringBuilder::new(),
+            rundate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            posteddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interest_versionno_array: arrow::array::builder::Int64Builder::new(),
+            makeup_versionno_array: arrow::array::builder::Int64Builder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(runtype_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rundate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(posteddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(interest_versionno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(makeup_versionno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.sra_runno_array.append_value(row.sra_runno);
+        builder.runtype_array.append_option(row.runtype());
+        builder.rundate_array.append_option(row.rundate.map(|val| val.timestamp()));
+        builder
+            .posteddate_array
+            .append_option(row.posteddate.map(|val| val.timestamp()));
+        builder.interest_versionno_array.append_option(row.interest_versionno);
+        builder.makeup_versionno_array.append_option(row.makeup_versionno);
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rundate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.posteddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interest_versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.makeup_versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraFinancialRuntrk1Builder {
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    sra_runno_array: arrow::array::builder::Int64Builder,
+    runtype_array: arrow::array::builder::StringBuilder,
+    rundate_array: arrow::array::builder::TimestampSecondBuilder,
+    posteddate_array: arrow::array::builder::TimestampSecondBuilder,
+    interest_versionno_array: arrow::array::builder::Int64Builder,
+    makeup_versionno_array: arrow::array::builder::Int64Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionSraOfferProduct1;
+pub struct IrauctionSraOfferProduct1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## SRA_OFFER_PRODUCT
@@ -5607,81 +10794,235 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
 /// * LOADDATE
 /// * OPTIONID
 /// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraOfferProduct1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraOfferProduct1Row<'data> {
     /// Unique ID for each Auction date
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// The date and time the system loaded the SRA Offer File
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// Unique Product identifier (1 - 2000)
     pub optionid: i64,
     /// Unique Directional Interconnector identifier
-    pub interconnectorid: Option<String>,
+    pub interconnectorid: core::ops::Range<usize>,
     /// The source Region identifier for the Directional Interconnector
-    pub fromregionid: Option<String>,
+    pub fromregionid: core::ops::Range<usize>,
     /// The Offer quantity for this Product
     pub offer_quantity: Option<i64>,
     /// The Offer price for this Product
     pub offer_price: Option<rust_decimal::Decimal>,
     /// Tranche identifier
-    pub trancheid: Option<String>,
+    pub trancheid: core::ops::Range<usize>,
     /// The date and time this record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraOfferProduct1Row<'data> {
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn interconnectorid(&self) -> Option<&str> {
+        if self.interconnectorid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.interconnectorid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn fromregionid(&self) -> Option<&str> {
+        if self.fromregionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.fromregionid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn trancheid(&self) -> Option<&str> {
+        if self.trancheid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.trancheid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraOfferProduct1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_OFFER_PRODUCT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraOfferProduct1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "AUCTIONID",
+        "PARTICIPANTID",
+        "LOADDATE",
+        "OPTIONID",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "OFFER_QUANTITY",
+        "OFFER_PRICE",
+        "TRANCHEID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionSraOfferProduct1Row<'row>;
+    type FieldMapping = IrauctionSraOfferProduct1Mapping;
     type PrimaryKey = IrauctionSraOfferProduct1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_OFFER_PRODUCT".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraOfferProduct1Row {
+            auctionid: row.get_range("auctionid", field_mapping.0[0])?,
+            participantid: row.get_range("participantid", field_mapping.0[1])?,
+            loaddate: row
+                .get_custom_parsed_at_idx(
+                    "loaddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            optionid: row.get_parsed_at_idx("optionid", field_mapping.0[3])?,
+            interconnectorid: row.get_opt_range("interconnectorid", field_mapping.0[4])?,
+            fromregionid: row.get_opt_range("fromregionid", field_mapping.0[5])?,
+            offer_quantity: row
+                .get_opt_parsed_at_idx("offer_quantity", field_mapping.0[6])?,
+            offer_price: row
+                .get_opt_custom_parsed_at_idx(
+                    "offer_price",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            trancheid: row.get_opt_range("trancheid", field_mapping.0[8])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraOfferProduct1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraOfferProduct1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraOfferProduct1PrimaryKey {
         IrauctionSraOfferProduct1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate,
-            optionid: self.optionid,
-            participantid: self.participantid.clone(),
+            auctionid: row.auctionid().to_string(),
+            loaddate: row.loaddate,
+            optionid: row.optionid,
+            participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_offer_product_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraOfferProduct1Row {
+            auctionid: row.auctionid.clone(),
+            participantid: row.participantid.clone(),
+            loaddate: row.loaddate.clone(),
+            optionid: row.optionid.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            offer_quantity: row.offer_quantity.clone(),
+            offer_price: row.offer_price.clone(),
+            trancheid: row.trancheid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraOfferProduct1PrimaryKey {
-    pub auctionid: String,
+    pub auctionid: alloc::string::String,
     pub loaddate: chrono::NaiveDateTime,
     pub optionid: i64,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraOfferProduct1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraOfferProduct1 {
-    type Row = IrauctionSraOfferProduct1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.optionid == row.optionid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraOfferProduct1Row<'data> {
+    type Row<'other> = IrauctionSraOfferProduct1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid() && self.loaddate == row.loaddate
+            && self.optionid == row.optionid
+            && self.participantid() == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProduct1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProduct1Row<'data> {
     type PrimaryKey = IrauctionSraOfferProduct1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.loaddate == key.loaddate
-            && self.optionid == key.optionid && self.participantid == key.participantid
+        self.auctionid() == key.auctionid && self.loaddate == key.loaddate
+            && self.optionid == key.optionid && self.participantid() == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraOfferProduct1PrimaryKey {
-    type Row = IrauctionSraOfferProduct1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.optionid == row.optionid && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraOfferProduct1PrimaryKey {
+    type Row<'other> = IrauctionSraOfferProduct1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.loaddate == row.loaddate
+            && self.optionid == row.optionid && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProduct1PrimaryKey {
@@ -5693,102 +11034,152 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProduct1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("loaddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("optionid",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("offer_quantity",
-                arrow2::datatypes::DataType::Int64, true),
-                arrow2::datatypes::Field::new("offer_price",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("trancheid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionSraOfferProduct1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "loaddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "optionid",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "offer_quantity",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "offer_price",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "trancheid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut auctionid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut loaddate_array = Vec::new();
-        let mut optionid_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut offer_quantity_array = Vec::new();
-        let mut offer_price_array = Vec::new();
-        let mut trancheid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            auctionid_array.push(row.auctionid);
-            participantid_array.push(row.participantid);
-            loaddate_array.push(row.loaddate.timestamp());
-            optionid_array.push(row.optionid);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            offer_quantity_array.push(row.offer_quantity);
-            offer_price_array
-                .push({
-                    row.offer_price
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            trancheid_array.push(row.trancheid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionSraOfferProduct1Builder {
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            optionid_array: arrow::array::builder::Int64Builder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            offer_quantity_array: arrow::array::builder::Int64Builder::new(),
+            offer_price_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            trancheid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(loaddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(optionid_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(offer_quantity_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(offer_price_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(trancheid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.auctionid_array.append_value(row.auctionid());
+        builder.participantid_array.append_value(row.participantid());
+        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.optionid_array.append_value(row.optionid);
+        builder.interconnectorid_array.append_option(row.interconnectorid());
+        builder.fromregionid_array.append_option(row.fromregionid());
+        builder.offer_quantity_array.append_option(row.offer_quantity);
+        builder
+            .offer_price_array
+            .append_option({
+                row.offer_price
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder.trancheid_array.append_option(row.trancheid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.loaddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.optionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offer_quantity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offer_price_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.trancheid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraOfferProduct1Builder {
+    auctionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    optionid_array: arrow::array::builder::Int64Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    offer_quantity_array: arrow::array::builder::Int64Builder,
+    offer_price_array: arrow::array::builder::Decimal128Builder,
+    trancheid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionSraOfferProfile1;
+pub struct IrauctionSraOfferProfile1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## SRA_OFFER_PROFILE
@@ -5807,73 +11198,208 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
 /// * AUCTIONID
 /// * LOADDATE
 /// * PARTICIPANTID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraOfferProfile1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraOfferProfile1Row<'data> {
     /// Unique ID for each Auction date
-    pub auctionid: String,
+    pub auctionid: core::ops::Range<usize>,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// The date and time the system loaded the SRA Offer File
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub loaddate: chrono::NaiveDateTime,
     /// SRA Offer File name
-    pub filename: Option<String>,
+    pub filename: core::ops::Range<usize>,
     /// SRA acknowledgment file name
-    pub ackfilename: Option<String>,
+    pub ackfilename: core::ops::Range<usize>,
     /// Transaction ID used for tracking
-    pub transactionid: Option<String>,
+    pub transactionid: core::ops::Range<usize>,
     /// The date and time this record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraOfferProfile1Row<'data> {
+    pub fn auctionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.auctionid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn filename(&self) -> Option<&str> {
+        if self.filename.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.filename.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ackfilename(&self) -> Option<&str> {
+        if self.ackfilename.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ackfilename.clone(),
+                ),
+            )
+        }
+    }
+    pub fn transactionid(&self) -> Option<&str> {
+        if self.transactionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.transactionid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraOfferProfile1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_OFFER_PROFILE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraOfferProfile1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "AUCTIONID",
+        "PARTICIPANTID",
+        "LOADDATE",
+        "FILENAME",
+        "ACKFILENAME",
+        "TRANSACTIONID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionSraOfferProfile1Row<'row>;
+    type FieldMapping = IrauctionSraOfferProfile1Mapping;
     type PrimaryKey = IrauctionSraOfferProfile1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_OFFER_PROFILE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraOfferProfile1Row {
+            auctionid: row.get_range("auctionid", field_mapping.0[0])?,
+            participantid: row.get_range("participantid", field_mapping.0[1])?,
+            loaddate: row
+                .get_custom_parsed_at_idx(
+                    "loaddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            filename: row.get_opt_range("filename", field_mapping.0[3])?,
+            ackfilename: row.get_opt_range("ackfilename", field_mapping.0[4])?,
+            transactionid: row.get_opt_range("transactionid", field_mapping.0[5])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraOfferProfile1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraOfferProfile1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraOfferProfile1PrimaryKey {
         IrauctionSraOfferProfile1PrimaryKey {
-            auctionid: self.auctionid.clone(),
-            loaddate: self.loaddate,
-            participantid: self.participantid.clone(),
+            auctionid: row.auctionid().to_string(),
+            loaddate: row.loaddate,
+            participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_offer_profile_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraOfferProfile1Row {
+            auctionid: row.auctionid.clone(),
+            participantid: row.participantid.clone(),
+            loaddate: row.loaddate.clone(),
+            filename: row.filename.clone(),
+            ackfilename: row.ackfilename.clone(),
+            transactionid: row.transactionid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraOfferProfile1PrimaryKey {
-    pub auctionid: String,
+    pub auctionid: alloc::string::String,
     pub loaddate: chrono::NaiveDateTime,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraOfferProfile1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraOfferProfile1 {
-    type Row = IrauctionSraOfferProfile1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraOfferProfile1Row<'data> {
+    type Row<'other> = IrauctionSraOfferProfile1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid() == row.auctionid() && self.loaddate == row.loaddate
+            && self.participantid() == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProfile1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProfile1Row<'data> {
     type PrimaryKey = IrauctionSraOfferProfile1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.auctionid == key.auctionid && self.loaddate == key.loaddate
-            && self.participantid == key.participantid
+        self.auctionid() == key.auctionid && self.loaddate == key.loaddate
+            && self.participantid() == key.participantid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraOfferProfile1PrimaryKey {
-    type Row = IrauctionSraOfferProfile1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.auctionid == row.auctionid && self.loaddate == row.loaddate
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraOfferProfile1PrimaryKey {
+    type Row<'other> = IrauctionSraOfferProfile1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.auctionid == row.auctionid() && self.loaddate == row.loaddate
+            && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProfile1PrimaryKey {
@@ -5885,75 +11411,113 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraOfferProfile1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("loaddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("filename",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("ackfilename",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("transactionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionSraOfferProfile1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "loaddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "filename",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ackfilename",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "transactionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut auctionid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut loaddate_array = Vec::new();
-        let mut filename_array = Vec::new();
-        let mut ackfilename_array = Vec::new();
-        let mut transactionid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            auctionid_array.push(row.auctionid);
-            participantid_array.push(row.participantid);
-            loaddate_array.push(row.loaddate.timestamp());
-            filename_array.push(row.filename);
-            ackfilename_array.push(row.ackfilename);
-            transactionid_array.push(row.transactionid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionSraOfferProfile1Builder {
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            filename_array: arrow::array::builder::StringBuilder::new(),
+            ackfilename_array: arrow::array::builder::StringBuilder::new(),
+            transactionid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(loaddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(ackfilename_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(transactionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.auctionid_array.append_value(row.auctionid());
+        builder.participantid_array.append_value(row.participantid());
+        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.filename_array.append_option(row.filename());
+        builder.ackfilename_array.append_option(row.ackfilename());
+        builder.transactionid_array.append_option(row.transactionid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.loaddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.filename_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ackfilename_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.transactionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraOfferProfile1Builder {
+    auctionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    filename_array: arrow::array::builder::StringBuilder,
+    ackfilename_array: arrow::array::builder::StringBuilder,
+    transactionid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct IrauctionSraPrudentialCashSecurity1;
+pub struct IrauctionSraPrudentialCashSecurity1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## SRA_PRUDENTIAL_CASH_SECURITY
@@ -5973,74 +11537,175 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
 /// * PARTICIPANTID
 /// * PRUDENTIAL_DATE
 /// * PRUDENTIAL_RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialCashSecurity1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraPrudentialCashSecurity1Row<'data> {
     /// The prudential date of the run.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
     pub prudential_runno: i64,
     /// Unique participant identifier for the Auction Participant lodging the Cash Security
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Unique identifier for the cash security.
-    pub cash_security_id: String,
+    pub cash_security_id: core::ops::Range<usize>,
     /// Remaining Cash Security deposit available
     pub cash_security_amount: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraPrudentialCashSecurity1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn cash_security_id(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.cash_security_id.clone(),
+        )
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraPrudentialCashSecurity1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_CASH_SECURITY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialCashSecurity1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PRUDENTIAL_DATE",
+        "PRUDENTIAL_RUNNO",
+        "PARTICIPANTID",
+        "CASH_SECURITY_ID",
+        "CASH_SECURITY_AMOUNT",
+    ];
+    type Row<'row> = IrauctionSraPrudentialCashSecurity1Row<'row>;
+    type FieldMapping = IrauctionSraPrudentialCashSecurity1Mapping;
     type PrimaryKey = IrauctionSraPrudentialCashSecurity1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_PRUDENTIAL_CASH_SECURITY".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraPrudentialCashSecurity1Row {
+            prudential_date: row
+                .get_custom_parsed_at_idx(
+                    "prudential_date",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prudential_runno: row
+                .get_parsed_at_idx("prudential_runno", field_mapping.0[1])?,
+            participantid: row.get_range("participantid", field_mapping.0[2])?,
+            cash_security_id: row.get_range("cash_security_id", field_mapping.0[3])?,
+            cash_security_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "cash_security_amount",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraPrudentialCashSecurity1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraPrudentialCashSecurity1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> IrauctionSraPrudentialCashSecurity1PrimaryKey {
         IrauctionSraPrudentialCashSecurity1PrimaryKey {
-            cash_security_id: self.cash_security_id.clone(),
-            participantid: self.participantid.clone(),
-            prudential_date: self.prudential_date,
-            prudential_runno: self.prudential_runno,
+            cash_security_id: row.cash_security_id().to_string(),
+            participantid: row.participantid().to_string(),
+            prudential_date: row.prudential_date,
+            prudential_runno: row.prudential_runno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_prudential_cash_security_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraPrudentialCashSecurity1Row {
+            prudential_date: row.prudential_date.clone(),
+            prudential_runno: row.prudential_runno.clone(),
+            participantid: row.participantid.clone(),
+            cash_security_id: row.cash_security_id.clone(),
+            cash_security_amount: row.cash_security_amount.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraPrudentialCashSecurity1PrimaryKey {
-    pub cash_security_id: String,
-    pub participantid: String,
+    pub cash_security_id: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub prudential_date: chrono::NaiveDateTime,
     pub prudential_runno: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraPrudentialCashSecurity1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialCashSecurity1 {
-    type Row = IrauctionSraPrudentialCashSecurity1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.cash_security_id == row.cash_security_id
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionSraPrudentialCashSecurity1Row<'data> {
+    type Row<'other> = IrauctionSraPrudentialCashSecurity1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.cash_security_id() == row.cash_security_id()
+            && self.participantid() == row.participantid()
             && self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialCashSecurity1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraPrudentialCashSecurity1Row<'data> {
     type PrimaryKey = IrauctionSraPrudentialCashSecurity1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.cash_security_id == key.cash_security_id
-            && self.participantid == key.participantid
+        self.cash_security_id() == key.cash_security_id
+            && self.participantid() == key.participantid
             && self.prudential_date == key.prudential_date
             && self.prudential_runno == key.prudential_runno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialCashSecurity1PrimaryKey {
-    type Row = IrauctionSraPrudentialCashSecurity1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.cash_security_id == row.cash_security_id
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionSraPrudentialCashSecurity1PrimaryKey {
+    type Row<'other> = IrauctionSraPrudentialCashSecurity1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.cash_security_id == row.cash_security_id()
+            && self.participantid == row.participantid()
             && self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
     }
@@ -6057,67 +11722,97 @@ for IrauctionSraPrudentialCashSecurity1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("prudential_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("prudential_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("cash_security_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("cash_security_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionSraPrudentialCashSecurity1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prudential_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prudential_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "cash_security_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "cash_security_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut prudential_date_array = Vec::new();
-        let mut prudential_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut cash_security_id_array = Vec::new();
-        let mut cash_security_amount_array = Vec::new();
-        for row in partition {
-            prudential_date_array.push(row.prudential_date.timestamp());
-            prudential_runno_array.push(row.prudential_runno);
-            participantid_array.push(row.participantid);
-            cash_security_id_array.push(row.cash_security_id);
-            cash_security_amount_array
-                .push({
-                    row.cash_security_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionSraPrudentialCashSecurity1Builder {
+            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            cash_security_id_array: arrow::array::builder::StringBuilder::new(),
+            cash_security_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(cash_security_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(cash_security_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder.prudential_runno_array.append_value(row.prudential_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder.cash_security_id_array.append_value(row.cash_security_id());
+        builder
+            .cash_security_amount_array
+            .append_option({
+                row.cash_security_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prudential_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prudential_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cash_security_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cash_security_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraPrudentialCashSecurity1Builder {
+    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    cash_security_id_array: arrow::array::builder::StringBuilder,
+    cash_security_amount_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionSraPrudentialCompPosition1;
+pub struct IrauctionSraPrudentialCompPosition1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## SRA_PRUDENTIAL_COMP_POSITION
@@ -6136,71 +11831,180 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
 /// * PARTICIPANTID
 /// * PRUDENTIAL_DATE
 /// * PRUDENTIAL_RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialCompPosition1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraPrudentialCompPosition1Row<'data> {
     /// The prudential date of the run.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
     pub prudential_runno: i64,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// The Trading Limit of the company at the time of the prudential run
     pub trading_limit: Option<rust_decimal::Decimal>,
     /// Current Prudential Exposure of the Auction Participant including Offers
     pub prudential_exposure_amount: Option<rust_decimal::Decimal>,
     /// The amount of Trading Margin available to the Auction Participant to trade (including Offered Units and Cancelled Units). Equal to TRADING_LIMIT minus PRUDENTIAL_EXPOSURE_AMOUNT.
     pub trading_margin: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraPrudentialCompPosition1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraPrudentialCompPosition1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_COMP_POSITION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialCompPosition1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PRUDENTIAL_DATE",
+        "PRUDENTIAL_RUNNO",
+        "PARTICIPANTID",
+        "TRADING_LIMIT",
+        "PRUDENTIAL_EXPOSURE_AMOUNT",
+        "TRADING_MARGIN",
+    ];
+    type Row<'row> = IrauctionSraPrudentialCompPosition1Row<'row>;
+    type FieldMapping = IrauctionSraPrudentialCompPosition1Mapping;
     type PrimaryKey = IrauctionSraPrudentialCompPosition1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_PRUDENTIAL_COMP_POSITION".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraPrudentialCompPosition1Row {
+            prudential_date: row
+                .get_custom_parsed_at_idx(
+                    "prudential_date",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prudential_runno: row
+                .get_parsed_at_idx("prudential_runno", field_mapping.0[1])?,
+            participantid: row.get_range("participantid", field_mapping.0[2])?,
+            trading_limit: row
+                .get_opt_custom_parsed_at_idx(
+                    "trading_limit",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            prudential_exposure_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "prudential_exposure_amount",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            trading_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "trading_margin",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraPrudentialCompPosition1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraPrudentialCompPosition1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> IrauctionSraPrudentialCompPosition1PrimaryKey {
         IrauctionSraPrudentialCompPosition1PrimaryKey {
-            participantid: self.participantid.clone(),
-            prudential_date: self.prudential_date,
-            prudential_runno: self.prudential_runno,
+            participantid: row.participantid().to_string(),
+            prudential_date: row.prudential_date,
+            prudential_runno: row.prudential_runno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_prudential_comp_position_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraPrudentialCompPosition1Row {
+            prudential_date: row.prudential_date.clone(),
+            prudential_runno: row.prudential_runno.clone(),
+            participantid: row.participantid.clone(),
+            trading_limit: row.trading_limit.clone(),
+            prudential_exposure_amount: row.prudential_exposure_amount.clone(),
+            trading_margin: row.trading_margin.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraPrudentialCompPosition1PrimaryKey {
-    pub participantid: String,
+    pub participantid: alloc::string::String,
     pub prudential_date: chrono::NaiveDateTime,
     pub prudential_runno: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraPrudentialCompPosition1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialCompPosition1 {
-    type Row = IrauctionSraPrudentialCompPosition1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionSraPrudentialCompPosition1Row<'data> {
+    type Row<'other> = IrauctionSraPrudentialCompPosition1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.participantid() == row.participantid()
             && self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialCompPosition1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraPrudentialCompPosition1Row<'data> {
     type PrimaryKey = IrauctionSraPrudentialCompPosition1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.participantid == key.participantid
+        self.participantid() == key.participantid
             && self.prudential_date == key.prudential_date
             && self.prudential_runno == key.prudential_runno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialCompPosition1PrimaryKey {
-    type Row = IrauctionSraPrudentialCompPosition1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow
+for IrauctionSraPrudentialCompPosition1PrimaryKey {
+    type Row<'other> = IrauctionSraPrudentialCompPosition1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.participantid == row.participantid()
             && self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
     }
@@ -6216,88 +12020,126 @@ for IrauctionSraPrudentialCompPosition1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("prudential_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("prudential_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("trading_limit",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("prudential_exposure_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("trading_margin",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionSraPrudentialCompPosition1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prudential_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prudential_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "trading_limit",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "prudential_exposure_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "trading_margin",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut prudential_date_array = Vec::new();
-        let mut prudential_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut trading_limit_array = Vec::new();
-        let mut prudential_exposure_amount_array = Vec::new();
-        let mut trading_margin_array = Vec::new();
-        for row in partition {
-            prudential_date_array.push(row.prudential_date.timestamp());
-            prudential_runno_array.push(row.prudential_runno);
-            participantid_array.push(row.participantid);
-            trading_limit_array
-                .push({
-                    row.trading_limit
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            prudential_exposure_amount_array
-                .push({
-                    row.prudential_exposure_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            trading_margin_array
-                .push({
-                    row.trading_margin
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionSraPrudentialCompPosition1Builder {
+            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            trading_limit_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            prudential_exposure_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            trading_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(trading_limit_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(prudential_exposure_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(trading_margin_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder.prudential_runno_array.append_value(row.prudential_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .trading_limit_array
+            .append_option({
+                row.trading_limit
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .prudential_exposure_amount_array
+            .append_option({
+                row.prudential_exposure_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .trading_margin_array
+            .append_option({
+                row.trading_margin
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prudential_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prudential_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.trading_limit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.prudential_exposure_amount_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.trading_margin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraPrudentialCompPosition1Builder {
+    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    trading_limit_array: arrow::array::builder::Decimal128Builder,
+    prudential_exposure_amount_array: arrow::array::builder::Decimal128Builder,
+    trading_margin_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionSraPrudentialExposure1;
+pub struct IrauctionSraPrudentialExposure1Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## SRA_PRUDENTIAL_EXPOSURE
@@ -6320,29 +12162,27 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
 /// * PRUDENTIAL_RUNNO
 /// * SRA_QUARTER
 /// * SRA_YEAR
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialExposure1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraPrudentialExposure1Row<'data> {
     /// The prudential date of the run.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date.
     pub prudential_runno: i64,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// AEMO Contract Year number starting the week beginning 1 January
     pub sra_year: i64,
     /// Contract Relevant Quarter
     pub sra_quarter: i64,
     /// The identifier for the Directional Interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// The source Region identifier for the Directional Interconnector
-    pub fromregionid: String,
+    pub fromregionid: core::ops::Range<usize>,
     /// The largest Tranche where the Unit was either sold or offered. Used in the calculation of the Average Purchase Price for the Trading Position of the Product. The most recent Tranche where Units were cancelled or offered (if the Offer is below the Average Purchase Price)
     pub max_tranche: Option<i64>,
     /// Unique identifier for the Auction having the Offer. Has a null value when no Offer is made for the Relevant Quarter
-    pub auctionid: Option<String>,
+    pub auctionid: core::ops::Range<usize>,
     /// Timestamp of the Offer File submitted by the Auction Participant. Has a null value when no Offer is made for the Relevant Quarter
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub offer_submissiontime: Option<chrono::NaiveDateTime>,
     /// Calculated Average Purchase Price for the Product
     pub average_purchase_price: Option<rust_decimal::Decimal>,
@@ -6352,72 +12192,241 @@ pub struct IrauctionSraPrudentialExposure1 {
     pub cancellation_volume: Option<rust_decimal::Decimal>,
     /// Calculated trading position for product.
     pub trading_position: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionSraPrudentialExposure1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn fromregionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.fromregionid.clone())
+    }
+    pub fn auctionid(&self) -> Option<&str> {
+        if self.auctionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.auctionid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionSraPrudentialExposure1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_EXPOSURE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialExposure1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PRUDENTIAL_DATE",
+        "PRUDENTIAL_RUNNO",
+        "PARTICIPANTID",
+        "SRA_YEAR",
+        "SRA_QUARTER",
+        "INTERCONNECTORID",
+        "FROMREGIONID",
+        "MAX_TRANCHE",
+        "AUCTIONID",
+        "OFFER_SUBMISSIONTIME",
+        "AVERAGE_PURCHASE_PRICE",
+        "AVERAGE_CANCELLATION_PRICE",
+        "CANCELLATION_VOLUME",
+        "TRADING_POSITION",
+    ];
+    type Row<'row> = IrauctionSraPrudentialExposure1Row<'row>;
+    type FieldMapping = IrauctionSraPrudentialExposure1Mapping;
     type PrimaryKey = IrauctionSraPrudentialExposure1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_PRUDENTIAL_EXPOSURE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraPrudentialExposure1Row {
+            prudential_date: row
+                .get_custom_parsed_at_idx(
+                    "prudential_date",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prudential_runno: row
+                .get_parsed_at_idx("prudential_runno", field_mapping.0[1])?,
+            participantid: row.get_range("participantid", field_mapping.0[2])?,
+            sra_year: row.get_parsed_at_idx("sra_year", field_mapping.0[3])?,
+            sra_quarter: row.get_parsed_at_idx("sra_quarter", field_mapping.0[4])?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[5])?,
+            fromregionid: row.get_range("fromregionid", field_mapping.0[6])?,
+            max_tranche: row.get_opt_parsed_at_idx("max_tranche", field_mapping.0[7])?,
+            auctionid: row.get_opt_range("auctionid", field_mapping.0[8])?,
+            offer_submissiontime: row
+                .get_opt_custom_parsed_at_idx(
+                    "offer_submissiontime",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            average_purchase_price: row
+                .get_opt_custom_parsed_at_idx(
+                    "average_purchase_price",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            average_cancellation_price: row
+                .get_opt_custom_parsed_at_idx(
+                    "average_cancellation_price",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            cancellation_volume: row
+                .get_opt_custom_parsed_at_idx(
+                    "cancellation_volume",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            trading_position: row
+                .get_opt_custom_parsed_at_idx(
+                    "trading_position",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraPrudentialExposure1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraPrudentialExposure1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraPrudentialExposure1PrimaryKey {
         IrauctionSraPrudentialExposure1PrimaryKey {
-            fromregionid: self.fromregionid.clone(),
-            interconnectorid: self.interconnectorid.clone(),
-            participantid: self.participantid.clone(),
-            prudential_date: self.prudential_date,
-            prudential_runno: self.prudential_runno,
-            sra_quarter: self.sra_quarter,
-            sra_year: self.sra_year,
+            fromregionid: row.fromregionid().to_string(),
+            interconnectorid: row.interconnectorid().to_string(),
+            participantid: row.participantid().to_string(),
+            prudential_date: row.prudential_date,
+            prudential_runno: row.prudential_runno,
+            sra_quarter: row.sra_quarter,
+            sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_prudential_exposure_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraPrudentialExposure1Row {
+            prudential_date: row.prudential_date.clone(),
+            prudential_runno: row.prudential_runno.clone(),
+            participantid: row.participantid.clone(),
+            sra_year: row.sra_year.clone(),
+            sra_quarter: row.sra_quarter.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            fromregionid: row.fromregionid.clone(),
+            max_tranche: row.max_tranche.clone(),
+            auctionid: row.auctionid.clone(),
+            offer_submissiontime: row.offer_submissiontime.clone(),
+            average_purchase_price: row.average_purchase_price.clone(),
+            average_cancellation_price: row.average_cancellation_price.clone(),
+            cancellation_volume: row.cancellation_volume.clone(),
+            trading_position: row.trading_position.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraPrudentialExposure1PrimaryKey {
-    pub fromregionid: String,
-    pub interconnectorid: String,
-    pub participantid: String,
+    pub fromregionid: alloc::string::String,
+    pub interconnectorid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub prudential_date: chrono::NaiveDateTime,
     pub prudential_runno: i64,
     pub sra_quarter: i64,
     pub sra_year: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraPrudentialExposure1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialExposure1 {
-    type Row = IrauctionSraPrudentialExposure1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraPrudentialExposure1Row<'data> {
+    type Row<'other> = IrauctionSraPrudentialExposure1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.fromregionid() == row.fromregionid()
+            && self.interconnectorid() == row.interconnectorid()
+            && self.participantid() == row.participantid()
             && self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
             && self.sra_quarter == row.sra_quarter && self.sra_year == row.sra_year
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialExposure1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for IrauctionSraPrudentialExposure1Row<'data> {
     type PrimaryKey = IrauctionSraPrudentialExposure1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.fromregionid == key.fromregionid
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid
+        self.fromregionid() == key.fromregionid
+            && self.interconnectorid() == key.interconnectorid
+            && self.participantid() == key.participantid
             && self.prudential_date == key.prudential_date
             && self.prudential_runno == key.prudential_runno
             && self.sra_quarter == key.sra_quarter && self.sra_year == key.sra_year
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialExposure1PrimaryKey {
-    type Row = IrauctionSraPrudentialExposure1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.fromregionid == row.fromregionid
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraPrudentialExposure1PrimaryKey {
+    type Row<'other> = IrauctionSraPrudentialExposure1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.fromregionid == row.fromregionid()
+            && self.interconnectorid == row.interconnectorid()
+            && self.participantid == row.participantid()
             && self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
             && self.sra_quarter == row.sra_quarter && self.sra_year == row.sra_year
@@ -6436,149 +12445,220 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialExposure1Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("prudential_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("prudential_runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("sra_year",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("sra_quarter",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("fromregionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("max_tranche",
-                arrow2::datatypes::DataType::Int64, true),
-                arrow2::datatypes::Field::new("auctionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("offer_submissiontime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("average_purchase_price",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("average_cancellation_price",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("cancellation_volume",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("trading_position",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = IrauctionSraPrudentialExposure1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prudential_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prudential_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_year",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "sra_quarter",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "max_tranche",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "auctionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "offer_submissiontime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "average_purchase_price",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "average_cancellation_price",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "cancellation_volume",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "trading_position",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut prudential_date_array = Vec::new();
-        let mut prudential_runno_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut sra_year_array = Vec::new();
-        let mut sra_quarter_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut fromregionid_array = Vec::new();
-        let mut max_tranche_array = Vec::new();
-        let mut auctionid_array = Vec::new();
-        let mut offer_submissiontime_array = Vec::new();
-        let mut average_purchase_price_array = Vec::new();
-        let mut average_cancellation_price_array = Vec::new();
-        let mut cancellation_volume_array = Vec::new();
-        let mut trading_position_array = Vec::new();
-        for row in partition {
-            prudential_date_array.push(row.prudential_date.timestamp());
-            prudential_runno_array.push(row.prudential_runno);
-            participantid_array.push(row.participantid);
-            sra_year_array.push(row.sra_year);
-            sra_quarter_array.push(row.sra_quarter);
-            interconnectorid_array.push(row.interconnectorid);
-            fromregionid_array.push(row.fromregionid);
-            max_tranche_array.push(row.max_tranche);
-            auctionid_array.push(row.auctionid);
-            offer_submissiontime_array
-                .push(row.offer_submissiontime.map(|val| val.timestamp()));
-            average_purchase_price_array
-                .push({
-                    row.average_purchase_price
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            average_cancellation_price_array
-                .push({
-                    row.average_cancellation_price
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            cancellation_volume_array
-                .push({
-                    row.cancellation_volume
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            trading_position_array
-                .push({
-                    row.trading_position
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        IrauctionSraPrudentialExposure1Builder {
+            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_runno_array: arrow::array::builder::Int64Builder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            sra_year_array: arrow::array::builder::Int64Builder::new(),
+            sra_quarter_array: arrow::array::builder::Int64Builder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            max_tranche_array: arrow::array::builder::Int64Builder::new(),
+            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            offer_submissiontime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            average_purchase_price_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            average_cancellation_price_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            cancellation_volume_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            trading_position_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_year_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(sra_quarter_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(fromregionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(max_tranche_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(auctionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(offer_submissiontime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(average_purchase_price_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(average_cancellation_price_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(cancellation_volume_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(trading_position_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder.prudential_runno_array.append_value(row.prudential_runno);
+        builder.participantid_array.append_value(row.participantid());
+        builder.sra_year_array.append_value(row.sra_year);
+        builder.sra_quarter_array.append_value(row.sra_quarter);
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.fromregionid_array.append_value(row.fromregionid());
+        builder.max_tranche_array.append_option(row.max_tranche);
+        builder.auctionid_array.append_option(row.auctionid());
+        builder
+            .offer_submissiontime_array
+            .append_option(row.offer_submissiontime.map(|val| val.timestamp()));
+        builder
+            .average_purchase_price_array
+            .append_option({
+                row.average_purchase_price
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .average_cancellation_price_array
+            .append_option({
+                row.average_cancellation_price
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .cancellation_volume_array
+            .append_option({
+                row.cancellation_volume
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .trading_position_array
+            .append_option({
+                row.trading_position
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prudential_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prudential_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_year_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sra_quarter_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.max_tranche_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.auctionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offer_submissiontime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.average_purchase_price_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.average_cancellation_price_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cancellation_volume_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.trading_position_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraPrudentialExposure1Builder {
+    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_runno_array: arrow::array::builder::Int64Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    sra_year_array: arrow::array::builder::Int64Builder,
+    sra_quarter_array: arrow::array::builder::Int64Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    fromregionid_array: arrow::array::builder::StringBuilder,
+    max_tranche_array: arrow::array::builder::Int64Builder,
+    auctionid_array: arrow::array::builder::StringBuilder,
+    offer_submissiontime_array: arrow::array::builder::TimestampSecondBuilder,
+    average_purchase_price_array: arrow::array::builder::Decimal128Builder,
+    average_cancellation_price_array: arrow::array::builder::Decimal128Builder,
+    cancellation_volume_array: arrow::array::builder::Decimal128Builder,
+    trading_position_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct IrauctionSraPrudentialRun1;
+pub struct IrauctionSraPrudentialRun1Mapping([usize; 2]);
 /// # Summary
 ///
 /// ## SRA_PRUDENTIAL_RUN
@@ -6596,58 +12676,124 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
 ///
 /// * PRUDENTIAL_DATE
 /// * PRUDENTIAL_RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionSraPrudentialRun1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionSraPrudentialRun1Row<'data> {
     /// The prudential date of the run.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The prudential run number for the run
     pub prudential_runno: i64,
+    backing_data: core::marker::PhantomData<&'data ()>,
 }
+impl<'data> IrauctionSraPrudentialRun1Row<'data> {}
 impl mmsdm_core::GetTable for IrauctionSraPrudentialRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialRun1Mapping([
+        4,
+        5,
+    ]);
+    const COLUMNS: &'static [&'static str] = &["PRUDENTIAL_DATE", "PRUDENTIAL_RUNNO"];
+    type Row<'row> = IrauctionSraPrudentialRun1Row<'row>;
+    type FieldMapping = IrauctionSraPrudentialRun1Mapping;
     type PrimaryKey = IrauctionSraPrudentialRun1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("SRA_PRUDENTIAL_RUN".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionSraPrudentialRun1Row {
+            prudential_date: row
+                .get_custom_parsed_at_idx(
+                    "prudential_date",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prudential_runno: row
+                .get_parsed_at_idx("prudential_runno", field_mapping.0[1])?,
+            backing_data: core::marker::PhantomData,
+        })
     }
-    fn primary_key(&self) -> IrauctionSraPrudentialRun1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionSraPrudentialRun1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionSraPrudentialRun1PrimaryKey {
         IrauctionSraPrudentialRun1PrimaryKey {
-            prudential_date: self.prudential_date,
-            prudential_runno: self.prudential_runno,
+            prudential_date: row.prudential_date,
+            prudential_runno: row.prudential_runno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_sra_prudential_run_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionSraPrudentialRun1Row {
+            prudential_date: row.prudential_date.clone(),
+            prudential_runno: row.prudential_runno.clone(),
+            backing_data: core::marker::PhantomData,
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionSraPrudentialRun1PrimaryKey {
     pub prudential_date: chrono::NaiveDateTime,
     pub prudential_runno: i64,
 }
 impl mmsdm_core::PrimaryKey for IrauctionSraPrudentialRun1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialRun1 {
-    type Row = IrauctionSraPrudentialRun1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraPrudentialRun1Row<'data> {
+    type Row<'other> = IrauctionSraPrudentialRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialRun1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialRun1Row<'data> {
     type PrimaryKey = IrauctionSraPrudentialRun1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.prudential_date == key.prudential_date
             && self.prudential_runno == key.prudential_runno
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionSraPrudentialRun1PrimaryKey {
-    type Row = IrauctionSraPrudentialRun1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for IrauctionSraPrudentialRun1PrimaryKey {
+    type Row<'other> = IrauctionSraPrudentialRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.prudential_date == row.prudential_date
             && self.prudential_runno == row.prudential_runno
     }
@@ -6661,39 +12807,58 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionSraPrudentialRun1PrimaryKey 
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("prudential_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("prudential_runno",
-                arrow2::datatypes::DataType::Int64, false)
-            ],
+    type Builder = IrauctionSraPrudentialRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prudential_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prudential_runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut prudential_date_array = Vec::new();
-        let mut prudential_runno_array = Vec::new();
-        for row in partition {
-            prudential_date_array.push(row.prudential_date.timestamp());
-            prudential_runno_array.push(row.prudential_runno);
+    fn new_builder() -> Self::Builder {
+        IrauctionSraPrudentialRun1Builder {
+            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_runno_array: arrow::array::builder::Int64Builder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder.prudential_runno_array.append_value(row.prudential_runno);
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prudential_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prudential_runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct IrauctionSraPrudentialRun1Builder {
+    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_runno_array: arrow::array::builder::Int64Builder,
+}
+pub struct IrauctionValuationid1;
+pub struct IrauctionValuationid1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## VALUATIONID
@@ -6711,57 +12876,145 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
 /// # Primary Key Columns
 ///
 /// * VALUATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct IrauctionValuationid1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct IrauctionValuationid1Row<'data> {
     /// Identifier of the estimator
-    pub valuationid: String,
+    pub valuationid: core::ops::Range<usize>,
     /// Full name of estimator
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Timestamp of record creation or modification
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> IrauctionValuationid1Row<'data> {
+    pub fn valuationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.valuationid.clone())
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for IrauctionValuationid1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "IRAUCTION";
+    const TABLE_NAME: &'static str = "VALUATIONID";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionValuationid1Mapping([
+        4,
+        5,
+        6,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "VALUATIONID",
+        "DESCRIPTION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = IrauctionValuationid1Row<'row>;
+    type FieldMapping = IrauctionValuationid1Mapping;
     type PrimaryKey = IrauctionValuationid1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "IRAUCTION".into(),
-            table_name: Some("VALUATIONID".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(IrauctionValuationid1Row {
+            valuationid: row.get_range("valuationid", field_mapping.0[0])?,
+            description: row.get_opt_range("description", field_mapping.0[1])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> IrauctionValuationid1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(IrauctionValuationid1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> IrauctionValuationid1PrimaryKey {
         IrauctionValuationid1PrimaryKey {
-            valuationid: self.valuationid.clone(),
+            valuationid: row.valuationid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "irauction_valuationid_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        IrauctionValuationid1Row {
+            valuationid: row.valuationid.clone(),
+            description: row.description.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct IrauctionValuationid1PrimaryKey {
-    pub valuationid: String,
+    pub valuationid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for IrauctionValuationid1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for IrauctionValuationid1 {
-    type Row = IrauctionValuationid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.valuationid == row.valuationid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionValuationid1Row<'data> {
+    type Row<'other> = IrauctionValuationid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.valuationid() == row.valuationid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for IrauctionValuationid1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for IrauctionValuationid1Row<'data> {
     type PrimaryKey = IrauctionValuationid1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.valuationid == key.valuationid
+        self.valuationid() == key.valuationid
     }
 }
-impl mmsdm_core::CompareWithRow for IrauctionValuationid1PrimaryKey {
-    type Row = IrauctionValuationid1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.valuationid == row.valuationid
+impl<'data> mmsdm_core::CompareWithRow for IrauctionValuationid1PrimaryKey {
+    type Row<'other> = IrauctionValuationid1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.valuationid == row.valuationid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for IrauctionValuationid1PrimaryKey {
@@ -6772,458 +13025,65 @@ impl mmsdm_core::CompareWithPrimaryKey for IrauctionValuationid1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("valuationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = IrauctionValuationid1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "valuationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut valuationid_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            valuationid_array.push(row.valuationid);
-            description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        IrauctionValuationid1Builder {
+            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(valuationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.valuationid_array.append_value(row.valuationid());
+        builder.description_array.append_option(row.description());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.valuationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("AUCTION"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionConfigAuction1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuction1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("AUCTION_CALENDAR"), version) if version <= 2_i32 => {
-            let d: Vec<IrauctionConfigAuctionCalendar2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuctionCalendar2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("AUCTION_IC_ALLOCATIONS"), version) if version <= 2_i32 => {
-            let d: Vec<IrauctionConfigAuctionIcAllocations2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuctionIcAllocations2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("AUCTION_REVENUE_ESTIMATE"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionConfigAuctionRevenueEstimate1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuctionRevenueEstimate1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("AUCTION_REVENUE_TRACK"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionConfigAuctionRevenueTrack1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuctionRevenueTrack1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("AUCTION_RP_ESTIMATE"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionConfigAuctionRpEstimate1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuctionRpEstimate1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("AUCTION_TRANCHE"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionConfigAuctionTranche1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionConfigAuctionTranche1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUECONTRACTPAYMENTS"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigResiduecontractpayments1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigResiduecontractpayments1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("FILE_TRK"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionBidsFileTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionBidsFileTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_BID_TRK"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResidueBidTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResidueBidTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_CONTRACTS"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResidueContracts1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResidueContracts1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_CON_DATA"), version) if version <= 2_i32 => {
-            let d: Vec<IrauctionResidueConData2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResidueConData2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_CON_ESTIMATES_TRK"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResidueConEstimatesTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResidueConEstimatesTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_CON_FUNDS"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResidueConFunds1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResidueConFunds1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("FUNDS_BID"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionBidsFundsBid1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionBidsFundsBid1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_PRICE_BID"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResiduePriceBid1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResiduePriceBid1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_PRICE_FUNDS_BID"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResiduePriceFundsBid1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResiduePriceFundsBid1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_PUBLIC_DATA"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResiduePublicData1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResiduePublicData1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESIDUE_TRK"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionResidueTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionResidueTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_CASH_SECURITY"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraCashSecurity1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraCashSecurity1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_FINANCIAL_AUCPAY_DETAIL"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraFinancialAucpayDetail1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraFinancialAucpayDetail1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_FINANCIAL_AUCPAY_SUM"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraFinancialAucpaySum1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraFinancialAucpaySum1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_FINANCIAL_AUC_MARDETAIL"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraFinancialAucMardetail1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraFinancialAucMardetail1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_FINANCIAL_AUC_MARGIN"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraFinancialAucMargin1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraFinancialAucMargin1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_FINANCIAL_AUC_RECEIPTS"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraFinancialAucReceipts1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraFinancialAucReceipts1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_FINANCIAL_RUNTRK"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraFinancialRuntrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraFinancialRuntrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_OFFER_PRODUCT"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraOfferProduct1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraOfferProduct1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_OFFER_PROFILE"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraOfferProfile1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraOfferProfile1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_PRUDENTIAL_CASH_SECURITY"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraPrudentialCashSecurity1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraPrudentialCashSecurity1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_PRUDENTIAL_COMP_POSITION"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraPrudentialCompPosition1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraPrudentialCompPosition1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_PRUDENTIAL_EXPOSURE"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraPrudentialExposure1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraPrudentialExposure1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SRA_PRUDENTIAL_RUN"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionSraPrudentialRun1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionSraPrudentialRun1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("VALUATIONID"), version) if version <= 1_i32 => {
-            let d: Vec<IrauctionValuationid1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertIrauctionValuationid1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct IrauctionValuationid1Builder {
+    valuationid_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
 }

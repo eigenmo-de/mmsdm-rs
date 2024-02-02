@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct MeterdataAggregateReads1;
+pub struct MeterdataAggregateReads1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## METERDATA_AGGREGATE_READS
@@ -22,21 +29,20 @@ use chrono::Datelike as _;
 /// * METER_TYPE
 /// * PERIODID
 /// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MeterdataAggregateReads1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MeterdataAggregateReads1Row<'data> {
     /// Case Identifier
     pub case_id: rust_decimal::Decimal,
     /// Settlement date within the case
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Connection Point ID
-    pub connectionpointid: String,
+    pub connectionpointid: core::ops::Range<usize>,
     /// The meter type for the read, one of: CUSTOMER; GENERATOR; EMBEDDED_GENERATOR
-    pub meter_type: String,
+    pub meter_type: core::ops::Range<usize>,
     /// The financially responsible market participantid
-    pub frmp: String,
+    pub frmp: core::ops::Range<usize>,
     /// The local retailer at the connection point id
-    pub lr: String,
+    pub lr: core::ops::Range<usize>,
     /// Trading Interval.
     pub periodid: rust_decimal::Decimal,
     /// The import(pool-centric) value for the meter read (MWh)
@@ -44,79 +50,235 @@ pub struct MeterdataAggregateReads1 {
     /// The export(pool-centric) value for the meter read (MWh)
     pub exportvalue: rust_decimal::Decimal,
     /// Last changed date for the record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MeterdataAggregateReads1Row<'data> {
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
+        )
+    }
+    pub fn meter_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.meter_type.clone())
+    }
+    pub fn frmp(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.frmp.clone())
+    }
+    pub fn lr(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.lr.clone())
+    }
 }
 impl mmsdm_core::GetTable for MeterdataAggregateReads1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "METERDATA";
+    const TABLE_NAME: &'static str = "AGGREGATE_READS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataAggregateReads1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CASE_ID",
+        "SETTLEMENTDATE",
+        "CONNECTIONPOINTID",
+        "METER_TYPE",
+        "FRMP",
+        "LR",
+        "PERIODID",
+        "IMPORTVALUE",
+        "EXPORTVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MeterdataAggregateReads1Row<'row>;
+    type FieldMapping = MeterdataAggregateReads1Mapping;
     type PrimaryKey = MeterdataAggregateReads1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: Some("AGGREGATE_READS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MeterdataAggregateReads1Row {
+            case_id: row
+                .get_custom_parsed_at_idx(
+                    "case_id",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[2])?,
+            meter_type: row.get_range("meter_type", field_mapping.0[3])?,
+            frmp: row.get_range("frmp", field_mapping.0[4])?,
+            lr: row.get_range("lr", field_mapping.0[5])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            importvalue: row
+                .get_custom_parsed_at_idx(
+                    "importvalue",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            exportvalue: row
+                .get_custom_parsed_at_idx(
+                    "exportvalue",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MeterdataAggregateReads1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MeterdataAggregateReads1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MeterdataAggregateReads1PrimaryKey {
         MeterdataAggregateReads1PrimaryKey {
-            case_id: self.case_id,
-            connectionpointid: self.connectionpointid.clone(),
-            frmp: self.frmp.clone(),
-            lr: self.lr.clone(),
-            meter_type: self.meter_type.clone(),
-            periodid: self.periodid,
-            settlementdate: self.settlementdate,
+            case_id: row.case_id,
+            connectionpointid: row.connectionpointid().to_string(),
+            frmp: row.frmp().to_string(),
+            lr: row.lr().to_string(),
+            meter_type: row.meter_type().to_string(),
+            periodid: row.periodid,
+            settlementdate: row.settlementdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "meterdata_aggregate_reads_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "meterdata_aggregate_reads_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MeterdataAggregateReads1Row {
+            case_id: row.case_id.clone(),
+            settlementdate: row.settlementdate.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            meter_type: row.meter_type.clone(),
+            frmp: row.frmp.clone(),
+            lr: row.lr.clone(),
+            periodid: row.periodid.clone(),
+            importvalue: row.importvalue.clone(),
+            exportvalue: row.exportvalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MeterdataAggregateReads1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
-    pub connectionpointid: String,
-    pub frmp: String,
-    pub lr: String,
-    pub meter_type: String,
+    pub connectionpointid: alloc::string::String,
+    pub frmp: alloc::string::String,
+    pub lr: alloc::string::String,
+    pub meter_type: alloc::string::String,
     pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MeterdataAggregateReads1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MeterdataAggregateReads1 {
-    type Row = MeterdataAggregateReads1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.connectionpointid == row.connectionpointid
-            && self.frmp == row.frmp && self.lr == row.lr
-            && self.meter_type == row.meter_type && self.periodid == row.periodid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataAggregateReads1Row<'data> {
+    type Row<'other> = MeterdataAggregateReads1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id
+            && self.connectionpointid() == row.connectionpointid()
+            && self.frmp() == row.frmp() && self.lr() == row.lr()
+            && self.meter_type() == row.meter_type() && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MeterdataAggregateReads1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MeterdataAggregateReads1Row<'data> {
     type PrimaryKey = MeterdataAggregateReads1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.case_id == key.case_id && self.connectionpointid == key.connectionpointid
-            && self.frmp == key.frmp && self.lr == key.lr
-            && self.meter_type == key.meter_type && self.periodid == key.periodid
+        self.case_id == key.case_id && self.connectionpointid() == key.connectionpointid
+            && self.frmp() == key.frmp && self.lr() == key.lr
+            && self.meter_type() == key.meter_type && self.periodid == key.periodid
             && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for MeterdataAggregateReads1PrimaryKey {
-    type Row = MeterdataAggregateReads1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.connectionpointid == row.connectionpointid
-            && self.frmp == row.frmp && self.lr == row.lr
-            && self.meter_type == row.meter_type && self.periodid == row.periodid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataAggregateReads1PrimaryKey {
+    type Row<'other> = MeterdataAggregateReads1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.connectionpointid == row.connectionpointid()
+            && self.frmp == row.frmp() && self.lr == row.lr()
+            && self.meter_type == row.meter_type() && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
     }
 }
@@ -131,117 +293,171 @@ impl mmsdm_core::CompareWithPrimaryKey for MeterdataAggregateReads1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("case_id",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("connectionpointid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("meter_type",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("frmp",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lr",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("importvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), false),
-                arrow2::datatypes::Field::new("exportvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), false),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MeterdataAggregateReads1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "case_id",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meter_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "frmp",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lr",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "importvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "exportvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut case_id_array = Vec::new();
-        let mut settlementdate_array = Vec::new();
-        let mut connectionpointid_array = Vec::new();
-        let mut meter_type_array = Vec::new();
-        let mut frmp_array = Vec::new();
-        let mut lr_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut importvalue_array = Vec::new();
-        let mut exportvalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            case_id_array
-                .push({
-                    let mut val = row.case_id;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            settlementdate_array.push(row.settlementdate.timestamp());
-            connectionpointid_array.push(row.connectionpointid);
-            meter_type_array.push(row.meter_type);
-            frmp_array.push(row.frmp);
-            lr_array.push(row.lr);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            importvalue_array
-                .push({
-                    let mut val = row.importvalue;
-                    val.rescale(8);
-                    val.mantissa()
-                });
-            exportvalue_array
-                .push({
-                    let mut val = row.exportvalue;
-                    val.rescale(8);
-                    val.mantissa()
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MeterdataAggregateReads1Builder {
+            case_id_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            meter_type_array: arrow::array::builder::StringBuilder::new(),
+            frmp_array: arrow::array::builder::StringBuilder::new(),
+            lr_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            importvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            exportvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(case_id_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(connectionpointid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(meter_type_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(frmp_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(lr_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(importvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(exportvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .case_id_array
+            .append_value({
+                let mut val = row.case_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder.meter_type_array.append_value(row.meter_type());
+        builder.frmp_array.append_value(row.frmp());
+        builder.lr_array.append_value(row.lr());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .importvalue_array
+            .append_value({
+                let mut val = row.importvalue;
+                val.rescale(8);
+                val.mantissa()
+            });
+        builder
+            .exportvalue_array
+            .append_value({
+                let mut val = row.exportvalue;
+                val.rescale(8);
+                val.mantissa()
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.case_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meter_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.frmp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lr_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.importvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.exportvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MeterdataAggregateReads1Builder {
+    case_id_array: arrow::array::builder::Decimal128Builder,
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    meter_type_array: arrow::array::builder::StringBuilder,
+    frmp_array: arrow::array::builder::StringBuilder,
+    lr_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    importvalue_array: arrow::array::builder::Decimal128Builder,
+    exportvalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MeterdataIndividualReads1;
+pub struct MeterdataIndividualReads1Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## METERDATA_INDIVIDUAL_READS
@@ -262,98 +478,269 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
 /// * METER_ID_SUFFIX
 /// * PERIODID
 /// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MeterdataIndividualReads1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MeterdataIndividualReads1Row<'data> {
     /// Case Identifier
     pub case_id: rust_decimal::Decimal,
     /// Settlement date within the case
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// The National Metering Identifier (NMI)
-    pub meter_id: String,
+    pub meter_id: core::ops::Range<usize>,
     /// The National Metering Identifier (NMI) data stream
-    pub meter_id_suffix: String,
+    pub meter_id_suffix: core::ops::Range<usize>,
     /// The financially responsible market participantid
-    pub frmp: String,
+    pub frmp: core::ops::Range<usize>,
     /// The local retailer at the connection point id
-    pub lr: String,
+    pub lr: core::ops::Range<usize>,
     /// Trading Interval.
     pub periodid: rust_decimal::Decimal,
     /// Connection Point ID
-    pub connectionpointid: String,
+    pub connectionpointid: core::ops::Range<usize>,
     /// The meter type for the read, one of: CUSTOMER; GENERATOR; EMBEDDED_GENERATOR
-    pub meter_type: String,
+    pub meter_type: core::ops::Range<usize>,
     /// The import(pool-centric) value for the meter read (MWh)
     pub importvalue: rust_decimal::Decimal,
     /// The export(pool-centric) value for the meter read (MWh)
     pub exportvalue: rust_decimal::Decimal,
     /// Last changed date for the record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MeterdataIndividualReads1Row<'data> {
+    pub fn meter_id(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.meter_id.clone())
+    }
+    pub fn meter_id_suffix(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.meter_id_suffix.clone(),
+        )
+    }
+    pub fn frmp(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.frmp.clone())
+    }
+    pub fn lr(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.lr.clone())
+    }
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
+        )
+    }
+    pub fn meter_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.meter_type.clone())
+    }
 }
 impl mmsdm_core::GetTable for MeterdataIndividualReads1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "METERDATA";
+    const TABLE_NAME: &'static str = "INDIVIDUAL_READS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataIndividualReads1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CASE_ID",
+        "SETTLEMENTDATE",
+        "METER_ID",
+        "METER_ID_SUFFIX",
+        "FRMP",
+        "LR",
+        "PERIODID",
+        "CONNECTIONPOINTID",
+        "METER_TYPE",
+        "IMPORTVALUE",
+        "EXPORTVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MeterdataIndividualReads1Row<'row>;
+    type FieldMapping = MeterdataIndividualReads1Mapping;
     type PrimaryKey = MeterdataIndividualReads1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: Some("INDIVIDUAL_READS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MeterdataIndividualReads1Row {
+            case_id: row
+                .get_custom_parsed_at_idx(
+                    "case_id",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            meter_id: row.get_range("meter_id", field_mapping.0[2])?,
+            meter_id_suffix: row.get_range("meter_id_suffix", field_mapping.0[3])?,
+            frmp: row.get_range("frmp", field_mapping.0[4])?,
+            lr: row.get_range("lr", field_mapping.0[5])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[7])?,
+            meter_type: row.get_range("meter_type", field_mapping.0[8])?,
+            importvalue: row
+                .get_custom_parsed_at_idx(
+                    "importvalue",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            exportvalue: row
+                .get_custom_parsed_at_idx(
+                    "exportvalue",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MeterdataIndividualReads1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MeterdataIndividualReads1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MeterdataIndividualReads1PrimaryKey {
         MeterdataIndividualReads1PrimaryKey {
-            case_id: self.case_id,
-            meter_id: self.meter_id.clone(),
-            meter_id_suffix: self.meter_id_suffix.clone(),
-            periodid: self.periodid,
-            settlementdate: self.settlementdate,
+            case_id: row.case_id,
+            meter_id: row.meter_id().to_string(),
+            meter_id_suffix: row.meter_id_suffix().to_string(),
+            periodid: row.periodid,
+            settlementdate: row.settlementdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "meterdata_individual_reads_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "meterdata_individual_reads_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MeterdataIndividualReads1Row {
+            case_id: row.case_id.clone(),
+            settlementdate: row.settlementdate.clone(),
+            meter_id: row.meter_id.clone(),
+            meter_id_suffix: row.meter_id_suffix.clone(),
+            frmp: row.frmp.clone(),
+            lr: row.lr.clone(),
+            periodid: row.periodid.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            meter_type: row.meter_type.clone(),
+            importvalue: row.importvalue.clone(),
+            exportvalue: row.exportvalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MeterdataIndividualReads1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
-    pub meter_id: String,
-    pub meter_id_suffix: String,
+    pub meter_id: alloc::string::String,
+    pub meter_id_suffix: alloc::string::String,
     pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MeterdataIndividualReads1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MeterdataIndividualReads1 {
-    type Row = MeterdataIndividualReads1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.meter_id == row.meter_id
-            && self.meter_id_suffix == row.meter_id_suffix
+impl<'data> mmsdm_core::CompareWithRow for MeterdataIndividualReads1Row<'data> {
+    type Row<'other> = MeterdataIndividualReads1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.meter_id() == row.meter_id()
+            && self.meter_id_suffix() == row.meter_id_suffix()
             && self.periodid == row.periodid && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MeterdataIndividualReads1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MeterdataIndividualReads1Row<'data> {
     type PrimaryKey = MeterdataIndividualReads1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.case_id == key.case_id && self.meter_id == key.meter_id
-            && self.meter_id_suffix == key.meter_id_suffix
+        self.case_id == key.case_id && self.meter_id() == key.meter_id
+            && self.meter_id_suffix() == key.meter_id_suffix
             && self.periodid == key.periodid && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for MeterdataIndividualReads1PrimaryKey {
-    type Row = MeterdataIndividualReads1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.meter_id == row.meter_id
-            && self.meter_id_suffix == row.meter_id_suffix
+impl<'data> mmsdm_core::CompareWithRow for MeterdataIndividualReads1PrimaryKey {
+    type Row<'other> = MeterdataIndividualReads1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.meter_id == row.meter_id()
+            && self.meter_id_suffix == row.meter_id_suffix()
             && self.periodid == row.periodid && self.settlementdate == row.settlementdate
     }
 }
@@ -367,131 +754,191 @@ impl mmsdm_core::CompareWithPrimaryKey for MeterdataIndividualReads1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("case_id",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("meter_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("meter_id_suffix",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("frmp",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lr",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("connectionpointid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("meter_type",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("importvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), false),
-                arrow2::datatypes::Field::new("exportvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), false),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MeterdataIndividualReads1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "case_id",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meter_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meter_id_suffix",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "frmp",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lr",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meter_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "importvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "exportvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut case_id_array = Vec::new();
-        let mut settlementdate_array = Vec::new();
-        let mut meter_id_array = Vec::new();
-        let mut meter_id_suffix_array = Vec::new();
-        let mut frmp_array = Vec::new();
-        let mut lr_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut connectionpointid_array = Vec::new();
-        let mut meter_type_array = Vec::new();
-        let mut importvalue_array = Vec::new();
-        let mut exportvalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            case_id_array
-                .push({
-                    let mut val = row.case_id;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            settlementdate_array.push(row.settlementdate.timestamp());
-            meter_id_array.push(row.meter_id);
-            meter_id_suffix_array.push(row.meter_id_suffix);
-            frmp_array.push(row.frmp);
-            lr_array.push(row.lr);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            connectionpointid_array.push(row.connectionpointid);
-            meter_type_array.push(row.meter_type);
-            importvalue_array
-                .push({
-                    let mut val = row.importvalue;
-                    val.rescale(8);
-                    val.mantissa()
-                });
-            exportvalue_array
-                .push({
-                    let mut val = row.exportvalue;
-                    val.rescale(8);
-                    val.mantissa()
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MeterdataIndividualReads1Builder {
+            case_id_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            meter_id_array: arrow::array::builder::StringBuilder::new(),
+            meter_id_suffix_array: arrow::array::builder::StringBuilder::new(),
+            frmp_array: arrow::array::builder::StringBuilder::new(),
+            lr_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            meter_type_array: arrow::array::builder::StringBuilder::new(),
+            importvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            exportvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(case_id_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(meter_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(meter_id_suffix_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(frmp_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(lr_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(connectionpointid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(meter_type_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(importvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(exportvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .case_id_array
+            .append_value({
+                let mut val = row.case_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.meter_id_array.append_value(row.meter_id());
+        builder.meter_id_suffix_array.append_value(row.meter_id_suffix());
+        builder.frmp_array.append_value(row.frmp());
+        builder.lr_array.append_value(row.lr());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder.meter_type_array.append_value(row.meter_type());
+        builder
+            .importvalue_array
+            .append_value({
+                let mut val = row.importvalue;
+                val.rescale(8);
+                val.mantissa()
+            });
+        builder
+            .exportvalue_array
+            .append_value({
+                let mut val = row.exportvalue;
+                val.rescale(8);
+                val.mantissa()
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.case_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meter_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meter_id_suffix_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.frmp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lr_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meter_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.importvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.exportvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MeterdataIndividualReads1Builder {
+    case_id_array: arrow::array::builder::Decimal128Builder,
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    meter_id_array: arrow::array::builder::StringBuilder,
+    meter_id_suffix_array: arrow::array::builder::StringBuilder,
+    frmp_array: arrow::array::builder::StringBuilder,
+    lr_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    meter_type_array: arrow::array::builder::StringBuilder,
+    importvalue_array: arrow::array::builder::Decimal128Builder,
+    exportvalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MeterdataInterconnector1;
+pub struct MeterdataInterconnector1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## METERDATA_INTERCONNECTOR
@@ -511,15 +958,14 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
 /// * INTERCONNECTORID
 /// * PERIODID
 /// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MeterdataInterconnector1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MeterdataInterconnector1Row<'data> {
     /// Case Identifier
     pub case_id: rust_decimal::Decimal,
     /// Settlement date within the case
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Interconnector Identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Trading Interval.
     pub periodid: rust_decimal::Decimal,
     /// The import direction value for the meter read (MWh)
@@ -527,67 +973,201 @@ pub struct MeterdataInterconnector1 {
     /// The export direction value for the meter read (MWh)
     pub exportvalue: Option<rust_decimal::Decimal>,
     /// Last changed date for the record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl mmsdm_core::GetTable for MeterdataInterconnector1 {
-    type PrimaryKey = MeterdataInterconnector1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: Some("INTERCONNECTOR".into()),
-            version: 1,
-        }
-    }
-    fn primary_key(&self) -> MeterdataInterconnector1PrimaryKey {
-        MeterdataInterconnector1PrimaryKey {
-            case_id: self.case_id,
-            interconnectorid: self.interconnectorid.clone(),
-            periodid: self.periodid,
-            settlementdate: self.settlementdate,
-        }
-    }
-    fn partition_suffix(&self) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
-                .unwrap(),
-        }
-    }
-    fn partition_name(&self) -> String {
-        format!(
-            "meterdata_interconnector_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+impl<'data> MeterdataInterconnector1Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
         )
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+impl mmsdm_core::GetTable for MeterdataInterconnector1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "METERDATA";
+    const TABLE_NAME: &'static str = "INTERCONNECTOR";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataInterconnector1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CASE_ID",
+        "SETTLEMENTDATE",
+        "INTERCONNECTORID",
+        "PERIODID",
+        "IMPORTVALUE",
+        "EXPORTVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MeterdataInterconnector1Row<'row>;
+    type FieldMapping = MeterdataInterconnector1Mapping;
+    type PrimaryKey = MeterdataInterconnector1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MeterdataInterconnector1Row {
+            case_id: row
+                .get_custom_parsed_at_idx(
+                    "case_id",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[2])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            importvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "importvalue",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            exportvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "exportvalue",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MeterdataInterconnector1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MeterdataInterconnector1PrimaryKey {
+        MeterdataInterconnector1PrimaryKey {
+            case_id: row.case_id,
+            interconnectorid: row.interconnectorid().to_string(),
+            periodid: row.periodid,
+            settlementdate: row.settlementdate,
+        }
+    }
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
+                .unwrap(),
+        }
+    }
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "meterdata_interconnector_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
+        )
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MeterdataInterconnector1Row {
+            case_id: row.case_id.clone(),
+            settlementdate: row.settlementdate.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            periodid: row.periodid.clone(),
+            importvalue: row.importvalue.clone(),
+            exportvalue: row.exportvalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MeterdataInterconnector1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
-    pub interconnectorid: String,
+    pub interconnectorid: alloc::string::String,
     pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MeterdataInterconnector1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MeterdataInterconnector1 {
-    type Row = MeterdataInterconnector1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataInterconnector1Row<'data> {
+    type Row<'other> = MeterdataInterconnector1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.interconnectorid() == row.interconnectorid()
             && self.periodid == row.periodid && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MeterdataInterconnector1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MeterdataInterconnector1Row<'data> {
     type PrimaryKey = MeterdataInterconnector1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.case_id == key.case_id && self.interconnectorid == key.interconnectorid
+        self.case_id == key.case_id && self.interconnectorid() == key.interconnectorid
             && self.periodid == key.periodid && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for MeterdataInterconnector1PrimaryKey {
-    type Row = MeterdataInterconnector1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataInterconnector1PrimaryKey {
+    type Row<'other> = MeterdataInterconnector1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.interconnectorid == row.interconnectorid()
             && self.periodid == row.periodid && self.settlementdate == row.settlementdate
     }
 }
@@ -600,100 +1180,145 @@ impl mmsdm_core::CompareWithPrimaryKey for MeterdataInterconnector1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("case_id",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("importvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("exportvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MeterdataInterconnector1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "case_id",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "importvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "exportvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut case_id_array = Vec::new();
-        let mut settlementdate_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut importvalue_array = Vec::new();
-        let mut exportvalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            case_id_array
-                .push({
-                    let mut val = row.case_id;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            settlementdate_array.push(row.settlementdate.timestamp());
-            interconnectorid_array.push(row.interconnectorid);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            importvalue_array
-                .push({
-                    row.importvalue
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            exportvalue_array
-                .push({
-                    row.exportvalue
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MeterdataInterconnector1Builder {
+            case_id_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            importvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            exportvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(case_id_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(importvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(exportvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .case_id_array
+            .append_value({
+                let mut val = row.case_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .importvalue_array
+            .append_option({
+                row.importvalue
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .exportvalue_array
+            .append_option({
+                row.exportvalue
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.case_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.importvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.exportvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MeterdataInterconnector1Builder {
+    case_id_array: arrow::array::builder::Decimal128Builder,
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    importvalue_array: arrow::array::builder::Decimal128Builder,
+    exportvalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MeterdataMeterdataSaps1;
+pub struct MeterdataMeterdataSaps1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## METERDATA_SAPS
@@ -716,21 +1341,20 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
 /// * METER_TYPE
 /// * PERIODID
 /// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MeterdataMeterdataSaps1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MeterdataMeterdataSaps1Row<'data> {
     /// The Metering Case ID used for Settlements
     pub case_id: rust_decimal::Decimal,
     /// The Settlement Date for that Week
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// The SAPS Connection Point Id
-    pub connectionpoint_id: String,
+    pub connectionpoint_id: core::ops::Range<usize>,
     /// The Meter Type Identifier , CUSTOMER or MSRP
-    pub meter_type: String,
+    pub meter_type: core::ops::Range<usize>,
     /// The Financial Responsible Market Participant
-    pub frmp: String,
+    pub frmp: core::ops::Range<usize>,
     /// The Local Retailer
-    pub lr: String,
+    pub lr: core::ops::Range<usize>,
     /// The Period ID Identifier
     pub periodid: rust_decimal::Decimal,
     /// The Sent Out Energy in MWh
@@ -738,79 +1362,237 @@ pub struct MeterdataMeterdataSaps1 {
     /// The Consumed Energy in MWh
     pub exportvalue: Option<rust_decimal::Decimal>,
     /// The Date time of the record last updated or inserted.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MeterdataMeterdataSaps1Row<'data> {
+    pub fn connectionpoint_id(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpoint_id.clone(),
+        )
+    }
+    pub fn meter_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.meter_type.clone())
+    }
+    pub fn frmp(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.frmp.clone())
+    }
+    pub fn lr(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.lr.clone())
+    }
 }
 impl mmsdm_core::GetTable for MeterdataMeterdataSaps1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "METERDATA";
+    const TABLE_NAME: &'static str = "METERDATA_SAPS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataMeterdataSaps1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CASE_ID",
+        "SETTLEMENTDATE",
+        "CONNECTIONPOINT_ID",
+        "METER_TYPE",
+        "FRMP",
+        "LR",
+        "PERIODID",
+        "IMPORTVALUE",
+        "EXPORTVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MeterdataMeterdataSaps1Row<'row>;
+    type FieldMapping = MeterdataMeterdataSaps1Mapping;
     type PrimaryKey = MeterdataMeterdataSaps1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: Some("METERDATA_SAPS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MeterdataMeterdataSaps1Row {
+            case_id: row
+                .get_custom_parsed_at_idx(
+                    "case_id",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            connectionpoint_id: row.get_range("connectionpoint_id", field_mapping.0[2])?,
+            meter_type: row.get_range("meter_type", field_mapping.0[3])?,
+            frmp: row.get_range("frmp", field_mapping.0[4])?,
+            lr: row.get_range("lr", field_mapping.0[5])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            importvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "importvalue",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            exportvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "exportvalue",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MeterdataMeterdataSaps1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MeterdataMeterdataSaps1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MeterdataMeterdataSaps1PrimaryKey {
         MeterdataMeterdataSaps1PrimaryKey {
-            case_id: self.case_id,
-            connectionpoint_id: self.connectionpoint_id.clone(),
-            frmp: self.frmp.clone(),
-            lr: self.lr.clone(),
-            meter_type: self.meter_type.clone(),
-            periodid: self.periodid,
-            settlementdate: self.settlementdate,
+            case_id: row.case_id,
+            connectionpoint_id: row.connectionpoint_id().to_string(),
+            frmp: row.frmp().to_string(),
+            lr: row.lr().to_string(),
+            meter_type: row.meter_type().to_string(),
+            periodid: row.periodid,
+            settlementdate: row.settlementdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "meterdata_meterdata_saps_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "meterdata_meterdata_saps_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MeterdataMeterdataSaps1Row {
+            case_id: row.case_id.clone(),
+            settlementdate: row.settlementdate.clone(),
+            connectionpoint_id: row.connectionpoint_id.clone(),
+            meter_type: row.meter_type.clone(),
+            frmp: row.frmp.clone(),
+            lr: row.lr.clone(),
+            periodid: row.periodid.clone(),
+            importvalue: row.importvalue.clone(),
+            exportvalue: row.exportvalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MeterdataMeterdataSaps1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
-    pub connectionpoint_id: String,
-    pub frmp: String,
-    pub lr: String,
-    pub meter_type: String,
+    pub connectionpoint_id: alloc::string::String,
+    pub frmp: alloc::string::String,
+    pub lr: alloc::string::String,
+    pub meter_type: alloc::string::String,
     pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MeterdataMeterdataSaps1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MeterdataMeterdataSaps1 {
-    type Row = MeterdataMeterdataSaps1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.connectionpoint_id == row.connectionpoint_id
-            && self.frmp == row.frmp && self.lr == row.lr
-            && self.meter_type == row.meter_type && self.periodid == row.periodid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataMeterdataSaps1Row<'data> {
+    type Row<'other> = MeterdataMeterdataSaps1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id
+            && self.connectionpoint_id() == row.connectionpoint_id()
+            && self.frmp() == row.frmp() && self.lr() == row.lr()
+            && self.meter_type() == row.meter_type() && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MeterdataMeterdataSaps1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MeterdataMeterdataSaps1Row<'data> {
     type PrimaryKey = MeterdataMeterdataSaps1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.case_id == key.case_id && self.connectionpoint_id == key.connectionpoint_id
-            && self.frmp == key.frmp && self.lr == key.lr
-            && self.meter_type == key.meter_type && self.periodid == key.periodid
+        self.case_id == key.case_id
+            && self.connectionpoint_id() == key.connectionpoint_id
+            && self.frmp() == key.frmp && self.lr() == key.lr
+            && self.meter_type() == key.meter_type && self.periodid == key.periodid
             && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for MeterdataMeterdataSaps1PrimaryKey {
-    type Row = MeterdataMeterdataSaps1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.connectionpoint_id == row.connectionpoint_id
-            && self.frmp == row.frmp && self.lr == row.lr
-            && self.meter_type == row.meter_type && self.periodid == row.periodid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataMeterdataSaps1PrimaryKey {
+    type Row<'other> = MeterdataMeterdataSaps1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id
+            && self.connectionpoint_id == row.connectionpoint_id()
+            && self.frmp == row.frmp() && self.lr == row.lr()
+            && self.meter_type == row.meter_type() && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
     }
 }
@@ -825,121 +1607,175 @@ impl mmsdm_core::CompareWithPrimaryKey for MeterdataMeterdataSaps1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("case_id",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("connectionpoint_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("meter_type",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("frmp",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lr",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("importvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("exportvalue",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MeterdataMeterdataSaps1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "case_id",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpoint_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meter_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "frmp",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lr",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "importvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "exportvalue",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut case_id_array = Vec::new();
-        let mut settlementdate_array = Vec::new();
-        let mut connectionpoint_id_array = Vec::new();
-        let mut meter_type_array = Vec::new();
-        let mut frmp_array = Vec::new();
-        let mut lr_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut importvalue_array = Vec::new();
-        let mut exportvalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            case_id_array
-                .push({
-                    let mut val = row.case_id;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            settlementdate_array.push(row.settlementdate.timestamp());
-            connectionpoint_id_array.push(row.connectionpoint_id);
-            meter_type_array.push(row.meter_type);
-            frmp_array.push(row.frmp);
-            lr_array.push(row.lr);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            importvalue_array
-                .push({
-                    row.importvalue
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            exportvalue_array
-                .push({
-                    row.exportvalue
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MeterdataMeterdataSaps1Builder {
+            case_id_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            connectionpoint_id_array: arrow::array::builder::StringBuilder::new(),
+            meter_type_array: arrow::array::builder::StringBuilder::new(),
+            frmp_array: arrow::array::builder::StringBuilder::new(),
+            lr_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            importvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            exportvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(case_id_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(connectionpoint_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(meter_type_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(frmp_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(lr_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(importvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(exportvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .case_id_array
+            .append_value({
+                let mut val = row.case_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.connectionpoint_id_array.append_value(row.connectionpoint_id());
+        builder.meter_type_array.append_value(row.meter_type());
+        builder.frmp_array.append_value(row.frmp());
+        builder.lr_array.append_value(row.lr());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .importvalue_array
+            .append_option({
+                row.importvalue
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .exportvalue_array
+            .append_option({
+                row.exportvalue
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.case_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpoint_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meter_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.frmp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lr_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.importvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.exportvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MeterdataMeterdataSaps1Builder {
+    case_id_array: arrow::array::builder::Decimal128Builder,
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    connectionpoint_id_array: arrow::array::builder::StringBuilder,
+    meter_type_array: arrow::array::builder::StringBuilder,
+    frmp_array: arrow::array::builder::StringBuilder,
+    lr_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    importvalue_array: arrow::array::builder::Decimal128Builder,
+    exportvalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MeterdataWdrReads1;
+pub struct MeterdataWdrReads1Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## METERDATA_WDR_READS
@@ -960,23 +1796,22 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
 /// * METER_ID
 /// * PERIODID
 /// * SETTLEMENTDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MeterdataWdrReads1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MeterdataWdrReads1Row<'data> {
     /// Unique identifier for the market to which this metering record applies.  Always equal to NEM in the current system.
-    pub market_id: String,
+    pub market_id: core::ops::Range<usize>,
     /// Unique identifier for the metering case.
     pub case_id: rust_decimal::Decimal,
     /// The settlement date for the metering record
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Unique identifier for the meter to which the metering record applies
-    pub meter_id: String,
+    pub meter_id: core::ops::Range<usize>,
     /// Unique identifier for the transmission node to which this meter belongs on the settlement date
-    pub tni: Option<String>,
+    pub tni: core::ops::Range<usize>,
     /// Unique identifier for the participant acting as the FRMP for this NMI on the settlement date
-    pub frmp: Option<String>,
+    pub frmp: core::ops::Range<usize>,
     /// Unique identifier for the participant acting as the DRSP for this NMI on the settlement date
-    pub drsp: Option<String>,
+    pub drsp: core::ops::Range<usize>,
     /// Trading interval identifier, with Period 1 being the first TI for the calendar day, i.e interval ending 00:05.
     pub periodid: rust_decimal::Decimal,
     /// Metered quantity Import in MWh for the NMI in the trading interval.  A negative value indicates net consumption, while a positive value indicates net generation
@@ -986,75 +1821,293 @@ pub struct MeterdataWdrReads1 {
     /// Baseline quantity in MWh for the NMI in the trading interval.  A negative value indicates net consumption, while a positive value indicates the net generation
     pub baselinequantity: Option<rust_decimal::Decimal>,
     /// Quality flag for the meter read.  Where multiple datastreams exist against the NMI with different quality flags for each read, the lowest quality flag will be published against the NMI for the interval.
-    pub qualityflag: Option<String>,
+    pub qualityflag: core::ops::Range<usize>,
     /// A value of TRUE (indicated by 1) for this column indicates that financial settlement of WDR transactions for this NMI should not proceed for the settlement date and trading interval. Possible values are 1 and 0.
     pub isnoncompliant: Option<rust_decimal::Decimal>,
     /// A reference to the baseline run that produced the baseline quantity for this NMI and interval
-    pub baselinecalculationid: Option<String>,
+    pub baselinecalculationid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MeterdataWdrReads1Row<'data> {
+    pub fn market_id(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.market_id.clone())
+    }
+    pub fn meter_id(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.meter_id.clone())
+    }
+    pub fn tni(&self) -> Option<&str> {
+        if self.tni.is_empty() {
+            None
+        } else {
+            Some(core::ops::Index::index(self.backing_data.as_slice(), self.tni.clone()))
+        }
+    }
+    pub fn frmp(&self) -> Option<&str> {
+        if self.frmp.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(self.backing_data.as_slice(), self.frmp.clone()),
+            )
+        }
+    }
+    pub fn drsp(&self) -> Option<&str> {
+        if self.drsp.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(self.backing_data.as_slice(), self.drsp.clone()),
+            )
+        }
+    }
+    pub fn qualityflag(&self) -> Option<&str> {
+        if self.qualityflag.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.qualityflag.clone(),
+                ),
+            )
+        }
+    }
+    pub fn baselinecalculationid(&self) -> Option<&str> {
+        if self.baselinecalculationid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.baselinecalculationid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MeterdataWdrReads1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "METERDATA";
+    const TABLE_NAME: &'static str = "WDR_READS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataWdrReads1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "MARKET_ID",
+        "CASE_ID",
+        "SETTLEMENTDATE",
+        "METER_ID",
+        "TNI",
+        "FRMP",
+        "DRSP",
+        "PERIODID",
+        "METEREDQUANTITYIMPORT",
+        "METEREDQUANTITYEXPORT",
+        "BASELINEQUANTITY",
+        "QUALITYFLAG",
+        "ISNONCOMPLIANT",
+        "BASELINECALCULATIONID",
+    ];
+    type Row<'row> = MeterdataWdrReads1Row<'row>;
+    type FieldMapping = MeterdataWdrReads1Mapping;
     type PrimaryKey = MeterdataWdrReads1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "METERDATA".into(),
-            table_name: Some("WDR_READS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MeterdataWdrReads1Row {
+            market_id: row.get_range("market_id", field_mapping.0[0])?,
+            case_id: row
+                .get_custom_parsed_at_idx(
+                    "case_id",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            meter_id: row.get_range("meter_id", field_mapping.0[3])?,
+            tni: row.get_opt_range("tni", field_mapping.0[4])?,
+            frmp: row.get_opt_range("frmp", field_mapping.0[5])?,
+            drsp: row.get_opt_range("drsp", field_mapping.0[6])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            meteredquantityimport: row
+                .get_opt_custom_parsed_at_idx(
+                    "meteredquantityimport",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            meteredquantityexport: row
+                .get_opt_custom_parsed_at_idx(
+                    "meteredquantityexport",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            baselinequantity: row
+                .get_opt_custom_parsed_at_idx(
+                    "baselinequantity",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            qualityflag: row.get_opt_range("qualityflag", field_mapping.0[11])?,
+            isnoncompliant: row
+                .get_opt_custom_parsed_at_idx(
+                    "isnoncompliant",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            baselinecalculationid: row
+                .get_opt_range("baselinecalculationid", field_mapping.0[13])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MeterdataWdrReads1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MeterdataWdrReads1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                6,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MeterdataWdrReads1PrimaryKey {
         MeterdataWdrReads1PrimaryKey {
-            case_id: self.case_id,
-            market_id: self.market_id.clone(),
-            meter_id: self.meter_id.clone(),
-            periodid: self.periodid,
-            settlementdate: self.settlementdate,
+            case_id: row.case_id,
+            market_id: row.market_id().to_string(),
+            meter_id: row.meter_id().to_string(),
+            periodid: row.periodid,
+            settlementdate: row.settlementdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "meterdata_wdr_reads_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "meterdata_wdr_reads_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MeterdataWdrReads1Row {
+            market_id: row.market_id.clone(),
+            case_id: row.case_id.clone(),
+            settlementdate: row.settlementdate.clone(),
+            meter_id: row.meter_id.clone(),
+            tni: row.tni.clone(),
+            frmp: row.frmp.clone(),
+            drsp: row.drsp.clone(),
+            periodid: row.periodid.clone(),
+            meteredquantityimport: row.meteredquantityimport.clone(),
+            meteredquantityexport: row.meteredquantityexport.clone(),
+            baselinequantity: row.baselinequantity.clone(),
+            qualityflag: row.qualityflag.clone(),
+            isnoncompliant: row.isnoncompliant.clone(),
+            baselinecalculationid: row.baselinecalculationid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MeterdataWdrReads1PrimaryKey {
     pub case_id: rust_decimal::Decimal,
-    pub market_id: String,
-    pub meter_id: String,
+    pub market_id: alloc::string::String,
+    pub meter_id: alloc::string::String,
     pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MeterdataWdrReads1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MeterdataWdrReads1 {
-    type Row = MeterdataWdrReads1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.market_id == row.market_id
-            && self.meter_id == row.meter_id && self.periodid == row.periodid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataWdrReads1Row<'data> {
+    type Row<'other> = MeterdataWdrReads1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.market_id() == row.market_id()
+            && self.meter_id() == row.meter_id() && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MeterdataWdrReads1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MeterdataWdrReads1Row<'data> {
     type PrimaryKey = MeterdataWdrReads1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.case_id == key.case_id && self.market_id == key.market_id
-            && self.meter_id == key.meter_id && self.periodid == key.periodid
+        self.case_id == key.case_id && self.market_id() == key.market_id
+            && self.meter_id() == key.meter_id && self.periodid == key.periodid
             && self.settlementdate == key.settlementdate
     }
 }
-impl mmsdm_core::CompareWithRow for MeterdataWdrReads1PrimaryKey {
-    type Row = MeterdataWdrReads1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.case_id == row.case_id && self.market_id == row.market_id
-            && self.meter_id == row.meter_id && self.periodid == row.periodid
+impl<'data> mmsdm_core::CompareWithRow for MeterdataWdrReads1PrimaryKey {
+    type Row<'other> = MeterdataWdrReads1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.case_id == row.case_id && self.market_id == row.market_id()
+            && self.meter_id == row.meter_id() && self.periodid == row.periodid
             && self.settlementdate == row.settlementdate
     }
 }
@@ -1068,233 +2121,223 @@ impl mmsdm_core::CompareWithPrimaryKey for MeterdataWdrReads1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("market_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("case_id",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("meter_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("tni",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("frmp",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("drsp",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("meteredquantityimport",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("meteredquantityexport",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("baselinequantity",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("qualityflag",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("isnoncompliant",
-                arrow2::datatypes::DataType::Decimal(1, 0), true),
-                arrow2::datatypes::Field::new("baselinecalculationid",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = MeterdataWdrReads1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "market_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "case_id",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meter_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "tni",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "frmp",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "drsp",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meteredquantityimport",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "meteredquantityexport",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "baselinequantity",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "qualityflag",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "isnoncompliant",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "baselinecalculationid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut market_id_array = Vec::new();
-        let mut case_id_array = Vec::new();
-        let mut settlementdate_array = Vec::new();
-        let mut meter_id_array = Vec::new();
-        let mut tni_array = Vec::new();
-        let mut frmp_array = Vec::new();
-        let mut drsp_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut meteredquantityimport_array = Vec::new();
-        let mut meteredquantityexport_array = Vec::new();
-        let mut baselinequantity_array = Vec::new();
-        let mut qualityflag_array = Vec::new();
-        let mut isnoncompliant_array = Vec::new();
-        let mut baselinecalculationid_array = Vec::new();
-        for row in partition {
-            market_id_array.push(row.market_id);
-            case_id_array
-                .push({
-                    let mut val = row.case_id;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            settlementdate_array.push(row.settlementdate.timestamp());
-            meter_id_array.push(row.meter_id);
-            tni_array.push(row.tni);
-            frmp_array.push(row.frmp);
-            drsp_array.push(row.drsp);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            meteredquantityimport_array
-                .push({
-                    row.meteredquantityimport
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            meteredquantityexport_array
-                .push({
-                    row.meteredquantityexport
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            baselinequantity_array
-                .push({
-                    row.baselinequantity
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            qualityflag_array.push(row.qualityflag);
-            isnoncompliant_array
-                .push({
-                    row.isnoncompliant
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            baselinecalculationid_array.push(row.baselinecalculationid);
+    fn new_builder() -> Self::Builder {
+        MeterdataWdrReads1Builder {
+            market_id_array: arrow::array::builder::StringBuilder::new(),
+            case_id_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            meter_id_array: arrow::array::builder::StringBuilder::new(),
+            tni_array: arrow::array::builder::StringBuilder::new(),
+            frmp_array: arrow::array::builder::StringBuilder::new(),
+            drsp_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            meteredquantityimport_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            meteredquantityexport_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            baselinequantity_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            qualityflag_array: arrow::array::builder::StringBuilder::new(),
+            isnoncompliant_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            baselinecalculationid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(market_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(case_id_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(meter_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(tni_array)) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(frmp_array)) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(drsp_array)) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(meteredquantityimport_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(meteredquantityexport_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(baselinequantity_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(qualityflag_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(isnoncompliant_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(baselinecalculationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.market_id_array.append_value(row.market_id());
+        builder
+            .case_id_array
+            .append_value({
+                let mut val = row.case_id;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.meter_id_array.append_value(row.meter_id());
+        builder.tni_array.append_option(row.tni());
+        builder.frmp_array.append_option(row.frmp());
+        builder.drsp_array.append_option(row.drsp());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .meteredquantityimport_array
+            .append_option({
+                row.meteredquantityimport
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .meteredquantityexport_array
+            .append_option({
+                row.meteredquantityexport
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .baselinequantity_array
+            .append_option({
+                row.baselinequantity
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder.qualityflag_array.append_option(row.qualityflag());
+        builder
+            .isnoncompliant_array
+            .append_option({
+                row.isnoncompliant
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.baselinecalculationid_array.append_option(row.baselinecalculationid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.market_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.case_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meter_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.tni_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.frmp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.drsp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meteredquantityimport_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meteredquantityexport_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.baselinequantity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.qualityflag_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.isnoncompliant_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.baselinecalculationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("AGGREGATE_READS"), version) if version <= 1_i32 => {
-            let d: Vec<MeterdataAggregateReads1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMeterdataAggregateReads1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INDIVIDUAL_READS"), version) if version <= 1_i32 => {
-            let d: Vec<MeterdataIndividualReads1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMeterdataIndividualReads1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERCONNECTOR"), version) if version <= 1_i32 => {
-            let d: Vec<MeterdataInterconnector1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMeterdataInterconnector1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("METERDATA_SAPS"), version) if version <= 1_i32 => {
-            let d: Vec<MeterdataMeterdataSaps1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMeterdataMeterdataSaps1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("WDR_READS"), version) if version <= 1_i32 => {
-            let d: Vec<MeterdataWdrReads1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMeterdataWdrReads1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct MeterdataWdrReads1Builder {
+    market_id_array: arrow::array::builder::StringBuilder,
+    case_id_array: arrow::array::builder::Decimal128Builder,
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    meter_id_array: arrow::array::builder::StringBuilder,
+    tni_array: arrow::array::builder::StringBuilder,
+    frmp_array: arrow::array::builder::StringBuilder,
+    drsp_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    meteredquantityimport_array: arrow::array::builder::Decimal128Builder,
+    meteredquantityexport_array: arrow::array::builder::Decimal128Builder,
+    baselinequantity_array: arrow::array::builder::Decimal128Builder,
+    qualityflag_array: arrow::array::builder::StringBuilder,
+    isnoncompliant_array: arrow::array::builder::Decimal128Builder,
+    baselinecalculationid_array: arrow::array::builder::StringBuilder,
 }

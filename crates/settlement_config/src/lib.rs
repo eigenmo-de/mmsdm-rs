@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct SettlementConfigAncillaryRecoverySplit1;
+pub struct SettlementConfigAncillaryRecoverySplit1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## ANCILLARY_RECOVERY_SPLIT
@@ -20,82 +27,208 @@ use chrono::Datelike as _;
 /// * PAYMENTTYPE
 /// * SERVICE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigAncillaryRecoverySplit1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigAncillaryRecoverySplit1Row<'data> {
     /// Calendar settlement date record becomes effective.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number of the record for the given date.
     pub versionno: rust_decimal::Decimal,
     /// Ancillary service name (e.g. AGC, FCASCOMP)
-    pub service: String,
+    pub service: core::ops::Range<usize>,
     /// A payment type associated with the service (can be ENABLING, AVAILABILITY, USAGE, or COMPENSATION).
-    pub paymenttype: String,
+    pub paymenttype: core::ops::Range<usize>,
     /// The percentage value of the recovery funded by market customers.
     pub customer_portion: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigAncillaryRecoverySplit1Row<'data> {
+    pub fn service(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.service.clone())
+    }
+    pub fn paymenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.paymenttype.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "ANCILLARY_RECOVERY_SPLIT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigAncillaryRecoverySplit1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "SERVICE",
+        "PAYMENTTYPE",
+        "CUSTOMER_PORTION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigAncillaryRecoverySplit1Row<'row>;
+    type FieldMapping = SettlementConfigAncillaryRecoverySplit1Mapping;
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("ANCILLARY_RECOVERY_SPLIT".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigAncillaryRecoverySplit1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            service: row.get_range("service", field_mapping.0[2])?,
+            paymenttype: row.get_range("paymenttype", field_mapping.0[3])?,
+            customer_portion: row
+                .get_opt_custom_parsed_at_idx(
+                    "customer_portion",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigAncillaryRecoverySplit1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigAncillaryRecoverySplit1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigAncillaryRecoverySplit1PrimaryKey {
         SettlementConfigAncillaryRecoverySplit1PrimaryKey {
-            effectivedate: self.effectivedate,
-            paymenttype: self.paymenttype.clone(),
-            service: self.service.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            paymenttype: row.paymenttype().to_string(),
+            service: row.service().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_ancillary_recovery_split_v1_{}_{}", self
-            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_ancillary_recovery_split_v1_{}_{}",
+            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
+            .number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigAncillaryRecoverySplit1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            service: row.service.clone(),
+            paymenttype: row.paymenttype.clone(),
+            customer_portion: row.customer_portion.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigAncillaryRecoverySplit1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub paymenttype: String,
-    pub service: String,
+    pub paymenttype: alloc::string::String,
+    pub service: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigAncillaryRecoverySplit1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigAncillaryRecoverySplit1 {
-    type Row = SettlementConfigAncillaryRecoverySplit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.paymenttype == row.paymenttype
-            && self.service == row.service && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigAncillaryRecoverySplit1Row<'data> {
+    type Row<'other> = SettlementConfigAncillaryRecoverySplit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.paymenttype() == row.paymenttype() && self.service() == row.service()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigAncillaryRecoverySplit1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigAncillaryRecoverySplit1Row<'data> {
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.paymenttype == key.paymenttype
-            && self.service == key.service && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.paymenttype() == key.paymenttype
+            && self.service() == key.service && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigAncillaryRecoverySplit1PrimaryKey {
-    type Row = SettlementConfigAncillaryRecoverySplit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.paymenttype == row.paymenttype
-            && self.service == row.service && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigAncillaryRecoverySplit1PrimaryKey {
+    type Row<'other> = SettlementConfigAncillaryRecoverySplit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.paymenttype == row.paymenttype()
+            && self.service == row.service() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -108,81 +241,119 @@ for SettlementConfigAncillaryRecoverySplit1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("service",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("paymenttype",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("customer_portion",
-                arrow2::datatypes::DataType::Decimal(8, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigAncillaryRecoverySplit1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "service",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "customer_portion",
+                    arrow::datatypes::DataType::Decimal128(8, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut service_array = Vec::new();
-        let mut paymenttype_array = Vec::new();
-        let mut customer_portion_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            service_array.push(row.service);
-            paymenttype_array.push(row.paymenttype);
-            customer_portion_array
-                .push({
-                    row.customer_portion
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigAncillaryRecoverySplit1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            service_array: arrow::array::builder::StringBuilder::new(),
+            paymenttype_array: arrow::array::builder::StringBuilder::new(),
+            customer_portion_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(service_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(paymenttype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(customer_portion_array)
-                    .to(arrow2::datatypes::DataType::Decimal(8, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.service_array.append_value(row.service());
+        builder.paymenttype_array.append_value(row.paymenttype());
+        builder
+            .customer_portion_array
+            .append_option({
+                row.customer_portion
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.service_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.customer_portion_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigAncillaryRecoverySplit1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    service_array: arrow::array::builder::StringBuilder,
+    paymenttype_array: arrow::array::builder::StringBuilder,
+    customer_portion_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigMarketfee1;
+pub struct SettlementConfigMarketfee1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## MARKETFEE
@@ -200,67 +371,235 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
 /// # Primary Key Columns
 ///
 /// * MARKETFEEID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketfee1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketfee1Row<'data> {
     /// Identifier for Market Fee
-    pub marketfeeid: String,
+    pub marketfeeid: core::ops::Range<usize>,
     /// Period type - PERIOD, DAILY, WEEKLY
-    pub marketfeeperiod: Option<String>,
+    pub marketfeeperiod: core::ops::Range<usize>,
     /// Type - MW or $
-    pub marketfeetype: Option<String>,
+    pub marketfeetype: core::ops::Range<usize>,
     /// Description of market fee
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// &nbsp;
-    pub gl_tcode: Option<String>,
+    pub gl_tcode: core::ops::Range<usize>,
     /// &nbsp;
-    pub gl_financialcode: Option<String>,
+    pub gl_financialcode: core::ops::Range<usize>,
     /// &nbsp;
-    pub fee_class: Option<String>,
+    pub fee_class: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigMarketfee1Row<'data> {
+    pub fn marketfeeid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.marketfeeid.clone())
+    }
+    pub fn marketfeeperiod(&self) -> Option<&str> {
+        if self.marketfeeperiod.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.marketfeeperiod.clone(),
+                ),
+            )
+        }
+    }
+    pub fn marketfeetype(&self) -> Option<&str> {
+        if self.marketfeetype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.marketfeetype.clone(),
+                ),
+            )
+        }
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn gl_tcode(&self) -> Option<&str> {
+        if self.gl_tcode.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.gl_tcode.clone(),
+                ),
+            )
+        }
+    }
+    pub fn gl_financialcode(&self) -> Option<&str> {
+        if self.gl_financialcode.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.gl_financialcode.clone(),
+                ),
+            )
+        }
+    }
+    pub fn fee_class(&self) -> Option<&str> {
+        if self.fee_class.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.fee_class.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketfee1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKETFEE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketfee1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "MARKETFEEID",
+        "MARKETFEEPERIOD",
+        "MARKETFEETYPE",
+        "DESCRIPTION",
+        "LASTCHANGED",
+        "GL_TCODE",
+        "GL_FINANCIALCODE",
+        "FEE_CLASS",
+    ];
+    type Row<'row> = SettlementConfigMarketfee1Row<'row>;
+    type FieldMapping = SettlementConfigMarketfee1Mapping;
     type PrimaryKey = SettlementConfigMarketfee1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKETFEE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketfee1Row {
+            marketfeeid: row.get_range("marketfeeid", field_mapping.0[0])?,
+            marketfeeperiod: row.get_opt_range("marketfeeperiod", field_mapping.0[1])?,
+            marketfeetype: row.get_opt_range("marketfeetype", field_mapping.0[2])?,
+            description: row.get_opt_range("description", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            gl_tcode: row.get_opt_range("gl_tcode", field_mapping.0[5])?,
+            gl_financialcode: row.get_opt_range("gl_financialcode", field_mapping.0[6])?,
+            fee_class: row.get_opt_range("fee_class", field_mapping.0[7])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigMarketfee1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketfee1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementConfigMarketfee1PrimaryKey {
         SettlementConfigMarketfee1PrimaryKey {
-            marketfeeid: self.marketfeeid.clone(),
+            marketfeeid: row.marketfeeid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "settlement_config_marketfee_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketfee1Row {
+            marketfeeid: row.marketfeeid.clone(),
+            marketfeeperiod: row.marketfeeperiod.clone(),
+            marketfeetype: row.marketfeetype.clone(),
+            description: row.description.clone(),
+            lastchanged: row.lastchanged.clone(),
+            gl_tcode: row.gl_tcode.clone(),
+            gl_financialcode: row.gl_financialcode.clone(),
+            fee_class: row.fee_class.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketfee1PrimaryKey {
-    pub marketfeeid: String,
+    pub marketfeeid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketfee1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketfee1 {
-    type Row = SettlementConfigMarketfee1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.marketfeeid == row.marketfeeid
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketfee1Row<'data> {
+    type Row<'other> = SettlementConfigMarketfee1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.marketfeeid() == row.marketfeeid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1Row<'data> {
     type PrimaryKey = SettlementConfigMarketfee1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.marketfeeid == key.marketfeeid
+        self.marketfeeid() == key.marketfeeid
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketfee1PrimaryKey {
-    type Row = SettlementConfigMarketfee1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.marketfeeid == row.marketfeeid
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketfee1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketfee1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.marketfeeid == row.marketfeeid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1PrimaryKey {
@@ -271,81 +610,120 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfee1PrimaryKey 
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("marketfeeperiod",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("marketfeetype",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("gl_tcode",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("gl_financialcode",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("fee_class",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = SettlementConfigMarketfee1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "marketfeeid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeeperiod",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeetype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "gl_tcode",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "gl_financialcode",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fee_class",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut marketfeeid_array = Vec::new();
-        let mut marketfeeperiod_array = Vec::new();
-        let mut marketfeetype_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut gl_tcode_array = Vec::new();
-        let mut gl_financialcode_array = Vec::new();
-        let mut fee_class_array = Vec::new();
-        for row in partition {
-            marketfeeid_array.push(row.marketfeeid);
-            marketfeeperiod_array.push(row.marketfeeperiod);
-            marketfeetype_array.push(row.marketfeetype);
-            description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            gl_tcode_array.push(row.gl_tcode);
-            gl_financialcode_array.push(row.gl_financialcode);
-            fee_class_array.push(row.fee_class);
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketfee1Builder {
+            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            marketfeeperiod_array: arrow::array::builder::StringBuilder::new(),
+            marketfeetype_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            gl_tcode_array: arrow::array::builder::StringBuilder::new(),
+            gl_financialcode_array: arrow::array::builder::StringBuilder::new(),
+            fee_class_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(marketfeeperiod_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(marketfeetype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(gl_tcode_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(gl_financialcode_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(fee_class_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.marketfeeid_array.append_value(row.marketfeeid());
+        builder.marketfeeperiod_array.append_option(row.marketfeeperiod());
+        builder.marketfeetype_array.append_option(row.marketfeetype());
+        builder.description_array.append_option(row.description());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.gl_tcode_array.append_option(row.gl_tcode());
+        builder.gl_financialcode_array.append_option(row.gl_financialcode());
+        builder.fee_class_array.append_option(row.fee_class());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.marketfeeid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeeperiod_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeetype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.gl_tcode_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.gl_financialcode_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fee_class_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketfee1Builder {
+    marketfeeid_array: arrow::array::builder::StringBuilder,
+    marketfeeperiod_array: arrow::array::builder::StringBuilder,
+    marketfeetype_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    gl_tcode_array: arrow::array::builder::StringBuilder,
+    gl_financialcode_array: arrow::array::builder::StringBuilder,
+    fee_class_array: arrow::array::builder::StringBuilder,
+}
+pub struct SettlementConfigMarketfeedata1;
+pub struct SettlementConfigMarketfeedata1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## MARKETFEEDATA
@@ -365,77 +743,191 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
 /// * EFFECTIVEDATE
 /// * MARKETFEEID
 /// * MARKETFEEVERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketfeedata1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketfeedata1Row<'data> {
     /// Identifier for Market Fee
-    pub marketfeeid: String,
+    pub marketfeeid: core::ops::Range<usize>,
     /// Version of fees for this id
     pub marketfeeversionno: rust_decimal::Decimal,
     /// Date on which this data becomes effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Market fee rate/MWh, a dollar amount
     pub marketfeevalue: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigMarketfeedata1Row<'data> {
+    pub fn marketfeeid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.marketfeeid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKETFEEDATA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketfeedata1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "MARKETFEEID",
+        "MARKETFEEVERSIONNO",
+        "EFFECTIVEDATE",
+        "MARKETFEEVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigMarketfeedata1Row<'row>;
+    type FieldMapping = SettlementConfigMarketfeedata1Mapping;
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKETFEEDATA".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketfeedata1Row {
+            marketfeeid: row.get_range("marketfeeid", field_mapping.0[0])?,
+            marketfeeversionno: row
+                .get_custom_parsed_at_idx(
+                    "marketfeeversionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            marketfeevalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "marketfeevalue",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigMarketfeedata1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketfeedata1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                6,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementConfigMarketfeedata1PrimaryKey {
         SettlementConfigMarketfeedata1PrimaryKey {
-            effectivedate: self.effectivedate,
-            marketfeeid: self.marketfeeid.clone(),
-            marketfeeversionno: self.marketfeeversionno,
+            effectivedate: row.effectivedate,
+            marketfeeid: row.marketfeeid().to_string(),
+            marketfeeversionno: row.marketfeeversionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_marketfeedata_v1_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_marketfeedata_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketfeedata1Row {
+            marketfeeid: row.marketfeeid.clone(),
+            marketfeeversionno: row.marketfeeversionno.clone(),
+            effectivedate: row.effectivedate.clone(),
+            marketfeevalue: row.marketfeevalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketfeedata1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub marketfeeid: String,
+    pub marketfeeid: alloc::string::String,
     pub marketfeeversionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketfeedata1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeedata1 {
-    type Row = SettlementConfigMarketfeedata1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketfeedata1Row<'data> {
+    type Row<'other> = SettlementConfigMarketfeedata1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.marketfeeid() == row.marketfeeid()
             && self.marketfeeversionno == row.marketfeeversionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeedata1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketfeedata1Row<'data> {
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid() == key.marketfeeid
             && self.marketfeeversionno == key.marketfeeversionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeedata1PrimaryKey {
-    type Row = SettlementConfigMarketfeedata1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketfeedata1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketfeedata1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid()
             && self.marketfeeversionno == row.marketfeeversionno
     }
 }
@@ -448,74 +940,109 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeedata1Primary
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("marketfeeversionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("marketfeevalue",
-                arrow2::datatypes::DataType::Decimal(22, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigMarketfeedata1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "marketfeeid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeeversionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeevalue",
+                    arrow::datatypes::DataType::Decimal128(22, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut marketfeeid_array = Vec::new();
-        let mut marketfeeversionno_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut marketfeevalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            marketfeeid_array.push(row.marketfeeid);
-            marketfeeversionno_array
-                .push({
-                    let mut val = row.marketfeeversionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            effectivedate_array.push(row.effectivedate.timestamp());
-            marketfeevalue_array
-                .push({
-                    row.marketfeevalue
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketfeedata1Builder {
+            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            marketfeeversionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            marketfeevalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(22, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(marketfeeversionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marketfeevalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(22, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.marketfeeid_array.append_value(row.marketfeeid());
+        builder
+            .marketfeeversionno_array
+            .append_value({
+                let mut val = row.marketfeeversionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .marketfeevalue_array
+            .append_option({
+                row.marketfeevalue
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.marketfeeid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeeversionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeevalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketfeedata1Builder {
+    marketfeeid_array: arrow::array::builder::StringBuilder,
+    marketfeeversionno_array: arrow::array::builder::Decimal128Builder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    marketfeevalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigMarketfeetrk1;
+pub struct SettlementConfigMarketfeetrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## MARKETFEETRK
@@ -534,75 +1061,196 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
 ///
 /// * EFFECTIVEDATE
 /// * MARKETFEEVERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketfeetrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketfeetrk1Row<'data> {
     /// Version of fees for this ID
     pub marketfeeversionno: rust_decimal::Decimal,
     /// Effective Date of Market notice
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// User authorising record
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date record authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigMarketfeetrk1Row<'data> {
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKETFEETRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketfeetrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "MARKETFEEVERSIONNO",
+        "EFFECTIVEDATE",
+        "AUTHORISEDBY",
+        "AUTHORISEDDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigMarketfeetrk1Row<'row>;
+    type FieldMapping = SettlementConfigMarketfeetrk1Mapping;
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKETFEETRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketfeetrk1Row {
+            marketfeeversionno: row
+                .get_custom_parsed_at_idx(
+                    "marketfeeversionno",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[2])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigMarketfeetrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketfeetrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementConfigMarketfeetrk1PrimaryKey {
         SettlementConfigMarketfeetrk1PrimaryKey {
-            effectivedate: self.effectivedate,
-            marketfeeversionno: self.marketfeeversionno,
+            effectivedate: row.effectivedate,
+            marketfeeversionno: row.marketfeeversionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_marketfeetrk_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_marketfeetrk_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketfeetrk1Row {
+            marketfeeversionno: row.marketfeeversionno.clone(),
+            effectivedate: row.effectivedate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketfeetrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub marketfeeversionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketfeetrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeetrk1 {
-    type Row = SettlementConfigMarketfeetrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketfeetrk1Row<'data> {
+    type Row<'other> = SettlementConfigMarketfeetrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
             && self.marketfeeversionno == row.marketfeeversionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeetrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketfeetrk1Row<'data> {
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.marketfeeversionno == key.marketfeeversionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketfeetrk1PrimaryKey {
-    type Row = SettlementConfigMarketfeetrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketfeetrk1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketfeetrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
             && self.marketfeeversionno == row.marketfeeversionno
     }
@@ -616,67 +1264,105 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketfeetrk1PrimaryK
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("marketfeeversionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigMarketfeetrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "marketfeeversionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut marketfeeversionno_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            marketfeeversionno_array
-                .push({
-                    let mut val = row.marketfeeversionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            effectivedate_array.push(row.effectivedate.timestamp());
-            authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketfeetrk1Builder {
+            marketfeeversionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(marketfeeversionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .marketfeeversionno_array
+            .append_value({
+                let mut val = row.marketfeeversionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.marketfeeversionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketfeetrk1Builder {
+    marketfeeversionno_array: arrow::array::builder::Decimal128Builder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigMarketFeeCatExcl1;
+pub struct SettlementConfigMarketFeeCatExcl1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## MARKET_FEE_CAT_EXCL
@@ -696,80 +1382,187 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
 /// * MARKETFEEID
 /// * PARTICIPANT_CATEGORYID
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketFeeCatExcl1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketFeeCatExcl1Row<'data> {
     /// The excluded market fee
-    pub marketfeeid: String,
+    pub marketfeeid: core::ops::Range<usize>,
     /// The date the exclusion is effective from
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The version information for this record
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Participant category to be excluded from this market fee
-    pub participant_categoryid: String,
+    pub participant_categoryid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
-    type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKET_FEE_CAT_EXCL".into()),
-            version: 1,
-        }
+impl<'data> SettlementConfigMarketFeeCatExcl1Row<'data> {
+    pub fn marketfeeid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.marketfeeid.clone())
     }
-    fn primary_key(&self) -> SettlementConfigMarketFeeCatExcl1PrimaryKey {
-        SettlementConfigMarketFeeCatExcl1PrimaryKey {
-            effectivedate: self.effectivedate,
-            marketfeeid: self.marketfeeid.clone(),
-            participant_categoryid: self.participant_categoryid.clone(),
-            version_datetime: self.version_datetime,
-        }
-    }
-    fn partition_suffix(&self) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
-                .unwrap(),
-        }
-    }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_market_fee_cat_excl_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    pub fn participant_categoryid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.participant_categoryid.clone(),
         )
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKET_FEE_CAT_EXCL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeCatExcl1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "MARKETFEEID",
+        "EFFECTIVEDATE",
+        "VERSION_DATETIME",
+        "PARTICIPANT_CATEGORYID",
+    ];
+    type Row<'row> = SettlementConfigMarketFeeCatExcl1Row<'row>;
+    type FieldMapping = SettlementConfigMarketFeeCatExcl1Mapping;
+    type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketFeeCatExcl1Row {
+            marketfeeid: row.get_range("marketfeeid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            participant_categoryid: row
+                .get_range("participant_categoryid", field_mapping.0[3])?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketFeeCatExcl1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementConfigMarketFeeCatExcl1PrimaryKey {
+        SettlementConfigMarketFeeCatExcl1PrimaryKey {
+            effectivedate: row.effectivedate,
+            marketfeeid: row.marketfeeid().to_string(),
+            participant_categoryid: row.participant_categoryid().to_string(),
+            version_datetime: row.version_datetime,
+        }
+    }
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
+                .unwrap(),
+        }
+    }
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_market_fee_cat_excl_v1_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
+        )
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketFeeCatExcl1Row {
+            marketfeeid: row.marketfeeid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            version_datetime: row.version_datetime.clone(),
+            participant_categoryid: row.participant_categoryid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketFeeCatExcl1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub marketfeeid: String,
-    pub participant_categoryid: String,
+    pub marketfeeid: alloc::string::String,
+    pub participant_categoryid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeCatExcl1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExcl1 {
-    type Row = SettlementConfigMarketFeeCatExcl1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
-            && self.participant_categoryid == row.participant_categoryid
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExcl1Row<'data> {
+    type Row<'other> = SettlementConfigMarketFeeCatExcl1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.marketfeeid() == row.marketfeeid()
+            && self.participant_categoryid() == row.participant_categoryid()
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExcl1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeCatExcl1Row<'data> {
     type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
-            && self.participant_categoryid == key.participant_categoryid
+        self.effectivedate == key.effectivedate && self.marketfeeid() == key.marketfeeid
+            && self.participant_categoryid() == key.participant_categoryid
             && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExcl1PrimaryKey {
-    type Row = SettlementConfigMarketFeeCatExcl1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
-            && self.participant_categoryid == row.participant_categoryid
+impl<'data> mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExcl1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketFeeCatExcl1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid()
+            && self.participant_categoryid == row.participant_categoryid()
             && self.version_datetime == row.version_datetime
     }
 }
@@ -783,54 +1576,81 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExcl1Prim
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("participant_categoryid",
-                arrow2::datatypes::DataType::LargeUtf8, false)
-            ],
+    type Builder = SettlementConfigMarketFeeCatExcl1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "marketfeeid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participant_categoryid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut marketfeeid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut participant_categoryid_array = Vec::new();
-        for row in partition {
-            marketfeeid_array.push(row.marketfeeid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            version_datetime_array.push(row.version_datetime.timestamp());
-            participant_categoryid_array.push(row.participant_categoryid);
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketFeeCatExcl1Builder {
+            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            participant_categoryid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participant_categoryid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.marketfeeid_array.append_value(row.marketfeeid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.participant_categoryid_array.append_value(row.participant_categoryid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.marketfeeid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_categoryid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketFeeCatExcl1Builder {
+    marketfeeid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    participant_categoryid_array: arrow::array::builder::StringBuilder,
+}
+pub struct SettlementConfigMarketFeeCatExclTrk1;
+pub struct SettlementConfigMarketFeeCatExclTrk1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## MARKET_FEE_CAT_EXCL_TRK
@@ -849,76 +1669,185 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
 /// * EFFECTIVEDATE
 /// * MARKETFEEID
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketFeeCatExclTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketFeeCatExclTrk1Row<'data> {
     /// The excluded market fee
-    pub marketfeeid: String,
+    pub marketfeeid: core::ops::Range<usize>,
     /// The date the exclusion is effective from
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// The version information for this record
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Last date and time the record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigMarketFeeCatExclTrk1Row<'data> {
+    pub fn marketfeeid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.marketfeeid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKET_FEE_CAT_EXCL_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeCatExclTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "MARKETFEEID",
+        "EFFECTIVEDATE",
+        "VERSION_DATETIME",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigMarketFeeCatExclTrk1Row<'row>;
+    type FieldMapping = SettlementConfigMarketFeeCatExclTrk1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKET_FEE_CAT_EXCL_TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketFeeCatExclTrk1Row {
+            marketfeeid: row.get_range("marketfeeid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketFeeCatExclTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
         SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
-            effectivedate: self.effectivedate,
-            marketfeeid: self.marketfeeid.clone(),
-            version_datetime: self.version_datetime,
+            effectivedate: row.effectivedate,
+            marketfeeid: row.marketfeeid().to_string(),
+            version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_market_fee_cat_excl_trk_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_market_fee_cat_excl_trk_v1_{}_{}",
+            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
+            .number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketFeeCatExclTrk1Row {
+            marketfeeid: row.marketfeeid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            version_datetime: row.version_datetime.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub marketfeeid: String,
+    pub marketfeeid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExclTrk1 {
-    type Row = SettlementConfigMarketFeeCatExclTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigMarketFeeCatExclTrk1Row<'data> {
+    type Row<'other> = SettlementConfigMarketFeeCatExclTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.marketfeeid() == row.marketfeeid()
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeCatExclTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeCatExclTrk1Row<'data> {
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
+        self.effectivedate == key.effectivedate && self.marketfeeid() == key.marketfeeid
             && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
-    type Row = SettlementConfigMarketFeeCatExclTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketFeeCatExclTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid()
             && self.version_datetime == row.version_datetime
     }
 }
@@ -932,55 +1861,86 @@ for SettlementConfigMarketFeeCatExclTrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigMarketFeeCatExclTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "marketfeeid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut marketfeeid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            marketfeeid_array.push(row.marketfeeid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            version_datetime_array.push(row.version_datetime.timestamp());
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketFeeCatExclTrk1Builder {
+            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.marketfeeid_array.append_value(row.marketfeeid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.marketfeeid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketFeeCatExclTrk1Builder {
+    marketfeeid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigMarketFeeExclusion1;
+pub struct SettlementConfigMarketFeeExclusion1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## MARKET_FEE_EXCLUSION
@@ -1001,80 +1961,199 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
 /// * MARKETFEEID
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketFeeExclusion1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketFeeExclusion1Row<'data> {
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date on which this data becomes effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of fees for this ID
     pub versionno: rust_decimal::Decimal,
     /// Identifier for Market Fee
-    pub marketfeeid: String,
+    pub marketfeeid: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigMarketFeeExclusion1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn marketfeeid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.marketfeeid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKET_FEE_EXCLUSION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeExclusion1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PARTICIPANTID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "MARKETFEEID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigMarketFeeExclusion1Row<'row>;
+    type FieldMapping = SettlementConfigMarketFeeExclusion1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKET_FEE_EXCLUSION".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketFeeExclusion1Row {
+            participantid: row.get_range("participantid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            marketfeeid: row.get_range("marketfeeid", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigMarketFeeExclusion1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketFeeExclusion1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigMarketFeeExclusion1PrimaryKey {
         SettlementConfigMarketFeeExclusion1PrimaryKey {
-            effectivedate: self.effectivedate,
-            marketfeeid: self.marketfeeid.clone(),
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            marketfeeid: row.marketfeeid().to_string(),
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_market_fee_exclusion_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_market_fee_exclusion_v1_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketFeeExclusion1Row {
+            participantid: row.participantid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            marketfeeid: row.marketfeeid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketFeeExclusion1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub marketfeeid: String,
-    pub participantid: String,
+    pub marketfeeid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeExclusion1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusion1 {
-    type Row = SettlementConfigMarketFeeExclusion1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigMarketFeeExclusion1Row<'data> {
+    type Row<'other> = SettlementConfigMarketFeeExclusion1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.marketfeeid() == row.marketfeeid()
+            && self.participantid() == row.participantid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusion1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeExclusion1Row<'data> {
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
-            && self.participantid == key.participantid && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.marketfeeid() == key.marketfeeid
+            && self.participantid() == key.participantid
+            && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusion1PrimaryKey {
-    type Row = SettlementConfigMarketFeeExclusion1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigMarketFeeExclusion1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketFeeExclusion1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid()
+            && self.participantid == row.participantid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -1087,67 +2166,100 @@ for SettlementConfigMarketFeeExclusion1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigMarketFeeExclusion1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeeid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut participantid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut marketfeeid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            participantid_array.push(row.participantid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            marketfeeid_array.push(row.marketfeeid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketFeeExclusion1Builder {
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.participantid_array.append_value(row.participantid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.marketfeeid_array.append_value(row.marketfeeid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeeid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketFeeExclusion1Builder {
+    participantid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    marketfeeid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigMarketFeeExclusionTrk1;
+pub struct SettlementConfigMarketFeeExclusionTrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MARKET_FEE_EXCLUSIONTRK
@@ -1167,81 +2279,217 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigMarketFeeExclusionTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigMarketFeeExclusionTrk1Row<'data> {
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Date on which this data becomes effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version of fees for this ID
     pub versionno: rust_decimal::Decimal,
     /// User authorising record
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date record authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigMarketFeeExclusionTrk1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "MARKET_FEE_EXCLUSION_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeExclusionTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PARTICIPANTID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "AUTHORISEDBY",
+        "AUTHORISEDDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigMarketFeeExclusionTrk1Row<'row>;
+    type FieldMapping = SettlementConfigMarketFeeExclusionTrk1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("MARKET_FEE_EXCLUSION_TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigMarketFeeExclusionTrk1Row {
+            participantid: row.get_range("participantid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[3])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigMarketFeeExclusionTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
         SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
-            effectivedate: self.effectivedate,
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_market_fee_exclusion_trk_v1_{}_{}", self
-            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_market_fee_exclusion_trk_v1_{}_{}",
+            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
+            .number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigMarketFeeExclusionTrk1Row {
+            participantid: row.participantid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            authorisedby: row.authorisedby.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusionTrk1 {
-    type Row = SettlementConfigMarketFeeExclusionTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigMarketFeeExclusionTrk1Row<'data> {
+    type Row<'other> = SettlementConfigMarketFeeExclusionTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid && self.versionno == row.versionno
+            && self.participantid() == row.participantid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigMarketFeeExclusionTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigMarketFeeExclusionTrk1Row<'data> {
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid && self.versionno == key.versionno
+            && self.participantid() == key.participantid
+            && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
-    type Row = SettlementConfigMarketFeeExclusionTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
+    type Row<'other> = SettlementConfigMarketFeeExclusionTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid && self.versionno == row.versionno
+            && self.participantid == row.participantid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -1254,74 +2502,115 @@ for SettlementConfigMarketFeeExclusionTrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigMarketFeeExclusionTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut participantid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            participantid_array.push(row.participantid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigMarketFeeExclusionTrk1Builder {
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.participantid_array.append_value(row.participantid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigMarketFeeExclusionTrk1Builder {
+    participantid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigParticipantBandfeeAlloc1;
+pub struct SettlementConfigParticipantBandfeeAlloc1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## PARTICIPANT_BANDFEE_ALLOC
@@ -1343,89 +2632,229 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
 /// * PARTICIPANTCATEGORYID
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigParticipantBandfeeAlloc1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigParticipantBandfeeAlloc1Row<'data> {
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Identifier for Market Fee
-    pub marketfeeid: String,
+    pub marketfeeid: core::ops::Range<usize>,
     /// Date on which this data becomes effective.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Period identifier
     pub versionno: rust_decimal::Decimal,
     /// The participant category that the market fee recovery amount pertains to.
-    pub participantcategoryid: String,
+    pub participantcategoryid: core::ops::Range<usize>,
     /// The value of this market fee
     pub marketfeevalue: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
-    type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("PARTICIPANT_BANDFEE_ALLOC".into()),
-            version: 1,
-        }
+impl<'data> SettlementConfigParticipantBandfeeAlloc1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
-    fn primary_key(&self) -> SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
-        SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
-            effectivedate: self.effectivedate,
-            marketfeeid: self.marketfeeid.clone(),
-            participantcategoryid: self.participantcategoryid.clone(),
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
-        }
+    pub fn marketfeeid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.marketfeeid.clone())
     }
-    fn partition_suffix(&self) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
-                .unwrap(),
-        }
-    }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_participant_bandfee_alloc_v1_{}_{}", self
-            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+    pub fn participantcategoryid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.participantcategoryid.clone(),
         )
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "PARTICIPANT_BANDFEE_ALLOC";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigParticipantBandfeeAlloc1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PARTICIPANTID",
+        "MARKETFEEID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "PARTICIPANTCATEGORYID",
+        "MARKETFEEVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigParticipantBandfeeAlloc1Row<'row>;
+    type FieldMapping = SettlementConfigParticipantBandfeeAlloc1Mapping;
+    type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigParticipantBandfeeAlloc1Row {
+            participantid: row.get_range("participantid", field_mapping.0[0])?,
+            marketfeeid: row.get_range("marketfeeid", field_mapping.0[1])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantcategoryid: row
+                .get_range("participantcategoryid", field_mapping.0[4])?,
+            marketfeevalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "marketfeevalue",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigParticipantBandfeeAlloc1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                6,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
+        SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
+            effectivedate: row.effectivedate,
+            marketfeeid: row.marketfeeid().to_string(),
+            participantcategoryid: row.participantcategoryid().to_string(),
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
+        }
+    }
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
+                .unwrap(),
+        }
+    }
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_participant_bandfee_alloc_v1_{}_{}",
+            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
+            .number_from_month()
+        )
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigParticipantBandfeeAlloc1Row {
+            participantid: row.participantid.clone(),
+            marketfeeid: row.marketfeeid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            participantcategoryid: row.participantcategoryid.clone(),
+            marketfeevalue: row.marketfeevalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub marketfeeid: String,
-    pub participantcategoryid: String,
-    pub participantid: String,
+    pub marketfeeid: alloc::string::String,
+    pub participantcategoryid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigParticipantBandfeeAlloc1 {
-    type Row = SettlementConfigParticipantBandfeeAlloc1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
-            && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigParticipantBandfeeAlloc1Row<'data> {
+    type Row<'other> = SettlementConfigParticipantBandfeeAlloc1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.marketfeeid() == row.marketfeeid()
+            && self.participantcategoryid() == row.participantcategoryid()
+            && self.participantid() == row.participantid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigParticipantBandfeeAlloc1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigParticipantBandfeeAlloc1Row<'data> {
     type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.marketfeeid == key.marketfeeid
-            && self.participantcategoryid == key.participantcategoryid
-            && self.participantid == key.participantid && self.versionno == key.versionno
+        self.effectivedate == key.effectivedate && self.marketfeeid() == key.marketfeeid
+            && self.participantcategoryid() == key.participantcategoryid
+            && self.participantid() == key.participantid
+            && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
-    type Row = SettlementConfigParticipantBandfeeAlloc1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid
-            && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
+    type Row<'other> = SettlementConfigParticipantBandfeeAlloc1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.marketfeeid == row.marketfeeid()
+            && self.participantcategoryid == row.participantcategoryid()
+            && self.participantid == row.participantid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -1439,88 +2868,129 @@ for SettlementConfigParticipantBandfeeAlloc1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("marketfeeid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("participantcategoryid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("marketfeevalue",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigParticipantBandfeeAlloc1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeeid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantcategoryid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketfeevalue",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut participantid_array = Vec::new();
-        let mut marketfeeid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut participantcategoryid_array = Vec::new();
-        let mut marketfeevalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            participantid_array.push(row.participantid);
-            marketfeeid_array.push(row.marketfeeid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            participantcategoryid_array.push(row.participantcategoryid);
-            marketfeevalue_array
-                .push({
-                    row.marketfeevalue
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigParticipantBandfeeAlloc1Builder {
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
+            marketfeevalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(marketfeeid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantcategoryid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marketfeevalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.participantid_array.append_value(row.participantid());
+        builder.marketfeeid_array.append_value(row.marketfeeid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantcategoryid_array.append_value(row.participantcategoryid());
+        builder
+            .marketfeevalue_array
+            .append_option({
+                row.marketfeevalue
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeeid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantcategoryid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketfeevalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigParticipantBandfeeAlloc1Builder {
+    participantid_array: arrow::array::builder::StringBuilder,
+    marketfeeid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    participantcategoryid_array: arrow::array::builder::StringBuilder,
+    marketfeevalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SetcfgReallocation2;
+pub struct SetcfgReallocation2Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## REALLOCATION
@@ -1538,83 +3008,346 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
 /// # Primary Key Columns
 ///
 /// * REALLOCATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SetcfgReallocation2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SetcfgReallocation2Row<'data> {
     /// Reallocation identifier
-    pub reallocationid: String,
+    pub reallocationid: core::ops::Range<usize>,
     /// The participant to be credited for the reallocation
-    pub creditparticipantid: Option<String>,
+    pub creditparticipantid: core::ops::Range<usize>,
     /// The participant to be debited for the reallocation
-    pub debitparticipantid: Option<String>,
+    pub debitparticipantid: core::ops::Range<usize>,
     /// Region identifier, being the spot price reference node for this reallocation
-    pub regionid: Option<String>,
+    pub regionid: core::ops::Range<usize>,
     /// $, (Quantity) Mwh, SWAP, CAP or FLOOR
-    pub agreementtype: Option<String>,
+    pub agreementtype: core::ops::Range<usize>,
     /// Optional reference detail for credit participant
-    pub creditreference: Option<String>,
+    pub creditreference: core::ops::Range<usize>,
     /// Optional reference detail for debit participant
-    pub debitreference: Option<String>,
+    pub debitreference: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// First day of the Reallocation contract
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// Last day of the Reallocation contract
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Reallocation state. One of SUBMITTED, AUTHORISED, CANCELLED.
-    pub current_stepid: Option<String>,
+    pub current_stepid: core::ops::Range<usize>,
     /// The day type profile for which the reallocation applies over the start and end date range. Valid entries are BUSINESS, NON_BUSINESS or FLAT.
-    pub daytype: Option<String>,
+    pub daytype: core::ops::Range<usize>,
     /// Denotes a Credit or Debit reallocation with a value of "C" or "D" respectively
-    pub reallocation_type: Option<String>,
+    pub reallocation_type: core::ops::Range<usize>,
     /// Unique ID of the calendar for which data is requested
-    pub calendarid: Option<String>,
+    pub calendarid: core::ops::Range<usize>,
     /// The length of settlement intervals (in minutes) in the reallocation profile
     pub intervallength: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SetcfgReallocation2Row<'data> {
+    pub fn reallocationid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.reallocationid.clone(),
+        )
+    }
+    pub fn creditparticipantid(&self) -> Option<&str> {
+        if self.creditparticipantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.creditparticipantid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn debitparticipantid(&self) -> Option<&str> {
+        if self.debitparticipantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.debitparticipantid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn agreementtype(&self) -> Option<&str> {
+        if self.agreementtype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.agreementtype.clone(),
+                ),
+            )
+        }
+    }
+    pub fn creditreference(&self) -> Option<&str> {
+        if self.creditreference.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.creditreference.clone(),
+                ),
+            )
+        }
+    }
+    pub fn debitreference(&self) -> Option<&str> {
+        if self.debitreference.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.debitreference.clone(),
+                ),
+            )
+        }
+    }
+    pub fn current_stepid(&self) -> Option<&str> {
+        if self.current_stepid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.current_stepid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn daytype(&self) -> Option<&str> {
+        if self.daytype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.daytype.clone(),
+                ),
+            )
+        }
+    }
+    pub fn reallocation_type(&self) -> Option<&str> {
+        if self.reallocation_type.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.reallocation_type.clone(),
+                ),
+            )
+        }
+    }
+    pub fn calendarid(&self) -> Option<&str> {
+        if self.calendarid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.calendarid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for SetcfgReallocation2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "SETCFG";
+    const TABLE_NAME: &'static str = "REALLOCATION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SetcfgReallocation2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "REALLOCATIONID",
+        "CREDITPARTICIPANTID",
+        "DEBITPARTICIPANTID",
+        "REGIONID",
+        "AGREEMENTTYPE",
+        "CREDITREFERENCE",
+        "DEBITREFERENCE",
+        "LASTCHANGED",
+        "STARTDATE",
+        "ENDDATE",
+        "CURRENT_STEPID",
+        "DAYTYPE",
+        "REALLOCATION_TYPE",
+        "CALENDARID",
+        "INTERVALLENGTH",
+    ];
+    type Row<'row> = SetcfgReallocation2Row<'row>;
+    type FieldMapping = SetcfgReallocation2Mapping;
     type PrimaryKey = SetcfgReallocation2PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETCFG".into(),
-            table_name: Some("REALLOCATION".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SetcfgReallocation2Row {
+            reallocationid: row.get_range("reallocationid", field_mapping.0[0])?,
+            creditparticipantid: row
+                .get_opt_range("creditparticipantid", field_mapping.0[1])?,
+            debitparticipantid: row
+                .get_opt_range("debitparticipantid", field_mapping.0[2])?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[3])?,
+            agreementtype: row.get_opt_range("agreementtype", field_mapping.0[4])?,
+            creditreference: row.get_opt_range("creditreference", field_mapping.0[5])?,
+            debitreference: row.get_opt_range("debitreference", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            current_stepid: row.get_opt_range("current_stepid", field_mapping.0[10])?,
+            daytype: row.get_opt_range("daytype", field_mapping.0[11])?,
+            reallocation_type: row
+                .get_opt_range("reallocation_type", field_mapping.0[12])?,
+            calendarid: row.get_opt_range("calendarid", field_mapping.0[13])?,
+            intervallength: row
+                .get_opt_custom_parsed_at_idx(
+                    "intervallength",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SetcfgReallocation2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SetcfgReallocation2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SetcfgReallocation2PrimaryKey {
         SetcfgReallocation2PrimaryKey {
-            reallocationid: self.reallocationid.clone(),
+            reallocationid: row.reallocationid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "setcfg_reallocation_v2".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SetcfgReallocation2Row {
+            reallocationid: row.reallocationid.clone(),
+            creditparticipantid: row.creditparticipantid.clone(),
+            debitparticipantid: row.debitparticipantid.clone(),
+            regionid: row.regionid.clone(),
+            agreementtype: row.agreementtype.clone(),
+            creditreference: row.creditreference.clone(),
+            debitreference: row.debitreference.clone(),
+            lastchanged: row.lastchanged.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            current_stepid: row.current_stepid.clone(),
+            daytype: row.daytype.clone(),
+            reallocation_type: row.reallocation_type.clone(),
+            calendarid: row.calendarid.clone(),
+            intervallength: row.intervallength.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SetcfgReallocation2PrimaryKey {
-    pub reallocationid: String,
+    pub reallocationid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for SetcfgReallocation2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SetcfgReallocation2 {
-    type Row = SetcfgReallocation2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.reallocationid == row.reallocationid
+impl<'data> mmsdm_core::CompareWithRow for SetcfgReallocation2Row<'data> {
+    type Row<'other> = SetcfgReallocation2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.reallocationid() == row.reallocationid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2Row<'data> {
     type PrimaryKey = SetcfgReallocation2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.reallocationid == key.reallocationid
+        self.reallocationid() == key.reallocationid
     }
 }
-impl mmsdm_core::CompareWithRow for SetcfgReallocation2PrimaryKey {
-    type Row = SetcfgReallocation2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.reallocationid == row.reallocationid
+impl<'data> mmsdm_core::CompareWithRow for SetcfgReallocation2PrimaryKey {
+    type Row<'other> = SetcfgReallocation2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.reallocationid == row.reallocationid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2PrimaryKey {
@@ -1625,136 +3358,205 @@ impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocation2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("reallocationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("creditparticipantid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("debitparticipantid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("agreementtype",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("creditreference",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("debitreference",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("current_stepid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("daytype",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("reallocation_type",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("calendarid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("intervallength",
-                arrow2::datatypes::DataType::Decimal(3, 0), true)
-            ],
+    type Builder = SetcfgReallocation2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "reallocationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "creditparticipantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "debitparticipantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "agreementtype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "creditreference",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "debitreference",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "current_stepid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "daytype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reallocation_type",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "calendarid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "intervallength",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut reallocationid_array = Vec::new();
-        let mut creditparticipantid_array = Vec::new();
-        let mut debitparticipantid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut agreementtype_array = Vec::new();
-        let mut creditreference_array = Vec::new();
-        let mut debitreference_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut startdate_array = Vec::new();
-        let mut enddate_array = Vec::new();
-        let mut current_stepid_array = Vec::new();
-        let mut daytype_array = Vec::new();
-        let mut reallocation_type_array = Vec::new();
-        let mut calendarid_array = Vec::new();
-        let mut intervallength_array = Vec::new();
-        for row in partition {
-            reallocationid_array.push(row.reallocationid);
-            creditparticipantid_array.push(row.creditparticipantid);
-            debitparticipantid_array.push(row.debitparticipantid);
-            regionid_array.push(row.regionid);
-            agreementtype_array.push(row.agreementtype);
-            creditreference_array.push(row.creditreference);
-            debitreference_array.push(row.debitreference);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            startdate_array.push(row.startdate.map(|val| val.timestamp()));
-            enddate_array.push(row.enddate.map(|val| val.timestamp()));
-            current_stepid_array.push(row.current_stepid);
-            daytype_array.push(row.daytype);
-            reallocation_type_array.push(row.reallocation_type);
-            calendarid_array.push(row.calendarid);
-            intervallength_array
-                .push({
-                    row.intervallength
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        SetcfgReallocation2Builder {
+            reallocationid_array: arrow::array::builder::StringBuilder::new(),
+            creditparticipantid_array: arrow::array::builder::StringBuilder::new(),
+            debitparticipantid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            agreementtype_array: arrow::array::builder::StringBuilder::new(),
+            creditreference_array: arrow::array::builder::StringBuilder::new(),
+            debitreference_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            current_stepid_array: arrow::array::builder::StringBuilder::new(),
+            daytype_array: arrow::array::builder::StringBuilder::new(),
+            reallocation_type_array: arrow::array::builder::StringBuilder::new(),
+            calendarid_array: arrow::array::builder::StringBuilder::new(),
+            intervallength_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(reallocationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(creditparticipantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(debitparticipantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(agreementtype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(creditreference_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(debitreference_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(current_stepid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(daytype_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(reallocation_type_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(calendarid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(intervallength_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.reallocationid_array.append_value(row.reallocationid());
+        builder.creditparticipantid_array.append_option(row.creditparticipantid());
+        builder.debitparticipantid_array.append_option(row.debitparticipantid());
+        builder.regionid_array.append_option(row.regionid());
+        builder.agreementtype_array.append_option(row.agreementtype());
+        builder.creditreference_array.append_option(row.creditreference());
+        builder.debitreference_array.append_option(row.debitreference());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder.current_stepid_array.append_option(row.current_stepid());
+        builder.daytype_array.append_option(row.daytype());
+        builder.reallocation_type_array.append_option(row.reallocation_type());
+        builder.calendarid_array.append_option(row.calendarid());
+        builder
+            .intervallength_array
+            .append_option({
+                row.intervallength
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.reallocationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.creditparticipantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.debitparticipantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.agreementtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.creditreference_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.debitreference_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.current_stepid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.daytype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reallocation_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.calendarid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.intervallength_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SetcfgReallocation2Builder {
+    reallocationid_array: arrow::array::builder::StringBuilder,
+    creditparticipantid_array: arrow::array::builder::StringBuilder,
+    debitparticipantid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    agreementtype_array: arrow::array::builder::StringBuilder,
+    creditreference_array: arrow::array::builder::StringBuilder,
+    debitreference_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    current_stepid_array: arrow::array::builder::StringBuilder,
+    daytype_array: arrow::array::builder::StringBuilder,
+    reallocation_type_array: arrow::array::builder::StringBuilder,
+    calendarid_array: arrow::array::builder::StringBuilder,
+    intervallength_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct SetcfgReallocationinterval1;
+pub struct SetcfgReallocationinterval1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## REALLOCATIONINTERVAL
@@ -1772,63 +3574,177 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
 ///
 /// * PERIODID
 /// * REALLOCATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SetcfgReallocationinterval1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SetcfgReallocationinterval1Row<'data> {
     /// Reallocation identifier
-    pub reallocationid: String,
+    pub reallocationid: core::ops::Range<usize>,
     /// Trading Interval
     pub periodid: i64,
     /// Reallocation value in the units of the agreement type
     pub value: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Nominated Reallocation Price, only used in agreement types of SWAP, CAP and FLOOR, being the contract strike price in $/MWh
     pub nrp: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SetcfgReallocationinterval1Row<'data> {
+    pub fn reallocationid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.reallocationid.clone(),
+        )
+    }
 }
 impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETCFG";
+    const TABLE_NAME: &'static str = "REALLOCATIONINTERVAL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SetcfgReallocationinterval1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "REALLOCATIONID",
+        "PERIODID",
+        "VALUE",
+        "LASTCHANGED",
+        "NRP",
+    ];
+    type Row<'row> = SetcfgReallocationinterval1Row<'row>;
+    type FieldMapping = SetcfgReallocationinterval1Mapping;
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
-    type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETCFG".into(),
-            table_name: Some("REALLOCATIONINTERVAL".into()),
-            version: 1,
-        }
+    type Partition = mmsdm_core::YearMonth;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SetcfgReallocationinterval1Row {
+            reallocationid: row.get_range("reallocationid", field_mapping.0[0])?,
+            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[1])?,
+            value: row
+                .get_opt_custom_parsed_at_idx(
+                    "value",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            nrp: row
+                .get_opt_custom_parsed_at_idx(
+                    "nrp",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SetcfgReallocationinterval1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SetcfgReallocationinterval1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(periodid).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(periodid).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SetcfgReallocationinterval1PrimaryKey {
         SetcfgReallocationinterval1PrimaryKey {
-            periodid: self.periodid,
-            reallocationid: self.reallocationid.clone(),
+            periodid: row.periodid,
+            reallocationid: row.reallocationid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
-        "setcfg_reallocationinterval_v1".to_string()
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(row.periodid).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.periodid).month(),
+                )
+                .unwrap(),
+        }
+    }
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "setcfg_reallocationinterval_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
+        )
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SetcfgReallocationinterval1Row {
+            reallocationid: row.reallocationid.clone(),
+            periodid: row.periodid.clone(),
+            value: row.value.clone(),
+            lastchanged: row.lastchanged.clone(),
+            nrp: row.nrp.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SetcfgReallocationinterval1PrimaryKey {
     pub periodid: i64,
-    pub reallocationid: String,
+    pub reallocationid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for SetcfgReallocationinterval1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SetcfgReallocationinterval1 {
-    type Row = SetcfgReallocationinterval1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.periodid == row.periodid && self.reallocationid == row.reallocationid
+impl<'data> mmsdm_core::CompareWithRow for SetcfgReallocationinterval1Row<'data> {
+    type Row<'other> = SetcfgReallocationinterval1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.periodid == row.periodid && self.reallocationid() == row.reallocationid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1Row<'data> {
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.periodid == key.periodid && self.reallocationid == key.reallocationid
+        self.periodid == key.periodid && self.reallocationid() == key.reallocationid
     }
 }
-impl mmsdm_core::CompareWithRow for SetcfgReallocationinterval1PrimaryKey {
-    type Row = SetcfgReallocationinterval1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.periodid == row.periodid && self.reallocationid == row.reallocationid
+impl<'data> mmsdm_core::CompareWithRow for SetcfgReallocationinterval1PrimaryKey {
+    type Row<'other> = SetcfgReallocationinterval1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.periodid == row.periodid && self.reallocationid == row.reallocationid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1PrimaryKey {
@@ -1839,74 +3755,108 @@ impl mmsdm_core::CompareWithPrimaryKey for SetcfgReallocationinterval1PrimaryKey
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("reallocationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("value",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("nrp",
-                arrow2::datatypes::DataType::Decimal(15, 5), true)
-            ],
+    type Builder = SetcfgReallocationinterval1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "reallocationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "value",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "nrp",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut reallocationid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut value_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut nrp_array = Vec::new();
-        for row in partition {
-            reallocationid_array.push(row.reallocationid);
-            periodid_array.push(row.periodid);
-            value_array
-                .push({
-                    row.value
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            nrp_array
-                .push({
-                    row.nrp
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        SetcfgReallocationinterval1Builder {
+            reallocationid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Int64Builder::new(),
+            value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            nrp_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(reallocationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(value_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(nrp_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.reallocationid_array.append_value(row.reallocationid());
+        builder.periodid_array.append_value(row.periodid);
+        builder
+            .value_array
+            .append_option({
+                row.value
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .nrp_array
+            .append_option({
+                row.nrp
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.reallocationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.nrp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SetcfgReallocationinterval1Builder {
+    reallocationid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Int64Builder,
+    value_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    nrp_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct SettlementConfigSetcfgParticipantMpf1;
+pub struct SettlementConfigSetcfgParticipantMpf1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## SETCFG_PARTICIPANT_MPF
@@ -1928,92 +3878,233 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
 /// * PARTICIPANTCATEGORYID
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigSetcfgParticipantMpf1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigSetcfgParticipantMpf1Row<'data> {
     /// Participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Effective date of the MPF data
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number of the MPF data
     pub versionno: rust_decimal::Decimal,
     /// Participant Category
-    pub participantcategoryid: String,
+    pub participantcategoryid: core::ops::Range<usize>,
     /// Connection point identifier
-    pub connectionpointid: String,
+    pub connectionpointid: core::ops::Range<usize>,
     /// Market Participation Factor
     pub mpf: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
-    type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("SETCFG_PARTICIPANT_MPF".into()),
-            version: 1,
-        }
+impl<'data> SettlementConfigSetcfgParticipantMpf1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
-    fn primary_key(&self) -> SettlementConfigSetcfgParticipantMpf1PrimaryKey {
-        SettlementConfigSetcfgParticipantMpf1PrimaryKey {
-            connectionpointid: self.connectionpointid.clone(),
-            effectivedate: self.effectivedate,
-            participantcategoryid: self.participantcategoryid.clone(),
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
-        }
+    pub fn participantcategoryid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.participantcategoryid.clone(),
+        )
     }
-    fn partition_suffix(&self) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
-                .unwrap(),
-        }
-    }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_setcfg_participant_mpf_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
         )
     }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "SETCFG_PARTICIPANT_MPF";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigSetcfgParticipantMpf1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PARTICIPANTID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "PARTICIPANTCATEGORYID",
+        "CONNECTIONPOINTID",
+        "MPF",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigSetcfgParticipantMpf1Row<'row>;
+    type FieldMapping = SettlementConfigSetcfgParticipantMpf1Mapping;
+    type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigSetcfgParticipantMpf1Row {
+            participantid: row.get_range("participantid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantcategoryid: row
+                .get_range("participantcategoryid", field_mapping.0[3])?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[4])?,
+            mpf: row
+                .get_opt_custom_parsed_at_idx(
+                    "mpf",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigSetcfgParticipantMpf1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigSetcfgParticipantMpf1PrimaryKey {
+        SettlementConfigSetcfgParticipantMpf1PrimaryKey {
+            connectionpointid: row.connectionpointid().to_string(),
+            effectivedate: row.effectivedate,
+            participantcategoryid: row.participantcategoryid().to_string(),
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
+        }
+    }
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
+                .unwrap(),
+        }
+    }
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_setcfg_participant_mpf_v1_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
+        )
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigSetcfgParticipantMpf1Row {
+            participantid: row.participantid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            participantcategoryid: row.participantcategoryid.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            mpf: row.mpf.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigSetcfgParticipantMpf1PrimaryKey {
-    pub connectionpointid: String,
+    pub connectionpointid: alloc::string::String,
     pub effectivedate: chrono::NaiveDateTime,
-    pub participantcategoryid: String,
-    pub participantid: String,
+    pub participantcategoryid: alloc::string::String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigSetcfgParticipantMpf1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpf1 {
-    type Row = SettlementConfigSetcfgParticipantMpf1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.connectionpointid == row.connectionpointid
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigSetcfgParticipantMpf1Row<'data> {
+    type Row<'other> = SettlementConfigSetcfgParticipantMpf1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.connectionpointid() == row.connectionpointid()
             && self.effectivedate == row.effectivedate
-            && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+            && self.participantcategoryid() == row.participantcategoryid()
+            && self.participantid() == row.participantid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpf1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigSetcfgParticipantMpf1Row<'data> {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.connectionpointid == key.connectionpointid
+        self.connectionpointid() == key.connectionpointid
             && self.effectivedate == key.effectivedate
-            && self.participantcategoryid == key.participantcategoryid
-            && self.participantid == key.participantid && self.versionno == key.versionno
+            && self.participantcategoryid() == key.participantcategoryid
+            && self.participantid() == key.participantid
+            && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpf1PrimaryKey {
-    type Row = SettlementConfigSetcfgParticipantMpf1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.connectionpointid == row.connectionpointid
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigSetcfgParticipantMpf1PrimaryKey {
+    type Row<'other> = SettlementConfigSetcfgParticipantMpf1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.connectionpointid == row.connectionpointid()
             && self.effectivedate == row.effectivedate
-            && self.participantcategoryid == row.participantcategoryid
-            && self.participantid == row.participantid && self.versionno == row.versionno
+            && self.participantcategoryid == row.participantcategoryid()
+            && self.participantid == row.participantid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -2028,88 +4119,129 @@ for SettlementConfigSetcfgParticipantMpf1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("participantcategoryid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("connectionpointid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("mpf",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigSetcfgParticipantMpf1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantcategoryid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "mpf",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut participantid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut participantcategoryid_array = Vec::new();
-        let mut connectionpointid_array = Vec::new();
-        let mut mpf_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            participantid_array.push(row.participantid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            participantcategoryid_array.push(row.participantcategoryid);
-            connectionpointid_array.push(row.connectionpointid);
-            mpf_array
-                .push({
-                    row.mpf
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigSetcfgParticipantMpf1Builder {
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            mpf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantcategoryid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(connectionpointid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mpf_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.participantid_array.append_value(row.participantid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantcategoryid_array.append_value(row.participantcategoryid());
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder
+            .mpf_array
+            .append_option({
+                row.mpf
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantcategoryid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.mpf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigSetcfgParticipantMpf1Builder {
+    participantid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    participantcategoryid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    mpf_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementConfigSetcfgParticipantMpftrk1;
+pub struct SettlementConfigSetcfgParticipantMpftrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## SETCFG_PARTICIPANT_MPFTRK
@@ -2129,81 +4261,217 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
 /// * EFFECTIVEDATE
 /// * PARTICIPANTID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementConfigSetcfgParticipantMpftrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementConfigSetcfgParticipantMpftrk1Row<'data> {
     /// Participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Effective date of the MPF data
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number of the MPF data
     pub versionno: rust_decimal::Decimal,
     /// Authorising user
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Authorised date and time
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementConfigSetcfgParticipantMpftrk1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
+    const TABLE_NAME: &'static str = "SETCFG_PARTICIPANT_MPFTRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigSetcfgParticipantMpftrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PARTICIPANTID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "AUTHORISEDBY",
+        "AUTHORISEDDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementConfigSetcfgParticipantMpftrk1Row<'row>;
+    type FieldMapping = SettlementConfigSetcfgParticipantMpftrk1Mapping;
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENT_CONFIG".into(),
-            table_name: Some("SETCFG_PARTICIPANT_MPFTRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementConfigSetcfgParticipantMpftrk1Row {
+            participantid: row.get_range("participantid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[3])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementConfigSetcfgParticipantMpftrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
         SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
-            effectivedate: self.effectivedate,
-            participantid: self.participantid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            participantid: row.participantid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "settlement_config_setcfg_participant_mpftrk_v1_{}_{}", self
-            .partition_suffix().year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_setcfg_participant_mpftrk_v1_{}_{}",
+            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
+            .number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementConfigSetcfgParticipantMpftrk1Row {
+            participantid: row.participantid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            authorisedby: row.authorisedby.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub participantid: String,
+    pub participantid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpftrk1 {
-    type Row = SettlementConfigSetcfgParticipantMpftrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigSetcfgParticipantMpftrk1Row<'data> {
+    type Row<'other> = SettlementConfigSetcfgParticipantMpftrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid && self.versionno == row.versionno
+            && self.participantid() == row.participantid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementConfigSetcfgParticipantMpftrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementConfigSetcfgParticipantMpftrk1Row<'data> {
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid && self.versionno == key.versionno
+            && self.participantid() == key.participantid
+            && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
-    type Row = SettlementConfigSetcfgParticipantMpftrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
+    type Row<'other> = SettlementConfigSetcfgParticipantMpftrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid && self.versionno == row.versionno
+            && self.participantid == row.participantid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
@@ -2216,74 +4484,115 @@ for SettlementConfigSetcfgParticipantMpftrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementConfigSetcfgParticipantMpftrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut participantid_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            participantid_array.push(row.participantid);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementConfigSetcfgParticipantMpftrk1Builder {
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.participantid_array.append_value(row.participantid());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementConfigSetcfgParticipantMpftrk1Builder {
+    participantid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SetcfgSapsSettPrice1;
+pub struct SetcfgSapsSettPrice1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## SETCFG_SAPS_SETT_PRICE
@@ -2303,76 +4612,190 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
 /// * REGIONID
 /// * TODATE
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SetcfgSapsSettPrice1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SetcfgSapsSettPrice1Row<'data> {
     /// The From Date of the SAPS Pricing Application Period
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub fromdate: chrono::NaiveDateTime,
     /// The To Date of the SAPS Pricing Application Period
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub todate: chrono::NaiveDateTime,
     /// The Region ID for which the calculated SAPS Price is applicable
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// The Date time of the record generation
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// The Region Reference Price for SAPS in the Region
     pub saps_rrp: Option<rust_decimal::Decimal>,
     /// Whether the SAPS Price is Firm or Non-Firm
     pub isfirm: Option<rust_decimal::Decimal>,
     /// The Last Changed Date time of the record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SetcfgSapsSettPrice1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SetcfgSapsSettPrice1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETCFG";
+    const TABLE_NAME: &'static str = "SAPS_SETT_PRICE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SetcfgSapsSettPrice1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FROMDATE",
+        "TODATE",
+        "REGIONID",
+        "VERSION_DATETIME",
+        "SAPS_RRP",
+        "ISFIRM",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SetcfgSapsSettPrice1Row<'row>;
+    type FieldMapping = SetcfgSapsSettPrice1Mapping;
     type PrimaryKey = SetcfgSapsSettPrice1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETCFG".into(),
-            table_name: Some("SAPS_SETT_PRICE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SetcfgSapsSettPrice1Row {
+            fromdate: row
+                .get_custom_parsed_at_idx(
+                    "fromdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            todate: row
+                .get_custom_parsed_at_idx(
+                    "todate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            saps_rrp: row
+                .get_opt_custom_parsed_at_idx(
+                    "saps_rrp",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            isfirm: row
+                .get_opt_custom_parsed_at_idx(
+                    "isfirm",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SetcfgSapsSettPrice1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SetcfgSapsSettPrice1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SetcfgSapsSettPrice1PrimaryKey {
         SetcfgSapsSettPrice1PrimaryKey {
-            fromdate: self.fromdate,
-            regionid: self.regionid.clone(),
-            todate: self.todate,
-            version_datetime: self.version_datetime,
+            fromdate: row.fromdate,
+            regionid: row.regionid().to_string(),
+            todate: row.todate,
+            version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "setcfg_saps_sett_price_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SetcfgSapsSettPrice1Row {
+            fromdate: row.fromdate.clone(),
+            todate: row.todate.clone(),
+            regionid: row.regionid.clone(),
+            version_datetime: row.version_datetime.clone(),
+            saps_rrp: row.saps_rrp.clone(),
+            isfirm: row.isfirm.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SetcfgSapsSettPrice1PrimaryKey {
     pub fromdate: chrono::NaiveDateTime,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub todate: chrono::NaiveDateTime,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for SetcfgSapsSettPrice1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SetcfgSapsSettPrice1 {
-    type Row = SetcfgSapsSettPrice1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.fromdate == row.fromdate && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for SetcfgSapsSettPrice1Row<'data> {
+    type Row<'other> = SetcfgSapsSettPrice1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.fromdate == row.fromdate && self.regionid() == row.regionid()
             && self.todate == row.todate && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SetcfgSapsSettPrice1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for SetcfgSapsSettPrice1Row<'data> {
     type PrimaryKey = SetcfgSapsSettPrice1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.fromdate == key.fromdate && self.regionid == key.regionid
+        self.fromdate == key.fromdate && self.regionid() == key.regionid
             && self.todate == key.todate && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for SetcfgSapsSettPrice1PrimaryKey {
-    type Row = SetcfgSapsSettPrice1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.fromdate == row.fromdate && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for SetcfgSapsSettPrice1PrimaryKey {
+    type Row<'other> = SetcfgSapsSettPrice1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.fromdate == row.fromdate && self.regionid == row.regionid()
             && self.todate == row.todate && self.version_datetime == row.version_datetime
     }
 }
@@ -2385,90 +4808,137 @@ impl mmsdm_core::CompareWithPrimaryKey for SetcfgSapsSettPrice1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("fromdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("todate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("saps_rrp",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("isfirm",
-                arrow2::datatypes::DataType::Decimal(3, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SetcfgSapsSettPrice1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "fromdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "todate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "saps_rrp",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "isfirm",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut fromdate_array = Vec::new();
-        let mut todate_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut saps_rrp_array = Vec::new();
-        let mut isfirm_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            fromdate_array.push(row.fromdate.timestamp());
-            todate_array.push(row.todate.timestamp());
-            regionid_array.push(row.regionid);
-            version_datetime_array.push(row.version_datetime.timestamp());
-            saps_rrp_array
-                .push({
-                    row.saps_rrp
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            isfirm_array
-                .push({
-                    row.isfirm
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SetcfgSapsSettPrice1Builder {
+            fromdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            todate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            saps_rrp_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            isfirm_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(fromdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(todate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(saps_rrp_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(isfirm_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.fromdate_array.append_value(row.fromdate.timestamp());
+        builder.todate_array.append_value(row.todate.timestamp());
+        builder.regionid_array.append_value(row.regionid());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder
+            .saps_rrp_array
+            .append_option({
+                row.saps_rrp
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .isfirm_array
+            .append_option({
+                row.isfirm
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.fromdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.todate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.saps_rrp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.isfirm_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SetcfgSapsSettPrice1Builder {
+    fromdate_array: arrow::array::builder::TimestampSecondBuilder,
+    todate_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    saps_rrp_array: arrow::array::builder::Decimal128Builder,
+    isfirm_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementsConfigWdrrrCalendar1;
+pub struct SettlementsConfigWdrrrCalendar1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## SETCFG_WDRRR_CALENDAR
@@ -2487,73 +4957,178 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
 /// * REGIONID
 /// * VERSION_DATETIME
 /// * WDRRRPERIOD
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsConfigWdrrrCalendar1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementsConfigWdrrrCalendar1Row<'data> {
     /// Unique identifier for the period to which the WDRRR applies. For quarter-based periods, this will be equal to YYYY[Q]NN, for example,2020Q3 for 2020 Quarter 3.
-    pub wdrrrperiod: String,
+    pub wdrrrperiod: core::ops::Range<usize>,
     /// Unique Identifier for the region id
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// The Version Date time of the latest changes.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Start Date of Period (Inclusive).
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startdate: Option<chrono::NaiveDateTime>,
     /// End Date of Period (Inclusive).
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub enddate: Option<chrono::NaiveDateTime>,
     /// Last changed date for the record.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementsConfigWdrrrCalendar1Row<'data> {
+    pub fn wdrrrperiod(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.wdrrrperiod.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENTS_CONFIG";
+    const TABLE_NAME: &'static str = "WDRRR_CALENDAR";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsConfigWdrrrCalendar1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "WDRRRPERIOD",
+        "REGIONID",
+        "VERSION_DATETIME",
+        "STARTDATE",
+        "ENDDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementsConfigWdrrrCalendar1Row<'row>;
+    type FieldMapping = SettlementsConfigWdrrrCalendar1Mapping;
     type PrimaryKey = SettlementsConfigWdrrrCalendar1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENTS_CONFIG".into(),
-            table_name: Some("WDRRR_CALENDAR".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementsConfigWdrrrCalendar1Row {
+            wdrrrperiod: row.get_range("wdrrrperiod", field_mapping.0[0])?,
+            regionid: row.get_range("regionid", field_mapping.0[1])?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementsConfigWdrrrCalendar1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementsConfigWdrrrCalendar1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementsConfigWdrrrCalendar1PrimaryKey {
         SettlementsConfigWdrrrCalendar1PrimaryKey {
-            regionid: self.regionid.clone(),
-            version_datetime: self.version_datetime,
-            wdrrrperiod: self.wdrrrperiod.clone(),
+            regionid: row.regionid().to_string(),
+            version_datetime: row.version_datetime,
+            wdrrrperiod: row.wdrrrperiod().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "settlements_config_wdrrr_calendar_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementsConfigWdrrrCalendar1Row {
+            wdrrrperiod: row.wdrrrperiod.clone(),
+            regionid: row.regionid.clone(),
+            version_datetime: row.version_datetime.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementsConfigWdrrrCalendar1PrimaryKey {
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
-    pub wdrrrperiod: String,
+    pub wdrrrperiod: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for SettlementsConfigWdrrrCalendar1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementsConfigWdrrrCalendar1 {
-    type Row = SettlementsConfigWdrrrCalendar1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid && self.version_datetime == row.version_datetime
-            && self.wdrrrperiod == row.wdrrrperiod
+impl<'data> mmsdm_core::CompareWithRow for SettlementsConfigWdrrrCalendar1Row<'data> {
+    type Row<'other> = SettlementsConfigWdrrrCalendar1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.regionid() == row.regionid()
+            && self.version_datetime == row.version_datetime
+            && self.wdrrrperiod() == row.wdrrrperiod()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrrrCalendar1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementsConfigWdrrrCalendar1Row<'data> {
     type PrimaryKey = SettlementsConfigWdrrrCalendar1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid && self.version_datetime == key.version_datetime
-            && self.wdrrrperiod == key.wdrrrperiod
+        self.regionid() == key.regionid && self.version_datetime == key.version_datetime
+            && self.wdrrrperiod() == key.wdrrrperiod
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementsConfigWdrrrCalendar1PrimaryKey {
-    type Row = SettlementsConfigWdrrrCalendar1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid && self.version_datetime == row.version_datetime
-            && self.wdrrrperiod == row.wdrrrperiod
+impl<'data> mmsdm_core::CompareWithRow for SettlementsConfigWdrrrCalendar1PrimaryKey {
+    type Row<'other> = SettlementsConfigWdrrrCalendar1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.regionid == row.regionid() && self.version_datetime == row.version_datetime
+            && self.wdrrrperiod == row.wdrrrperiod()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrrrCalendar1PrimaryKey {
@@ -2565,69 +5140,109 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrrrCalendar1Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("wdrrrperiod",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("startdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("enddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementsConfigWdrrrCalendar1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "wdrrrperiod",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut wdrrrperiod_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut startdate_array = Vec::new();
-        let mut enddate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            wdrrrperiod_array.push(row.wdrrrperiod);
-            regionid_array.push(row.regionid);
-            version_datetime_array.push(row.version_datetime.timestamp());
-            startdate_array.push(row.startdate.map(|val| val.timestamp()));
-            enddate_array.push(row.enddate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementsConfigWdrrrCalendar1Builder {
+            wdrrrperiod_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(wdrrrperiod_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(enddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.wdrrrperiod_array.append_value(row.wdrrrperiod());
+        builder.regionid_array.append_value(row.regionid());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.wdrrrperiod_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct SettlementsConfigWdrrrCalendar1Builder {
+    wdrrrperiod_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct SettlementsConfigWdrReimburseRate1;
+pub struct SettlementsConfigWdrReimburseRate1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## SETCFG_WDR_REIMBURSE_RATE
@@ -2646,71 +5261,178 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
 /// * REGIONID
 /// * VERSION_DATETIME
 /// * WDRRRPERIOD
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct SettlementsConfigWdrReimburseRate1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementsConfigWdrReimburseRate1Row<'data> {
     /// Unique identifier for the period to which the WDRRR applies. For quarter-based periods, this will be equal to YYYY[Q]NN, e.g. 2020Q3 for 2020 Quarter 3.
-    pub wdrrrperiod: String,
+    pub wdrrrperiod: core::ops::Range<usize>,
     /// Unique identifier for the region
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// The Version Date time of the latest changes.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// WDRRR value for the period and region ($/MWh)
     pub wdrrr: Option<rust_decimal::Decimal>,
     /// A flag to indicate that the WDRRR value is FIRM for the period and region, i.e. it is based on a complete set of firm prices from dispatch. Possible Values are 1 and 0
     pub isfirm: Option<rust_decimal::Decimal>,
     /// Last changed date for the record
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementsConfigWdrReimburseRate1Row<'data> {
+    pub fn wdrrrperiod(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.wdrrrperiod.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENTS_CONFIG";
+    const TABLE_NAME: &'static str = "WDR_REIMBURSE_RATE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsConfigWdrReimburseRate1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "WDRRRPERIOD",
+        "REGIONID",
+        "VERSION_DATETIME",
+        "WDRRR",
+        "ISFIRM",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementsConfigWdrReimburseRate1Row<'row>;
+    type FieldMapping = SettlementsConfigWdrReimburseRate1Mapping;
     type PrimaryKey = SettlementsConfigWdrReimburseRate1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "SETTLEMENTS_CONFIG".into(),
-            table_name: Some("WDR_REIMBURSE_RATE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementsConfigWdrReimburseRate1Row {
+            wdrrrperiod: row.get_range("wdrrrperiod", field_mapping.0[0])?,
+            regionid: row.get_range("regionid", field_mapping.0[1])?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            wdrrr: row
+                .get_opt_custom_parsed_at_idx(
+                    "wdrrr",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            isfirm: row
+                .get_opt_custom_parsed_at_idx(
+                    "isfirm",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> SettlementsConfigWdrReimburseRate1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementsConfigWdrReimburseRate1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementsConfigWdrReimburseRate1PrimaryKey {
         SettlementsConfigWdrReimburseRate1PrimaryKey {
-            regionid: self.regionid.clone(),
-            version_datetime: self.version_datetime,
-            wdrrrperiod: self.wdrrrperiod.clone(),
+            regionid: row.regionid().to_string(),
+            version_datetime: row.version_datetime,
+            wdrrrperiod: row.wdrrrperiod().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "settlements_config_wdr_reimburse_rate_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementsConfigWdrReimburseRate1Row {
+            wdrrrperiod: row.wdrrrperiod.clone(),
+            regionid: row.regionid.clone(),
+            version_datetime: row.version_datetime.clone(),
+            wdrrr: row.wdrrr.clone(),
+            isfirm: row.isfirm.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SettlementsConfigWdrReimburseRate1PrimaryKey {
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
-    pub wdrrrperiod: String,
+    pub wdrrrperiod: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for SettlementsConfigWdrReimburseRate1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for SettlementsConfigWdrReimburseRate1 {
-    type Row = SettlementsConfigWdrReimburseRate1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid && self.version_datetime == row.version_datetime
-            && self.wdrrrperiod == row.wdrrrperiod
+impl<'data> mmsdm_core::CompareWithRow for SettlementsConfigWdrReimburseRate1Row<'data> {
+    type Row<'other> = SettlementsConfigWdrReimburseRate1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.regionid() == row.regionid()
+            && self.version_datetime == row.version_datetime
+            && self.wdrrrperiod() == row.wdrrrperiod()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrReimburseRate1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementsConfigWdrReimburseRate1Row<'data> {
     type PrimaryKey = SettlementsConfigWdrReimburseRate1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid && self.version_datetime == key.version_datetime
-            && self.wdrrrperiod == key.wdrrrperiod
+        self.regionid() == key.regionid && self.version_datetime == key.version_datetime
+            && self.wdrrrperiod() == key.wdrrrperiod
     }
 }
-impl mmsdm_core::CompareWithRow for SettlementsConfigWdrReimburseRate1PrimaryKey {
-    type Row = SettlementsConfigWdrReimburseRate1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid && self.version_datetime == row.version_datetime
-            && self.wdrrrperiod == row.wdrrrperiod
+impl<'data> mmsdm_core::CompareWithRow for SettlementsConfigWdrReimburseRate1PrimaryKey {
+    type Row<'other> = SettlementsConfigWdrReimburseRate1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.regionid == row.regionid() && self.version_datetime == row.version_datetime
+            && self.wdrrrperiod == row.wdrrrperiod()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrReimburseRate1PrimaryKey {
@@ -2722,289 +5444,116 @@ impl mmsdm_core::CompareWithPrimaryKey for SettlementsConfigWdrReimburseRate1Pri
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("wdrrrperiod",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("wdrrr",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("isfirm",
-                arrow2::datatypes::DataType::Decimal(3, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = SettlementsConfigWdrReimburseRate1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "wdrrrperiod",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "wdrrr",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "isfirm",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut wdrrrperiod_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut wdrrr_array = Vec::new();
-        let mut isfirm_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            wdrrrperiod_array.push(row.wdrrrperiod);
-            regionid_array.push(row.regionid);
-            version_datetime_array.push(row.version_datetime.timestamp());
-            wdrrr_array
-                .push({
-                    row.wdrrr
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            isfirm_array
-                .push({
-                    row.isfirm
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        SettlementsConfigWdrReimburseRate1Builder {
+            wdrrrperiod_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            wdrrr_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            isfirm_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(wdrrrperiod_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdrrr_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(isfirm_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.wdrrrperiod_array.append_value(row.wdrrrperiod());
+        builder.regionid_array.append_value(row.regionid());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder
+            .wdrrr_array
+            .append_option({
+                row.wdrrr
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .isfirm_array
+            .append_option({
+                row.isfirm
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.wdrrrperiod_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.wdrrr_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.isfirm_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("ANCILLARY_RECOVERY_SPLIT"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigAncillaryRecoverySplit1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigAncillaryRecoverySplit1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKETFEE"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketfee1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketfee1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKETFEEDATA"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketfeedata1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketfeedata1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKETFEETRK"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketfeetrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketfeetrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKET_FEE_CAT_EXCL"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketFeeCatExcl1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExcl1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKET_FEE_CAT_EXCL_TRK"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketFeeCatExclTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeCatExclTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKET_FEE_EXCLUSION"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketFeeExclusion1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusion1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKET_FEE_EXCLUSION_TRK"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigMarketFeeExclusionTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigMarketFeeExclusionTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("PARTICIPANT_BANDFEE_ALLOC"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigParticipantBandfeeAlloc1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigParticipantBandfeeAlloc1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("REALLOCATION"), version) if version <= 2_i32 => {
-            let d: Vec<SetcfgReallocation2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSetcfgReallocation2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("REALLOCATIONINTERVAL"), version) if version <= 1_i32 => {
-            let d: Vec<SetcfgReallocationinterval1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSetcfgReallocationinterval1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SETCFG_PARTICIPANT_MPF"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigSetcfgParticipantMpf1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpf1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SETCFG_PARTICIPANT_MPFTRK"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementConfigSetcfgParticipantMpftrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementConfigSetcfgParticipantMpftrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SAPS_SETT_PRICE"), version) if version <= 1_i32 => {
-            let d: Vec<SetcfgSapsSettPrice1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSetcfgSapsSettPrice1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("WDRRR_CALENDAR"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementsConfigWdrrrCalendar1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("WDR_REIMBURSE_RATE"), version) if version <= 1_i32 => {
-            let d: Vec<SettlementsConfigWdrReimburseRate1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertSettlementsConfigWdrReimburseRate1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct SettlementsConfigWdrReimburseRate1Builder {
+    wdrrrperiod_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    wdrrr_array: arrow::array::builder::Decimal128Builder,
+    isfirm_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
 }

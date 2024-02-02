@@ -63,14 +63,31 @@ fn main() -> anyhow::Result<()> {
                 println!("Generated rust structures");
 
                 process::Command::new("target/debug/mmsdm-codegen")
-                    .arg("sql-server-rust-part")
-                    .status()?;
-                println!("Generated sql server - rust interaction");
-
-                process::Command::new("target/debug/mmsdm-codegen")
                     .arg("sql-server-tables")
                     .status()?;
                 println!("Generated sql server tables");
+            }
+            "analyse" => {
+                let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
+                let build_config = BuildConfig::new(
+                    &config,
+                    Some(thread::available_parallelism()?.get().try_into()?),
+                    false,
+                    &[],
+                    CompileMode::Build,
+                )?;
+                let local_build_options = CompileOptions {
+                    spec: Packages::Packages(Vec::from(["mmsdm-codegen".to_string()])),
+                    build_config,
+                    ..base_compile_options
+                };
+
+                // can't use ops::run as it subsubmes the whole process!
+                ops::compile(&workspace, &local_build_options)?;
+
+                process::Command::new("target/debug/mmsdm-codegen")
+                    .arg("analyse")
+                    .status()?;
             }
             // "python" => {
             //     codegen_cmd("python")?;

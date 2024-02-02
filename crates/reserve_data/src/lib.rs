@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct MtpasaReservelimit1;
+pub struct MtpasaReservelimit1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT
@@ -19,83 +26,213 @@ use chrono::Datelike as _;
 /// * EFFECTIVEDATE
 /// * RESERVELIMITID
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaReservelimit1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MtpasaReservelimit1Row<'data> {
     /// Trade date when the set of reserve requirements become effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Timestamp when the set of reserve requirements become effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// MT PASA Reserve Requirement identifier
-    pub reservelimitid: String,
+    pub reservelimitid: core::ops::Range<usize>,
     /// Description of this Reserve Requirement
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Right hand side value for this Reserve requirement
     pub rhs: Option<rust_decimal::Decimal>,
     /// Timestamp the record was last modified.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MtpasaReservelimit1Row<'data> {
+    pub fn reservelimitid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.reservelimitid.clone(),
+        )
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MtpasaReservelimit1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MTPASA";
+    const TABLE_NAME: &'static str = "RESERVELIMIT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimit1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSION_DATETIME",
+        "RESERVELIMITID",
+        "DESCRIPTION",
+        "RHS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MtpasaReservelimit1Row<'row>;
+    type FieldMapping = MtpasaReservelimit1Mapping;
     type PrimaryKey = MtpasaReservelimit1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MTPASA".into(),
-            table_name: Some("RESERVELIMIT".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MtpasaReservelimit1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            reservelimitid: row.get_range("reservelimitid", field_mapping.0[2])?,
+            description: row.get_opt_range("description", field_mapping.0[3])?,
+            rhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "rhs",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MtpasaReservelimit1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MtpasaReservelimit1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MtpasaReservelimit1PrimaryKey {
         MtpasaReservelimit1PrimaryKey {
-            effectivedate: self.effectivedate,
-            reservelimitid: self.reservelimitid.clone(),
-            version_datetime: self.version_datetime,
+            effectivedate: row.effectivedate,
+            reservelimitid: row.reservelimitid().to_string(),
+            version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "mtpasa_reservelimit_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "mtpasa_reservelimit_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MtpasaReservelimit1Row {
+            effectivedate: row.effectivedate.clone(),
+            version_datetime: row.version_datetime.clone(),
+            reservelimitid: row.reservelimitid.clone(),
+            description: row.description.clone(),
+            rhs: row.rhs.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MtpasaReservelimit1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub reservelimitid: String,
+    pub reservelimitid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MtpasaReservelimit1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MtpasaReservelimit1 {
-    type Row = MtpasaReservelimit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MtpasaReservelimit1Row<'data> {
+    type Row<'other> = MtpasaReservelimit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.reservelimitid == row.reservelimitid
+            && self.reservelimitid() == row.reservelimitid()
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimit1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimit1Row<'data> {
     type PrimaryKey = MtpasaReservelimit1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.reservelimitid == key.reservelimitid
+            && self.reservelimitid() == key.reservelimitid
             && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for MtpasaReservelimit1PrimaryKey {
-    type Row = MtpasaReservelimit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MtpasaReservelimit1PrimaryKey {
+    type Row<'other> = MtpasaReservelimit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.reservelimitid == row.reservelimitid
+            && self.reservelimitid == row.reservelimitid()
             && self.version_datetime == row.version_datetime
     }
 }
@@ -109,76 +246,115 @@ impl mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimit1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("reservelimitid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("rhs",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MtpasaReservelimit1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "reservelimitid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rhs",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut reservelimitid_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut rhs_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            version_datetime_array.push(row.version_datetime.timestamp());
-            reservelimitid_array.push(row.reservelimitid);
-            description_array.push(row.description);
-            rhs_array
-                .push({
-                    row.rhs
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MtpasaReservelimit1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            reservelimitid_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            rhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(reservelimitid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(rhs_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.reservelimitid_array.append_value(row.reservelimitid());
+        builder.description_array.append_option(row.description());
+        builder
+            .rhs_array
+            .append_option({
+                row.rhs
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reservelimitid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MtpasaReservelimit1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    reservelimitid_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    rhs_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MtpasaReservelimitRegion1;
+pub struct MtpasaReservelimitRegion1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT_REGION
@@ -199,85 +375,206 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
 /// * REGIONID
 /// * RESERVELIMITID
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaReservelimitRegion1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MtpasaReservelimitRegion1Row<'data> {
     /// Trade date when the set of reserve requirements become effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Timestamp when the set of reserve requirements become effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// MT PASA Reserve requirement identifier
-    pub reservelimitid: String,
+    pub reservelimitid: core::ops::Range<usize>,
     /// Region ID - identifier of a NEM region included in this requirement
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Coefficient for the region in this reserve requirement
     pub coef: Option<rust_decimal::Decimal>,
     /// Timestamp the record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MtpasaReservelimitRegion1Row<'data> {
+    pub fn reservelimitid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.reservelimitid.clone(),
+        )
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MTPASA";
+    const TABLE_NAME: &'static str = "RESERVELIMIT_REGION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimitRegion1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSION_DATETIME",
+        "RESERVELIMITID",
+        "REGIONID",
+        "COEF",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MtpasaReservelimitRegion1Row<'row>;
+    type FieldMapping = MtpasaReservelimitRegion1Mapping;
     type PrimaryKey = MtpasaReservelimitRegion1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MTPASA".into(),
-            table_name: Some("RESERVELIMIT_REGION".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MtpasaReservelimitRegion1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            reservelimitid: row.get_range("reservelimitid", field_mapping.0[2])?,
+            regionid: row.get_range("regionid", field_mapping.0[3])?,
+            coef: row
+                .get_opt_custom_parsed_at_idx(
+                    "coef",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MtpasaReservelimitRegion1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MtpasaReservelimitRegion1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MtpasaReservelimitRegion1PrimaryKey {
         MtpasaReservelimitRegion1PrimaryKey {
-            effectivedate: self.effectivedate,
-            regionid: self.regionid.clone(),
-            reservelimitid: self.reservelimitid.clone(),
-            version_datetime: self.version_datetime,
+            effectivedate: row.effectivedate,
+            regionid: row.regionid().to_string(),
+            reservelimitid: row.reservelimitid().to_string(),
+            version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "mtpasa_reservelimit_region_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "mtpasa_reservelimit_region_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MtpasaReservelimitRegion1Row {
+            effectivedate: row.effectivedate.clone(),
+            version_datetime: row.version_datetime.clone(),
+            reservelimitid: row.reservelimitid.clone(),
+            regionid: row.regionid.clone(),
+            coef: row.coef.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MtpasaReservelimitRegion1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub regionid: String,
-    pub reservelimitid: String,
+    pub regionid: alloc::string::String,
+    pub reservelimitid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MtpasaReservelimitRegion1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MtpasaReservelimitRegion1 {
-    type Row = MtpasaReservelimitRegion1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.regionid == row.regionid
-            && self.reservelimitid == row.reservelimitid
+impl<'data> mmsdm_core::CompareWithRow for MtpasaReservelimitRegion1Row<'data> {
+    type Row<'other> = MtpasaReservelimitRegion1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.regionid() == row.regionid()
+            && self.reservelimitid() == row.reservelimitid()
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimitRegion1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimitRegion1Row<'data> {
     type PrimaryKey = MtpasaReservelimitRegion1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.regionid == key.regionid
-            && self.reservelimitid == key.reservelimitid
+        self.effectivedate == key.effectivedate && self.regionid() == key.regionid
+            && self.reservelimitid() == key.reservelimitid
             && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for MtpasaReservelimitRegion1PrimaryKey {
-    type Row = MtpasaReservelimitRegion1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.regionid == row.regionid
-            && self.reservelimitid == row.reservelimitid
+impl<'data> mmsdm_core::CompareWithRow for MtpasaReservelimitRegion1PrimaryKey {
+    type Row<'other> = MtpasaReservelimitRegion1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.regionid == row.regionid()
+            && self.reservelimitid == row.reservelimitid()
             && self.version_datetime == row.version_datetime
     }
 }
@@ -291,76 +588,115 @@ impl mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimitRegion1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("reservelimitid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("coef",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MtpasaReservelimitRegion1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "reservelimitid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "coef",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut reservelimitid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut coef_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            version_datetime_array.push(row.version_datetime.timestamp());
-            reservelimitid_array.push(row.reservelimitid);
-            regionid_array.push(row.regionid);
-            coef_array
-                .push({
-                    row.coef
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MtpasaReservelimitRegion1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            reservelimitid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            coef_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(reservelimitid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(coef_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.reservelimitid_array.append_value(row.reservelimitid());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .coef_array
+            .append_option({
+                row.coef
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reservelimitid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.coef_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MtpasaReservelimitRegion1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    reservelimitid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    coef_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MtpasaReservelimitSet1;
+pub struct MtpasaReservelimitSet1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT_SET
@@ -379,80 +715,232 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
 ///
 /// * EFFECTIVEDATE
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MtpasaReservelimitSet1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MtpasaReservelimitSet1Row<'data> {
     /// Trade date when the set of reserve requirements become effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Timestamp when the set of reserve requirements become effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// MT PASA LRC Reserve Requirement Set Identifier
-    pub reservelimit_set_id: Option<String>,
+    pub reservelimit_set_id: core::ops::Range<usize>,
     /// Description of this set of Reserve Requirements
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Date the requirement set was authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User authorising this requirement set
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Timestamp the record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MtpasaReservelimitSet1Row<'data> {
+    pub fn reservelimit_set_id(&self) -> Option<&str> {
+        if self.reservelimit_set_id.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.reservelimit_set_id.clone(),
+                ),
+            )
+        }
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MTPASA";
+    const TABLE_NAME: &'static str = "RESERVELIMIT_SET";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimitSet1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSION_DATETIME",
+        "RESERVELIMIT_SET_ID",
+        "DESCRIPTION",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MtpasaReservelimitSet1Row<'row>;
+    type FieldMapping = MtpasaReservelimitSet1Mapping;
     type PrimaryKey = MtpasaReservelimitSet1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MTPASA".into(),
-            table_name: Some("RESERVELIMIT_SET".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MtpasaReservelimitSet1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            reservelimit_set_id: row
+                .get_opt_range("reservelimit_set_id", field_mapping.0[2])?,
+            description: row.get_opt_range("description", field_mapping.0[3])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[5])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MtpasaReservelimitSet1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MtpasaReservelimitSet1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MtpasaReservelimitSet1PrimaryKey {
         MtpasaReservelimitSet1PrimaryKey {
-            effectivedate: self.effectivedate,
-            version_datetime: self.version_datetime,
+            effectivedate: row.effectivedate,
+            version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "mtpasa_reservelimit_set_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "mtpasa_reservelimit_set_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MtpasaReservelimitSet1Row {
+            effectivedate: row.effectivedate.clone(),
+            version_datetime: row.version_datetime.clone(),
+            reservelimit_set_id: row.reservelimit_set_id.clone(),
+            description: row.description.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MtpasaReservelimitSet1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for MtpasaReservelimitSet1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MtpasaReservelimitSet1 {
-    type Row = MtpasaReservelimitSet1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MtpasaReservelimitSet1Row<'data> {
+    type Row<'other> = MtpasaReservelimitSet1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimitSet1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimitSet1Row<'data> {
     type PrimaryKey = MtpasaReservelimitSet1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for MtpasaReservelimitSet1PrimaryKey {
-    type Row = MtpasaReservelimitSet1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MtpasaReservelimitSet1PrimaryKey {
+    type Row<'other> = MtpasaReservelimitSet1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
             && self.version_datetime == row.version_datetime
     }
@@ -466,76 +954,121 @@ impl mmsdm_core::CompareWithPrimaryKey for MtpasaReservelimitSet1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("reservelimit_set_id",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MtpasaReservelimitSet1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "reservelimit_set_id",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut version_datetime_array = Vec::new();
-        let mut reservelimit_set_id_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            version_datetime_array.push(row.version_datetime.timestamp());
-            reservelimit_set_id_array.push(row.reservelimit_set_id);
-            description_array.push(row.description);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MtpasaReservelimitSet1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            reservelimit_set_id_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(reservelimit_set_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.reservelimit_set_id_array.append_option(row.reservelimit_set_id());
+        builder.description_array.append_option(row.description());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reservelimit_set_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MtpasaReservelimitSet1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    reservelimit_set_id_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct ReserveDataReserve1;
+pub struct ReserveDataReserve1Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## RESERVE
@@ -556,15 +1089,14 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
 /// * REGIONID
 /// * SETTLEMENTDATE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ReserveDataReserve1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct ReserveDataReserve1Row<'data> {
     /// Market date starting at 04:00am
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Version No of record for this date, the version of the file loaded to produce these reserve figures
     pub versionno: rust_decimal::Decimal,
     /// Differentiates this region from all other regions
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Market Trading Interval
     pub periodid: rust_decimal::Decimal,
     /// Lower 5 minute reserve requirement
@@ -580,7 +1112,6 @@ pub struct ReserveDataReserve1 {
     /// Raise 6 second reserve requirement
     pub raise6sec: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// PASA reserve requirement
     pub pasareserve: Option<rust_decimal::Decimal>,
@@ -594,67 +1125,289 @@ pub struct ReserveDataReserve1 {
     pub lor1level: Option<rust_decimal::Decimal>,
     /// PASA Lack of Reserve 1 Level
     pub lor2level: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> ReserveDataReserve1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for ReserveDataReserve1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "RESERVE_DATA";
+    const TABLE_NAME: &'static str = "RESERVE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ReserveDataReserve1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SETTLEMENTDATE",
+        "VERSIONNO",
+        "REGIONID",
+        "PERIODID",
+        "LOWER5MIN",
+        "LOWER60SEC",
+        "LOWER6SEC",
+        "RAISE5MIN",
+        "RAISE60SEC",
+        "RAISE6SEC",
+        "LASTCHANGED",
+        "PASARESERVE",
+        "LOADREJECTIONRESERVEREQ",
+        "RAISEREG",
+        "LOWERREG",
+        "LOR1LEVEL",
+        "LOR2LEVEL",
+    ];
+    type Row<'row> = ReserveDataReserve1Row<'row>;
+    type FieldMapping = ReserveDataReserve1Mapping;
     type PrimaryKey = ReserveDataReserve1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "RESERVE_DATA".into(),
-            table_name: Some("RESERVE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(ReserveDataReserve1Row {
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lower5min: row
+                .get_opt_custom_parsed_at_idx(
+                    "lower5min",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lower60sec: row
+                .get_opt_custom_parsed_at_idx(
+                    "lower60sec",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lower6sec: row
+                .get_opt_custom_parsed_at_idx(
+                    "lower6sec",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raise5min: row
+                .get_opt_custom_parsed_at_idx(
+                    "raise5min",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raise60sec: row
+                .get_opt_custom_parsed_at_idx(
+                    "raise60sec",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raise6sec: row
+                .get_opt_custom_parsed_at_idx(
+                    "raise6sec",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            pasareserve: row
+                .get_opt_custom_parsed_at_idx(
+                    "pasareserve",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            loadrejectionreservereq: row
+                .get_opt_custom_parsed_at_idx(
+                    "loadrejectionreservereq",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lor1level: row
+                .get_opt_custom_parsed_at_idx(
+                    "lor1level",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lor2level: row
+                .get_opt_custom_parsed_at_idx(
+                    "lor2level",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> ReserveDataReserve1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(ReserveDataReserve1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> ReserveDataReserve1PrimaryKey {
         ReserveDataReserve1PrimaryKey {
-            periodid: self.periodid,
-            regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate,
-            versionno: self.versionno,
+            periodid: row.periodid,
+            regionid: row.regionid().to_string(),
+            settlementdate: row.settlementdate,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "reserve_data_reserve_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "reserve_data_reserve_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        ReserveDataReserve1Row {
+            settlementdate: row.settlementdate.clone(),
+            versionno: row.versionno.clone(),
+            regionid: row.regionid.clone(),
+            periodid: row.periodid.clone(),
+            lower5min: row.lower5min.clone(),
+            lower60sec: row.lower60sec.clone(),
+            lower6sec: row.lower6sec.clone(),
+            raise5min: row.raise5min.clone(),
+            raise60sec: row.raise60sec.clone(),
+            raise6sec: row.raise6sec.clone(),
+            lastchanged: row.lastchanged.clone(),
+            pasareserve: row.pasareserve.clone(),
+            loadrejectionreservereq: row.loadrejectionreservereq.clone(),
+            raisereg: row.raisereg.clone(),
+            lowerreg: row.lowerreg.clone(),
+            lor1level: row.lor1level.clone(),
+            lor2level: row.lor2level.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ReserveDataReserve1PrimaryKey {
     pub periodid: rust_decimal::Decimal,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub settlementdate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ReserveDataReserve1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ReserveDataReserve1 {
-    type Row = ReserveDataReserve1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.periodid == row.periodid && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for ReserveDataReserve1Row<'data> {
+    type Row<'other> = ReserveDataReserve1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.periodid == row.periodid && self.regionid() == row.regionid()
             && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ReserveDataReserve1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ReserveDataReserve1Row<'data> {
     type PrimaryKey = ReserveDataReserve1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.periodid == key.periodid && self.regionid == key.regionid
+        self.periodid == key.periodid && self.regionid() == key.regionid
             && self.settlementdate == key.settlementdate
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for ReserveDataReserve1PrimaryKey {
-    type Row = ReserveDataReserve1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.periodid == row.periodid && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for ReserveDataReserve1PrimaryKey {
+    type Row<'other> = ReserveDataReserve1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.periodid == row.periodid && self.regionid == row.regionid()
             && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
@@ -669,301 +1422,330 @@ impl mmsdm_core::CompareWithPrimaryKey for ReserveDataReserve1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(2, 0), false),
-                arrow2::datatypes::Field::new("lower5min",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lower60sec",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lower6sec",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("raise5min",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("raise60sec",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("raise6sec",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("pasareserve",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("loadrejectionreservereq",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("raisereg",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lowerreg",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lor1level",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lor2level",
-                arrow2::datatypes::DataType::Decimal(6, 0), true)
-            ],
+    type Builder = ReserveDataReserve1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(2, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lower5min",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lower60sec",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lower6sec",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raise5min",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raise60sec",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raise6sec",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "pasareserve",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "loadrejectionreservereq",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lor1level",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lor2level",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut settlementdate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut lower5min_array = Vec::new();
-        let mut lower60sec_array = Vec::new();
-        let mut lower6sec_array = Vec::new();
-        let mut raise5min_array = Vec::new();
-        let mut raise60sec_array = Vec::new();
-        let mut raise6sec_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut pasareserve_array = Vec::new();
-        let mut loadrejectionreservereq_array = Vec::new();
-        let mut raisereg_array = Vec::new();
-        let mut lowerreg_array = Vec::new();
-        let mut lor1level_array = Vec::new();
-        let mut lor2level_array = Vec::new();
-        for row in partition {
-            settlementdate_array.push(row.settlementdate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            regionid_array.push(row.regionid);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            lower5min_array
-                .push({
-                    row.lower5min
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lower60sec_array
-                .push({
-                    row.lower60sec
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lower6sec_array
-                .push({
-                    row.lower6sec
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            raise5min_array
-                .push({
-                    row.raise5min
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            raise60sec_array
-                .push({
-                    row.raise60sec
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            raise6sec_array
-                .push({
-                    row.raise6sec
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            pasareserve_array
-                .push({
-                    row.pasareserve
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            loadrejectionreservereq_array
-                .push({
-                    row.loadrejectionreservereq
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            raisereg_array
-                .push({
-                    row.raisereg
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lowerreg_array
-                .push({
-                    row.lowerreg
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lor1level_array
-                .push({
-                    row.lor1level
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lor2level_array
-                .push({
-                    row.lor2level
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        ReserveDataReserve1Builder {
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
+            lower5min_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lower60sec_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lower6sec_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            raise5min_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            raise60sec_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            raise6sec_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            pasareserve_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            loadrejectionreservereq_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            raisereg_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lowerreg_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lor1level_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lor2level_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower5min_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower60sec_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lower6sec_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise5min_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise60sec_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raise6sec_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(pasareserve_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(loadrejectionreservereq_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(raisereg_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lowerreg_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lor1level_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lor2level_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .lower5min_array
+            .append_option({
+                row.lower5min
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lower60sec_array
+            .append_option({
+                row.lower60sec
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lower6sec_array
+            .append_option({
+                row.lower6sec
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raise5min_array
+            .append_option({
+                row.raise5min
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raise60sec_array
+            .append_option({
+                row.raise60sec
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raise6sec_array
+            .append_option({
+                row.raise6sec
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .pasareserve_array
+            .append_option({
+                row.pasareserve
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .loadrejectionreservereq_array
+            .append_option({
+                row.loadrejectionreservereq
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_array
+            .append_option({
+                row.raisereg
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_array
+            .append_option({
+                row.lowerreg
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lor1level_array
+            .append_option({
+                row.lor1level
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lor2level_array
+            .append_option({
+                row.lor2level
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lower5min_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lower60sec_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lower6sec_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raise5min_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raise60sec_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raise6sec_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.pasareserve_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.loadrejectionreservereq_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lor1level_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lor2level_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("RESERVELIMIT"), version) if version <= 1_i32 => {
-            let d: Vec<MtpasaReservelimit1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMtpasaReservelimit1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESERVELIMIT_REGION"), version) if version <= 1_i32 => {
-            let d: Vec<MtpasaReservelimitRegion1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMtpasaReservelimitRegion1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESERVELIMIT_SET"), version) if version <= 1_i32 => {
-            let d: Vec<MtpasaReservelimitSet1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMtpasaReservelimitSet1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RESERVE"), version) if version <= 1_i32 => {
-            let d: Vec<ReserveDataReserve1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertReserveDataReserve1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct ReserveDataReserve1Builder {
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    lower5min_array: arrow::array::builder::Decimal128Builder,
+    lower60sec_array: arrow::array::builder::Decimal128Builder,
+    lower6sec_array: arrow::array::builder::Decimal128Builder,
+    raise5min_array: arrow::array::builder::Decimal128Builder,
+    raise60sec_array: arrow::array::builder::Decimal128Builder,
+    raise6sec_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    pasareserve_array: arrow::array::builder::Decimal128Builder,
+    loadrejectionreservereq_array: arrow::array::builder::Decimal128Builder,
+    raisereg_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_array: arrow::array::builder::Decimal128Builder,
+    lor1level_array: arrow::array::builder::Decimal128Builder,
+    lor2level_array: arrow::array::builder::Decimal128Builder,
 }

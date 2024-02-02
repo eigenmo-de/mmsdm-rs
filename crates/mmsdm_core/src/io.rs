@@ -1,0 +1,234 @@
+extern crate std;
+use crate::{AemoHeader, CsvRow, Error, FileKey, GetTable, Result, RowValidation};
+use alloc::{collections::BTreeSet, format, string::String, vec::Vec};
+use core::ops::AddAssign;
+use std::{
+    collections::BTreeMap,
+    io::{BufRead, BufReader, Read, Seek},
+    marker::PhantomData,
+};
+use zip::{read::ZipFile, ZipArchive};
+
+pub struct FileReader<'a, R: Read + Seek> {
+    reader: &'a mut ZipArchive<R>,
+    header: AemoHeader,
+    file_headings: BTreeMap<FileKey<'static>, usize>,
+}
+
+impl<'reader, R> FileReader<'reader, R>
+where
+    R: Read + Seek,
+{
+    pub fn new(reader: &'reader mut ZipArchive<R>) -> Result<FileReader<'reader, R>> {
+        // defensively reset to the start
+        let mut header = None;
+        let mut file_headings = BTreeMap::new();
+
+        {
+            let mut file_reader = BufReader::new(reader.by_index(0)?);
+
+            let mut count = 0;
+
+            let mut row_holder = String::new();
+            let mut indexes_backing = Vec::new();
+
+            let mut last_heading = None;
+
+            loop {
+                row_holder.clear();
+                indexes_backing.clear();
+
+                let bytes_read = file_reader.read_line(&mut row_holder)?;
+
+                if bytes_read == 0 {
+                    break;
+                }
+                count += 1;
+
+                match crate::validate_row(&row_holder, &mut indexes_backing)? {
+                    Some(RowValidation::Header(h)) => {
+                        if header.is_none() {
+                            header = Some(h);
+                        } else {
+                            return Err(
+                                Error::UnexpectedRowType(format!("Extra header: {h:?}")).into()
+                            );
+                        }
+                    }
+                    Some(RowValidation::Footer(f)) => {
+                        if f.line_count_inclusive != count {
+                            return Err(Error::IncorrectLineCount {
+                                got: count,
+                                expected: f.line_count_inclusive,
+                            }
+                            .into());
+                        }
+                        break;
+                    }
+                    Some(RowValidation::Headings(k)) => {
+                        last_heading = Some(k.to_owned());
+                        file_headings.insert(k, 0);
+                    }
+                    None => {
+                        if let Some(current_count) =
+                            last_heading.as_ref().and_then(|h| file_headings.get_mut(h))
+                        {
+                            current_count.add_assign(1);
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(FileReader {
+            reader,
+            header: header.ok_or_else(|| Error::MissingHeaderRecord)?,
+            file_headings,
+        })
+    }
+
+    pub fn sub_files(&self) -> &BTreeMap<FileKey<'static>, usize> {
+        &self.file_headings
+    }
+
+    pub fn header(&self) -> &AemoHeader {
+        &self.header
+    }
+
+    pub fn iter_closest<'sub_reader, T>(&'sub_reader mut self) -> Result<IterTyped<'sub_reader, T>>
+    where
+        T: GetTable,
+        'reader: 'sub_reader,
+    {
+        let closest_key = self
+            .file_headings
+            .keys()
+            .filter(|k| T::matches_file_key(*k, k.version))
+            .max_by_key(|k| k.version)
+            .ok_or_else(|| Error::MissingFile {
+                data_set_name: T::DATA_SET_NAME,
+                table_name: T::TABLE_NAME,
+                version: None,
+            })?;
+
+        let field_mapping = T::field_mapping_from_row(closest_key.backing_data().to_owned())?;
+
+        Ok(IterTyped {
+            inner: BufReader::new(self.reader.by_index(0)?),
+            ty: PhantomData,
+            version: closest_key.version,
+            indexes_backing: Vec::new(),
+            buf: String::new(),
+            field_mapping,
+        })
+    }
+
+    pub fn iter_exact<'sub_reader, T>(&'sub_reader mut self) -> Result<IterTyped<'sub_reader, T>>
+    where
+        T: GetTable,
+        'reader: 'sub_reader,
+    {
+        let Some(key) = self
+            .file_headings
+            .keys()
+            .find(|k| T::matches_file_key(k, T::VERSION))
+        else {
+            return Err(Error::MissingFile {
+                data_set_name: T::DATA_SET_NAME,
+                table_name: T::TABLE_NAME,
+                version: Some(T::VERSION),
+            }
+            .into());
+        };
+
+        let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
+
+        Ok(IterTyped {
+            inner: BufReader::new(self.reader.by_index(0)?),
+            ty: PhantomData,
+            version: T::VERSION,
+            indexes_backing: Vec::new(),
+            buf: String::new(),
+            field_mapping,
+        })
+    }
+}
+
+pub struct IterTyped<'reader, T: GetTable> {
+    inner: BufReader<ZipFile<'reader>>,
+    ty: PhantomData<T>,
+    version: i32,
+    indexes_backing: Vec<usize>,
+    buf: String,
+    field_mapping: T::FieldMapping,
+}
+
+impl<'reader, T> IterTyped<'reader, T>
+where
+    T: GetTable,
+{
+    pub fn next<'next, 'row>(&'next mut self) -> Option<Option<Result<<T as GetTable>::Row<'row>>>>
+    where
+        T: GetTable,
+        'next: 'row,
+    {
+        self.buf.clear();
+
+        match self.inner.read_line(&mut self.buf) {
+            Ok(0) => None,
+            Ok(_) => Some(
+                CsvRow::from_data_with_vec(&self.buf, &mut self.indexes_backing)
+                    .and_then(|csv| crate::handle_row::<T>(csv, self.version, &self.field_mapping))
+                    .transpose()
+            ),
+            Err(e) => Some(Some(Err(e.into()))),
+        }
+    }
+
+    pub fn process_rows(mut self, mut on_row: impl FnMut(<T as GetTable>::Row<'_>)) -> Result<()> {
+        // only want parsed rows
+        while let Some(maybe_row) = self.next() {
+            match maybe_row {
+                Some(Ok(row)) => on_row(row),
+                Some(Err(e)) => return Err(e),
+                None => continue,
+            }
+        }
+        Ok(())
+    }
+
+    #[deprecated(
+        since = "0.0.0",
+        note = "Avoid this where possible, high chance of causing OOM"
+    )]
+    pub fn collect(self) -> Result<Vec<<T as GetTable>::Row<'static>>> {
+        let mut vec = Vec::new();
+
+        self.process_rows(|row| {
+            let cloned = T::to_static(&row);
+            vec.push(cloned)
+        })?;
+
+        Ok(vec)
+    }
+
+    pub fn collect_partitions(self) -> Result<BTreeSet<T::Partition>> {
+        let mut vec = BTreeSet::new();
+
+        self.process_rows(|row| {
+            vec.insert(T::partition_suffix(&row));
+        })?;
+
+        Ok(vec)
+    }
+
+    pub fn count(self) -> Result<usize> {
+        let mut count = 0;
+
+        self.process_rows(|_| {
+            count += 1;
+        })?;
+
+        Ok(count)
+    }
+}

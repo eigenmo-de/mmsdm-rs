@@ -1,10 +1,11 @@
-use std::{fs, str};
 use heck::ToSnakeCase;
+use std::{fs, str};
 
 use crate::{
     mms,
-    rust::{TableMapping, VERSION},
+    rust::{TableMapping},
 };
+use crate::VERSION;
 
 impl mms::PkColumns {
     fn get_sql(&self) -> String {

@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct NetworkEquipmentdetail2;
+pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_EQUIPMENTDETAIL
@@ -20,85 +27,229 @@ use chrono::Datelike as _;
 /// * EQUIPMENTTYPE
 /// * SUBSTATIONID
 /// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkEquipmentdetail2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkEquipmentdetail2Row<'data> {
     /// ID uniquely identifying the substation this equipment is located at
-    pub substationid: String,
+    pub substationid: core::ops::Range<usize>,
     /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
-    pub equipmenttype: String,
+    pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
-    pub equipmentid: String,
+    pub equipmentid: core::ops::Range<usize>,
     /// The date that this record is applies from (inclusive)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
-    pub voltage: Option<String>,
+    pub voltage: core::ops::Range<usize>,
     /// A short description for this equipment.
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// The time that this record was last changed.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Equipment element id
     pub elementid: rust_decimal::Decimal,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkEquipmentdetail2Row<'data> {
+    pub fn substationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.substationid.clone())
+    }
+    pub fn equipmenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.equipmenttype.clone())
+    }
+    pub fn equipmentid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.equipmentid.clone())
+    }
+    pub fn voltage(&self) -> Option<&str> {
+        if self.voltage.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.voltage.clone(),
+                ),
+            )
+        }
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "EQUIPMENTDETAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkEquipmentdetail2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SUBSTATIONID",
+        "EQUIPMENTTYPE",
+        "EQUIPMENTID",
+        "VALIDFROM",
+        "VALIDTO",
+        "VOLTAGE",
+        "DESCRIPTION",
+        "LASTCHANGED",
+        "ELEMENTID",
+    ];
+    type Row<'row> = NetworkEquipmentdetail2Row<'row>;
+    type FieldMapping = NetworkEquipmentdetail2Mapping;
     type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("EQUIPMENTDETAIL".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkEquipmentdetail2Row {
+            substationid: row.get_range("substationid", field_mapping.0[0])?,
+            equipmenttype: row.get_range("equipmenttype", field_mapping.0[1])?,
+            equipmentid: row.get_range("equipmentid", field_mapping.0[2])?,
+            validfrom: row
+                .get_custom_parsed_at_idx(
+                    "validfrom",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            validto: row
+                .get_opt_custom_parsed_at_idx(
+                    "validto",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            voltage: row.get_opt_range("voltage", field_mapping.0[5])?,
+            description: row.get_opt_range("description", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            elementid: row
+                .get_custom_parsed_at_idx(
+                    "elementid",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkEquipmentdetail2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkEquipmentdetail2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkEquipmentdetail2PrimaryKey {
         NetworkEquipmentdetail2PrimaryKey {
-            elementid: self.elementid,
-            equipmentid: self.equipmentid.clone(),
-            equipmenttype: self.equipmenttype.clone(),
-            substationid: self.substationid.clone(),
-            validfrom: self.validfrom,
+            elementid: row.elementid,
+            equipmentid: row.equipmentid().to_string(),
+            equipmenttype: row.equipmenttype().to_string(),
+            substationid: row.substationid().to_string(),
+            validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_equipmentdetail_v2".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkEquipmentdetail2Row {
+            substationid: row.substationid.clone(),
+            equipmenttype: row.equipmenttype.clone(),
+            equipmentid: row.equipmentid.clone(),
+            validfrom: row.validfrom.clone(),
+            validto: row.validto.clone(),
+            voltage: row.voltage.clone(),
+            description: row.description.clone(),
+            lastchanged: row.lastchanged.clone(),
+            elementid: row.elementid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkEquipmentdetail2PrimaryKey {
     pub elementid: rust_decimal::Decimal,
-    pub equipmentid: String,
-    pub equipmenttype: String,
-    pub substationid: String,
+    pub equipmentid: alloc::string::String,
+    pub equipmenttype: alloc::string::String,
+    pub substationid: alloc::string::String,
     pub validfrom: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for NetworkEquipmentdetail2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkEquipmentdetail2 {
-    type Row = NetworkEquipmentdetail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.elementid == row.elementid && self.equipmentid == row.equipmentid
-            && self.equipmenttype == row.equipmenttype
-            && self.substationid == row.substationid && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkEquipmentdetail2Row<'data> {
+    type Row<'other> = NetworkEquipmentdetail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.elementid == row.elementid && self.equipmentid() == row.equipmentid()
+            && self.equipmenttype() == row.equipmenttype()
+            && self.substationid() == row.substationid()
+            && self.validfrom == row.validfrom
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkEquipmentdetail2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkEquipmentdetail2Row<'data> {
     type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.elementid == key.elementid && self.equipmentid == key.equipmentid
-            && self.equipmenttype == key.equipmenttype
-            && self.substationid == key.substationid && self.validfrom == key.validfrom
+        self.elementid == key.elementid && self.equipmentid() == key.equipmentid
+            && self.equipmenttype() == key.equipmenttype
+            && self.substationid() == key.substationid && self.validfrom == key.validfrom
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkEquipmentdetail2PrimaryKey {
-    type Row = NetworkEquipmentdetail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.elementid == row.elementid && self.equipmentid == row.equipmentid
-            && self.equipmenttype == row.equipmenttype
-            && self.substationid == row.substationid && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkEquipmentdetail2PrimaryKey {
+    type Row<'other> = NetworkEquipmentdetail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.elementid == row.elementid && self.equipmentid == row.equipmentid()
+            && self.equipmenttype == row.equipmenttype()
+            && self.substationid == row.substationid() && self.validfrom == row.validfrom
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkEquipmentdetail2PrimaryKey {
@@ -111,93 +262,143 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkEquipmentdetail2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("substationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("equipmenttype",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("equipmentid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("validfrom",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("validto",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("voltage",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("elementid",
-                arrow2::datatypes::DataType::Decimal(15, 0), false)
-            ],
+    type Builder = NetworkEquipmentdetail2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "substationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmentid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validfrom",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validto",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "voltage",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "elementid",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut substationid_array = Vec::new();
-        let mut equipmenttype_array = Vec::new();
-        let mut equipmentid_array = Vec::new();
-        let mut validfrom_array = Vec::new();
-        let mut validto_array = Vec::new();
-        let mut voltage_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut elementid_array = Vec::new();
-        for row in partition {
-            substationid_array.push(row.substationid);
-            equipmenttype_array.push(row.equipmenttype);
-            equipmentid_array.push(row.equipmentid);
-            validfrom_array.push(row.validfrom.timestamp());
-            validto_array.push(row.validto.map(|val| val.timestamp()));
-            voltage_array.push(row.voltage);
-            description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            elementid_array
-                .push({
-                    let mut val = row.elementid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
+    fn new_builder() -> Self::Builder {
+        NetworkEquipmentdetail2Builder {
+            substationid_array: arrow::array::builder::StringBuilder::new(),
+            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
+            equipmentid_array: arrow::array::builder::StringBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            voltage_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            elementid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(substationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(equipmenttype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(equipmentid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(validfrom_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(validto_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(voltage_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(elementid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.substationid_array.append_value(row.substationid());
+        builder.equipmenttype_array.append_value(row.equipmenttype());
+        builder.equipmentid_array.append_value(row.equipmentid());
+        builder.validfrom_array.append_value(row.validfrom.timestamp());
+        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.voltage_array.append_option(row.voltage());
+        builder.description_array.append_option(row.description());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .elementid_array
+            .append_value({
+                let mut val = row.elementid;
+                val.rescale(0);
+                val.mantissa()
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.substationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmentid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validfrom_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validto_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.voltage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.elementid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkEquipmentdetail2Builder {
+    substationid_array: arrow::array::builder::StringBuilder,
+    equipmenttype_array: arrow::array::builder::StringBuilder,
+    equipmentid_array: arrow::array::builder::StringBuilder,
+    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
+    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    voltage_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    elementid_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct NetworkOutageconstraintset1;
+pub struct NetworkOutageconstraintset1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## NETWORK_OUTAGECONSTRAINTSET
@@ -215,62 +416,151 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
 ///
 /// * GENCONSETID
 /// * OUTAGEID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutageconstraintset1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkOutageconstraintset1Row<'data> {
     /// ID uniquely identifying the outage
     pub outageid: rust_decimal::Decimal,
     /// ID for the constraint set
-    pub genconsetid: String,
+    pub genconsetid: core::ops::Range<usize>,
     /// The dispatch interval that this constraint applies from
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub startinterval: Option<chrono::NaiveDateTime>,
     /// The dispatch interval that this constraint applies until.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub endinterval: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkOutageconstraintset1Row<'data> {
+    pub fn genconsetid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.genconsetid.clone())
+    }
 }
 impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "OUTAGECONSTRAINTSET";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutageconstraintset1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "OUTAGEID",
+        "GENCONSETID",
+        "STARTINTERVAL",
+        "ENDINTERVAL",
+    ];
+    type Row<'row> = NetworkOutageconstraintset1Row<'row>;
+    type FieldMapping = NetworkOutageconstraintset1Mapping;
     type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("OUTAGECONSTRAINTSET".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkOutageconstraintset1Row {
+            outageid: row
+                .get_custom_parsed_at_idx(
+                    "outageid",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            genconsetid: row.get_range("genconsetid", field_mapping.0[1])?,
+            startinterval: row
+                .get_opt_custom_parsed_at_idx(
+                    "startinterval",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            endinterval: row
+                .get_opt_custom_parsed_at_idx(
+                    "endinterval",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkOutageconstraintset1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkOutageconstraintset1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkOutageconstraintset1PrimaryKey {
         NetworkOutageconstraintset1PrimaryKey {
-            genconsetid: self.genconsetid.clone(),
-            outageid: self.outageid,
+            genconsetid: row.genconsetid().to_string(),
+            outageid: row.outageid,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_outageconstraintset_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkOutageconstraintset1Row {
+            outageid: row.outageid.clone(),
+            genconsetid: row.genconsetid.clone(),
+            startinterval: row.startinterval.clone(),
+            endinterval: row.endinterval.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkOutageconstraintset1PrimaryKey {
-    pub genconsetid: String,
+    pub genconsetid: alloc::string::String,
     pub outageid: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for NetworkOutageconstraintset1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkOutageconstraintset1 {
-    type Row = NetworkOutageconstraintset1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.genconsetid == row.genconsetid && self.outageid == row.outageid
+impl<'data> mmsdm_core::CompareWithRow for NetworkOutageconstraintset1Row<'data> {
+    type Row<'other> = NetworkOutageconstraintset1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.genconsetid() == row.genconsetid() && self.outageid == row.outageid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkOutageconstraintset1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkOutageconstraintset1Row<'data> {
     type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.genconsetid == key.genconsetid && self.outageid == key.outageid
+        self.genconsetid() == key.genconsetid && self.outageid == key.outageid
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkOutageconstraintset1PrimaryKey {
-    type Row = NetworkOutageconstraintset1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.genconsetid == row.genconsetid && self.outageid == row.outageid
+impl<'data> mmsdm_core::CompareWithRow for NetworkOutageconstraintset1PrimaryKey {
+    type Row<'other> = NetworkOutageconstraintset1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.genconsetid == row.genconsetid() && self.outageid == row.outageid
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkOutageconstraintset1PrimaryKey {
@@ -281,60 +571,92 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkOutageconstraintset1PrimaryKey
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("outageid",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("genconsetid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("startinterval",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("endinterval",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = NetworkOutageconstraintset1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "outageid",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "genconsetid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "startinterval",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "endinterval",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut outageid_array = Vec::new();
-        let mut genconsetid_array = Vec::new();
-        let mut startinterval_array = Vec::new();
-        let mut endinterval_array = Vec::new();
-        for row in partition {
-            outageid_array
-                .push({
-                    let mut val = row.outageid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            genconsetid_array.push(row.genconsetid);
-            startinterval_array.push(row.startinterval.map(|val| val.timestamp()));
-            endinterval_array.push(row.endinterval.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        NetworkOutageconstraintset1Builder {
+            outageid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            genconsetid_array: arrow::array::builder::StringBuilder::new(),
+            startinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            endinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(outageid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(genconsetid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(startinterval_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(endinterval_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .outageid_array
+            .append_value({
+                let mut val = row.outageid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.genconsetid_array.append_value(row.genconsetid());
+        builder
+            .startinterval_array
+            .append_option(row.startinterval.map(|val| val.timestamp()));
+        builder
+            .endinterval_array
+            .append_option(row.endinterval.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.outageid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.genconsetid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startinterval_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.endinterval_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkOutageconstraintset1Builder {
+    outageid_array: arrow::array::builder::Decimal128Builder,
+    genconsetid_array: arrow::array::builder::StringBuilder,
+    startinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    endinterval_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct NetworkOutagedetail4;
+pub struct NetworkOutagedetail4Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## NETWORK_OUTAGEDETAIL
@@ -356,29 +678,26 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
 /// * OUTAGEID
 /// * STARTTIME
 /// * SUBSTATIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutagedetail4 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkOutagedetail4Row<'data> {
     /// ID uniquely identifying the outage
     pub outageid: rust_decimal::Decimal,
     /// The substation this equipment is located at
-    pub substationid: String,
+    pub substationid: core::ops::Range<usize>,
     /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
-    pub equipmenttype: String,
+    pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
-    pub equipmentid: String,
+    pub equipmentid: core::ops::Range<usize>,
     /// The planned starting date and time of the outage
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub starttime: chrono::NaiveDateTime,
     /// The planned ending date and time of the outage
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub endtime: Option<chrono::NaiveDateTime>,
     /// The date and time this outage was first submitted
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub submitteddate: Option<chrono::NaiveDateTime>,
     /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.<br>
-    pub outagestatuscode: Option<String>,
+    pub outagestatuscode: core::ops::Range<usize>,
     /// Changes to an outage key details may require the outage to be resubmitted.<br>A new outage id will then be allocated and the outage will be reassessed.<br>This field will detail the reason for the change.<br>
-    pub resubmitreason: Option<String>,
+    pub resubmitreason: core::ops::Range<usize>,
     /// The new outage id created from a resubmit.
     pub resubmitoutageid: Option<rust_decimal::Decimal>,
     /// The recall time in minutes during the day
@@ -386,80 +705,328 @@ pub struct NetworkOutagedetail4 {
     /// The recall time in minutes during the night
     pub recalltimenight: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// The reason provided by the asset owner for this outage
-    pub reason: Option<String>,
+    pub reason: core::ops::Range<usize>,
     /// 1 = The outage is for a secondary piece of equipment that has an associated constraint set. The transmission equipment is still in service. 0 = The outage is for the transmission equipment
     pub issecondary: Option<rust_decimal::Decimal>,
     /// The actual starting date/time of the outage
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub actual_starttime: Option<chrono::NaiveDateTime>,
     /// The actual ending date/time of the outage
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub actual_endtime: Option<chrono::NaiveDateTime>,
     /// The asset owners reference code for this outage
-    pub companyrefcode: Option<String>,
+    pub companyrefcode: core::ops::Range<usize>,
     /// Equipment element id
     pub elementid: rust_decimal::Decimal,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkOutagedetail4Row<'data> {
+    pub fn substationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.substationid.clone())
+    }
+    pub fn equipmenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.equipmenttype.clone())
+    }
+    pub fn equipmentid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.equipmentid.clone())
+    }
+    pub fn outagestatuscode(&self) -> Option<&str> {
+        if self.outagestatuscode.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.outagestatuscode.clone(),
+                ),
+            )
+        }
+    }
+    pub fn resubmitreason(&self) -> Option<&str> {
+        if self.resubmitreason.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.resubmitreason.clone(),
+                ),
+            )
+        }
+    }
+    pub fn reason(&self) -> Option<&str> {
+        if self.reason.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.reason.clone(),
+                ),
+            )
+        }
+    }
+    pub fn companyrefcode(&self) -> Option<&str> {
+        if self.companyrefcode.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.companyrefcode.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for NetworkOutagedetail4 {
+    const VERSION: i32 = 4;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "OUTAGEDETAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutagedetail4Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "OUTAGEID",
+        "SUBSTATIONID",
+        "EQUIPMENTTYPE",
+        "EQUIPMENTID",
+        "STARTTIME",
+        "ENDTIME",
+        "SUBMITTEDDATE",
+        "OUTAGESTATUSCODE",
+        "RESUBMITREASON",
+        "RESUBMITOUTAGEID",
+        "RECALLTIMEDAY",
+        "RECALLTIMENIGHT",
+        "LASTCHANGED",
+        "REASON",
+        "ISSECONDARY",
+        "ACTUAL_STARTTIME",
+        "ACTUAL_ENDTIME",
+        "COMPANYREFCODE",
+        "ELEMENTID",
+    ];
+    type Row<'row> = NetworkOutagedetail4Row<'row>;
+    type FieldMapping = NetworkOutagedetail4Mapping;
     type PrimaryKey = NetworkOutagedetail4PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("OUTAGEDETAIL".into()),
-            version: 4,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkOutagedetail4Row {
+            outageid: row
+                .get_custom_parsed_at_idx(
+                    "outageid",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            substationid: row.get_range("substationid", field_mapping.0[1])?,
+            equipmenttype: row.get_range("equipmenttype", field_mapping.0[2])?,
+            equipmentid: row.get_range("equipmentid", field_mapping.0[3])?,
+            starttime: row
+                .get_custom_parsed_at_idx(
+                    "starttime",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            endtime: row
+                .get_opt_custom_parsed_at_idx(
+                    "endtime",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            submitteddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "submitteddate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            outagestatuscode: row.get_opt_range("outagestatuscode", field_mapping.0[7])?,
+            resubmitreason: row.get_opt_range("resubmitreason", field_mapping.0[8])?,
+            resubmitoutageid: row
+                .get_opt_custom_parsed_at_idx(
+                    "resubmitoutageid",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recalltimeday: row
+                .get_opt_custom_parsed_at_idx(
+                    "recalltimeday",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recalltimenight: row
+                .get_opt_custom_parsed_at_idx(
+                    "recalltimenight",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            reason: row.get_opt_range("reason", field_mapping.0[13])?,
+            issecondary: row
+                .get_opt_custom_parsed_at_idx(
+                    "issecondary",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            actual_starttime: row
+                .get_opt_custom_parsed_at_idx(
+                    "actual_starttime",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            actual_endtime: row
+                .get_opt_custom_parsed_at_idx(
+                    "actual_endtime",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            companyrefcode: row.get_opt_range("companyrefcode", field_mapping.0[17])?,
+            elementid: row
+                .get_custom_parsed_at_idx(
+                    "elementid",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkOutagedetail4PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkOutagedetail4Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkOutagedetail4PrimaryKey {
         NetworkOutagedetail4PrimaryKey {
-            elementid: self.elementid,
-            equipmentid: self.equipmentid.clone(),
-            equipmenttype: self.equipmenttype.clone(),
-            outageid: self.outageid,
-            starttime: self.starttime,
-            substationid: self.substationid.clone(),
+            elementid: row.elementid,
+            equipmentid: row.equipmentid().to_string(),
+            equipmenttype: row.equipmenttype().to_string(),
+            outageid: row.outageid,
+            starttime: row.starttime,
+            substationid: row.substationid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_outagedetail_v4".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkOutagedetail4Row {
+            outageid: row.outageid.clone(),
+            substationid: row.substationid.clone(),
+            equipmenttype: row.equipmenttype.clone(),
+            equipmentid: row.equipmentid.clone(),
+            starttime: row.starttime.clone(),
+            endtime: row.endtime.clone(),
+            submitteddate: row.submitteddate.clone(),
+            outagestatuscode: row.outagestatuscode.clone(),
+            resubmitreason: row.resubmitreason.clone(),
+            resubmitoutageid: row.resubmitoutageid.clone(),
+            recalltimeday: row.recalltimeday.clone(),
+            recalltimenight: row.recalltimenight.clone(),
+            lastchanged: row.lastchanged.clone(),
+            reason: row.reason.clone(),
+            issecondary: row.issecondary.clone(),
+            actual_starttime: row.actual_starttime.clone(),
+            actual_endtime: row.actual_endtime.clone(),
+            companyrefcode: row.companyrefcode.clone(),
+            elementid: row.elementid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkOutagedetail4PrimaryKey {
     pub elementid: rust_decimal::Decimal,
-    pub equipmentid: String,
-    pub equipmenttype: String,
+    pub equipmentid: alloc::string::String,
+    pub equipmenttype: alloc::string::String,
     pub outageid: rust_decimal::Decimal,
     pub starttime: chrono::NaiveDateTime,
-    pub substationid: String,
+    pub substationid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for NetworkOutagedetail4PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkOutagedetail4 {
-    type Row = NetworkOutagedetail4;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.elementid == row.elementid && self.equipmentid == row.equipmentid
-            && self.equipmenttype == row.equipmenttype && self.outageid == row.outageid
-            && self.starttime == row.starttime && self.substationid == row.substationid
+impl<'data> mmsdm_core::CompareWithRow for NetworkOutagedetail4Row<'data> {
+    type Row<'other> = NetworkOutagedetail4Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.elementid == row.elementid && self.equipmentid() == row.equipmentid()
+            && self.equipmenttype() == row.equipmenttype()
+            && self.outageid == row.outageid && self.starttime == row.starttime
+            && self.substationid() == row.substationid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkOutagedetail4 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkOutagedetail4Row<'data> {
     type PrimaryKey = NetworkOutagedetail4PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.elementid == key.elementid && self.equipmentid == key.equipmentid
-            && self.equipmenttype == key.equipmenttype && self.outageid == key.outageid
-            && self.starttime == key.starttime && self.substationid == key.substationid
+        self.elementid == key.elementid && self.equipmentid() == key.equipmentid
+            && self.equipmenttype() == key.equipmenttype && self.outageid == key.outageid
+            && self.starttime == key.starttime && self.substationid() == key.substationid
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkOutagedetail4PrimaryKey {
-    type Row = NetworkOutagedetail4;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.elementid == row.elementid && self.equipmentid == row.equipmentid
-            && self.equipmenttype == row.equipmenttype && self.outageid == row.outageid
-            && self.starttime == row.starttime && self.substationid == row.substationid
+impl<'data> mmsdm_core::CompareWithRow for NetworkOutagedetail4PrimaryKey {
+    type Row<'other> = NetworkOutagedetail4Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.elementid == row.elementid && self.equipmentid == row.equipmentid()
+            && self.equipmenttype == row.equipmenttype() && self.outageid == row.outageid
+            && self.starttime == row.starttime && self.substationid == row.substationid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkOutagedetail4PrimaryKey {
@@ -472,197 +1039,301 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkOutagedetail4PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("outageid",
-                arrow2::datatypes::DataType::Decimal(15, 0), false),
-                arrow2::datatypes::Field::new("substationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("equipmenttype",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("equipmentid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("starttime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("endtime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("submitteddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("outagestatuscode",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("resubmitreason",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("resubmitoutageid",
-                arrow2::datatypes::DataType::Decimal(15, 0), true),
-                arrow2::datatypes::Field::new("recalltimeday",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("recalltimenight",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("reason",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("issecondary",
-                arrow2::datatypes::DataType::Decimal(1, 0), true),
-                arrow2::datatypes::Field::new("actual_starttime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("actual_endtime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("companyrefcode",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("elementid",
-                arrow2::datatypes::DataType::Decimal(15, 0), false)
-            ],
+    type Builder = NetworkOutagedetail4Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "outageid",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "substationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmentid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "starttime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "endtime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "submitteddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "outagestatuscode",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "resubmitreason",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "resubmitoutageid",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recalltimeday",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recalltimenight",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reason",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "issecondary",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "actual_starttime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "actual_endtime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "companyrefcode",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "elementid",
+                    arrow::datatypes::DataType::Decimal128(15, 0),
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut outageid_array = Vec::new();
-        let mut substationid_array = Vec::new();
-        let mut equipmenttype_array = Vec::new();
-        let mut equipmentid_array = Vec::new();
-        let mut starttime_array = Vec::new();
-        let mut endtime_array = Vec::new();
-        let mut submitteddate_array = Vec::new();
-        let mut outagestatuscode_array = Vec::new();
-        let mut resubmitreason_array = Vec::new();
-        let mut resubmitoutageid_array = Vec::new();
-        let mut recalltimeday_array = Vec::new();
-        let mut recalltimenight_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut reason_array = Vec::new();
-        let mut issecondary_array = Vec::new();
-        let mut actual_starttime_array = Vec::new();
-        let mut actual_endtime_array = Vec::new();
-        let mut companyrefcode_array = Vec::new();
-        let mut elementid_array = Vec::new();
-        for row in partition {
-            outageid_array
-                .push({
-                    let mut val = row.outageid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            substationid_array.push(row.substationid);
-            equipmenttype_array.push(row.equipmenttype);
-            equipmentid_array.push(row.equipmentid);
-            starttime_array.push(row.starttime.timestamp());
-            endtime_array.push(row.endtime.map(|val| val.timestamp()));
-            submitteddate_array.push(row.submitteddate.map(|val| val.timestamp()));
-            outagestatuscode_array.push(row.outagestatuscode);
-            resubmitreason_array.push(row.resubmitreason);
-            resubmitoutageid_array
-                .push({
-                    row.resubmitoutageid
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            recalltimeday_array
-                .push({
-                    row.recalltimeday
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            recalltimenight_array
-                .push({
-                    row.recalltimenight
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            reason_array.push(row.reason);
-            issecondary_array
-                .push({
-                    row.issecondary
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            actual_starttime_array.push(row.actual_starttime.map(|val| val.timestamp()));
-            actual_endtime_array.push(row.actual_endtime.map(|val| val.timestamp()));
-            companyrefcode_array.push(row.companyrefcode);
-            elementid_array
-                .push({
-                    let mut val = row.elementid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
+    fn new_builder() -> Self::Builder {
+        NetworkOutagedetail4Builder {
+            outageid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            substationid_array: arrow::array::builder::StringBuilder::new(),
+            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
+            equipmentid_array: arrow::array::builder::StringBuilder::new(),
+            starttime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            endtime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            submitteddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            outagestatuscode_array: arrow::array::builder::StringBuilder::new(),
+            resubmitreason_array: arrow::array::builder::StringBuilder::new(),
+            resubmitoutageid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
+            recalltimeday_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            recalltimenight_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            reason_array: arrow::array::builder::StringBuilder::new(),
+            issecondary_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            actual_starttime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            actual_endtime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            companyrefcode_array: arrow::array::builder::StringBuilder::new(),
+            elementid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(outageid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(substationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(equipmenttype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(equipmentid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(starttime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(endtime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(submitteddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(outagestatuscode_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(resubmitreason_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(resubmitoutageid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltimeday_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(recalltimenight_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(reason_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(issecondary_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(actual_starttime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(actual_endtime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(companyrefcode_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(elementid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .outageid_array
+            .append_value({
+                let mut val = row.outageid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.substationid_array.append_value(row.substationid());
+        builder.equipmenttype_array.append_value(row.equipmenttype());
+        builder.equipmentid_array.append_value(row.equipmentid());
+        builder.starttime_array.append_value(row.starttime.timestamp());
+        builder.endtime_array.append_option(row.endtime.map(|val| val.timestamp()));
+        builder
+            .submitteddate_array
+            .append_option(row.submitteddate.map(|val| val.timestamp()));
+        builder.outagestatuscode_array.append_option(row.outagestatuscode());
+        builder.resubmitreason_array.append_option(row.resubmitreason());
+        builder
+            .resubmitoutageid_array
+            .append_option({
+                row.resubmitoutageid
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recalltimeday_array
+            .append_option({
+                row.recalltimeday
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recalltimenight_array
+            .append_option({
+                row.recalltimenight
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.reason_array.append_option(row.reason());
+        builder
+            .issecondary_array
+            .append_option({
+                row.issecondary
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .actual_starttime_array
+            .append_option(row.actual_starttime.map(|val| val.timestamp()));
+        builder
+            .actual_endtime_array
+            .append_option(row.actual_endtime.map(|val| val.timestamp()));
+        builder.companyrefcode_array.append_option(row.companyrefcode());
+        builder
+            .elementid_array
+            .append_value({
+                let mut val = row.elementid;
+                val.rescale(0);
+                val.mantissa()
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.outageid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.substationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmentid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.starttime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.endtime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.submitteddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.outagestatuscode_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.resubmitreason_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.resubmitoutageid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recalltimeday_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recalltimenight_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.reason_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.issecondary_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.actual_starttime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.actual_endtime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.companyrefcode_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.elementid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkOutagedetail4Builder {
+    outageid_array: arrow::array::builder::Decimal128Builder,
+    substationid_array: arrow::array::builder::StringBuilder,
+    equipmenttype_array: arrow::array::builder::StringBuilder,
+    equipmentid_array: arrow::array::builder::StringBuilder,
+    starttime_array: arrow::array::builder::TimestampSecondBuilder,
+    endtime_array: arrow::array::builder::TimestampSecondBuilder,
+    submitteddate_array: arrow::array::builder::TimestampSecondBuilder,
+    outagestatuscode_array: arrow::array::builder::StringBuilder,
+    resubmitreason_array: arrow::array::builder::StringBuilder,
+    resubmitoutageid_array: arrow::array::builder::Decimal128Builder,
+    recalltimeday_array: arrow::array::builder::Decimal128Builder,
+    recalltimenight_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    reason_array: arrow::array::builder::StringBuilder,
+    issecondary_array: arrow::array::builder::Decimal128Builder,
+    actual_starttime_array: arrow::array::builder::TimestampSecondBuilder,
+    actual_endtime_array: arrow::array::builder::TimestampSecondBuilder,
+    companyrefcode_array: arrow::array::builder::StringBuilder,
+    elementid_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct NetworkOutagestatuscode1;
+pub struct NetworkOutagestatuscode1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## NETWORK_OUTAGESTATUSCODE
@@ -679,57 +1350,148 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
 /// # Primary Key Columns
 ///
 /// * OUTAGESTATUSCODE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkOutagestatuscode1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkOutagestatuscode1Row<'data> {
     /// A code representing the status of an outage
-    pub outagestatuscode: String,
+    pub outagestatuscode: core::ops::Range<usize>,
     /// A description of the status code
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// The time that this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkOutagestatuscode1Row<'data> {
+    pub fn outagestatuscode(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.outagestatuscode.clone(),
+        )
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "OUTAGESTATUSCODE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutagestatuscode1Mapping([
+        4,
+        5,
+        6,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "OUTAGESTATUSCODE",
+        "DESCRIPTION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = NetworkOutagestatuscode1Row<'row>;
+    type FieldMapping = NetworkOutagestatuscode1Mapping;
     type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("OUTAGESTATUSCODE".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkOutagestatuscode1Row {
+            outagestatuscode: row.get_range("outagestatuscode", field_mapping.0[0])?,
+            description: row.get_opt_range("description", field_mapping.0[1])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkOutagestatuscode1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkOutagestatuscode1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkOutagestatuscode1PrimaryKey {
         NetworkOutagestatuscode1PrimaryKey {
-            outagestatuscode: self.outagestatuscode.clone(),
+            outagestatuscode: row.outagestatuscode().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_outagestatuscode_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkOutagestatuscode1Row {
+            outagestatuscode: row.outagestatuscode.clone(),
+            description: row.description.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkOutagestatuscode1PrimaryKey {
-    pub outagestatuscode: String,
+    pub outagestatuscode: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for NetworkOutagestatuscode1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkOutagestatuscode1 {
-    type Row = NetworkOutagestatuscode1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.outagestatuscode == row.outagestatuscode
+impl<'data> mmsdm_core::CompareWithRow for NetworkOutagestatuscode1Row<'data> {
+    type Row<'other> = NetworkOutagestatuscode1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.outagestatuscode() == row.outagestatuscode()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkOutagestatuscode1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkOutagestatuscode1Row<'data> {
     type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.outagestatuscode == key.outagestatuscode
+        self.outagestatuscode() == key.outagestatuscode
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkOutagestatuscode1PrimaryKey {
-    type Row = NetworkOutagestatuscode1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.outagestatuscode == row.outagestatuscode
+impl<'data> mmsdm_core::CompareWithRow for NetworkOutagestatuscode1PrimaryKey {
+    type Row<'other> = NetworkOutagestatuscode1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.outagestatuscode == row.outagestatuscode()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkOutagestatuscode1PrimaryKey {
@@ -740,48 +1502,70 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkOutagestatuscode1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("outagestatuscode",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = NetworkOutagestatuscode1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "outagestatuscode",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut outagestatuscode_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            outagestatuscode_array.push(row.outagestatuscode);
-            description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        NetworkOutagestatuscode1Builder {
+            outagestatuscode_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(outagestatuscode_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.outagestatuscode_array.append_value(row.outagestatuscode());
+        builder.description_array.append_option(row.description());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.outagestatuscode_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkOutagestatuscode1Builder {
+    outagestatuscode_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct NetworkRating1;
+pub struct NetworkRating1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## NETWORK_RATING
@@ -799,75 +1583,252 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
 ///
 /// * SPD_ID
 /// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkRating1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkRating1Row<'data> {
     /// ID defining this data source for use in constraints
-    pub spd_id: String,
+    pub spd_id: core::ops::Range<usize>,
     /// The date that this record is applies from (inclusive)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// The region that this rating is for
-    pub regionid: Option<String>,
+    pub regionid: core::ops::Range<usize>,
     /// The substation the equipment is located at
-    pub substationid: Option<String>,
+    pub substationid: core::ops::Range<usize>,
     /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
-    pub equipmenttype: Option<String>,
+    pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
-    pub equipmentid: Option<String>,
+    pub equipmentid: core::ops::Range<usize>,
     /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding<br>
-    pub ratinglevel: Option<String>,
+    pub ratinglevel: core::ops::Range<usize>,
     /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used<br>
     pub isdynamic: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkRating1Row<'data> {
+    pub fn spd_id(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.spd_id.clone())
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn substationid(&self) -> Option<&str> {
+        if self.substationid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.substationid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn equipmenttype(&self) -> Option<&str> {
+        if self.equipmenttype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.equipmenttype.clone(),
+                ),
+            )
+        }
+    }
+    pub fn equipmentid(&self) -> Option<&str> {
+        if self.equipmentid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.equipmentid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ratinglevel(&self) -> Option<&str> {
+        if self.ratinglevel.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ratinglevel.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for NetworkRating1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "RATING";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkRating1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SPD_ID",
+        "VALIDFROM",
+        "VALIDTO",
+        "REGIONID",
+        "SUBSTATIONID",
+        "EQUIPMENTTYPE",
+        "EQUIPMENTID",
+        "RATINGLEVEL",
+        "ISDYNAMIC",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = NetworkRating1Row<'row>;
+    type FieldMapping = NetworkRating1Mapping;
     type PrimaryKey = NetworkRating1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("RATING".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkRating1Row {
+            spd_id: row.get_range("spd_id", field_mapping.0[0])?,
+            validfrom: row
+                .get_custom_parsed_at_idx(
+                    "validfrom",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            validto: row
+                .get_opt_custom_parsed_at_idx(
+                    "validto",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[3])?,
+            substationid: row.get_opt_range("substationid", field_mapping.0[4])?,
+            equipmenttype: row.get_opt_range("equipmenttype", field_mapping.0[5])?,
+            equipmentid: row.get_opt_range("equipmentid", field_mapping.0[6])?,
+            ratinglevel: row.get_opt_range("ratinglevel", field_mapping.0[7])?,
+            isdynamic: row
+                .get_opt_custom_parsed_at_idx(
+                    "isdynamic",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkRating1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkRating1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkRating1PrimaryKey {
         NetworkRating1PrimaryKey {
-            spd_id: self.spd_id.clone(),
-            validfrom: self.validfrom,
+            spd_id: row.spd_id().to_string(),
+            validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_rating_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkRating1Row {
+            spd_id: row.spd_id.clone(),
+            validfrom: row.validfrom.clone(),
+            validto: row.validto.clone(),
+            regionid: row.regionid.clone(),
+            substationid: row.substationid.clone(),
+            equipmenttype: row.equipmenttype.clone(),
+            equipmentid: row.equipmentid.clone(),
+            ratinglevel: row.ratinglevel.clone(),
+            isdynamic: row.isdynamic.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkRating1PrimaryKey {
-    pub spd_id: String,
+    pub spd_id: alloc::string::String,
     pub validfrom: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for NetworkRating1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkRating1 {
-    type Row = NetworkRating1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.spd_id == row.spd_id && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkRating1Row<'data> {
+    type Row<'other> = NetworkRating1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.spd_id() == row.spd_id() && self.validfrom == row.validfrom
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkRating1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkRating1Row<'data> {
     type PrimaryKey = NetworkRating1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.spd_id == key.spd_id && self.validfrom == key.validfrom
+        self.spd_id() == key.spd_id && self.validfrom == key.validfrom
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkRating1PrimaryKey {
-    type Row = NetworkRating1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.spd_id == row.spd_id && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkRating1PrimaryKey {
+    type Row<'other> = NetworkRating1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.spd_id == row.spd_id() && self.validfrom == row.validfrom
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkRating1PrimaryKey {
@@ -878,103 +1839,155 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkRating1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkRating1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("spd_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("validfrom",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("validto",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("substationid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("equipmenttype",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("equipmentid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("ratinglevel",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("isdynamic",
-                arrow2::datatypes::DataType::Decimal(1, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = NetworkRating1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "spd_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validfrom",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validto",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "substationid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmentid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ratinglevel",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "isdynamic",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut spd_id_array = Vec::new();
-        let mut validfrom_array = Vec::new();
-        let mut validto_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut substationid_array = Vec::new();
-        let mut equipmenttype_array = Vec::new();
-        let mut equipmentid_array = Vec::new();
-        let mut ratinglevel_array = Vec::new();
-        let mut isdynamic_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            spd_id_array.push(row.spd_id);
-            validfrom_array.push(row.validfrom.timestamp());
-            validto_array.push(row.validto.map(|val| val.timestamp()));
-            regionid_array.push(row.regionid);
-            substationid_array.push(row.substationid);
-            equipmenttype_array.push(row.equipmenttype);
-            equipmentid_array.push(row.equipmentid);
-            ratinglevel_array.push(row.ratinglevel);
-            isdynamic_array
-                .push({
-                    row.isdynamic
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        NetworkRating1Builder {
+            spd_id_array: arrow::array::builder::StringBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            substationid_array: arrow::array::builder::StringBuilder::new(),
+            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
+            equipmentid_array: arrow::array::builder::StringBuilder::new(),
+            ratinglevel_array: arrow::array::builder::StringBuilder::new(),
+            isdynamic_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(spd_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(validfrom_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(validto_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(substationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(equipmenttype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(equipmentid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(ratinglevel_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(isdynamic_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.spd_id_array.append_value(row.spd_id());
+        builder.validfrom_array.append_value(row.validfrom.timestamp());
+        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.regionid_array.append_option(row.regionid());
+        builder.substationid_array.append_option(row.substationid());
+        builder.equipmenttype_array.append_option(row.equipmenttype());
+        builder.equipmentid_array.append_option(row.equipmentid());
+        builder.ratinglevel_array.append_option(row.ratinglevel());
+        builder
+            .isdynamic_array
+            .append_option({
+                row.isdynamic
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.spd_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validfrom_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validto_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.substationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmentid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ratinglevel_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.isdynamic_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkRating1Builder {
+    spd_id_array: arrow::array::builder::StringBuilder,
+    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
+    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    substationid_array: arrow::array::builder::StringBuilder,
+    equipmenttype_array: arrow::array::builder::StringBuilder,
+    equipmentid_array: arrow::array::builder::StringBuilder,
+    ratinglevel_array: arrow::array::builder::StringBuilder,
+    isdynamic_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct NetworkRealtimerating1;
+pub struct NetworkRealtimerating1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## NETWORK_REALTIMERATING
@@ -992,68 +2005,163 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
 ///
 /// * SETTLEMENTDATE
 /// * SPD_ID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkRealtimerating1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkRealtimerating1Row<'data> {
     /// The dispatch interval the rating applies to
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// ID defining this data source for use in constraints
-    pub spd_id: String,
+    pub spd_id: core::ops::Range<usize>,
     /// The defined equipment rating value in MVA
     pub ratingvalue: rust_decimal::Decimal,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkRealtimerating1Row<'data> {
+    pub fn spd_id(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.spd_id.clone())
+    }
 }
 impl mmsdm_core::GetTable for NetworkRealtimerating1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "REALTIMERATING";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkRealtimerating1Mapping([
+        4,
+        5,
+        6,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SETTLEMENTDATE",
+        "SPD_ID",
+        "RATINGVALUE",
+    ];
+    type Row<'row> = NetworkRealtimerating1Row<'row>;
+    type FieldMapping = NetworkRealtimerating1Mapping;
     type PrimaryKey = NetworkRealtimerating1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("REALTIMERATING".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkRealtimerating1Row {
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            spd_id: row.get_range("spd_id", field_mapping.0[1])?,
+            ratingvalue: row
+                .get_custom_parsed_at_idx(
+                    "ratingvalue",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkRealtimerating1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkRealtimerating1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkRealtimerating1PrimaryKey {
         NetworkRealtimerating1PrimaryKey {
-            settlementdate: self.settlementdate,
-            spd_id: self.spd_id.clone(),
+            settlementdate: row.settlementdate,
+            spd_id: row.spd_id().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "network_realtimerating_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "network_realtimerating_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkRealtimerating1Row {
+            settlementdate: row.settlementdate.clone(),
+            spd_id: row.spd_id.clone(),
+            ratingvalue: row.ratingvalue.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkRealtimerating1PrimaryKey {
     pub settlementdate: chrono::NaiveDateTime,
-    pub spd_id: String,
+    pub spd_id: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for NetworkRealtimerating1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkRealtimerating1 {
-    type Row = NetworkRealtimerating1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.settlementdate == row.settlementdate && self.spd_id == row.spd_id
+impl<'data> mmsdm_core::CompareWithRow for NetworkRealtimerating1Row<'data> {
+    type Row<'other> = NetworkRealtimerating1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.settlementdate == row.settlementdate && self.spd_id() == row.spd_id()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkRealtimerating1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkRealtimerating1Row<'data> {
     type PrimaryKey = NetworkRealtimerating1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.settlementdate == key.settlementdate && self.spd_id == key.spd_id
+        self.settlementdate == key.settlementdate && self.spd_id() == key.spd_id
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkRealtimerating1PrimaryKey {
-    type Row = NetworkRealtimerating1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.settlementdate == row.settlementdate && self.spd_id == row.spd_id
+impl<'data> mmsdm_core::CompareWithRow for NetworkRealtimerating1PrimaryKey {
+    type Row<'other> = NetworkRealtimerating1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.settlementdate == row.settlementdate && self.spd_id == row.spd_id()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkRealtimerating1PrimaryKey {
@@ -1064,52 +2172,75 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkRealtimerating1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("spd_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("ratingvalue",
-                arrow2::datatypes::DataType::Decimal(16, 6), false)
-            ],
+    type Builder = NetworkRealtimerating1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "spd_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "ratingvalue",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut settlementdate_array = Vec::new();
-        let mut spd_id_array = Vec::new();
-        let mut ratingvalue_array = Vec::new();
-        for row in partition {
-            settlementdate_array.push(row.settlementdate.timestamp());
-            spd_id_array.push(row.spd_id);
-            ratingvalue_array
-                .push({
-                    let mut val = row.ratingvalue;
-                    val.rescale(6);
-                    val.mantissa()
-                });
+    fn new_builder() -> Self::Builder {
+        NetworkRealtimerating1Builder {
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            spd_id_array: arrow::array::builder::StringBuilder::new(),
+            ratingvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(spd_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(ratingvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.spd_id_array.append_value(row.spd_id());
+        builder
+            .ratingvalue_array
+            .append_value({
+                let mut val = row.ratingvalue;
+                val.rescale(6);
+                val.mantissa()
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.spd_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ratingvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkRealtimerating1Builder {
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    spd_id_array: arrow::array::builder::StringBuilder,
+    ratingvalue_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct NetworkStaticrating1;
+pub struct NetworkStaticrating1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_STATICRATING
@@ -1131,90 +2262,219 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
 /// * RATINGLEVEL
 /// * SUBSTATIONID
 /// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkStaticrating1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkStaticrating1Row<'data> {
     /// The substation the equipment is located at
-    pub substationid: String,
+    pub substationid: core::ops::Range<usize>,
     /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
-    pub equipmenttype: String,
+    pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
-    pub equipmentid: String,
+    pub equipmentid: core::ops::Range<usize>,
     /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding
-    pub ratinglevel: String,
+    pub ratinglevel: core::ops::Range<usize>,
     /// The applicationid which defines the application timeframes of this rating.
-    pub applicationid: String,
+    pub applicationid: core::ops::Range<usize>,
     /// The date that this record is applies from (inclusive)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.<br>
     pub ratingvalue: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkStaticrating1Row<'data> {
+    pub fn substationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.substationid.clone())
+    }
+    pub fn equipmenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.equipmenttype.clone())
+    }
+    pub fn equipmentid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.equipmentid.clone())
+    }
+    pub fn ratinglevel(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.ratinglevel.clone())
+    }
+    pub fn applicationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.applicationid.clone())
+    }
 }
 impl mmsdm_core::GetTable for NetworkStaticrating1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "STATICRATING";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkStaticrating1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SUBSTATIONID",
+        "EQUIPMENTTYPE",
+        "EQUIPMENTID",
+        "RATINGLEVEL",
+        "APPLICATIONID",
+        "VALIDFROM",
+        "VALIDTO",
+        "RATINGVALUE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = NetworkStaticrating1Row<'row>;
+    type FieldMapping = NetworkStaticrating1Mapping;
     type PrimaryKey = NetworkStaticrating1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("STATICRATING".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkStaticrating1Row {
+            substationid: row.get_range("substationid", field_mapping.0[0])?,
+            equipmenttype: row.get_range("equipmenttype", field_mapping.0[1])?,
+            equipmentid: row.get_range("equipmentid", field_mapping.0[2])?,
+            ratinglevel: row.get_range("ratinglevel", field_mapping.0[3])?,
+            applicationid: row.get_range("applicationid", field_mapping.0[4])?,
+            validfrom: row
+                .get_custom_parsed_at_idx(
+                    "validfrom",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            validto: row
+                .get_opt_custom_parsed_at_idx(
+                    "validto",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            ratingvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "ratingvalue",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkStaticrating1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkStaticrating1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkStaticrating1PrimaryKey {
         NetworkStaticrating1PrimaryKey {
-            applicationid: self.applicationid.clone(),
-            equipmentid: self.equipmentid.clone(),
-            equipmenttype: self.equipmenttype.clone(),
-            ratinglevel: self.ratinglevel.clone(),
-            substationid: self.substationid.clone(),
-            validfrom: self.validfrom,
+            applicationid: row.applicationid().to_string(),
+            equipmentid: row.equipmentid().to_string(),
+            equipmenttype: row.equipmenttype().to_string(),
+            ratinglevel: row.ratinglevel().to_string(),
+            substationid: row.substationid().to_string(),
+            validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_staticrating_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkStaticrating1Row {
+            substationid: row.substationid.clone(),
+            equipmenttype: row.equipmenttype.clone(),
+            equipmentid: row.equipmentid.clone(),
+            ratinglevel: row.ratinglevel.clone(),
+            applicationid: row.applicationid.clone(),
+            validfrom: row.validfrom.clone(),
+            validto: row.validto.clone(),
+            ratingvalue: row.ratingvalue.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkStaticrating1PrimaryKey {
-    pub applicationid: String,
-    pub equipmentid: String,
-    pub equipmenttype: String,
-    pub ratinglevel: String,
-    pub substationid: String,
+    pub applicationid: alloc::string::String,
+    pub equipmentid: alloc::string::String,
+    pub equipmenttype: alloc::string::String,
+    pub ratinglevel: alloc::string::String,
+    pub substationid: alloc::string::String,
     pub validfrom: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for NetworkStaticrating1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkStaticrating1 {
-    type Row = NetworkStaticrating1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.applicationid == row.applicationid && self.equipmentid == row.equipmentid
-            && self.equipmenttype == row.equipmenttype
-            && self.ratinglevel == row.ratinglevel
-            && self.substationid == row.substationid && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkStaticrating1Row<'data> {
+    type Row<'other> = NetworkStaticrating1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.applicationid() == row.applicationid()
+            && self.equipmentid() == row.equipmentid()
+            && self.equipmenttype() == row.equipmenttype()
+            && self.ratinglevel() == row.ratinglevel()
+            && self.substationid() == row.substationid()
+            && self.validfrom == row.validfrom
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkStaticrating1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkStaticrating1Row<'data> {
     type PrimaryKey = NetworkStaticrating1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.applicationid == key.applicationid && self.equipmentid == key.equipmentid
-            && self.equipmenttype == key.equipmenttype
-            && self.ratinglevel == key.ratinglevel
-            && self.substationid == key.substationid && self.validfrom == key.validfrom
+        self.applicationid() == key.applicationid
+            && self.equipmentid() == key.equipmentid
+            && self.equipmenttype() == key.equipmenttype
+            && self.ratinglevel() == key.ratinglevel
+            && self.substationid() == key.substationid && self.validfrom == key.validfrom
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkStaticrating1PrimaryKey {
-    type Row = NetworkStaticrating1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.applicationid == row.applicationid && self.equipmentid == row.equipmentid
-            && self.equipmenttype == row.equipmenttype
-            && self.ratinglevel == row.ratinglevel
-            && self.substationid == row.substationid && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkStaticrating1PrimaryKey {
+    type Row<'other> = NetworkStaticrating1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.applicationid == row.applicationid()
+            && self.equipmentid == row.equipmentid()
+            && self.equipmenttype == row.equipmenttype()
+            && self.ratinglevel == row.ratinglevel()
+            && self.substationid == row.substationid() && self.validfrom == row.validfrom
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkStaticrating1PrimaryKey {
@@ -1228,97 +2488,145 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkStaticrating1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("substationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("equipmenttype",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("equipmentid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("ratinglevel",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("applicationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("validfrom",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("validto",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("ratingvalue",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = NetworkStaticrating1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "substationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "equipmentid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "ratinglevel",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "applicationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validfrom",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validto",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ratingvalue",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut substationid_array = Vec::new();
-        let mut equipmenttype_array = Vec::new();
-        let mut equipmentid_array = Vec::new();
-        let mut ratinglevel_array = Vec::new();
-        let mut applicationid_array = Vec::new();
-        let mut validfrom_array = Vec::new();
-        let mut validto_array = Vec::new();
-        let mut ratingvalue_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            substationid_array.push(row.substationid);
-            equipmenttype_array.push(row.equipmenttype);
-            equipmentid_array.push(row.equipmentid);
-            ratinglevel_array.push(row.ratinglevel);
-            applicationid_array.push(row.applicationid);
-            validfrom_array.push(row.validfrom.timestamp());
-            validto_array.push(row.validto.map(|val| val.timestamp()));
-            ratingvalue_array
-                .push({
-                    row.ratingvalue
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        NetworkStaticrating1Builder {
+            substationid_array: arrow::array::builder::StringBuilder::new(),
+            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
+            equipmentid_array: arrow::array::builder::StringBuilder::new(),
+            ratinglevel_array: arrow::array::builder::StringBuilder::new(),
+            applicationid_array: arrow::array::builder::StringBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            ratingvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(substationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(equipmenttype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(equipmentid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(ratinglevel_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(applicationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(validfrom_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(validto_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(ratingvalue_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.substationid_array.append_value(row.substationid());
+        builder.equipmenttype_array.append_value(row.equipmenttype());
+        builder.equipmentid_array.append_value(row.equipmentid());
+        builder.ratinglevel_array.append_value(row.ratinglevel());
+        builder.applicationid_array.append_value(row.applicationid());
+        builder.validfrom_array.append_value(row.validfrom.timestamp());
+        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder
+            .ratingvalue_array
+            .append_option({
+                row.ratingvalue
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.substationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.equipmentid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ratinglevel_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.applicationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validfrom_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validto_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ratingvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct NetworkStaticrating1Builder {
+    substationid_array: arrow::array::builder::StringBuilder,
+    equipmenttype_array: arrow::array::builder::StringBuilder,
+    equipmentid_array: arrow::array::builder::StringBuilder,
+    ratinglevel_array: arrow::array::builder::StringBuilder,
+    applicationid_array: arrow::array::builder::StringBuilder,
+    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
+    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    ratingvalue_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct NetworkSubstationdetail2;
+pub struct NetworkSubstationdetail2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## NETWORK_SUBSTATIONDETAIL
@@ -1336,69 +2644,205 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
 ///
 /// * SUBSTATIONID
 /// * VALIDFROM
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct NetworkSubstationdetail2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct NetworkSubstationdetail2Row<'data> {
     /// ID uniquely identifying this substation
-    pub substationid: String,
+    pub substationid: core::ops::Range<usize>,
     /// The record is valid from this date (inclusive)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub validfrom: chrono::NaiveDateTime,
     /// The record is valid up until this date (exclusive)
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub validto: Option<chrono::NaiveDateTime>,
     /// Description of the substation
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// The NEM region the substation is in
-    pub regionid: Option<String>,
+    pub regionid: core::ops::Range<usize>,
     /// The TNSP who is responsible for this substation
-    pub ownerid: Option<String>,
+    pub ownerid: core::ops::Range<usize>,
     /// The time that this record was last changed.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> NetworkSubstationdetail2Row<'data> {
+    pub fn substationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.substationid.clone())
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ownerid(&self) -> Option<&str> {
+        if self.ownerid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ownerid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "NETWORK";
+    const TABLE_NAME: &'static str = "SUBSTATIONDETAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkSubstationdetail2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SUBSTATIONID",
+        "VALIDFROM",
+        "VALIDTO",
+        "DESCRIPTION",
+        "REGIONID",
+        "OWNERID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = NetworkSubstationdetail2Row<'row>;
+    type FieldMapping = NetworkSubstationdetail2Mapping;
     type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "NETWORK".into(),
-            table_name: Some("SUBSTATIONDETAIL".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(NetworkSubstationdetail2Row {
+            substationid: row.get_range("substationid", field_mapping.0[0])?,
+            validfrom: row
+                .get_custom_parsed_at_idx(
+                    "validfrom",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            validto: row
+                .get_opt_custom_parsed_at_idx(
+                    "validto",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            description: row.get_opt_range("description", field_mapping.0[3])?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[4])?,
+            ownerid: row.get_opt_range("ownerid", field_mapping.0[5])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> NetworkSubstationdetail2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(NetworkSubstationdetail2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> NetworkSubstationdetail2PrimaryKey {
         NetworkSubstationdetail2PrimaryKey {
-            substationid: self.substationid.clone(),
-            validfrom: self.validfrom,
+            substationid: row.substationid().to_string(),
+            validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "network_substationdetail_v2".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        NetworkSubstationdetail2Row {
+            substationid: row.substationid.clone(),
+            validfrom: row.validfrom.clone(),
+            validto: row.validto.clone(),
+            description: row.description.clone(),
+            regionid: row.regionid.clone(),
+            ownerid: row.ownerid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NetworkSubstationdetail2PrimaryKey {
-    pub substationid: String,
+    pub substationid: alloc::string::String,
     pub validfrom: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for NetworkSubstationdetail2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for NetworkSubstationdetail2 {
-    type Row = NetworkSubstationdetail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.substationid == row.substationid && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkSubstationdetail2Row<'data> {
+    type Row<'other> = NetworkSubstationdetail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.substationid() == row.substationid() && self.validfrom == row.validfrom
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for NetworkSubstationdetail2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for NetworkSubstationdetail2Row<'data> {
     type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.substationid == key.substationid && self.validfrom == key.validfrom
+        self.substationid() == key.substationid && self.validfrom == key.validfrom
     }
 }
-impl mmsdm_core::CompareWithRow for NetworkSubstationdetail2PrimaryKey {
-    type Row = NetworkSubstationdetail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.substationid == row.substationid && self.validfrom == row.validfrom
+impl<'data> mmsdm_core::CompareWithRow for NetworkSubstationdetail2PrimaryKey {
+    type Row<'other> = NetworkSubstationdetail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.substationid == row.substationid() && self.validfrom == row.validfrom
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for NetworkSubstationdetail2PrimaryKey {
@@ -1409,185 +2853,111 @@ impl mmsdm_core::CompareWithPrimaryKey for NetworkSubstationdetail2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("substationid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("validfrom",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("validto",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("ownerid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = NetworkSubstationdetail2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "substationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validfrom",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "validto",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ownerid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut substationid_array = Vec::new();
-        let mut validfrom_array = Vec::new();
-        let mut validto_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut ownerid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            substationid_array.push(row.substationid);
-            validfrom_array.push(row.validfrom.timestamp());
-            validto_array.push(row.validto.map(|val| val.timestamp()));
-            description_array.push(row.description);
-            regionid_array.push(row.regionid);
-            ownerid_array.push(row.ownerid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        NetworkSubstationdetail2Builder {
+            substationid_array: arrow::array::builder::StringBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            ownerid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(substationid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(validfrom_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(validto_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(ownerid_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.substationid_array.append_value(row.substationid());
+        builder.validfrom_array.append_value(row.validfrom.timestamp());
+        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.description_array.append_option(row.description());
+        builder.regionid_array.append_option(row.regionid());
+        builder.ownerid_array.append_option(row.ownerid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.substationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validfrom_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validto_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ownerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("EQUIPMENTDETAIL"), version) if version <= 2_i32 => {
-            let d: Vec<NetworkEquipmentdetail2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkEquipmentdetail2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("OUTAGECONSTRAINTSET"), version) if version <= 1_i32 => {
-            let d: Vec<NetworkOutageconstraintset1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkOutageconstraintset1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("OUTAGEDETAIL"), version) if version <= 4_i32 => {
-            let d: Vec<NetworkOutagedetail4> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkOutagedetail4 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("OUTAGESTATUSCODE"), version) if version <= 1_i32 => {
-            let d: Vec<NetworkOutagestatuscode1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkOutagestatuscode1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RATING"), version) if version <= 1_i32 => {
-            let d: Vec<NetworkRating1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkRating1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("REALTIMERATING"), version) if version <= 1_i32 => {
-            let d: Vec<NetworkRealtimerating1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkRealtimerating1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("STATICRATING"), version) if version <= 1_i32 => {
-            let d: Vec<NetworkStaticrating1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkStaticrating1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("SUBSTATIONDETAIL"), version) if version <= 2_i32 => {
-            let d: Vec<NetworkSubstationdetail2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertNetworkSubstationdetail2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct NetworkSubstationdetail2Builder {
+    substationid_array: arrow::array::builder::StringBuilder,
+    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
+    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    ownerid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
 }

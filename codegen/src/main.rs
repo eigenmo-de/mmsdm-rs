@@ -1,13 +1,15 @@
 use structopt::StructOpt;
 
 mod json;
-mod python;
-mod rust;
-//mod parquet;
 mod mms;
 mod pdr;
-mod sql_server_rust;
+mod python;
+mod rust;
 mod sql_server_tables;
+mod analyse;
+
+pub const VERSION: &str = "5.2";
+
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]
@@ -15,21 +17,26 @@ enum AemoCodegen {
     Json,
     Rust,
     SqlServerTables,
-    SqlServerRustPart,
     Python,
+    Analyse,
+}
+fn main() {
+    if let Err(e) = run() {
+        eprintln!("{e:#?}");
+    }
 }
 
 #[tokio::main]
-async fn main() -> Result<(), anyhow::Error> {
+async fn run() -> Result<(), anyhow::Error> {
     match AemoCodegen::from_args() {
-        AemoCodegen::SqlServerRustPart => {
-            sql_server_rust::run().unwrap();
-        }
         AemoCodegen::SqlServerTables => {
             sql_server_tables::run()?;
         }
         AemoCodegen::Rust => {
             rust::run()?;
+        }
+        AemoCodegen::Analyse => {
+            analyse::run()?;
         }
         AemoCodegen::Json => {
             json::run().await?;
@@ -48,3 +55,11 @@ fn swap_nonreq<T>(or: Option<anyhow::Result<T>>) -> anyhow::Result<Option<T>> {
         None => Ok(None),
     }
 }
+
+const KW: [&str; 51] = [
+    "as", "break", "const", "continue", "crate", "else", "enum", "extern", "false", "fn", "for",
+    "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref", "return",
+    "self", "Self", "static", "struct", "super", "trait", "true", "type", "unsafe", "use", "where",
+    "while", "async", "await", "dyn", "abstract", "become", "box", "do", "final", "macro",
+    "override", "priv", "typeof", "unsized", "virtual", "yield", "try",
+];
