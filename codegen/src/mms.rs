@@ -119,8 +119,8 @@ impl TablePage {
         self.find_column("settlementdate")?;
         self.find_column("day")?;
         self.find_column("offerdate")?;
-        // this specific table has a `Integer(3)` periodid which represents the relative interval only
-        if self.summary.name != "REALLOCATIONINTERVAL" {
+        // these specific tables have `Integer(3 or 4)` periodid which represents the relative interval only
+        if !["IRFMAMOUNT", "REALLOCATIONINTERVAL"].contains(&self.summary.name.as_str()) {
             self.find_column("periodid")?;
         }
         self.find_column("datetime")?;
