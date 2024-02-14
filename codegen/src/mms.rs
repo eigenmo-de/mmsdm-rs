@@ -1,6 +1,6 @@
 use crate::KW;
 use anyhow::anyhow;
-use heck::{ToSnakeCase, ToUpperCamelCase};
+use heck::{ToLowerCamelCase, ToSnakeCase, ToUpperCamelCase};
 use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, ops::ControlFlow, str};
@@ -119,7 +119,10 @@ impl TablePage {
         self.find_column("settlementdate")?;
         self.find_column("day")?;
         self.find_column("offerdate")?;
-        self.find_column("periodid")?;
+        // this specific table has a `Integer(3)` periodid which represents the relative interval only
+        if self.summary.name != "REALLOCATIONINTERVAL" {
+            self.find_column("periodid")?;
+        }
         self.find_column("datetime")?;
 
         // these are more like transaction time so

@@ -3617,7 +3617,7 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
     type Row<'row> = SetcfgReallocationinterval1Row<'row>;
     type FieldMapping = SetcfgReallocationinterval1Mapping;
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
+    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3677,15 +3677,9 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
         Ok(SetcfgReallocationinterval1Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
+        _row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(periodid).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(periodid).month(),
-                )
-                .unwrap(),
-        })
+        Ok(())
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
@@ -3697,20 +3691,9 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
             reallocationid: row.reallocationid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.periodid).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.periodid).month(),
-                )
-                .unwrap(),
-        }
-    }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "setcfg_reallocationinterval_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
+        "setcfg_reallocationinterval_v1".to_string()
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SetcfgReallocationinterval1Row {
