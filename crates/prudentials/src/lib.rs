@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct PrudentialCompanyPosition1;
+pub struct PrudentialCompanyPosition1Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## PRUDENTIALCOMPANYPOSITION
@@ -11,23 +18,21 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
 /// * COMPANY_ID
 /// * PRUDENTIAL_DATE
 /// * RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PrudentialCompanyPosition1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct PrudentialCompanyPosition1Row<'data> {
     /// The prudential date
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
     pub runno: i64,
     /// The company identifier
-    pub company_id: String,
+    pub company_id: core::ops::Range<usize>,
     /// The Maximum Credit Limit of the company at the time of the prudential run
     pub mcl: Option<rust_decimal::Decimal>,
     /// The Credit Support of the company at the time of the prudential run
@@ -59,57 +64,277 @@ pub struct PrudentialCompanyPosition1 {
     /// The percentage of outstandings calculated against the trading margin and prudential margin
     pub percentage_outstandings: Option<rust_decimal::Decimal>,
     /// The datetime that the record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PrudentialCompanyPosition1Row<'data> {
+    pub fn company_id(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.company_id.clone())
+    }
 }
 impl mmsdm_core::GetTable for PrudentialCompanyPosition1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PRUDENTIAL";
+    const TABLE_NAME: &'static str = "COMPANY_POSITION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PrudentialCompanyPosition1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PRUDENTIAL_DATE",
+        "RUNNO",
+        "COMPANY_ID",
+        "MCL",
+        "CREDIT_SUPPORT",
+        "TRADING_LIMIT",
+        "CURRENT_AMOUNT_BALANCE",
+        "SECURITY_DEPOSIT_PROVISION",
+        "SECURITY_DEPOSIT_OFFSET",
+        "SECURITY_DEPOSIT_BALANCE",
+        "EXPOST_REALLOC_BALANCE",
+        "DEFAULT_BALANCE",
+        "OUTSTANDINGS",
+        "TRADING_MARGIN",
+        "TYPICAL_ACCRUAL",
+        "PRUDENTIAL_MARGIN",
+        "EARLY_PAYMENT_AMOUNT",
+        "PERCENTAGE_OUTSTANDINGS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PrudentialCompanyPosition1Row<'row>;
+    type FieldMapping = PrudentialCompanyPosition1Mapping;
     type PrimaryKey = PrudentialCompanyPosition1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "PRUDENTIAL".into(),
-            table_name: Some("COMPANY_POSITION".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PrudentialCompanyPosition1Row {
+            prudential_date: row
+                .get_custom_parsed_at_idx(
+                    "prudential_date",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runno: row.get_parsed_at_idx("runno", field_mapping.0[1])?,
+            company_id: row.get_range("company_id", field_mapping.0[2])?,
+            mcl: row
+                .get_opt_custom_parsed_at_idx(
+                    "mcl",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            credit_support: row
+                .get_opt_custom_parsed_at_idx(
+                    "credit_support",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            trading_limit: row
+                .get_opt_custom_parsed_at_idx(
+                    "trading_limit",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            current_amount_balance: row
+                .get_opt_custom_parsed_at_idx(
+                    "current_amount_balance",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            security_deposit_provision: row
+                .get_opt_custom_parsed_at_idx(
+                    "security_deposit_provision",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            security_deposit_offset: row
+                .get_opt_custom_parsed_at_idx(
+                    "security_deposit_offset",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            security_deposit_balance: row
+                .get_opt_custom_parsed_at_idx(
+                    "security_deposit_balance",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            expost_realloc_balance: row
+                .get_opt_custom_parsed_at_idx(
+                    "expost_realloc_balance",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            default_balance: row
+                .get_opt_custom_parsed_at_idx(
+                    "default_balance",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            outstandings: row
+                .get_opt_custom_parsed_at_idx(
+                    "outstandings",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            trading_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "trading_margin",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            typical_accrual: row
+                .get_opt_custom_parsed_at_idx(
+                    "typical_accrual",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            prudential_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "prudential_margin",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            early_payment_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "early_payment_amount",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            percentage_outstandings: row
+                .get_opt_custom_parsed_at_idx(
+                    "percentage_outstandings",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> PrudentialCompanyPosition1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PrudentialCompanyPosition1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PrudentialCompanyPosition1PrimaryKey {
         PrudentialCompanyPosition1PrimaryKey {
-            company_id: self.company_id.clone(),
-            prudential_date: self.prudential_date,
-            runno: self.runno,
+            company_id: row.company_id().to_string(),
+            prudential_date: row.prudential_date,
+            runno: row.runno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "prudential_company_position_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PrudentialCompanyPosition1Row {
+            prudential_date: row.prudential_date.clone(),
+            runno: row.runno.clone(),
+            company_id: row.company_id.clone(),
+            mcl: row.mcl.clone(),
+            credit_support: row.credit_support.clone(),
+            trading_limit: row.trading_limit.clone(),
+            current_amount_balance: row.current_amount_balance.clone(),
+            security_deposit_provision: row.security_deposit_provision.clone(),
+            security_deposit_offset: row.security_deposit_offset.clone(),
+            security_deposit_balance: row.security_deposit_balance.clone(),
+            expost_realloc_balance: row.expost_realloc_balance.clone(),
+            default_balance: row.default_balance.clone(),
+            outstandings: row.outstandings.clone(),
+            trading_margin: row.trading_margin.clone(),
+            typical_accrual: row.typical_accrual.clone(),
+            prudential_margin: row.prudential_margin.clone(),
+            early_payment_amount: row.early_payment_amount.clone(),
+            percentage_outstandings: row.percentage_outstandings.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PrudentialCompanyPosition1PrimaryKey {
-    pub company_id: String,
+    pub company_id: alloc::string::String,
     pub prudential_date: chrono::NaiveDateTime,
     pub runno: i64,
 }
 impl mmsdm_core::PrimaryKey for PrudentialCompanyPosition1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for PrudentialCompanyPosition1 {
-    type Row = PrudentialCompanyPosition1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.company_id == row.company_id && self.prudential_date == row.prudential_date
-            && self.runno == row.runno
+impl<'data> mmsdm_core::CompareWithRow for PrudentialCompanyPosition1Row<'data> {
+    type Row<'other> = PrudentialCompanyPosition1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.company_id() == row.company_id()
+            && self.prudential_date == row.prudential_date && self.runno == row.runno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PrudentialCompanyPosition1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PrudentialCompanyPosition1Row<'data> {
     type PrimaryKey = PrudentialCompanyPosition1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.company_id == key.company_id && self.prudential_date == key.prudential_date
-            && self.runno == key.runno
+        self.company_id() == key.company_id
+            && self.prudential_date == key.prudential_date && self.runno == key.runno
     }
 }
-impl mmsdm_core::CompareWithRow for PrudentialCompanyPosition1PrimaryKey {
-    type Row = PrudentialCompanyPosition1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.company_id == row.company_id && self.prudential_date == row.prudential_date
-            && self.runno == row.runno
+impl<'data> mmsdm_core::CompareWithRow for PrudentialCompanyPosition1PrimaryKey {
+    type Row<'other> = PrudentialCompanyPosition1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.company_id == row.company_id()
+            && self.prudential_date == row.prudential_date && self.runno == row.runno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for PrudentialCompanyPosition1PrimaryKey {
@@ -121,264 +346,370 @@ impl mmsdm_core::CompareWithPrimaryKey for PrudentialCompanyPosition1PrimaryKey 
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("prudential_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("company_id",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("mcl",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("credit_support",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("trading_limit",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("current_amount_balance",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("security_deposit_provision",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("security_deposit_offset",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("security_deposit_balance",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("expost_realloc_balance",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("default_balance",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("outstandings",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("trading_margin",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("typical_accrual",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("prudential_margin",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("early_payment_amount",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("percentage_outstandings",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = PrudentialCompanyPosition1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prudential_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "company_id",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "mcl",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "credit_support",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "trading_limit",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "current_amount_balance",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "security_deposit_provision",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "security_deposit_offset",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "security_deposit_balance",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "expost_realloc_balance",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "default_balance",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "outstandings",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "trading_margin",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "typical_accrual",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "prudential_margin",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "early_payment_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "percentage_outstandings",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut prudential_date_array = Vec::new();
-        let mut runno_array = Vec::new();
-        let mut company_id_array = Vec::new();
-        let mut mcl_array = Vec::new();
-        let mut credit_support_array = Vec::new();
-        let mut trading_limit_array = Vec::new();
-        let mut current_amount_balance_array = Vec::new();
-        let mut security_deposit_provision_array = Vec::new();
-        let mut security_deposit_offset_array = Vec::new();
-        let mut security_deposit_balance_array = Vec::new();
-        let mut expost_realloc_balance_array = Vec::new();
-        let mut default_balance_array = Vec::new();
-        let mut outstandings_array = Vec::new();
-        let mut trading_margin_array = Vec::new();
-        let mut typical_accrual_array = Vec::new();
-        let mut prudential_margin_array = Vec::new();
-        let mut early_payment_amount_array = Vec::new();
-        let mut percentage_outstandings_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            prudential_date_array.push(row.prudential_date.timestamp());
-            runno_array.push(row.runno);
-            company_id_array.push(row.company_id);
-            mcl_array
-                .push({
-                    row.mcl
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            credit_support_array
-                .push({
-                    row.credit_support
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            trading_limit_array
-                .push({
-                    row.trading_limit
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            current_amount_balance_array
-                .push({
-                    row.current_amount_balance
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            security_deposit_provision_array
-                .push({
-                    row.security_deposit_provision
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            security_deposit_offset_array
-                .push({
-                    row.security_deposit_offset
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            security_deposit_balance_array
-                .push({
-                    row.security_deposit_balance
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            expost_realloc_balance_array
-                .push({
-                    row.expost_realloc_balance
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            default_balance_array
-                .push({
-                    row.default_balance
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            outstandings_array
-                .push({
-                    row.outstandings
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            trading_margin_array
-                .push({
-                    row.trading_margin
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            typical_accrual_array
-                .push({
-                    row.typical_accrual
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            prudential_margin_array
-                .push({
-                    row.prudential_margin
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            early_payment_amount_array
-                .push({
-                    row.early_payment_amount
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            percentage_outstandings_array
-                .push({
-                    row.percentage_outstandings
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        PrudentialCompanyPosition1Builder {
+            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            runno_array: arrow::array::builder::Int64Builder::new(),
+            company_id_array: arrow::array::builder::StringBuilder::new(),
+            mcl_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            credit_support_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            trading_limit_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            current_amount_balance_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            security_deposit_provision_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            security_deposit_offset_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            security_deposit_balance_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            expost_realloc_balance_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            default_balance_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            outstandings_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            trading_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            typical_accrual_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            prudential_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            early_payment_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            percentage_outstandings_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(company_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mcl_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(credit_support_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(trading_limit_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(current_amount_balance_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(security_deposit_provision_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(security_deposit_offset_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(security_deposit_balance_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(expost_realloc_balance_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(default_balance_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(outstandings_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(trading_margin_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(typical_accrual_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(prudential_margin_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(early_payment_amount_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(percentage_outstandings_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder.runno_array.append_value(row.runno);
+        builder.company_id_array.append_value(row.company_id());
+        builder
+            .mcl_array
+            .append_option({
+                row.mcl
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .credit_support_array
+            .append_option({
+                row.credit_support
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .trading_limit_array
+            .append_option({
+                row.trading_limit
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .current_amount_balance_array
+            .append_option({
+                row.current_amount_balance
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .security_deposit_provision_array
+            .append_option({
+                row.security_deposit_provision
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .security_deposit_offset_array
+            .append_option({
+                row.security_deposit_offset
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .security_deposit_balance_array
+            .append_option({
+                row.security_deposit_balance
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .expost_realloc_balance_array
+            .append_option({
+                row.expost_realloc_balance
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .default_balance_array
+            .append_option({
+                row.default_balance
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .outstandings_array
+            .append_option({
+                row.outstandings
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .trading_margin_array
+            .append_option({
+                row.trading_margin
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .typical_accrual_array
+            .append_option({
+                row.typical_accrual
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .prudential_margin_array
+            .append_option({
+                row.prudential_margin
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .early_payment_amount_array
+            .append_option({
+                row.early_payment_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .percentage_outstandings_array
+            .append_option({
+                row.percentage_outstandings
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prudential_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.company_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.mcl_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.credit_support_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.trading_limit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.current_amount_balance_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.security_deposit_provision_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.security_deposit_offset_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.security_deposit_balance_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.expost_realloc_balance_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.default_balance_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.outstandings_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.trading_margin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.typical_accrual_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prudential_margin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.early_payment_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.percentage_outstandings_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct PrudentialCompanyPosition1Builder {
+    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    runno_array: arrow::array::builder::Int64Builder,
+    company_id_array: arrow::array::builder::StringBuilder,
+    mcl_array: arrow::array::builder::Decimal128Builder,
+    credit_support_array: arrow::array::builder::Decimal128Builder,
+    trading_limit_array: arrow::array::builder::Decimal128Builder,
+    current_amount_balance_array: arrow::array::builder::Decimal128Builder,
+    security_deposit_provision_array: arrow::array::builder::Decimal128Builder,
+    security_deposit_offset_array: arrow::array::builder::Decimal128Builder,
+    security_deposit_balance_array: arrow::array::builder::Decimal128Builder,
+    expost_realloc_balance_array: arrow::array::builder::Decimal128Builder,
+    default_balance_array: arrow::array::builder::Decimal128Builder,
+    outstandings_array: arrow::array::builder::Decimal128Builder,
+    trading_margin_array: arrow::array::builder::Decimal128Builder,
+    typical_accrual_array: arrow::array::builder::Decimal128Builder,
+    prudential_margin_array: arrow::array::builder::Decimal128Builder,
+    early_payment_amount_array: arrow::array::builder::Decimal128Builder,
+    percentage_outstandings_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct PrudentialRuntrk1;
+pub struct PrudentialRuntrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## PRUDENTIALRUNTRK
@@ -390,71 +721,171 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * PRUDENTIAL_DATE
 /// * RUNNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct PrudentialRuntrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct PrudentialRuntrk1Row<'data> {
     /// The prudential date
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub prudential_date: chrono::NaiveDateTime,
     /// The run number for the prudential date
     pub runno: i64,
     /// The user that authorised the prudential run
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// The datetime that the prudential run was authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// The datetime that the record was last changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PrudentialRuntrk1Row<'data> {
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for PrudentialRuntrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PRUDENTIAL";
+    const TABLE_NAME: &'static str = "RUNTRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PrudentialRuntrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PRUDENTIAL_DATE",
+        "RUNNO",
+        "AUTHORISEDBY",
+        "AUTHORISEDDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PrudentialRuntrk1Row<'row>;
+    type FieldMapping = PrudentialRuntrk1Mapping;
     type PrimaryKey = PrudentialRuntrk1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "PRUDENTIAL".into(),
-            table_name: Some("RUNTRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PrudentialRuntrk1Row {
+            prudential_date: row
+                .get_custom_parsed_at_idx(
+                    "prudential_date",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runno: row.get_parsed_at_idx("runno", field_mapping.0[1])?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[2])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> PrudentialRuntrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PrudentialRuntrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PrudentialRuntrk1PrimaryKey {
         PrudentialRuntrk1PrimaryKey {
-            prudential_date: self.prudential_date,
-            runno: self.runno,
+            prudential_date: row.prudential_date,
+            runno: row.runno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "prudential_runtrk_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PrudentialRuntrk1Row {
+            prudential_date: row.prudential_date.clone(),
+            runno: row.runno.clone(),
+            authorisedby: row.authorisedby.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PrudentialRuntrk1PrimaryKey {
     pub prudential_date: chrono::NaiveDateTime,
     pub runno: i64,
 }
 impl mmsdm_core::PrimaryKey for PrudentialRuntrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for PrudentialRuntrk1 {
-    type Row = PrudentialRuntrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for PrudentialRuntrk1Row<'data> {
+    type Row<'other> = PrudentialRuntrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.prudential_date == row.prudential_date && self.runno == row.runno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PrudentialRuntrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PrudentialRuntrk1Row<'data> {
     type PrimaryKey = PrudentialRuntrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.prudential_date == key.prudential_date && self.runno == key.runno
     }
 }
-impl mmsdm_core::CompareWithRow for PrudentialRuntrk1PrimaryKey {
-    type Row = PrudentialRuntrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for PrudentialRuntrk1PrimaryKey {
+    type Row<'other> = PrudentialRuntrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.prudential_date == row.prudential_date && self.runno == row.runno
     }
 }
@@ -466,99 +897,93 @@ impl mmsdm_core::CompareWithPrimaryKey for PrudentialRuntrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("prudential_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("runno",
-                arrow2::datatypes::DataType::Int64, false),
-                arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = PrudentialRuntrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prudential_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut prudential_date_array = Vec::new();
-        let mut runno_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            prudential_date_array.push(row.prudential_date.timestamp());
-            runno_array.push(row.runno);
-            authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        PrudentialRuntrk1Builder {
+            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            runno_array: arrow::array::builder::Int64Builder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(prudential_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(runno_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder.runno_array.append_value(row.runno);
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prudential_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("COMPANY_POSITION"), version) if version <= 1_i32 => {
-            let d: Vec<PrudentialCompanyPosition1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertPrudentialCompanyPosition1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("RUNTRK"), version) if version <= 1_i32 => {
-            let d: Vec<PrudentialRuntrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertPrudentialRuntrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct PrudentialRuntrk1Builder {
+    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    runno_array: arrow::array::builder::Int64Builder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
 }

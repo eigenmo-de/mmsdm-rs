@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct OperationalDemandActual3;
+pub struct OperationalDemandActual3Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## DEMANDOPERATIONALACTUAL
@@ -11,82 +18,200 @@ use chrono::Datelike as _;
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * INTERVAL_DATETIME
 /// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OperationalDemandActual3 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct OperationalDemandActual3Row<'data> {
     /// Date time interval for operational demand value
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Region identifier
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Average 30-minute measured operational demand MW value (unadjusted)
     pub operational_demand: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Adjustment value containing the estimated amount of activated RERT and involuntary load shedding that occurred as a result of a NER 4.8.9 instruction for load shedding from AEMO.
     pub operational_demand_adjustment: Option<rust_decimal::Decimal>,
     /// Estimated average 30-minute MW amount of Wholesale Demand Response that occurred
     pub wdr_estimate: Option<i64>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> OperationalDemandActual3Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for OperationalDemandActual3 {
+    const VERSION: i32 = 3;
+    const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
+    const TABLE_NAME: &'static str = "ACTUAL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandActual3Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "INTERVAL_DATETIME",
+        "REGIONID",
+        "OPERATIONAL_DEMAND",
+        "LASTCHANGED",
+        "OPERATIONAL_DEMAND_ADJUSTMENT",
+        "WDR_ESTIMATE",
+    ];
+    type Row<'row> = OperationalDemandActual3Row<'row>;
+    type FieldMapping = OperationalDemandActual3Mapping;
     type PrimaryKey = OperationalDemandActual3PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "OPERATIONAL_DEMAND".into(),
-            table_name: Some("ACTUAL".into()),
-            version: 3,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(OperationalDemandActual3Row {
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[1])?,
+            operational_demand: row
+                .get_opt_custom_parsed_at_idx(
+                    "operational_demand",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            operational_demand_adjustment: row
+                .get_opt_custom_parsed_at_idx(
+                    "operational_demand_adjustment",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            wdr_estimate: row.get_opt_parsed_at_idx("wdr_estimate", field_mapping.0[5])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> OperationalDemandActual3PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(OperationalDemandActual3Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let interval_datetime = row
+            .get_custom_parsed_at_idx(
+                "interval_datetime",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(interval_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> OperationalDemandActual3PrimaryKey {
         OperationalDemandActual3PrimaryKey {
-            interval_datetime: self.interval_datetime,
-            regionid: self.regionid.clone(),
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.interval_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "operational_demand_actual_v3_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "operational_demand_actual_v3_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        OperationalDemandActual3Row {
+            interval_datetime: row.interval_datetime.clone(),
+            regionid: row.regionid.clone(),
+            operational_demand: row.operational_demand.clone(),
+            lastchanged: row.lastchanged.clone(),
+            operational_demand_adjustment: row.operational_demand_adjustment.clone(),
+            wdr_estimate: row.wdr_estimate.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct OperationalDemandActual3PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for OperationalDemandActual3PrimaryKey {}
-impl mmsdm_core::CompareWithRow for OperationalDemandActual3 {
-    type Row = OperationalDemandActual3;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for OperationalDemandActual3Row<'data> {
+    type Row<'other> = OperationalDemandActual3Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for OperationalDemandActual3 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for OperationalDemandActual3Row<'data> {
     type PrimaryKey = OperationalDemandActual3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+        self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid
     }
 }
-impl mmsdm_core::CompareWithRow for OperationalDemandActual3PrimaryKey {
-    type Row = OperationalDemandActual3;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for OperationalDemandActual3PrimaryKey {
+    type Row<'other> = OperationalDemandActual3Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for OperationalDemandActual3PrimaryKey {
@@ -97,82 +222,122 @@ impl mmsdm_core::CompareWithPrimaryKey for OperationalDemandActual3PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("operational_demand",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true),
-                arrow2::datatypes::Field::new("operational_demand_adjustment",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("wdr_estimate",
-                arrow2::datatypes::DataType::Int64, true)
-            ],
+    type Builder = OperationalDemandActual3Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "operational_demand",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "operational_demand_adjustment",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "wdr_estimate",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut interval_datetime_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut operational_demand_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut operational_demand_adjustment_array = Vec::new();
-        let mut wdr_estimate_array = Vec::new();
-        for row in partition {
-            interval_datetime_array.push(row.interval_datetime.timestamp());
-            regionid_array.push(row.regionid);
-            operational_demand_array
-                .push({
-                    row.operational_demand
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            operational_demand_adjustment_array
-                .push({
-                    row.operational_demand_adjustment
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            wdr_estimate_array.push(row.wdr_estimate);
+    fn new_builder() -> Self::Builder {
+        OperationalDemandActual3Builder {
+            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            operational_demand_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            operational_demand_adjustment_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            wdr_estimate_array: arrow::array::builder::Int64Builder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(operational_demand_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(operational_demand_adjustment_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(wdr_estimate_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .operational_demand_array
+            .append_option({
+                row.operational_demand
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .operational_demand_adjustment_array
+            .append_option({
+                row.operational_demand_adjustment
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.wdr_estimate_array.append_option(row.wdr_estimate);
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.operational_demand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.operational_demand_adjustment_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.wdr_estimate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct OperationalDemandActual3Builder {
+    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    operational_demand_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    operational_demand_adjustment_array: arrow::array::builder::Decimal128Builder,
+    wdr_estimate_array: arrow::array::builder::Int64Builder,
+}
+pub struct OperationalDemandForecast1;
+pub struct OperationalDemandForecast1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## DEMANDOPERATIONALFORECAST
@@ -184,22 +349,19 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * INTERVAL_DATETIME
 /// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct OperationalDemandForecast1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct OperationalDemandForecast1Row<'data> {
     /// Forecast for a particular date time interval
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Region identifier
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Date time this forecast was produced
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub load_date: Option<chrono::NaiveDateTime>,
     /// 10% probability of exceedance operational demand forecast value
     pub operational_demand_poe10: Option<rust_decimal::Decimal>,
@@ -208,61 +370,195 @@ pub struct OperationalDemandForecast1 {
     /// 90% probability of exceedance operational demand forecast value
     pub operational_demand_poe90: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> OperationalDemandForecast1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for OperationalDemandForecast1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
+    const TABLE_NAME: &'static str = "FORECAST";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandForecast1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "INTERVAL_DATETIME",
+        "REGIONID",
+        "LOAD_DATE",
+        "OPERATIONAL_DEMAND_POE10",
+        "OPERATIONAL_DEMAND_POE50",
+        "OPERATIONAL_DEMAND_POE90",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = OperationalDemandForecast1Row<'row>;
+    type FieldMapping = OperationalDemandForecast1Mapping;
     type PrimaryKey = OperationalDemandForecast1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "OPERATIONAL_DEMAND".into(),
-            table_name: Some("FORECAST".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(OperationalDemandForecast1Row {
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[1])?,
+            load_date: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_date",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            operational_demand_poe10: row
+                .get_opt_custom_parsed_at_idx(
+                    "operational_demand_poe10",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            operational_demand_poe50: row
+                .get_opt_custom_parsed_at_idx(
+                    "operational_demand_poe50",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            operational_demand_poe90: row
+                .get_opt_custom_parsed_at_idx(
+                    "operational_demand_poe90",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> OperationalDemandForecast1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(OperationalDemandForecast1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let interval_datetime = row
+            .get_custom_parsed_at_idx(
+                "interval_datetime",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(interval_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> OperationalDemandForecast1PrimaryKey {
         OperationalDemandForecast1PrimaryKey {
-            interval_datetime: self.interval_datetime,
-            regionid: self.regionid.clone(),
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.interval_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "operational_demand_forecast_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "operational_demand_forecast_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        OperationalDemandForecast1Row {
+            interval_datetime: row.interval_datetime.clone(),
+            regionid: row.regionid.clone(),
+            load_date: row.load_date.clone(),
+            operational_demand_poe10: row.operational_demand_poe10.clone(),
+            operational_demand_poe50: row.operational_demand_poe50.clone(),
+            operational_demand_poe90: row.operational_demand_poe90.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct OperationalDemandForecast1PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for OperationalDemandForecast1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for OperationalDemandForecast1 {
-    type Row = OperationalDemandForecast1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for OperationalDemandForecast1Row<'data> {
+    type Row<'other> = OperationalDemandForecast1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for OperationalDemandForecast1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for OperationalDemandForecast1Row<'data> {
     type PrimaryKey = OperationalDemandForecast1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+        self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid
     }
 }
-impl mmsdm_core::CompareWithRow for OperationalDemandForecast1PrimaryKey {
-    type Row = OperationalDemandForecast1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for OperationalDemandForecast1PrimaryKey {
+    type Row<'other> = OperationalDemandForecast1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for OperationalDemandForecast1PrimaryKey {
@@ -273,97 +569,146 @@ impl mmsdm_core::CompareWithPrimaryKey for OperationalDemandForecast1PrimaryKey 
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("load_date",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("operational_demand_poe10",
-                arrow2::datatypes::DataType::Decimal(15, 2), true),
-                arrow2::datatypes::Field::new("operational_demand_poe50",
-                arrow2::datatypes::DataType::Decimal(15, 2), true),
-                arrow2::datatypes::Field::new("operational_demand_poe90",
-                arrow2::datatypes::DataType::Decimal(15, 2), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = OperationalDemandForecast1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_date",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "operational_demand_poe10",
+                    arrow::datatypes::DataType::Decimal128(15, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "operational_demand_poe50",
+                    arrow::datatypes::DataType::Decimal128(15, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "operational_demand_poe90",
+                    arrow::datatypes::DataType::Decimal128(15, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut interval_datetime_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut load_date_array = Vec::new();
-        let mut operational_demand_poe10_array = Vec::new();
-        let mut operational_demand_poe50_array = Vec::new();
-        let mut operational_demand_poe90_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            interval_datetime_array.push(row.interval_datetime.timestamp());
-            regionid_array.push(row.regionid);
-            load_date_array.push(row.load_date.map(|val| val.timestamp()));
-            operational_demand_poe10_array
-                .push({
-                    row.operational_demand_poe10
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            operational_demand_poe50_array
-                .push({
-                    row.operational_demand_poe50
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            operational_demand_poe90_array
-                .push({
-                    row.operational_demand_poe90
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        OperationalDemandForecast1Builder {
+            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            load_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            operational_demand_poe10_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
+            operational_demand_poe50_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
+            operational_demand_poe90_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(load_date_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(operational_demand_poe10_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(operational_demand_poe50_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(operational_demand_poe90_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.regionid_array.append_value(row.regionid());
+        builder.load_date_array.append_option(row.load_date.map(|val| val.timestamp()));
+        builder
+            .operational_demand_poe10_array
+            .append_option({
+                row.operational_demand_poe10
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .operational_demand_poe50_array
+            .append_option({
+                row.operational_demand_poe50
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .operational_demand_poe90_array
+            .append_option({
+                row.operational_demand_poe90
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_date_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.operational_demand_poe10_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.operational_demand_poe50_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.operational_demand_poe90_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct OperationalDemandForecast1Builder {
+    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    load_date_array: arrow::array::builder::TimestampSecondBuilder,
+    operational_demand_poe10_array: arrow::array::builder::Decimal128Builder,
+    operational_demand_poe50_array: arrow::array::builder::Decimal128Builder,
+    operational_demand_poe90_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct DemandIntermittentClusterAvail2;
+pub struct DemandIntermittentClusterAvail2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## INTERMITTENT_CLUSTER_AVAIL
@@ -375,8 +720,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -385,86 +729,216 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
 /// * OFFERDATETIME
 /// * PERIODID
 /// * TRADINGDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandIntermittentClusterAvail2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentClusterAvail2Row<'data> {
     /// The trading day to which the availability submission applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this cluster availability submission was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique Cluster Identifier for this cluster within the DUID
-    pub clusterid: String,
+    pub clusterid: core::ops::Range<usize>,
     /// Trading interval number (1…48) within this TRADINGDATE for which ELEMENTS_UNAVAILABLE applies
     pub periodid: rust_decimal::Decimal,
     /// Number of elements within this CLUSTERID (turbines for wind, or inverters for solar) that are not available for this TRADINGDATE and PERIODID (scheduled maintenance in AWEFS/ASEFS). Value between 0 and the registered Number of Cluster Elements.Value = 0 means no elements unavailable
     pub elements_unavailable: Option<rust_decimal::Decimal>,
     /// Number of elements within this CLUSTERID (turbines for wind, or inverters for solar) that are available for this TRADINGDATE and PERIODID (scheduled maintenance in AWEFS/ASEFS). Value between 0 and the registered Number of Cluster Elements. Value = 0 means no elements available
     pub elements_available: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentClusterAvail2Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn clusterid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.clusterid.clone())
+    }
 }
 impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvail2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRADINGDATE",
+        "DUID",
+        "OFFERDATETIME",
+        "CLUSTERID",
+        "PERIODID",
+        "ELEMENTS_UNAVAILABLE",
+        "ELEMENTS_AVAILABLE",
+    ];
+    type Row<'row> = DemandIntermittentClusterAvail2Row<'row>;
+    type FieldMapping = DemandIntermittentClusterAvail2Mapping;
     type PrimaryKey = DemandIntermittentClusterAvail2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("INTERMITTENT_CLUSTER_AVAIL".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentClusterAvail2Row {
+            tradingdate: row
+                .get_custom_parsed_at_idx(
+                    "tradingdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            clusterid: row.get_range("clusterid", field_mapping.0[3])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            elements_unavailable: row
+                .get_opt_custom_parsed_at_idx(
+                    "elements_unavailable",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            elements_available: row
+                .get_opt_custom_parsed_at_idx(
+                    "elements_available",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandIntermittentClusterAvail2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentClusterAvail2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let tradingdate = row
+            .get_custom_parsed_at_idx(
+                "tradingdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(tradingdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentClusterAvail2PrimaryKey {
         DemandIntermittentClusterAvail2PrimaryKey {
-            clusterid: self.clusterid.clone(),
-            duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime,
-            periodid: self.periodid,
-            tradingdate: self.tradingdate,
+            clusterid: row.clusterid().to_string(),
+            duid: row.duid().to_string(),
+            offerdatetime: row.offerdatetime,
+            periodid: row.periodid,
+            tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.tradingdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                )
+                .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_intermittent_cluster_avail_v2_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_cluster_avail_v2_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentClusterAvail2Row {
+            tradingdate: row.tradingdate.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            clusterid: row.clusterid.clone(),
+            periodid: row.periodid.clone(),
+            elements_unavailable: row.elements_unavailable.clone(),
+            elements_available: row.elements_available.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandIntermittentClusterAvail2PrimaryKey {
-    pub clusterid: String,
-    pub duid: String,
+    pub clusterid: alloc::string::String,
+    pub duid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
     pub tradingdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandIntermittentClusterAvail2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandIntermittentClusterAvail2 {
-    type Row = DemandIntermittentClusterAvail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.clusterid == row.clusterid && self.duid == row.duid
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentClusterAvail2Row<'data> {
+    type Row<'other> = DemandIntermittentClusterAvail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.clusterid() == row.clusterid() && self.duid() == row.duid()
             && self.offerdatetime == row.offerdatetime && self.periodid == row.periodid
             && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentClusterAvail2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentClusterAvail2Row<'data> {
     type PrimaryKey = DemandIntermittentClusterAvail2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.clusterid == key.clusterid && self.duid == key.duid
+        self.clusterid() == key.clusterid && self.duid() == key.duid
             && self.offerdatetime == key.offerdatetime && self.periodid == key.periodid
             && self.tradingdate == key.tradingdate
     }
 }
-impl mmsdm_core::CompareWithRow for DemandIntermittentClusterAvail2PrimaryKey {
-    type Row = DemandIntermittentClusterAvail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.clusterid == row.clusterid && self.duid == row.duid
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentClusterAvail2PrimaryKey {
+    type Row<'other> = DemandIntermittentClusterAvail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.clusterid == row.clusterid() && self.duid == row.duid()
             && self.offerdatetime == row.offerdatetime && self.periodid == row.periodid
             && self.tradingdate == row.tradingdate
     }
@@ -479,94 +953,136 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentClusterAvail2Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("tradingdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("clusterid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("elements_unavailable",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("elements_available",
-                arrow2::datatypes::DataType::Decimal(5, 0), true)
-            ],
+    type Builder = DemandIntermittentClusterAvail2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "clusterid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "elements_unavailable",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "elements_available",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut tradingdate_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut clusterid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut elements_unavailable_array = Vec::new();
-        let mut elements_available_array = Vec::new();
-        for row in partition {
-            tradingdate_array.push(row.tradingdate.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            clusterid_array.push(row.clusterid);
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            elements_unavailable_array
-                .push({
-                    row.elements_unavailable
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            elements_available_array
-                .push({
-                    row.elements_available
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentClusterAvail2Builder {
+            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            clusterid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            elements_unavailable_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            elements_available_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(clusterid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(elements_unavailable_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(elements_available_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.clusterid_array.append_value(row.clusterid());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .elements_unavailable_array
+            .append_option({
+                row.elements_unavailable
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .elements_available_array
+            .append_option({
+                row.elements_available
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clusterid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.elements_unavailable_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.elements_available_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentClusterAvail2Builder {
+    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    clusterid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    elements_unavailable_array: arrow::array::builder::Decimal128Builder,
+    elements_available_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandIntermittentClusterAvailDay1;
+pub struct DemandIntermittentClusterAvailDay1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## INTERMITTENT_CLUSTER_AVAIL_DAY
@@ -578,8 +1094,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -587,78 +1102,181 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
 /// * DUID
 /// * OFFERDATETIME
 /// * TRADINGDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandIntermittentClusterAvailDay1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentClusterAvailDay1Row<'data> {
     /// Trading Day for which this cluster availability submission applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this cluster availability submission was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique Cluster Identifier for this cluster within the DUID
-    pub clusterid: String,
+    pub clusterid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentClusterAvailDay1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn clusterid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.clusterid.clone())
+    }
 }
 impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL_DAY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvailDay1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRADINGDATE",
+        "DUID",
+        "OFFERDATETIME",
+        "CLUSTERID",
+    ];
+    type Row<'row> = DemandIntermittentClusterAvailDay1Row<'row>;
+    type FieldMapping = DemandIntermittentClusterAvailDay1Mapping;
     type PrimaryKey = DemandIntermittentClusterAvailDay1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("INTERMITTENT_CLUSTER_AVAIL_DAY".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentClusterAvailDay1Row {
+            tradingdate: row
+                .get_custom_parsed_at_idx(
+                    "tradingdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            clusterid: row.get_range("clusterid", field_mapping.0[3])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandIntermittentClusterAvailDay1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentClusterAvailDay1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let tradingdate = row
+            .get_custom_parsed_at_idx(
+                "tradingdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(tradingdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentClusterAvailDay1PrimaryKey {
         DemandIntermittentClusterAvailDay1PrimaryKey {
-            clusterid: self.clusterid.clone(),
-            duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime,
-            tradingdate: self.tradingdate,
+            clusterid: row.clusterid().to_string(),
+            duid: row.duid().to_string(),
+            offerdatetime: row.offerdatetime,
+            tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.tradingdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                )
+                .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_intermittent_cluster_avail_day_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_cluster_avail_day_v1_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentClusterAvailDay1Row {
+            tradingdate: row.tradingdate.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            clusterid: row.clusterid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandIntermittentClusterAvailDay1PrimaryKey {
-    pub clusterid: String,
-    pub duid: String,
+    pub clusterid: alloc::string::String,
+    pub duid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub tradingdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandIntermittentClusterAvailDay1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandIntermittentClusterAvailDay1 {
-    type Row = DemandIntermittentClusterAvailDay1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.clusterid == row.clusterid && self.duid == row.duid
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentClusterAvailDay1Row<'data> {
+    type Row<'other> = DemandIntermittentClusterAvailDay1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.clusterid() == row.clusterid() && self.duid() == row.duid()
             && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentClusterAvailDay1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentClusterAvailDay1Row<'data> {
     type PrimaryKey = DemandIntermittentClusterAvailDay1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.clusterid == key.clusterid && self.duid == key.duid
+        self.clusterid() == key.clusterid && self.duid() == key.duid
             && self.offerdatetime == key.offerdatetime
             && self.tradingdate == key.tradingdate
     }
 }
-impl mmsdm_core::CompareWithRow for DemandIntermittentClusterAvailDay1PrimaryKey {
-    type Row = DemandIntermittentClusterAvailDay1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.clusterid == row.clusterid && self.duid == row.duid
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentClusterAvailDay1PrimaryKey {
+    type Row<'other> = DemandIntermittentClusterAvailDay1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.clusterid == row.clusterid() && self.duid == row.duid()
             && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
@@ -673,54 +1291,81 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentClusterAvailDay1Pri
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("tradingdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("clusterid",
-                arrow2::datatypes::DataType::LargeUtf8, false)
-            ],
+    type Builder = DemandIntermittentClusterAvailDay1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "clusterid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut tradingdate_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut clusterid_array = Vec::new();
-        for row in partition {
-            tradingdate_array.push(row.tradingdate.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            clusterid_array.push(row.clusterid);
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentClusterAvailDay1Builder {
+            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            clusterid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(clusterid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.clusterid_array.append_value(row.clusterid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clusterid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentClusterAvailDay1Builder {
+    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    clusterid_array: arrow::array::builder::StringBuilder,
+}
+pub struct DemandIntermittentDsPred1;
+pub struct DemandIntermittentDsPred1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## INTERMITTENT_DS_PRED
@@ -732,8 +1377,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -743,21 +1387,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
 /// * OFFERDATETIME
 /// * ORIGIN
 /// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandIntermittentDsPred1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentDsPred1Row<'data> {
     /// Date and Time when the forecast applies (dispatch interval ending)<br>
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// DUID (or Area for non-scheduled) where this forecast applies
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this forecast submission was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Date and Time when the forecast applies (dispatch interval ending)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// Origin of this forecast (PARTICIPANTID, AWEFS/ASEFS, or another vendor)
-    pub origin: String,
+    pub origin: core::ops::Range<usize>,
     /// Unsuppressed forecasts with higher priority values are used in Dispatch in preference to unsuppressed forecasts with lower priority values<br>
     pub forecast_priority: rust_decimal::Decimal,
     /// Forecast MW value for this interval_DateTime
@@ -768,75 +1409,232 @@ pub struct DemandIntermittentDsPred1 {
     pub forecast_poe50: Option<rust_decimal::Decimal>,
     /// Forecast 90% POE MW value for this interval_DateTime
     pub forecast_poe90: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentDsPred1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn origin(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.origin.clone())
+    }
 }
 impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_DS_PRED";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsPred1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "DUID",
+        "OFFERDATETIME",
+        "INTERVAL_DATETIME",
+        "ORIGIN",
+        "FORECAST_PRIORITY",
+        "FORECAST_MEAN",
+        "FORECAST_POE10",
+        "FORECAST_POE50",
+        "FORECAST_POE90",
+    ];
+    type Row<'row> = DemandIntermittentDsPred1Row<'row>;
+    type FieldMapping = DemandIntermittentDsPred1Mapping;
     type PrimaryKey = DemandIntermittentDsPred1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("INTERMITTENT_DS_PRED".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentDsPred1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            origin: row.get_range("origin", field_mapping.0[4])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            forecast_mean: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_mean",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            forecast_poe10: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_poe10",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            forecast_poe50: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_poe50",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            forecast_poe90: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_poe90",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandIntermittentDsPred1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentDsPred1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let interval_datetime = row
+            .get_custom_parsed_at_idx(
+                "interval_datetime",
+                7,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(interval_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentDsPred1PrimaryKey {
         DemandIntermittentDsPred1PrimaryKey {
-            duid: self.duid.clone(),
-            forecast_priority: self.forecast_priority,
-            interval_datetime: self.interval_datetime,
-            offerdatetime: self.offerdatetime,
-            origin: self.origin.clone(),
-            run_datetime: self.run_datetime,
+            duid: row.duid().to_string(),
+            forecast_priority: row.forecast_priority,
+            interval_datetime: row.interval_datetime,
+            offerdatetime: row.offerdatetime,
+            origin: row.origin().to_string(),
+            run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.interval_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_intermittent_ds_pred_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_ds_pred_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentDsPred1Row {
+            run_datetime: row.run_datetime.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            origin: row.origin.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            forecast_mean: row.forecast_mean.clone(),
+            forecast_poe10: row.forecast_poe10.clone(),
+            forecast_poe50: row.forecast_poe50.clone(),
+            forecast_poe90: row.forecast_poe90.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandIntermittentDsPred1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub forecast_priority: rust_decimal::Decimal,
     pub interval_datetime: chrono::NaiveDateTime,
     pub offerdatetime: chrono::NaiveDateTime,
-    pub origin: String,
+    pub origin: alloc::string::String,
     pub run_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandIntermittentDsPred1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandIntermittentDsPred1 {
-    type Row = DemandIntermittentDsPred1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.forecast_priority == row.forecast_priority
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentDsPred1Row<'data> {
+    type Row<'other> = DemandIntermittentDsPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.forecast_priority == row.forecast_priority
             && self.interval_datetime == row.interval_datetime
-            && self.offerdatetime == row.offerdatetime && self.origin == row.origin
+            && self.offerdatetime == row.offerdatetime && self.origin() == row.origin()
             && self.run_datetime == row.run_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentDsPred1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandIntermittentDsPred1Row<'data> {
     type PrimaryKey = DemandIntermittentDsPred1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.forecast_priority == key.forecast_priority
+        self.duid() == key.duid && self.forecast_priority == key.forecast_priority
             && self.interval_datetime == key.interval_datetime
-            && self.offerdatetime == key.offerdatetime && self.origin == key.origin
+            && self.offerdatetime == key.offerdatetime && self.origin() == key.origin
             && self.run_datetime == key.run_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for DemandIntermittentDsPred1PrimaryKey {
-    type Row = DemandIntermittentDsPred1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.forecast_priority == row.forecast_priority
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentDsPred1PrimaryKey {
+    type Row<'other> = DemandIntermittentDsPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.forecast_priority == row.forecast_priority
             && self.interval_datetime == row.interval_datetime
-            && self.offerdatetime == row.offerdatetime && self.origin == row.origin
+            && self.offerdatetime == row.offerdatetime && self.origin == row.origin()
             && self.run_datetime == row.run_datetime
     }
 }
@@ -851,129 +1649,187 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentDsPred1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("origin",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("forecast_priority",
-                arrow2::datatypes::DataType::Decimal(10, 0), false),
-                arrow2::datatypes::Field::new("forecast_mean",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("forecast_poe10",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("forecast_poe50",
-                arrow2::datatypes::DataType::Decimal(18, 8), true),
-                arrow2::datatypes::Field::new("forecast_poe90",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = DemandIntermittentDsPred1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "origin",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_mean",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_poe10",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_poe50",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_poe90",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut run_datetime_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut interval_datetime_array = Vec::new();
-        let mut origin_array = Vec::new();
-        let mut forecast_priority_array = Vec::new();
-        let mut forecast_mean_array = Vec::new();
-        let mut forecast_poe10_array = Vec::new();
-        let mut forecast_poe50_array = Vec::new();
-        let mut forecast_poe90_array = Vec::new();
-        for row in partition {
-            run_datetime_array.push(row.run_datetime.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            interval_datetime_array.push(row.interval_datetime.timestamp());
-            origin_array.push(row.origin);
-            forecast_priority_array
-                .push({
-                    let mut val = row.forecast_priority;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            forecast_mean_array
-                .push({
-                    row.forecast_mean
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            forecast_poe10_array
-                .push({
-                    row.forecast_poe10
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            forecast_poe50_array
-                .push({
-                    row.forecast_poe50
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
-            forecast_poe90_array
-                .push({
-                    row.forecast_poe90
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentDsPred1Builder {
+            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            origin_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            forecast_mean_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            forecast_poe10_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            forecast_poe50_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            forecast_poe90_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(origin_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(forecast_priority_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(forecast_mean_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(forecast_poe10_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(forecast_poe50_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(forecast_poe90_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.origin_array.append_value(row.origin());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .forecast_mean_array
+            .append_option({
+                row.forecast_mean
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .forecast_poe10_array
+            .append_option({
+                row.forecast_poe10
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .forecast_poe50_array
+            .append_option({
+                row.forecast_poe50
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .forecast_poe90_array
+            .append_option({
+                row.forecast_poe90
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.origin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_mean_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_poe10_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_poe50_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_poe90_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentDsPred1Builder {
+    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    origin_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    forecast_mean_array: arrow::array::builder::Decimal128Builder,
+    forecast_poe10_array: arrow::array::builder::Decimal128Builder,
+    forecast_poe50_array: arrow::array::builder::Decimal128Builder,
+    forecast_poe90_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandIntermittentDsRun1;
+pub struct DemandIntermittentDsRun1Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## INTERMITTENT_DS_RUN
@@ -985,8 +1841,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -995,102 +1850,307 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
 /// * OFFERDATETIME
 /// * ORIGIN
 /// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandIntermittentDsRun1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentDsRun1Row<'data> {
     /// Date and Time where the forecast applies (dispatch interval ending)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// DUID (or Area for non-scheduled) where this forecast applies
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this forecast submission was loaded.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Origin of this forecast (PARTICIPANTID, AWEFS/ASEFS, or another vendor)
-    pub origin: String,
+    pub origin: core::ops::Range<usize>,
     /// Unsuppressed forecasts with higher priority values are used in Dispatch in preference to unsuppressed forecasts with lower priority values.
     pub forecast_priority: rust_decimal::Decimal,
     /// Authorising officer of this forecast (applicable for participant forecasts only). This column is not made available to the public.
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Comments relating to the forecast. This column is not made available to the public.
-    pub comments: Option<String>,
+    pub comments: core::ops::Range<usize>,
     /// Last date and time the record changed.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Metadata relating to the forecast. This column is not made available to the public.
-    pub model: Option<String>,
+    pub model: core::ops::Range<usize>,
     /// Participant can document when the forecast was created
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub participant_timestamp: Option<chrono::NaiveDateTime>,
     /// Was this forecast suppressed by AEMO? Suppressed = 1,Not suppressed =0<br>
     pub suppressed_aemo: Option<rust_decimal::Decimal>,
     /// Was this forecast suppressed by the participant? Suppressed submissions may not be used,  Suppressed = 1, Not suppressed =0<br>
     pub suppressed_participant: Option<rust_decimal::Decimal>,
     /// Uniquely identifies this interaction
-    pub transaction_id: Option<String>,
+    pub transaction_id: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentDsRun1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn origin(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.origin.clone())
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn comments(&self) -> Option<&str> {
+        if self.comments.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.comments.clone(),
+                ),
+            )
+        }
+    }
+    pub fn model(&self) -> Option<&str> {
+        if self.model.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(self.backing_data.as_slice(), self.model.clone()),
+            )
+        }
+    }
+    pub fn transaction_id(&self) -> Option<&str> {
+        if self.transaction_id.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.transaction_id.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_DS_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsRun1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "DUID",
+        "OFFERDATETIME",
+        "ORIGIN",
+        "FORECAST_PRIORITY",
+        "AUTHORISEDBY",
+        "COMMENTS",
+        "LASTCHANGED",
+        "MODEL",
+        "PARTICIPANT_TIMESTAMP",
+        "SUPPRESSED_AEMO",
+        "SUPPRESSED_PARTICIPANT",
+        "TRANSACTION_ID",
+    ];
+    type Row<'row> = DemandIntermittentDsRun1Row<'row>;
+    type FieldMapping = DemandIntermittentDsRun1Mapping;
     type PrimaryKey = DemandIntermittentDsRun1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("INTERMITTENT_DS_RUN".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentDsRun1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            origin: row.get_range("origin", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[5])?,
+            comments: row.get_opt_range("comments", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            model: row.get_opt_range("model", field_mapping.0[8])?,
+            participant_timestamp: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_timestamp",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            suppressed_aemo: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_aemo",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            suppressed_participant: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_participant",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            transaction_id: row.get_opt_range("transaction_id", field_mapping.0[12])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandIntermittentDsRun1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentDsRun1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let run_datetime = row
+            .get_custom_parsed_at_idx(
+                "run_datetime",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(run_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(run_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentDsRun1PrimaryKey {
         DemandIntermittentDsRun1PrimaryKey {
-            duid: self.duid.clone(),
-            forecast_priority: self.forecast_priority,
-            offerdatetime: self.offerdatetime,
-            origin: self.origin.clone(),
-            run_datetime: self.run_datetime,
+            duid: row.duid().to_string(),
+            forecast_priority: row.forecast_priority,
+            offerdatetime: row.offerdatetime,
+            origin: row.origin().to_string(),
+            run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.run_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_intermittent_ds_run_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_ds_run_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentDsRun1Row {
+            run_datetime: row.run_datetime.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            origin: row.origin.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            authorisedby: row.authorisedby.clone(),
+            comments: row.comments.clone(),
+            lastchanged: row.lastchanged.clone(),
+            model: row.model.clone(),
+            participant_timestamp: row.participant_timestamp.clone(),
+            suppressed_aemo: row.suppressed_aemo.clone(),
+            suppressed_participant: row.suppressed_participant.clone(),
+            transaction_id: row.transaction_id.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandIntermittentDsRun1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub forecast_priority: rust_decimal::Decimal,
     pub offerdatetime: chrono::NaiveDateTime,
-    pub origin: String,
+    pub origin: alloc::string::String,
     pub run_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandIntermittentDsRun1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandIntermittentDsRun1 {
-    type Row = DemandIntermittentDsRun1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.forecast_priority == row.forecast_priority
-            && self.offerdatetime == row.offerdatetime && self.origin == row.origin
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentDsRun1Row<'data> {
+    type Row<'other> = DemandIntermittentDsRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.offerdatetime == row.offerdatetime && self.origin() == row.origin()
             && self.run_datetime == row.run_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentDsRun1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandIntermittentDsRun1Row<'data> {
     type PrimaryKey = DemandIntermittentDsRun1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.forecast_priority == key.forecast_priority
-            && self.offerdatetime == key.offerdatetime && self.origin == key.origin
+        self.duid() == key.duid && self.forecast_priority == key.forecast_priority
+            && self.offerdatetime == key.offerdatetime && self.origin() == key.origin
             && self.run_datetime == key.run_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for DemandIntermittentDsRun1PrimaryKey {
-    type Row = DemandIntermittentDsRun1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.forecast_priority == row.forecast_priority
-            && self.offerdatetime == row.offerdatetime && self.origin == row.origin
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentDsRun1PrimaryKey {
+    type Row<'other> = DemandIntermittentDsRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.offerdatetime == row.offerdatetime && self.origin == row.origin()
             && self.run_datetime == row.run_datetime
     }
 }
@@ -1104,136 +2164,206 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentDsRun1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("origin",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("forecast_priority",
-                arrow2::datatypes::DataType::Decimal(10, 0), false),
-                arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("comments",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("model",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("participant_timestamp",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("suppressed_aemo",
-                arrow2::datatypes::DataType::Decimal(1, 0), true),
-                arrow2::datatypes::Field::new("suppressed_participant",
-                arrow2::datatypes::DataType::Decimal(1, 0), true),
-                arrow2::datatypes::Field::new("transaction_id",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = DemandIntermittentDsRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "origin",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "comments",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "model",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "participant_timestamp",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_aemo",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_participant",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "transaction_id",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut run_datetime_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut origin_array = Vec::new();
-        let mut forecast_priority_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut comments_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut model_array = Vec::new();
-        let mut participant_timestamp_array = Vec::new();
-        let mut suppressed_aemo_array = Vec::new();
-        let mut suppressed_participant_array = Vec::new();
-        let mut transaction_id_array = Vec::new();
-        for row in partition {
-            run_datetime_array.push(row.run_datetime.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            origin_array.push(row.origin);
-            forecast_priority_array
-                .push({
-                    let mut val = row.forecast_priority;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            authorisedby_array.push(row.authorisedby);
-            comments_array.push(row.comments);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            model_array.push(row.model);
-            participant_timestamp_array
-                .push(row.participant_timestamp.map(|val| val.timestamp()));
-            suppressed_aemo_array
-                .push({
-                    row.suppressed_aemo
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            suppressed_participant_array
-                .push({
-                    row.suppressed_participant
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            transaction_id_array.push(row.transaction_id);
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentDsRun1Builder {
+            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            origin_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            comments_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            model_array: arrow::array::builder::StringBuilder::new(),
+            participant_timestamp_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            suppressed_aemo_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            suppressed_participant_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            transaction_id_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(origin_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(forecast_priority_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(comments_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(model_array)) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(participant_timestamp_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(suppressed_aemo_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(suppressed_participant_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(transaction_id_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.origin_array.append_value(row.origin());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder.comments_array.append_option(row.comments());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.model_array.append_option(row.model());
+        builder
+            .participant_timestamp_array
+            .append_option(row.participant_timestamp.map(|val| val.timestamp()));
+        builder
+            .suppressed_aemo_array
+            .append_option({
+                row.suppressed_aemo
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .suppressed_participant_array
+            .append_option({
+                row.suppressed_participant
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.transaction_id_array.append_option(row.transaction_id());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.origin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.comments_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.model_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_timestamp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_aemo_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_participant_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.transaction_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentDsRun1Builder {
+    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    origin_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    comments_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    model_array: arrow::array::builder::StringBuilder,
+    participant_timestamp_array: arrow::array::builder::TimestampSecondBuilder,
+    suppressed_aemo_array: arrow::array::builder::Decimal128Builder,
+    suppressed_participant_array: arrow::array::builder::Decimal128Builder,
+    transaction_id_array: arrow::array::builder::StringBuilder,
+}
+pub struct ForecastIntermittentGen1;
+pub struct ForecastIntermittentGen1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_FCST
@@ -1246,84 +2376,202 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
 /// # Description
 ///  Source &nbsp; INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of intermittent generation out to 8 days ahead. Volume ~18,000 rows per generator per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
 /// * DUID
 /// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ForecastIntermittentGen1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct ForecastIntermittentGen1Row<'data> {
     /// Date Time of forecast (AEST).
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Identifier of the intermittent generator.
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date Time (AEST) of the first half-hour interval being forecast.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub start_interval_datetime: chrono::NaiveDateTime,
     /// Date Time (AEST) of the final half-hour interval being forecast.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub end_interval_datetime: chrono::NaiveDateTime,
     /// Versioning information for resolution back to AEMO's wind generation forecasting system.
     pub versionno: Option<rust_decimal::Decimal>,
     /// Date Time record was created
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> ForecastIntermittentGen1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
 }
 impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "FORECAST";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGen1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "DUID",
+        "START_INTERVAL_DATETIME",
+        "END_INTERVAL_DATETIME",
+        "VERSIONNO",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = ForecastIntermittentGen1Row<'row>;
+    type FieldMapping = ForecastIntermittentGen1Mapping;
     type PrimaryKey = ForecastIntermittentGen1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "FORECAST".into(),
-            table_name: Some("INTERMITTENT_GEN".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(ForecastIntermittentGen1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            start_interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "start_interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            end_interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "end_interval_datetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_opt_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> ForecastIntermittentGen1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(ForecastIntermittentGen1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let run_datetime = row
+            .get_custom_parsed_at_idx(
+                "run_datetime",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(run_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(run_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> ForecastIntermittentGen1PrimaryKey {
         ForecastIntermittentGen1PrimaryKey {
-            duid: self.duid.clone(),
-            run_datetime: self.run_datetime,
+            duid: row.duid().to_string(),
+            run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.run_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.run_datetime.month())
+            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "forecast_intermittent_gen_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "forecast_intermittent_gen_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        ForecastIntermittentGen1Row {
+            run_datetime: row.run_datetime.clone(),
+            duid: row.duid.clone(),
+            start_interval_datetime: row.start_interval_datetime.clone(),
+            end_interval_datetime: row.end_interval_datetime.clone(),
+            versionno: row.versionno.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ForecastIntermittentGen1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub run_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for ForecastIntermittentGen1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ForecastIntermittentGen1 {
-    type Row = ForecastIntermittentGen1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.run_datetime == row.run_datetime
+impl<'data> mmsdm_core::CompareWithRow for ForecastIntermittentGen1Row<'data> {
+    type Row<'other> = ForecastIntermittentGen1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.run_datetime == row.run_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ForecastIntermittentGen1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ForecastIntermittentGen1Row<'data> {
     type PrimaryKey = ForecastIntermittentGen1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.run_datetime == key.run_datetime
+        self.duid() == key.duid && self.run_datetime == key.run_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for ForecastIntermittentGen1PrimaryKey {
-    type Row = ForecastIntermittentGen1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.run_datetime == row.run_datetime
+impl<'data> mmsdm_core::CompareWithRow for ForecastIntermittentGen1PrimaryKey {
+    type Row<'other> = ForecastIntermittentGen1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.run_datetime == row.run_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for ForecastIntermittentGen1PrimaryKey {
@@ -1334,76 +2582,122 @@ impl mmsdm_core::CompareWithPrimaryKey for ForecastIntermittentGen1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("start_interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("end_interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = ForecastIntermittentGen1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "start_interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "end_interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut run_datetime_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut start_interval_datetime_array = Vec::new();
-        let mut end_interval_datetime_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            run_datetime_array.push(row.run_datetime.timestamp());
-            duid_array.push(row.duid);
-            start_interval_datetime_array.push(row.start_interval_datetime.timestamp());
-            end_interval_datetime_array.push(row.end_interval_datetime.timestamp());
-            versionno_array
-                .push({
-                    row.versionno
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        ForecastIntermittentGen1Builder {
+            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            start_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            end_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(start_interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(end_interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .start_interval_datetime_array
+            .append_value(row.start_interval_datetime.timestamp());
+        builder
+            .end_interval_datetime_array
+            .append_value(row.end_interval_datetime.timestamp());
+        builder
+            .versionno_array
+            .append_option({
+                row.versionno
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.start_interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.end_interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct ForecastIntermittentGen1Builder {
+    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    start_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    end_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct ForecastIntermittentGenData1;
+pub struct ForecastIntermittentGenData1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_FCST_DATA
@@ -1414,25 +2708,22 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
 /// * Data Version: 1
 ///
 /// # Description
-///  Source INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of wind generation out to 40 hours ahead. Volume ~1,500,000 rows per generator per year
+///  Source INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of wind generation out to 8 days ahead. Volume ~1,500,000 rows per generator per year
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
 /// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct ForecastIntermittentGenData1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct ForecastIntermittentGenData1Row<'data> {
     /// Date Time of forecast (AEST).
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub run_datetime: chrono::NaiveDateTime,
     /// Identifier of the intermittent generator
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date Time (AEST) of the halfhour interval being forecast
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// The average forecast value in MW at the interval end
     pub powermean: Option<rust_decimal::Decimal>,
@@ -1443,65 +2734,206 @@ pub struct ForecastIntermittentGenData1 {
     /// 90% probability of exceedance forecast value in MW at the interval end
     pub powerpoehigh: Option<rust_decimal::Decimal>,
     /// Date Time record was created
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> ForecastIntermittentGenData1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
 }
 impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "FORECAST";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_DATA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGenData1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "DUID",
+        "INTERVAL_DATETIME",
+        "POWERMEAN",
+        "POWERPOE50",
+        "POWERPOELOW",
+        "POWERPOEHIGH",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = ForecastIntermittentGenData1Row<'row>;
+    type FieldMapping = ForecastIntermittentGenData1Mapping;
     type PrimaryKey = ForecastIntermittentGenData1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "FORECAST".into(),
-            table_name: Some("INTERMITTENT_GEN_DATA".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(ForecastIntermittentGenData1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            powermean: row
+                .get_opt_custom_parsed_at_idx(
+                    "powermean",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            powerpoe50: row
+                .get_opt_custom_parsed_at_idx(
+                    "powerpoe50",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            powerpoelow: row
+                .get_opt_custom_parsed_at_idx(
+                    "powerpoelow",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            powerpoehigh: row
+                .get_opt_custom_parsed_at_idx(
+                    "powerpoehigh",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> ForecastIntermittentGenData1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(ForecastIntermittentGenData1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let interval_datetime = row
+            .get_custom_parsed_at_idx(
+                "interval_datetime",
+                6,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(interval_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> ForecastIntermittentGenData1PrimaryKey {
         ForecastIntermittentGenData1PrimaryKey {
-            duid: self.duid.clone(),
-            interval_datetime: self.interval_datetime,
-            run_datetime: self.run_datetime,
+            duid: row.duid().to_string(),
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.interval_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "forecast_intermittent_gen_data_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "forecast_intermittent_gen_data_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        ForecastIntermittentGenData1Row {
+            run_datetime: row.run_datetime.clone(),
+            duid: row.duid.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            powermean: row.powermean.clone(),
+            powerpoe50: row.powerpoe50.clone(),
+            powerpoelow: row.powerpoelow.clone(),
+            powerpoehigh: row.powerpoehigh.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ForecastIntermittentGenData1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for ForecastIntermittentGenData1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for ForecastIntermittentGenData1 {
-    type Row = ForecastIntermittentGenData1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.interval_datetime == row.interval_datetime
+impl<'data> mmsdm_core::CompareWithRow for ForecastIntermittentGenData1Row<'data> {
+    type Row<'other> = ForecastIntermittentGenData1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ForecastIntermittentGenData1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for ForecastIntermittentGenData1Row<'data> {
     type PrimaryKey = ForecastIntermittentGenData1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.interval_datetime == key.interval_datetime
+        self.duid() == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for ForecastIntermittentGenData1PrimaryKey {
-    type Row = ForecastIntermittentGenData1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.interval_datetime == row.interval_datetime
+impl<'data> mmsdm_core::CompareWithRow for ForecastIntermittentGenData1PrimaryKey {
+    type Row<'other> = ForecastIntermittentGenData1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
     }
 }
@@ -1514,111 +2946,162 @@ impl mmsdm_core::CompareWithPrimaryKey for ForecastIntermittentGenData1PrimaryKe
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("run_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("powermean",
-                arrow2::datatypes::DataType::Decimal(9, 3), true),
-                arrow2::datatypes::Field::new("powerpoe50",
-                arrow2::datatypes::DataType::Decimal(9, 3), true),
-                arrow2::datatypes::Field::new("powerpoelow",
-                arrow2::datatypes::DataType::Decimal(9, 3), true),
-                arrow2::datatypes::Field::new("powerpoehigh",
-                arrow2::datatypes::DataType::Decimal(9, 3), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = ForecastIntermittentGenData1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "powermean",
+                    arrow::datatypes::DataType::Decimal128(9, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "powerpoe50",
+                    arrow::datatypes::DataType::Decimal128(9, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "powerpoelow",
+                    arrow::datatypes::DataType::Decimal128(9, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "powerpoehigh",
+                    arrow::datatypes::DataType::Decimal128(9, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut run_datetime_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut interval_datetime_array = Vec::new();
-        let mut powermean_array = Vec::new();
-        let mut powerpoe50_array = Vec::new();
-        let mut powerpoelow_array = Vec::new();
-        let mut powerpoehigh_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            run_datetime_array.push(row.run_datetime.timestamp());
-            duid_array.push(row.duid);
-            interval_datetime_array.push(row.interval_datetime.timestamp());
-            powermean_array
-                .push({
-                    row.powermean
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            powerpoe50_array
-                .push({
-                    row.powerpoe50
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            powerpoelow_array
-                .push({
-                    row.powerpoelow
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            powerpoehigh_array
-                .push({
-                    row.powerpoehigh
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        ForecastIntermittentGenData1Builder {
+            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            powermean_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
+            powerpoe50_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
+            powerpoelow_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
+            powerpoehigh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(run_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powermean_array)
-                    .to(arrow2::datatypes::DataType::Decimal(9, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powerpoe50_array)
-                    .to(arrow2::datatypes::DataType::Decimal(9, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powerpoelow_array)
-                    .to(arrow2::datatypes::DataType::Decimal(9, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powerpoehigh_array)
-                    .to(arrow2::datatypes::DataType::Decimal(9, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .powermean_array
+            .append_option({
+                row.powermean
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .powerpoe50_array
+            .append_option({
+                row.powerpoe50
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .powerpoelow_array
+            .append_option({
+                row.powerpoelow
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .powerpoehigh_array
+            .append_option({
+                row.powerpoehigh
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powermean_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powerpoe50_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powerpoelow_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powerpoehigh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct ForecastIntermittentGenData1Builder {
+    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    powermean_array: arrow::array::builder::Decimal128Builder,
+    powerpoe50_array: arrow::array::builder::Decimal128Builder,
+    powerpoelow_array: arrow::array::builder::Decimal128Builder,
+    powerpoehigh_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct DemandIntermittentGenLimit1;
+pub struct DemandIntermittentGenLimit1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_LIMIT
@@ -1630,8 +3113,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1639,78 +3121,186 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
 /// * OFFERDATETIME
 /// * PERIODID
 /// * TRADINGDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandIntermittentGenLimit1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenLimit1Row<'data> {
     /// Trading Day for which this unit availability submission applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this unit availability submission was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Trading interval number (1...48) within this TRADINGDATE for which UPPERMWLIMIT applies
     pub periodid: rust_decimal::Decimal,
     /// Maximum imposed MW limit (down regulation in AWEFS/ASEFS). Value between 0 and the registered DUID Maximum Capacity. Value = -1 means no limit applies.
     pub uppermwlimit: Option<i64>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenLimit1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
 }
 impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimit1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRADINGDATE",
+        "DUID",
+        "OFFERDATETIME",
+        "PERIODID",
+        "UPPERMWLIMIT",
+    ];
+    type Row<'row> = DemandIntermittentGenLimit1Row<'row>;
+    type FieldMapping = DemandIntermittentGenLimit1Mapping;
     type PrimaryKey = DemandIntermittentGenLimit1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("INTERMITTENT_GEN_LIMIT".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenLimit1Row {
+            tradingdate: row
+                .get_custom_parsed_at_idx(
+                    "tradingdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            uppermwlimit: row.get_opt_parsed_at_idx("uppermwlimit", field_mapping.0[4])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandIntermittentGenLimit1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenLimit1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let tradingdate = row
+            .get_custom_parsed_at_idx(
+                "tradingdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(tradingdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenLimit1PrimaryKey {
         DemandIntermittentGenLimit1PrimaryKey {
-            duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime,
-            periodid: self.periodid,
-            tradingdate: self.tradingdate,
+            duid: row.duid().to_string(),
+            offerdatetime: row.offerdatetime,
+            periodid: row.periodid,
+            tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.tradingdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                )
+                .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_intermittent_gen_limit_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_limit_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenLimit1Row {
+            tradingdate: row.tradingdate.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            periodid: row.periodid.clone(),
+            uppermwlimit: row.uppermwlimit.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandIntermittentGenLimit1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
     pub tradingdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandIntermittentGenLimit1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandIntermittentGenLimit1 {
-    type Row = DemandIntermittentGenLimit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.offerdatetime == row.offerdatetime
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenLimit1Row<'data> {
+    type Row<'other> = DemandIntermittentGenLimit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.offerdatetime == row.offerdatetime
             && self.periodid == row.periodid && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenLimit1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenLimit1Row<'data> {
     type PrimaryKey = DemandIntermittentGenLimit1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.offerdatetime == key.offerdatetime
+        self.duid() == key.duid && self.offerdatetime == key.offerdatetime
             && self.periodid == key.periodid && self.tradingdate == key.tradingdate
     }
 }
-impl mmsdm_core::CompareWithRow for DemandIntermittentGenLimit1PrimaryKey {
-    type Row = DemandIntermittentGenLimit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.offerdatetime == row.offerdatetime
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenLimit1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenLimit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.offerdatetime == row.offerdatetime
             && self.periodid == row.periodid && self.tradingdate == row.tradingdate
     }
 }
@@ -1723,65 +3313,98 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenLimit1PrimaryKey
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("tradingdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("uppermwlimit",
-                arrow2::datatypes::DataType::Int64, true)
-            ],
+    type Builder = DemandIntermittentGenLimit1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "uppermwlimit",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut tradingdate_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut uppermwlimit_array = Vec::new();
-        for row in partition {
-            tradingdate_array.push(row.tradingdate.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            uppermwlimit_array.push(row.uppermwlimit);
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenLimit1Builder {
+            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            uppermwlimit_array: arrow::array::builder::Int64Builder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uppermwlimit_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.uppermwlimit_array.append_option(row.uppermwlimit);
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.uppermwlimit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenLimit1Builder {
+    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    uppermwlimit_array: arrow::array::builder::Int64Builder,
+}
+pub struct DemandIntermittentGenLimitDay1;
+pub struct DemandIntermittentGenLimitDay1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_LIMIT_DAY
@@ -1793,89 +3416,241 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private; Public Next-Day
+///
 ///
 /// # Primary Key Columns
 ///
 /// * DUID
 /// * OFFERDATETIME
 /// * TRADINGDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandIntermittentGenLimitDay1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenLimitDay1Row<'data> {
     /// Trading Day for which this unit availability submission applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this unit availability submission was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique participant identifier
-    pub participantid: Option<String>,
+    pub participantid: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// User entering the unit availability submission
-    pub authorisedbyuser: Option<String>,
+    pub authorisedbyuser: core::ops::Range<usize>,
     /// Participant entering the unit availability submission
-    pub authorisedbyparticipantid: Option<String>,
+    pub authorisedbyparticipantid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenLimitDay1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn participantid(&self) -> Option<&str> {
+        if self.participantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.participantid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedbyuser(&self) -> Option<&str> {
+        if self.authorisedbyuser.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedbyuser.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedbyparticipantid(&self) -> Option<&str> {
+        if self.authorisedbyparticipantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedbyparticipantid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT_DAY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimitDay1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRADINGDATE",
+        "DUID",
+        "OFFERDATETIME",
+        "PARTICIPANTID",
+        "LASTCHANGED",
+        "AUTHORISEDBYUSER",
+        "AUTHORISEDBYPARTICIPANTID",
+    ];
+    type Row<'row> = DemandIntermittentGenLimitDay1Row<'row>;
+    type FieldMapping = DemandIntermittentGenLimitDay1Mapping;
     type PrimaryKey = DemandIntermittentGenLimitDay1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("INTERMITTENT_GEN_LIMIT_DAY".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenLimitDay1Row {
+            tradingdate: row
+                .get_custom_parsed_at_idx(
+                    "tradingdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            participantid: row.get_opt_range("participantid", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedbyuser: row.get_opt_range("authorisedbyuser", field_mapping.0[5])?,
+            authorisedbyparticipantid: row
+                .get_opt_range("authorisedbyparticipantid", field_mapping.0[6])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandIntermittentGenLimitDay1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenLimitDay1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let tradingdate = row
+            .get_custom_parsed_at_idx(
+                "tradingdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(tradingdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenLimitDay1PrimaryKey {
         DemandIntermittentGenLimitDay1PrimaryKey {
-            duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime,
-            tradingdate: self.tradingdate,
+            duid: row.duid().to_string(),
+            offerdatetime: row.offerdatetime,
+            tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.tradingdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                )
+                .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_intermittent_gen_limit_day_v1_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_limit_day_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenLimitDay1Row {
+            tradingdate: row.tradingdate.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            participantid: row.participantid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            authorisedbyuser: row.authorisedbyuser.clone(),
+            authorisedbyparticipantid: row.authorisedbyparticipantid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandIntermittentGenLimitDay1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub tradingdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandIntermittentGenLimitDay1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandIntermittentGenLimitDay1 {
-    type Row = DemandIntermittentGenLimitDay1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.offerdatetime == row.offerdatetime
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenLimitDay1Row<'data> {
+    type Row<'other> = DemandIntermittentGenLimitDay1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenLimitDay1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentGenLimitDay1Row<'data> {
     type PrimaryKey = DemandIntermittentGenLimitDay1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.offerdatetime == key.offerdatetime
+        self.duid() == key.duid && self.offerdatetime == key.offerdatetime
             && self.tradingdate == key.tradingdate
     }
 }
-impl mmsdm_core::CompareWithRow for DemandIntermittentGenLimitDay1PrimaryKey {
-    type Row = DemandIntermittentGenLimitDay1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.offerdatetime == row.offerdatetime
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenLimitDay1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenLimitDay1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
 }
@@ -1888,75 +3663,428 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenLimitDay1Primary
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("tradingdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedbyuser",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authorisedbyparticipantid",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = DemandIntermittentGenLimitDay1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedbyuser",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedbyparticipantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut tradingdate_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut authorisedbyuser_array = Vec::new();
-        let mut authorisedbyparticipantid_array = Vec::new();
-        for row in partition {
-            tradingdate_array.push(row.tradingdate.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            participantid_array.push(row.participantid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            authorisedbyuser_array.push(row.authorisedbyuser);
-            authorisedbyparticipantid_array.push(row.authorisedbyparticipantid);
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenLimitDay1Builder {
+            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedbyuser_array: arrow::array::builder::StringBuilder::new(),
+            authorisedbyparticipantid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedbyuser_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedbyparticipantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.participantid_array.append_option(row.participantid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.authorisedbyuser_array.append_option(row.authorisedbyuser());
+        builder
+            .authorisedbyparticipantid_array
+            .append_option(row.authorisedbyparticipantid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedbyuser_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.authorisedbyparticipantid_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenLimitDay1Builder {
+    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedbyuser_array: arrow::array::builder::StringBuilder,
+    authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
+}
+pub struct DemandIntermittentGenScada1;
+pub struct DemandIntermittentGenScada1Mapping([usize; 5]);
+/// # Summary
+///
+/// ## INTERMITTENT_GEN_SCADA
+///  _INTERMITTENT_GEN_SCADA provides the SCADA Availability for every intermittent generating unit, including Elements Available (wind turbines/solar inverters) and Local Limit_
+///
+/// * Data Set Name: Demand
+/// * File Name: Intermittent Gen Scada
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * RUN_DATETIME
+/// * SCADA_TYPE
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenScada1Row<'data> {
+    /// Date Time of the dispatch interval (interval ending)
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Dispatchable Unit Identifier
+    pub duid: core::ops::Range<usize>,
+    /// SCADA snapshot for intermittent generating unit at start of interval for a specified SCADA signal type. ELAV = Total Elements Available (# turbines for wind farms, # inverters for solar farms); LOCL = Local Limit (MW).
+    pub scada_type: core::ops::Range<usize>,
+    /// SCADA value snapshot for intermittent generating unit at start of interval for a specified SCADA signal type.
+    pub scada_value: Option<rust_decimal::Decimal>,
+    /// SCADA quality snapshot for intermittent generating unit at start of interval for a specified SCADA signal type.
+    pub scada_quality: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenScada1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn scada_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.scada_type.clone())
+    }
+    pub fn scada_quality(&self) -> Option<&str> {
+        if self.scada_quality.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.scada_quality.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_SCADA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenScada1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "DUID",
+        "SCADA_TYPE",
+        "SCADA_VALUE",
+        "SCADA_QUALITY",
+    ];
+    type Row<'row> = DemandIntermittentGenScada1Row<'row>;
+    type FieldMapping = DemandIntermittentGenScada1Mapping;
+    type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
+    type Partition = mmsdm_core::YearMonth;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenScada1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            scada_type: row.get_range("scada_type", field_mapping.0[2])?,
+            scada_value: row
+                .get_opt_custom_parsed_at_idx(
+                    "scada_value",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            scada_quality: row.get_opt_range("scada_quality", field_mapping.0[4])?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenScada1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let run_datetime = row
+            .get_custom_parsed_at_idx(
+                "run_datetime",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(run_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(run_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenScada1PrimaryKey {
+        DemandIntermittentGenScada1PrimaryKey {
+            duid: row.duid().to_string(),
+            run_datetime: row.run_datetime,
+            scada_type: row.scada_type().to_string(),
+        }
+    }
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
+        mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                )
+                .unwrap(),
+        }
+    }
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_scada_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
+        )
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenScada1Row {
+            run_datetime: row.run_datetime.clone(),
+            duid: row.duid.clone(),
+            scada_type: row.scada_type.clone(),
+            scada_value: row.scada_value.clone(),
+            scada_quality: row.scada_quality.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandIntermittentGenScada1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub scada_type: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandIntermittentGenScada1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenScada1Row<'data> {
+    type Row<'other> = DemandIntermittentGenScada1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.run_datetime == row.run_datetime
+            && self.scada_type() == row.scada_type()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenScada1Row<'data> {
+    type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.run_datetime == key.run_datetime
+            && self.scada_type() == key.scada_type
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenScada1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenScada1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.run_datetime == row.run_datetime
+            && self.scada_type == row.scada_type()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenScada1PrimaryKey {
+    type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.run_datetime == key.run_datetime
+            && self.scada_type == key.scada_type
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
+    type Builder = DemandIntermittentGenScada1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "scada_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "scada_value",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "scada_quality",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenScada1Builder {
+            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            scada_type_array: arrow::array::builder::StringBuilder::new(),
+            scada_value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            scada_quality_array: arrow::array::builder::StringBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.scada_type_array.append_value(row.scada_type());
+        builder
+            .scada_value_array
+            .append_option({
+                row.scada_value
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder.scada_quality_array.append_option(row.scada_quality());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.scada_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.scada_value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.scada_quality_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenScada1Builder {
+    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    scada_type_array: arrow::array::builder::StringBuilder,
+    scada_value_array: arrow::array::builder::Decimal128Builder,
+    scada_quality_array: arrow::array::builder::StringBuilder,
+}
+pub struct DemandMtpasaIntermittentAvail2;
+pub struct DemandMtpasaIntermittentAvail2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MTPASA_INTERMITTENT_AVAIL
@@ -1968,8 +4096,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1977,85 +4104,214 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
 /// * DUID
 /// * OFFERDATETIME
 /// * TRADINGDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandMtpasaIntermittentAvail2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandMtpasaIntermittentAvail2Row<'data> {
     /// Trading Day for which this cluster availability submission applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date and Time when this cluster availability submission was loaded
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Unique Cluster Identifier for this cluster within the DUID
-    pub clusterid: String,
+    pub clusterid: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Number of elements within this CLUSTERID (turbines for wind, or inverters for solar) that are not available for this TRADINGDATE. Value between 0 and the registered Number of Cluster Elements.Value = 0 means no elements unavailable
     pub elements_unavailable: Option<rust_decimal::Decimal>,
     /// Number of elements within this CLUSTERID (turbines for wind, or inverters for solar) that are available for this TRADINGDATE. Value between 0 and the registered Number of Cluster Elements. Value = 0 means no elements available
     pub elements_available: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandMtpasaIntermittentAvail2Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn clusterid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.clusterid.clone())
+    }
 }
 impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_AVAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentAvail2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRADINGDATE",
+        "DUID",
+        "OFFERDATETIME",
+        "CLUSTERID",
+        "LASTCHANGED",
+        "ELEMENTS_UNAVAILABLE",
+        "ELEMENTS_AVAILABLE",
+    ];
+    type Row<'row> = DemandMtpasaIntermittentAvail2Row<'row>;
+    type FieldMapping = DemandMtpasaIntermittentAvail2Mapping;
     type PrimaryKey = DemandMtpasaIntermittentAvail2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("MTPASA_INTERMITTENT_AVAIL".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandMtpasaIntermittentAvail2Row {
+            tradingdate: row
+                .get_custom_parsed_at_idx(
+                    "tradingdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            clusterid: row.get_range("clusterid", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            elements_unavailable: row
+                .get_opt_custom_parsed_at_idx(
+                    "elements_unavailable",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            elements_available: row
+                .get_opt_custom_parsed_at_idx(
+                    "elements_available",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandMtpasaIntermittentAvail2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandMtpasaIntermittentAvail2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let tradingdate = row
+            .get_custom_parsed_at_idx(
+                "tradingdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(tradingdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandMtpasaIntermittentAvail2PrimaryKey {
         DemandMtpasaIntermittentAvail2PrimaryKey {
-            clusterid: self.clusterid.clone(),
-            duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime,
-            tradingdate: self.tradingdate,
+            clusterid: row.clusterid().to_string(),
+            duid: row.duid().to_string(),
+            offerdatetime: row.offerdatetime,
+            tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.tradingdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                )
+                .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_mtpasa_intermittent_avail_v2_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_mtpasa_intermittent_avail_v2_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandMtpasaIntermittentAvail2Row {
+            tradingdate: row.tradingdate.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            clusterid: row.clusterid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            elements_unavailable: row.elements_unavailable.clone(),
+            elements_available: row.elements_available.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandMtpasaIntermittentAvail2PrimaryKey {
-    pub clusterid: String,
-    pub duid: String,
+    pub clusterid: alloc::string::String,
+    pub duid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub tradingdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandMtpasaIntermittentAvail2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandMtpasaIntermittentAvail2 {
-    type Row = DemandMtpasaIntermittentAvail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.clusterid == row.clusterid && self.duid == row.duid
+impl<'data> mmsdm_core::CompareWithRow for DemandMtpasaIntermittentAvail2Row<'data> {
+    type Row<'other> = DemandMtpasaIntermittentAvail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.clusterid() == row.clusterid() && self.duid() == row.duid()
             && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandMtpasaIntermittentAvail2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandMtpasaIntermittentAvail2Row<'data> {
     type PrimaryKey = DemandMtpasaIntermittentAvail2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.clusterid == key.clusterid && self.duid == key.duid
+        self.clusterid() == key.clusterid && self.duid() == key.duid
             && self.offerdatetime == key.offerdatetime
             && self.tradingdate == key.tradingdate
     }
 }
-impl mmsdm_core::CompareWithRow for DemandMtpasaIntermittentAvail2PrimaryKey {
-    type Row = DemandMtpasaIntermittentAvail2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.clusterid == row.clusterid && self.duid == row.duid
+impl<'data> mmsdm_core::CompareWithRow for DemandMtpasaIntermittentAvail2PrimaryKey {
+    type Row<'other> = DemandMtpasaIntermittentAvail2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.clusterid == row.clusterid() && self.duid == row.duid()
             && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
@@ -2070,89 +4326,134 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandMtpasaIntermittentAvail2Primary
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("tradingdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("clusterid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("elements_unavailable",
-                arrow2::datatypes::DataType::Decimal(5, 0), true),
-                arrow2::datatypes::Field::new("elements_available",
-                arrow2::datatypes::DataType::Decimal(5, 0), true)
-            ],
+    type Builder = DemandMtpasaIntermittentAvail2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "clusterid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "elements_unavailable",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "elements_available",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut tradingdate_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut clusterid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut elements_unavailable_array = Vec::new();
-        let mut elements_available_array = Vec::new();
-        for row in partition {
-            tradingdate_array.push(row.tradingdate.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            clusterid_array.push(row.clusterid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            elements_unavailable_array
-                .push({
-                    row.elements_unavailable
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            elements_available_array
-                .push({
-                    row.elements_available
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        DemandMtpasaIntermittentAvail2Builder {
+            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            clusterid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            elements_unavailable_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            elements_available_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(clusterid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(elements_unavailable_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(elements_available_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.clusterid_array.append_value(row.clusterid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .elements_unavailable_array
+            .append_option({
+                row.elements_unavailable
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .elements_available_array
+            .append_option({
+                row.elements_available
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clusterid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.elements_unavailable_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.elements_available_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandMtpasaIntermittentAvail2Builder {
+    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    clusterid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    elements_unavailable_array: arrow::array::builder::Decimal128Builder,
+    elements_available_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandMtpasaIntermittentLimit1;
+pub struct DemandMtpasaIntermittentLimit1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MTPASA_INTERMITTENT_LIMIT
@@ -2164,89 +4465,229 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
 /// * DUID
 /// * OFFERDATETIME
 /// * TRADINGDATE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandMtpasaIntermittentLimit1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandMtpasaIntermittentLimit1Row<'data> {
     /// Trading Day for which this unit availability submission applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub tradingdate: chrono::NaiveDateTime,
     /// Unique Identifier of Dispatchable Unit
-    pub duid: String,
+    pub duid: core::ops::Range<usize>,
     /// Date time file processed
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdatetime: chrono::NaiveDateTime,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Maximum imposed MW limit. Value between 0 and the registered DUID Maximum Capacity.Value = -1 means no limit applies.
     pub uppermwlimit: Option<i64>,
     /// User entering the unit availability submission
-    pub authorisedbyuser: Option<String>,
+    pub authorisedbyuser: core::ops::Range<usize>,
     /// Participant entering the unit availability submission
-    pub authorisedbyparticipantid: Option<String>,
+    pub authorisedbyparticipantid: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandMtpasaIntermittentLimit1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn authorisedbyuser(&self) -> Option<&str> {
+        if self.authorisedbyuser.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedbyuser.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedbyparticipantid(&self) -> Option<&str> {
+        if self.authorisedbyparticipantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedbyparticipantid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_LIMIT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentLimit1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRADINGDATE",
+        "DUID",
+        "OFFERDATETIME",
+        "LASTCHANGED",
+        "UPPERMWLIMIT",
+        "AUTHORISEDBYUSER",
+        "AUTHORISEDBYPARTICIPANTID",
+    ];
+    type Row<'row> = DemandMtpasaIntermittentLimit1Row<'row>;
+    type FieldMapping = DemandMtpasaIntermittentLimit1Mapping;
     type PrimaryKey = DemandMtpasaIntermittentLimit1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("MTPASA_INTERMITTENT_LIMIT".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandMtpasaIntermittentLimit1Row {
+            tradingdate: row
+                .get_custom_parsed_at_idx(
+                    "tradingdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            uppermwlimit: row.get_opt_parsed_at_idx("uppermwlimit", field_mapping.0[4])?,
+            authorisedbyuser: row.get_opt_range("authorisedbyuser", field_mapping.0[5])?,
+            authorisedbyparticipantid: row
+                .get_opt_range("authorisedbyparticipantid", field_mapping.0[6])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandMtpasaIntermittentLimit1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandMtpasaIntermittentLimit1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let tradingdate = row
+            .get_custom_parsed_at_idx(
+                "tradingdate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(tradingdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandMtpasaIntermittentLimit1PrimaryKey {
         DemandMtpasaIntermittentLimit1PrimaryKey {
-            duid: self.duid.clone(),
-            offerdatetime: self.offerdatetime,
-            tradingdate: self.tradingdate,
+            duid: row.duid().to_string(),
+            offerdatetime: row.offerdatetime,
+            tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.tradingdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.tradingdate.month()).unwrap(),
+            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                )
+                .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_mtpasa_intermittent_limit_v1_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_mtpasa_intermittent_limit_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandMtpasaIntermittentLimit1Row {
+            tradingdate: row.tradingdate.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            lastchanged: row.lastchanged.clone(),
+            uppermwlimit: row.uppermwlimit.clone(),
+            authorisedbyuser: row.authorisedbyuser.clone(),
+            authorisedbyparticipantid: row.authorisedbyparticipantid.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandMtpasaIntermittentLimit1PrimaryKey {
-    pub duid: String,
+    pub duid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub tradingdate: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for DemandMtpasaIntermittentLimit1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandMtpasaIntermittentLimit1 {
-    type Row = DemandMtpasaIntermittentLimit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.offerdatetime == row.offerdatetime
+impl<'data> mmsdm_core::CompareWithRow for DemandMtpasaIntermittentLimit1Row<'data> {
+    type Row<'other> = DemandMtpasaIntermittentLimit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandMtpasaIntermittentLimit1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandMtpasaIntermittentLimit1Row<'data> {
     type PrimaryKey = DemandMtpasaIntermittentLimit1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.offerdatetime == key.offerdatetime
+        self.duid() == key.duid && self.offerdatetime == key.offerdatetime
             && self.tradingdate == key.tradingdate
     }
 }
-impl mmsdm_core::CompareWithRow for DemandMtpasaIntermittentLimit1PrimaryKey {
-    type Row = DemandMtpasaIntermittentLimit1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.duid == row.duid && self.offerdatetime == row.offerdatetime
+impl<'data> mmsdm_core::CompareWithRow for DemandMtpasaIntermittentLimit1PrimaryKey {
+    type Row<'other> = DemandMtpasaIntermittentLimit1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.offerdatetime == row.offerdatetime
             && self.tradingdate == row.tradingdate
     }
 }
@@ -2259,74 +4700,119 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandMtpasaIntermittentLimit1Primary
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("tradingdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("duid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdatetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("uppermwlimit",
-                arrow2::datatypes::DataType::Int64, true),
-                arrow2::datatypes::Field::new("authorisedbyuser",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authorisedbyparticipantid",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = DemandMtpasaIntermittentLimit1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "uppermwlimit",
+                    arrow::datatypes::DataType::Int64,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedbyuser",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedbyparticipantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut tradingdate_array = Vec::new();
-        let mut duid_array = Vec::new();
-        let mut offerdatetime_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut uppermwlimit_array = Vec::new();
-        let mut authorisedbyuser_array = Vec::new();
-        let mut authorisedbyparticipantid_array = Vec::new();
-        for row in partition {
-            tradingdate_array.push(row.tradingdate.timestamp());
-            duid_array.push(row.duid);
-            offerdatetime_array.push(row.offerdatetime.timestamp());
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            uppermwlimit_array.push(row.uppermwlimit);
-            authorisedbyuser_array.push(row.authorisedbyuser);
-            authorisedbyparticipantid_array.push(row.authorisedbyparticipantid);
+    fn new_builder() -> Self::Builder {
+        DemandMtpasaIntermittentLimit1Builder {
+            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            uppermwlimit_array: arrow::array::builder::Int64Builder::new(),
+            authorisedbyuser_array: arrow::array::builder::StringBuilder::new(),
+            authorisedbyparticipantid_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(tradingdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(duid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdatetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(uppermwlimit_array))
-                    as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedbyuser_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedbyparticipantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.duid_array.append_value(row.duid());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.uppermwlimit_array.append_option(row.uppermwlimit);
+        builder.authorisedbyuser_array.append_option(row.authorisedbyuser());
+        builder
+            .authorisedbyparticipantid_array
+            .append_option(row.authorisedbyparticipantid());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.uppermwlimit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedbyuser_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.authorisedbyparticipantid_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandMtpasaIntermittentLimit1Builder {
+    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    uppermwlimit_array: arrow::array::builder::Int64Builder,
+    authorisedbyuser_array: arrow::array::builder::StringBuilder,
+    authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
+}
+pub struct DemandPeriod1;
+pub struct DemandPeriod1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## PERDEMAND
@@ -2339,8 +4825,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 /// # Description
 ///  The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records. Source PERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date. Volume 1296000 rows per year Note In the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are: · UnRestricted Profile  = ResDemand + MR_Schedule · Restricted Profile  = ResDemand
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2349,18 +4834,15 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 /// * REGIONID
 /// * SETTLEMENTDATE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandPeriod1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandPeriod1Row<'data> {
     /// Market date the forecast is made for. First date of the 7 days.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub effectivedate: Option<chrono::NaiveDateTime>,
     /// Market date of forecast up to 7 days ahead.
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub settlementdate: chrono::NaiveDateTime,
     /// Differentiates this region from all other regions
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Date record issued
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Half hourly trading intervals from 04:30.
     pub periodid: rust_decimal::Decimal,
@@ -2373,74 +4855,244 @@ pub struct DemandPeriod1 {
     /// Demand level for a 10% probability of exceedance
     pub demand10probability: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// MR_Schedule = Unrestricted Demand - POE
     pub mr_schedule: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandPeriod1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for DemandPeriod1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "PERIOD";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandPeriod1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "SETTLEMENTDATE",
+        "REGIONID",
+        "OFFERDATE",
+        "PERIODID",
+        "VERSIONNO",
+        "RESDEMAND",
+        "DEMAND90PROBABILITY",
+        "DEMAND10PROBABILITY",
+        "LASTCHANGED",
+        "MR_SCHEDULE",
+    ];
+    type Row<'row> = DemandPeriod1Row<'row>;
+    type FieldMapping = DemandPeriod1Mapping;
     type PrimaryKey = DemandPeriod1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("PERIOD".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandPeriod1Row {
+            effectivedate: row
+                .get_opt_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            offerdate: row
+                .get_custom_parsed_at_idx(
+                    "offerdate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            resdemand: row
+                .get_opt_custom_parsed_at_idx(
+                    "resdemand",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand90probability: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand90probability",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand10probability: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand10probability",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            mr_schedule: row
+                .get_opt_custom_parsed_at_idx(
+                    "mr_schedule",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandPeriod1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandPeriod1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let settlementdate = row
+            .get_custom_parsed_at_idx(
+                "settlementdate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(settlementdate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandPeriod1PrimaryKey {
         DemandPeriod1PrimaryKey {
-            offerdate: self.offerdate,
-            periodid: self.periodid,
-            regionid: self.regionid.clone(),
-            settlementdate: self.settlementdate,
-            versionno: self.versionno,
+            offerdate: row.offerdate,
+            periodid: row.periodid,
+            regionid: row.regionid().to_string(),
+            settlementdate: row.settlementdate,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.settlementdate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.settlementdate.month())
+            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_period_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_period_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandPeriod1Row {
+            effectivedate: row.effectivedate.clone(),
+            settlementdate: row.settlementdate.clone(),
+            regionid: row.regionid.clone(),
+            offerdate: row.offerdate.clone(),
+            periodid: row.periodid.clone(),
+            versionno: row.versionno.clone(),
+            resdemand: row.resdemand.clone(),
+            demand90probability: row.demand90probability.clone(),
+            demand10probability: row.demand10probability.clone(),
+            lastchanged: row.lastchanged.clone(),
+            mr_schedule: row.mr_schedule.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandPeriod1PrimaryKey {
     pub offerdate: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub settlementdate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for DemandPeriod1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandPeriod1 {
-    type Row = DemandPeriod1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for DemandPeriod1Row<'data> {
+    type Row<'other> = DemandPeriod1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.offerdate == row.offerdate && self.periodid == row.periodid
-            && self.regionid == row.regionid && self.settlementdate == row.settlementdate
+            && self.regionid() == row.regionid()
+            && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandPeriod1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandPeriod1Row<'data> {
     type PrimaryKey = DemandPeriod1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.offerdate == key.offerdate && self.periodid == key.periodid
-            && self.regionid == key.regionid && self.settlementdate == key.settlementdate
+            && self.regionid() == key.regionid
+            && self.settlementdate == key.settlementdate
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for DemandPeriod1PrimaryKey {
-    type Row = DemandPeriod1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for DemandPeriod1PrimaryKey {
+    type Row<'other> = DemandPeriod1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.offerdate == row.offerdate && self.periodid == row.periodid
-            && self.regionid == row.regionid && self.settlementdate == row.settlementdate
+            && self.regionid == row.regionid()
+            && self.settlementdate == row.settlementdate
             && self.versionno == row.versionno
     }
 }
@@ -2454,141 +5106,211 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandPeriod1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandPeriod1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("settlementdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("resdemand",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("demand90probability",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("demand10probability",
-                arrow2::datatypes::DataType::Decimal(10, 0), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("mr_schedule",
-                arrow2::datatypes::DataType::Decimal(6, 0), true)
-            ],
+    type Builder = DemandPeriod1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "resdemand",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand90probability",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand10probability",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "mr_schedule",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut settlementdate_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut offerdate_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut resdemand_array = Vec::new();
-        let mut demand90probability_array = Vec::new();
-        let mut demand10probability_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut mr_schedule_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.map(|val| val.timestamp()));
-            settlementdate_array.push(row.settlementdate.timestamp());
-            regionid_array.push(row.regionid);
-            offerdate_array.push(row.offerdate.timestamp());
-            periodid_array
-                .push({
-                    let mut val = row.periodid;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            resdemand_array
-                .push({
-                    row.resdemand
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            demand90probability_array
-                .push({
-                    row.demand90probability
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            demand10probability_array
-                .push({
-                    row.demand10probability
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            mr_schedule_array
-                .push({
-                    row.mr_schedule
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        DemandPeriod1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            resdemand_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            demand90probability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            demand10probability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            mr_schedule_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(settlementdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(periodid_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(resdemand_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demand90probability_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demand10probability_array)
-                    .to(arrow2::datatypes::DataType::Decimal(10, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mr_schedule_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .effectivedate_array
+            .append_option(row.effectivedate.map(|val| val.timestamp()));
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.regionid_array.append_value(row.regionid());
+        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .resdemand_array
+            .append_option({
+                row.resdemand
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand90probability_array
+            .append_option({
+                row.demand90probability
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand10probability_array
+            .append_option({
+                row.demand10probability
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .mr_schedule_array
+            .append_option({
+                row.mr_schedule
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.resdemand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demand90probability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demand10probability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.mr_schedule_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandPeriod1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    resdemand_array: arrow::array::builder::Decimal128Builder,
+    demand90probability_array: arrow::array::builder::Decimal128Builder,
+    demand10probability_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    mr_schedule_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandTrk1;
+pub struct DemandTrk1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## RESDEMANDTRK
@@ -2601,8 +5323,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
 /// # Description
 ///  RESDEMANDTRK data is public, so is available to all participants. Source RESDEMANDTRK updates are ad hoc. Volume 27000 rows per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -2610,88 +5331,239 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
 /// * OFFERDATE
 /// * REGIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct DemandTrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandTrk1Row<'data> {
     /// Trading Date of the regional forecast
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Unique RegionID
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Date the forecast was created
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub offerdate: chrono::NaiveDateTime,
     /// Version of this forecast with respect to the Effectivedate and Offerdate
     pub versionno: rust_decimal::Decimal,
     /// Tracking purposes only
-    pub filename: Option<String>,
+    pub filename: core::ops::Range<usize>,
     /// Date forecast authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Identifier of authorising user
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date and time the record was last modified
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandTrk1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn filename(&self) -> Option<&str> {
+        if self.filename.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.filename.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for DemandTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "REGIONID",
+        "OFFERDATE",
+        "VERSIONNO",
+        "FILENAME",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = DemandTrk1Row<'row>;
+    type FieldMapping = DemandTrk1Mapping;
     type PrimaryKey = DemandTrk1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "DEMAND".into(),
-            table_name: Some("TRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandTrk1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[1])?,
+            offerdate: row
+                .get_custom_parsed_at_idx(
+                    "offerdate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            filename: row.get_opt_range("filename", field_mapping.0[4])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> DemandTrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandTrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandTrk1PrimaryKey {
         DemandTrk1PrimaryKey {
-            effectivedate: self.effectivedate,
-            offerdate: self.offerdate,
-            regionid: self.regionid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            offerdate: row.offerdate,
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "demand_trk_v1_{}_{}", self.partition_suffix().year, self.partition_suffix()
-            .month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_trk_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandTrk1Row {
+            effectivedate: row.effectivedate.clone(),
+            regionid: row.regionid.clone(),
+            offerdate: row.offerdate.clone(),
+            versionno: row.versionno.clone(),
+            filename: row.filename.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DemandTrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub offerdate: chrono::NaiveDateTime,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for DemandTrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for DemandTrk1 {
-    type Row = DemandTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for DemandTrk1Row<'data> {
+    type Row<'other> = DemandTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.offerdate == row.offerdate
-            && self.regionid == row.regionid && self.versionno == row.versionno
+            && self.regionid() == row.regionid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DemandTrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandTrk1Row<'data> {
     type PrimaryKey = DemandTrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.offerdate == key.offerdate
-            && self.regionid == key.regionid && self.versionno == key.versionno
+            && self.regionid() == key.regionid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for DemandTrk1PrimaryKey {
-    type Row = DemandTrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for DemandTrk1PrimaryKey {
+    type Row<'other> = DemandTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.offerdate == row.offerdate
-            && self.regionid == row.regionid && self.versionno == row.versionno
+            && self.regionid == row.regionid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for DemandTrk1PrimaryKey {
@@ -2703,88 +5575,138 @@ impl mmsdm_core::CompareWithPrimaryKey for DemandTrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for DemandTrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("offerdate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("filename",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = DemandTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "filename",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut offerdate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut filename_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            regionid_array.push(row.regionid);
-            offerdate_array.push(row.offerdate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            filename_array.push(row.filename);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        DemandTrk1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            filename_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(offerdate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(filename_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.regionid_array.append_value(row.regionid());
+        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.filename_array.append_option(row.filename());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.filename_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct DemandTrk1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    filename_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct RooftopActual2;
+pub struct RooftopActual2Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## ROOFTOP_PV_ACTUAL
@@ -2796,89 +5718,206 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * TYPE
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct RooftopActual2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct RooftopActual2Row<'data> {
     /// The forecast half-hour interval (time ending)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// One of DAILY, MEASUREMENT or SATELLITE. DAILY- best quality estimated actuals, available day after. MEASUREMENT- best quality estimated actuals on day, delayed by 1 half hour. SATELLITE- estimated actuals using satellite imagery, delayed by 1 half hour.
-    #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: core::ops::Range<usize>,
     /// Region identifier
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Estimated generation in MW at the interval end
     pub power: Option<rust_decimal::Decimal>,
     /// Quality indicator. Represents the quality of the estimate.
     pub qi: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> RooftopActual2Row<'data> {
+    pub fn r#type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.r#type.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for RooftopActual2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "ROOFTOP";
+    const TABLE_NAME: &'static str = "ACTUAL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopActual2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "INTERVAL_DATETIME",
+        "TYPE",
+        "REGIONID",
+        "POWER",
+        "QI",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = RooftopActual2Row<'row>;
+    type FieldMapping = RooftopActual2Mapping;
     type PrimaryKey = RooftopActual2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "ROOFTOP".into(),
-            table_name: Some("ACTUAL".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(RooftopActual2Row {
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            r#type: row.get_range("type", field_mapping.0[1])?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            power: row
+                .get_opt_custom_parsed_at_idx(
+                    "power",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            qi: row
+                .get_opt_custom_parsed_at_idx(
+                    "qi",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> RooftopActual2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(RooftopActual2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let interval_datetime = row
+            .get_custom_parsed_at_idx(
+                "interval_datetime",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(interval_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> RooftopActual2PrimaryKey {
         RooftopActual2PrimaryKey {
-            interval_datetime: self.interval_datetime,
-            regionid: self.regionid.clone(),
-            r#type: self.r#type.clone(),
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
+            r#type: row.r#type().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.interval_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "rooftop_actual_v2_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "rooftop_actual_v2_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        RooftopActual2Row {
+            interval_datetime: row.interval_datetime.clone(),
+            r#type: row.r#type.clone(),
+            regionid: row.regionid.clone(),
+            power: row.power.clone(),
+            qi: row.qi.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RooftopActual2PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
-    pub regionid: String,
-    pub r#type: String,
+    pub regionid: alloc::string::String,
+    pub r#type: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for RooftopActual2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for RooftopActual2 {
-    type Row = RooftopActual2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
-            && self.r#type == row.r#type
+impl<'data> mmsdm_core::CompareWithRow for RooftopActual2Row<'data> {
+    type Row<'other> = RooftopActual2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid() && self.r#type() == row.r#type()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for RooftopActual2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for RooftopActual2Row<'data> {
     type PrimaryKey = RooftopActual2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
-            && self.r#type == key.r#type
+        self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid && self.r#type() == key.r#type
     }
 }
-impl mmsdm_core::CompareWithRow for RooftopActual2PrimaryKey {
-    type Row = RooftopActual2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
-            && self.r#type == row.r#type
+impl<'data> mmsdm_core::CompareWithRow for RooftopActual2PrimaryKey {
+    type Row<'other> = RooftopActual2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid() && self.r#type == row.r#type()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for RooftopActual2PrimaryKey {
@@ -2890,83 +5929,121 @@ impl mmsdm_core::CompareWithPrimaryKey for RooftopActual2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for RooftopActual2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("r#type",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("power",
-                arrow2::datatypes::DataType::Decimal(12, 3), true),
-                arrow2::datatypes::Field::new("qi",
-                arrow2::datatypes::DataType::Decimal(2, 1), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = RooftopActual2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "r#type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "power",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "qi",
+                    arrow::datatypes::DataType::Decimal128(2, 1),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut interval_datetime_array = Vec::new();
-        let mut r#type_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut power_array = Vec::new();
-        let mut qi_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            interval_datetime_array.push(row.interval_datetime.timestamp());
-            r#type_array.push(row.r#type);
-            regionid_array.push(row.regionid);
-            power_array
-                .push({
-                    row.power
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            qi_array
-                .push({
-                    row.qi
-                        .map(|mut val| {
-                            val.rescale(1);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        RooftopActual2Builder {
+            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            r#type_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            power_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            qi_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 1)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(r#type_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(power_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(qi_array)
-                    .to(arrow2::datatypes::DataType::Decimal(2, 1))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.r#type_array.append_value(row.r#type());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .power_array
+            .append_option({
+                row.power
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .qi_array
+            .append_option({
+                row.qi
+                    .map(|mut val| {
+                        val.rescale(1);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.r#type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.power_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.qi_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct RooftopActual2Builder {
+    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    r#type_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    power_array: arrow::array::builder::Decimal128Builder,
+    qi_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct RooftopForecast1;
+pub struct RooftopForecast1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## ROOFTOP_PV_FORECAST
@@ -2978,23 +6055,20 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
 ///
 ///
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * VERSION_DATETIME
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct RooftopForecast1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct RooftopForecast1Row<'data> {
     /// Date time this forecast was produced
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub version_datetime: chrono::NaiveDateTime,
     /// Region identifier
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// The forecast half-hour interval (time ending)
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub interval_datetime: chrono::NaiveDateTime,
     /// The average forecast value in MW at the interval end
     pub powermean: Option<rust_decimal::Decimal>,
@@ -3005,65 +6079,208 @@ pub struct RooftopForecast1 {
     /// 90% probability of exceedance forecast value in MW at the interval end
     pub powerpoehigh: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> RooftopForecast1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for RooftopForecast1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "ROOFTOP";
+    const TABLE_NAME: &'static str = "FORECAST";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopForecast1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "VERSION_DATETIME",
+        "REGIONID",
+        "INTERVAL_DATETIME",
+        "POWERMEAN",
+        "POWERPOE50",
+        "POWERPOELOW",
+        "POWERPOEHIGH",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = RooftopForecast1Row<'row>;
+    type FieldMapping = RooftopForecast1Mapping;
     type PrimaryKey = RooftopForecast1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "ROOFTOP".into(),
-            table_name: Some("FORECAST".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(RooftopForecast1Row {
+            version_datetime: row
+                .get_custom_parsed_at_idx(
+                    "version_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            powermean: row
+                .get_opt_custom_parsed_at_idx(
+                    "powermean",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            powerpoe50: row
+                .get_opt_custom_parsed_at_idx(
+                    "powerpoe50",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            powerpoelow: row
+                .get_opt_custom_parsed_at_idx(
+                    "powerpoelow",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            powerpoehigh: row
+                .get_opt_custom_parsed_at_idx(
+                    "powerpoehigh",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> RooftopForecast1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(RooftopForecast1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let interval_datetime = row
+            .get_custom_parsed_at_idx(
+                "interval_datetime",
+                6,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(interval_datetime).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> RooftopForecast1PrimaryKey {
         RooftopForecast1PrimaryKey {
-            interval_datetime: self.interval_datetime,
-            regionid: self.regionid.clone(),
-            version_datetime: self.version_datetime,
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
+            version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.interval_datetime.year(),
-            month: num_traits::FromPrimitive::from_u32(self.interval_datetime.month())
+            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "rooftop_forecast_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "rooftop_forecast_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        RooftopForecast1Row {
+            version_datetime: row.version_datetime.clone(),
+            regionid: row.regionid.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            powermean: row.powermean.clone(),
+            powerpoe50: row.powerpoe50.clone(),
+            powerpoelow: row.powerpoelow.clone(),
+            powerpoehigh: row.powerpoehigh.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RooftopForecast1PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub version_datetime: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for RooftopForecast1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for RooftopForecast1 {
-    type Row = RooftopForecast1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for RooftopForecast1Row<'data> {
+    type Row<'other> = RooftopForecast1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid()
             && self.version_datetime == row.version_datetime
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for RooftopForecast1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for RooftopForecast1Row<'data> {
     type PrimaryKey = RooftopForecast1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+        self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid
             && self.version_datetime == key.version_datetime
     }
 }
-impl mmsdm_core::CompareWithRow for RooftopForecast1PrimaryKey {
-    type Row = RooftopForecast1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interval_datetime == row.interval_datetime && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for RooftopForecast1PrimaryKey {
+    type Row<'other> = RooftopForecast1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid()
             && self.version_datetime == row.version_datetime
     }
 }
@@ -3076,317 +6293,157 @@ impl mmsdm_core::CompareWithPrimaryKey for RooftopForecast1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for RooftopForecast1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("version_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("interval_datetime",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("powermean",
-                arrow2::datatypes::DataType::Decimal(12, 3), true),
-                arrow2::datatypes::Field::new("powerpoe50",
-                arrow2::datatypes::DataType::Decimal(12, 3), true),
-                arrow2::datatypes::Field::new("powerpoelow",
-                arrow2::datatypes::DataType::Decimal(12, 3), true),
-                arrow2::datatypes::Field::new("powerpoehigh",
-                arrow2::datatypes::DataType::Decimal(12, 3), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = RooftopForecast1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "version_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "powermean",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "powerpoe50",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "powerpoelow",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "powerpoehigh",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut version_datetime_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut interval_datetime_array = Vec::new();
-        let mut powermean_array = Vec::new();
-        let mut powerpoe50_array = Vec::new();
-        let mut powerpoelow_array = Vec::new();
-        let mut powerpoehigh_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            version_datetime_array.push(row.version_datetime.timestamp());
-            regionid_array.push(row.regionid);
-            interval_datetime_array.push(row.interval_datetime.timestamp());
-            powermean_array
-                .push({
-                    row.powermean
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            powerpoe50_array
-                .push({
-                    row.powerpoe50
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            powerpoelow_array
-                .push({
-                    row.powerpoelow
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            powerpoehigh_array
-                .push({
-                    row.powerpoehigh
-                        .map(|mut val| {
-                            val.rescale(3);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        RooftopForecast1Builder {
+            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            powermean_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            powerpoe50_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            powerpoelow_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            powerpoehigh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(version_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(interval_datetime_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powermean_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powerpoe50_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powerpoelow_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(powerpoehigh_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 3))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.regionid_array.append_value(row.regionid());
+        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .powermean_array
+            .append_option({
+                row.powermean
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .powerpoe50_array
+            .append_option({
+                row.powerpoe50
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .powerpoelow_array
+            .append_option({
+                row.powerpoelow
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .powerpoehigh_array
+            .append_option({
+                row.powerpoehigh
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powermean_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powerpoe50_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powerpoelow_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.powerpoehigh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("ACTUAL"), version) if version <= 3_i32 => {
-            let d: Vec<OperationalDemandActual3> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertOperationalDemandActual3 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("FORECAST"), version) if version <= 1_i32 => {
-            let d: Vec<OperationalDemandForecast1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertOperationalDemandForecast1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_CLUSTER_AVAIL"), version) if version <= 2_i32 => {
-            let d: Vec<DemandIntermittentClusterAvail2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandIntermittentClusterAvail2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_CLUSTER_AVAIL_DAY"), version) if version <= 1_i32 => {
-            let d: Vec<DemandIntermittentClusterAvailDay1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandIntermittentClusterAvailDay1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_DS_PRED"), version) if version <= 1_i32 => {
-            let d: Vec<DemandIntermittentDsPred1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandIntermittentDsPred1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_DS_RUN"), version) if version <= 1_i32 => {
-            let d: Vec<DemandIntermittentDsRun1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandIntermittentDsRun1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_GEN"), version) if version <= 1_i32 => {
-            let d: Vec<ForecastIntermittentGen1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertForecastIntermittentGen1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_GEN_DATA"), version) if version <= 1_i32 => {
-            let d: Vec<ForecastIntermittentGenData1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertForecastIntermittentGenData1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_GEN_LIMIT"), version) if version <= 1_i32 => {
-            let d: Vec<DemandIntermittentGenLimit1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandIntermittentGenLimit1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERMITTENT_GEN_LIMIT_DAY"), version) if version <= 1_i32 => {
-            let d: Vec<DemandIntermittentGenLimitDay1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandIntermittentGenLimitDay1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MTPASA_INTERMITTENT_AVAIL"), version) if version <= 2_i32 => {
-            let d: Vec<DemandMtpasaIntermittentAvail2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandMtpasaIntermittentAvail2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MTPASA_INTERMITTENT_LIMIT"), version) if version <= 1_i32 => {
-            let d: Vec<DemandMtpasaIntermittentLimit1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandMtpasaIntermittentLimit1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("PERIOD"), version) if version <= 1_i32 => {
-            let d: Vec<DemandPeriod1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandPeriod1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("TRK"), version) if version <= 1_i32 => {
-            let d: Vec<DemandTrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertDemandTrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("ACTUAL"), version) if version <= 2_i32 => {
-            let d: Vec<RooftopActual2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertRooftopActual2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("FORECAST"), version) if version <= 1_i32 => {
-            let d: Vec<RooftopForecast1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertRooftopForecast1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct RooftopForecast1Builder {
+    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    powermean_array: arrow::array::builder::Decimal128Builder,
+    powerpoe50_array: arrow::array::builder::Decimal128Builder,
+    powerpoelow_array: arrow::array::builder::Decimal128Builder,
+    powerpoehigh_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
 }

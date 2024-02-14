@@ -1,53 +1,87 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
-use serde::{Deserialize, Serialize};
-use std::{
-    collections, fmt, fs, io, iter,
-    ops::{Add, Div, Sub},
-    result, str,
+#![no_std]
+extern crate alloc;
+use core::{
+    cmp::Ordering,
+    fmt,
+    hash::Hash,
+    num::{NonZeroU16, NonZeroU8},
+    ops::{Add, Div, Index, Range, Sub},
+    str::{self, FromStr},
 };
 
-use chrono::{Datelike, TimeZone};
+use alloc::{
+    borrow::{Cow, ToOwned},
+    boxed::Box,
+    format,
+    string::{String, ToString},
+    vec::Vec,
+};
+
+use chrono::{Datelike, Duration, NaiveDateTime, NaiveTime};
 
 mod error;
 pub use error::*;
 
-#[cfg(feature = "sql_server")]
-pub mod sql_server;
+#[cfg(feature = "std")]
+mod io;
+#[cfg(feature = "std")]
+pub use io::*;
 
-// this is useful to get the date part of nem settlementdate / lastchanged fields
-pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::NaiveDate {
-    to_nem_datetime(ndt).date_naive()
-}
+#[cfg(feature = "arrow")]
+mod arrow;
+#[cfg(feature = "arrow")]
+pub use arrow::*;
 
-// this is useful to get the datetime part of nem settlementdate / lastchanged fields
-pub fn to_nem_datetime(ndt: &chrono::NaiveDateTime) -> chrono::DateTime<chrono_tz::Tz> {
-    chrono_tz::Australia::Brisbane
-        .from_local_datetime(ndt)
-        .unwrap()
-}
-
-#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum RecordType {
     C,
     I,
     D,
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+impl FromStr for RecordType {
+    type Err = Error;
+    fn from_str(s: &str) -> core::prelude::v1::Result<Self, Self::Err> {
+        match s.chars().next() {
+            Some('C') => Ok(RecordType::C),
+            Some('I') => Ok(RecordType::I),
+            Some('D') => Ok(RecordType::D),
+            _ => Err(Error::UnexpectedRowType(s.to_string())),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct AemoHeader {
     pub record_type: RecordType,
     pub data_source: String,
     pub file_name: String,
     pub from_participant: String,
     pub to_participant: String,
-    #[serde(with = "mms_date")]
     pub effective_date: chrono::NaiveDate,
-    #[serde(with = "mms_time")]
     pub effective_time: chrono::NaiveTime,
     pub serial_number: i64,
     pub file_name_2: Option<String>,
     pub serial_number_2: Option<i64>,
+}
+
+impl AemoHeader {
+    fn from_row<'data>(row: CsvRow<'data>) -> Result<AemoHeader> {
+        Ok(AemoHeader {
+            record_type: row.get_parsed_at_idx("record_type", 0)?,
+            data_source: row.get_parsed_at_idx("data_source", 1)?,
+            file_name: row.get_parsed_at_idx("file_name", 2)?,
+            from_participant: row.get_parsed_at_idx("from_participant", 3)?,
+            to_participant: row.get_parsed_at_idx("to_participant", 4)?,
+            effective_date: row.get_custom_parsed_at_idx("effective_date", 5, mms_date::parse)?,
+            effective_time: row.get_custom_parsed_at_idx("effective_time", 6, mms_time::parse)?,
+            serial_number: row.get_parsed_at_idx("serial_number", 7)?,
+            file_name_2: row.get_opt_parsed_at_idx("file_name_2", 8)?,
+            serial_number_2: row.get_opt_parsed_at_idx("serial_number_2", 9)?,
+        })
+    }
 }
 
 impl AemoHeader {
@@ -69,78 +103,157 @@ impl AemoHeader {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct AemoFooter {
     pub record_type: RecordType,
     pub end_of_report: String,
     pub line_count_inclusive: usize,
 }
 
-#[derive(Debug, Clone)]
-pub struct Subtable {
-    pub headings: csv::StringRecord,
-    pub data: Vec<csv::StringRecord>,
-}
-
-impl Subtable {
-    pub fn append(&mut self, record: csv::StringRecord) {
-        self.data.push(record);
-    }
-    pub fn new(headings: csv::StringRecord) -> Subtable {
-        Subtable {
-            headings,
-            data: Vec::new(),
-        }
-    }
-    pub fn len(&self) -> usize {
-        self.data.len()
-    }
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
+impl AemoFooter {
+    fn from_row<'data>(row: CsvRow<'data>) -> Result<AemoFooter> {
+        Ok(AemoFooter {
+            record_type: row.get_parsed_at_idx("record_type", 0)?,
+            end_of_report: row.get_parsed_at_idx("end_of_report", 1)?,
+            line_count_inclusive: row.get_parsed_at_idx("line_count_inclusive", 2)?,
+        })
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct FileKey {
-    pub data_set_name: String,
-    pub table_name: Option<String>,
+#[derive(Debug)]
+pub struct FileKey<'a> {
+    pub data_set_name: Range<usize>,
+    pub table_name: Range<usize>,
     pub version: i32,
+    backing_data: CsvRow<'a>,
 }
-impl FileKey {
-    pub fn table_name(&self) -> &str {
-        if let Some(t) = &self.table_name {
-            t
-        } else {
-            ""
+
+impl<'a> Ord for FileKey<'a> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.data_set_name().cmp(other.data_set_name()) {
+            Ordering::Equal => (),
+            ord => return ord,
         }
+
+        match self.table_name().cmp(other.table_name()) {
+            Ordering::Equal => (),
+            ord => return ord,
+        }
+
+        match self.version.cmp(&other.version) {
+            Ordering::Equal => (),
+            ord => return ord,
+        }
+
+        Ordering::Equal
     }
-    pub fn with_version(&self, version: i32) -> FileKey {
-        let original = self.clone();
+}
+
+impl<'a> PartialOrd for FileKey<'a> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.cmp(other).into()
+    }
+}
+
+impl<'a> PartialEq for FileKey<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        self.data_set_name() == other.data_set_name()
+            && self.table_name() == other.table_name()
+            && self.version == other.version
+    }
+}
+
+impl<'a> Eq for FileKey<'a> {}
+
+impl<'a> Hash for FileKey<'a> {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        self.data_set_name().hash(state);
+        self.table_name().hash(state);
+        self.version.hash(state);
+    }
+}
+
+impl<'a> FileKey<'a> {
+    pub fn backing_data(&self) -> &CsvRow<'a> {
+        &self.backing_data
+    }
+    pub fn from_row<'data>(row: CsvRow<'data>) -> Result<FileKey<'data>> {
+        // start at 1 here so we can skip the 0th field which is the C/I/D flag
+        Ok(FileKey {
+            data_set_name: row.get_range("data_set_name", 1)?,
+            table_name: row.get_range("table_name", 2)?,
+            version: row.get_parsed_at_idx("version", 3)?,
+            backing_data: row,
+        })
+    }
+    pub fn to_owned(&self) -> FileKey<'static> {
         FileKey {
-            version,
-            ..original
+            data_set_name: self.data_set_name.clone(),
+            table_name: self.table_name.clone(),
+            version: self.version,
+            backing_data: self.backing_data.to_owned(),
         }
+    }
+
+    pub fn data_set_name(&self) -> &str {
+        self.backing_data
+            .as_slice()
+            .index(self.data_set_name.clone())
+    }
+    pub fn table_name(&self) -> &str {
+        // if self.table_name.is_empty() {
+        //     ""
+        // } else {
+        self.backing_data.as_slice().index(self.table_name.clone())
+        // }
+    }
+    pub fn with_version(self, version: i32) -> FileKey<'a> {
+        FileKey { version, ..self }
     }
 }
 
-impl fmt::Display for FileKey {
+impl<'a> fmt::Display for FileKey<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if let Some(table_name) = &self.table_name {
-            write!(f, "{}_{}_{}", self.data_set_name, table_name, self.version)
+        if !self.table_name.is_empty() {
+            write!(
+                f,
+                "{}_{}_{}",
+                self.data_set_name(),
+                self.table_name(),
+                self.version
+            )
         } else {
-            write!(f, "{}_{}", self.data_set_name, self.version)
+            write!(f, "{}_{}", self.data_set_name(), self.version)
         }
     }
 }
 
-pub trait Partition: std::hash::Hash + PartialEq + Eq {
+pub trait Partition: core::hash::Hash + PartialEq + Eq + PartialOrd + Ord + Copy {
     fn get_suffix(&self) -> String;
 }
 
-#[derive(PartialEq, Eq, Debug, Hash, Clone)]
+#[derive(PartialEq, Eq, Debug, Hash, Clone, Copy)]
 pub struct YearMonth {
     pub year: i32,
     pub month: chrono::Month,
+}
+
+impl PartialOrd for YearMonth {
+    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+        self.cmp(&other).into()
+    }
+}
+
+impl Ord for YearMonth {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        match self.year.cmp(&other.year) {
+            core::cmp::Ordering::Equal => self
+                .month
+                .number_from_month()
+                .cmp(&other.month.number_from_month()),
+            ord => ord,
+        }
+    }
 }
 
 impl Partition for YearMonth {
@@ -154,43 +267,493 @@ impl Partition for () {
     }
 }
 
-/// This trait is designed as a convenient way to extract a Vec of the desired Strct representing
-/// a row of the table from the `AemoFile` which represents the whole file.
-/// Most `AemoFiles` would contain multiple tables
-///
-/// ```rust,no_run
-/// use mmsdm::{DispatchUnitScada1, DispatchLocalPrice1};
-///
-/// // option A - using UFCS - this is useful where it is not convenient to
-/// // typehint a let binding
-/// # fn get_unit_scada(aemo: &AemoFile) -> Result<Vec<DispatchUnitScada1>> {
-///     let rows = GetTable::<DispatchUnitScada1>::get_table(aemo)?;
-/// #   Ok(rows)
-/// # }
-///
-/// // option B - this is useful when you have a let binding that you
-/// // can typehint
-/// # fn get_local_price(aemo: &AemoFile) -> Result<Vec<DispatchLocalPrice1>> {
-///     let rows: Vec<DispatchLocalPrice1> = aemo.get_table()?;
-/// #   Ok(rows)
-/// # }
-/// ```
-pub trait GetTable:
-    serde::Serialize + serde::de::DeserializeOwned + Send + Clone + fmt::Debug
-{
+// / This trait is designed as a convenient way to extract a Vec of the desired Strct representing
+// / a row of the table from the `AemoFile` which represents the whole file.
+// / Most `AemoFiles` would contain multiple tables
+// /
+// / ```rust,no_run
+// / use mmsdm::{DispatchUnitScada1, DispatchLocalPrice1};
+// /
+// / // option A - using UFCS - this is useful where it is not convenient to
+// / // typehint a let binding
+// / # fn get_unit_scada(aemo: &AemoFile) -> Result<Vec<DispatchUnitScada1>> {
+// /     let rows = GetTable::<DispatchUnitScada1>::get_table(aemo)?;
+// / #   Ok(rows)
+// / # }
+// /
+// / // option B - this is useful when you have a let binding that you
+// / // can typehint
+// / # fn get_local_price(aemo: &AemoFile) -> Result<Vec<DispatchLocalPrice1>> {
+// /     let rows: Vec<DispatchLocalPrice1> = aemo.get_table()?;
+// / #   Ok(rows)
+// / # }
+// / ```
+
+pub trait GetTable: 'static {
+    const DATA_SET_NAME: &'static str;
+    const TABLE_NAME: &'static str;
+    const VERSION: i32;
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping;
+    const COLUMNS: &'static [&'static str];
+    type Row<'a>;
     type PrimaryKey: PrimaryKey;
     type Partition: Partition;
-    fn get_file_key() -> FileKey;
-    fn partition_suffix(&self) -> Self::Partition;
-    fn partition_name(&self) -> String;
-    fn primary_key(&self) -> Self::PrimaryKey;
+
+    type FieldMapping;
+    // the row must be an I row with a matching file key
+    fn field_mapping_from_row<'a>(row: CsvRow<'a>) -> Result<Self::FieldMapping>;
+
+    fn partition_suffix_from_row<'a>(row: CsvRow<'a>) -> Result<Self::Partition>;
+    fn from_row<'a>(row: CsvRow<'a>, field_mapping: &Self::FieldMapping) -> Result<Self::Row<'a>>;
+    
+    fn matches_file_key(key: &FileKey<'_>, version: i32) -> bool;
+    
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition;
+    fn partition_name(row: &Self::Row<'_>) -> String;
+    fn primary_key(row: &Self::Row<'_>) -> Self::PrimaryKey;
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static>;
+}
+
+pub enum RowValidation {
+    Header(AemoHeader),
+    Footer(AemoFooter),
+    Headings(FileKey<'static>),
+}
+
+// TODO: verify that column orders are correct!
+pub fn validate_row(row: &str, indexes_backing: &mut Vec<usize>) -> Result<Option<RowValidation>> {
+    indexes_backing.clear();
+
+    let csv = CsvRow::from_data_with_vec(&row, indexes_backing)?;
+    // let count_fields = csv.count_fields();
+
+    match csv.record_type {
+        RecordType::C => {
+            // happy to allocate here as `C` rows are rare!
+            if let Ok(header) = AemoHeader::from_row(csv.to_owned()) {
+                return Ok(Some(RowValidation::Header(header)));
+            }
+
+            if let Ok(footer) = AemoFooter::from_row(csv.to_owned()) {
+                return Ok(Some(RowValidation::Footer(footer)));
+            }
+
+            Err(Error::UnexpectedRowType(csv.data.to_string()))
+        }
+        RecordType::I => Ok(Some(RowValidation::Headings(FileKey::from_row(
+            csv.to_owned(),
+        )?))),
+        RecordType::D => Ok(None),
+    }
+}
+
+pub fn handle_row<'input, T>(
+    mut csv: CsvRow<'input>,
+    version: i32,
+    field_mapping: &T::FieldMapping,
+) -> Result<Option<<T as GetTable>::Row<'input>>>
+where
+    T: GetTable,
+{
+    match csv.record_type {
+        RecordType::C | RecordType::I => return Ok(None),
+        RecordType::D => {
+            if T::matches_file_key(&FileKey::from_row(csv.borrow())?, version) {
+                Ok(Some(T::from_row(csv, field_mapping)?))
+            } else {
+                Ok(None)
+            }
+        }
+    }
+}
+
+pub struct CsvRow<'a> {
+    data: Cow<'a, str>,
+    indexes: IndexOptions<'a>,
+    offset: usize,
+    record_type: RecordType,
+}
+
+impl<'a> Clone for CsvRow<'a> {
+    fn clone(&self) -> CsvRow<'static> {
+        self.to_owned()
+    }
+}
+
+impl<'a> PartialEq for CsvRow<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        self.data.as_ref() == other.data.as_ref()
+            && self.indexes.as_slice() == other.indexes.as_slice()
+            && self.offset == other.offset
+    }
+}
+
+impl<'a> Eq for CsvRow<'a> {}
+
+#[derive(Debug)]
+enum IndexOptions<'a> {
+    Owned(Vec<usize>),
+    MutVec(&'a mut Vec<usize>),
+    MutSlice(&'a mut [usize]),
+}
+
+impl<'a> IndexOptions<'a> {
+    fn to_owned(&self) -> IndexOptions<'static> {
+        match self {
+            IndexOptions::Owned(o) => IndexOptions::Owned(o.to_owned()),
+            IndexOptions::MutVec(v) => IndexOptions::Owned(v.to_vec()),
+            IndexOptions::MutSlice(s) => IndexOptions::Owned(s.to_vec()),
+        }
+    }
+    fn len(&self) -> usize {
+        match self {
+            IndexOptions::Owned(a) => a.len(),
+            IndexOptions::MutVec(a) => a.len(),
+            IndexOptions::MutSlice(a) => a.len(),
+        }
+    }
+    fn as_slice(&self) -> &[usize] {
+        match self {
+            IndexOptions::Owned(a) => a.as_slice(),
+            IndexOptions::MutVec(a) => a.as_slice(),
+            IndexOptions::MutSlice(a) => a,
+        }
+    }
+
+    fn as_mut_slice(&mut self) -> &mut [usize] {
+        match self {
+            IndexOptions::Owned(a) => a.as_mut_slice(),
+            IndexOptions::MutVec(a) => a.as_mut_slice(),
+            IndexOptions::MutSlice(a) => a,
+        }
+    }
+}
+
+impl<'a> fmt::Debug for CsvRow<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("CsvRow")
+            .field("data", &self.data)
+            .field("indexes", &self.indexes)
+            .field("offset", &self.offset)
+            .field("count_fields", &self.count_fields())
+            .field("fields", &self.iter_fields().collect::<Vec<_>>())
+            .finish()
+    }
+}
+
+#[derive(Clone, Copy)]
+enum CsvState {
+    QuotedField,
+    Base,
+}
+
+impl<'a> CsvRow<'a> {
+    pub fn record_type(&self) -> RecordType {
+        self.record_type
+    }
+    pub fn borrow<'b>(&'b mut self) -> CsvRow<'b>
+    where
+        'a: 'b,
+    {
+        CsvRow {
+            data: Cow::Borrowed(&self.data.as_ref()),
+            indexes: IndexOptions::MutSlice(self.indexes.as_mut_slice()),
+            offset: self.offset,
+            record_type: self.record_type,
+        }
+    }
+    fn get_end_of_field(&self, field_no: usize) -> Option<usize> {
+        let max_field_idx = self.indexes.len();
+
+        if field_no > max_field_idx {
+            return None;
+        }
+
+        if field_no == max_field_idx {
+            return Some(self.data.len());
+        }
+
+        let base = match &self.indexes {
+            IndexOptions::Owned(a) => a.get(field_no).copied(),
+            IndexOptions::MutVec(a) => a.get(field_no).copied(),
+            IndexOptions::MutSlice(a) => a.get(field_no).copied(),
+        }?;
+
+        assert!(base >= self.offset);
+
+        Some(base - self.offset)
+    }
+
+    fn get_start_of_field(&self, field_no: usize) -> Option<usize> {
+        let max_field_idx = self.indexes.len();
+
+        match field_no {
+            0 => Some(0),
+            1.. if field_no <= max_field_idx => {
+                let base = self.get_end_of_field(field_no - 1).unwrap() + 1;
+                Some(base)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn iter_fields<'b>(&'b self) -> impl Iterator<Item = &'b str> + 'b {
+        (0..self.count_fields()).flat_map(|idx| self.get(idx))
+    }
+    pub fn split_at_field<'input, 'output>(
+        &'input mut self,
+        field: usize,
+    ) -> Option<(CsvRow<'output>, CsvRow<'output>)>
+    where
+        'input: 'output,
+    {
+        if field == self.indexes.len() {
+            return None;
+        }
+
+        let (lower, upper) = self.indexes.as_mut_slice().split_at_mut(field);
+        let first_upper = *upper.first().unwrap();
+
+        Some((
+            CsvRow {
+                data: Cow::Borrowed(&self.data[0..first_upper]),
+                indexes: IndexOptions::MutSlice(lower),
+                offset: 0,
+                record_type: self.record_type,
+            },
+            CsvRow {
+                data: Cow::Borrowed(&self.data[first_upper + 1..self.data.len()]),
+                indexes: IndexOptions::MutSlice(&mut upper[1..]),
+                offset: first_upper + 1,
+                record_type: self.record_type,
+            },
+        ))
+    }
+    pub fn to_owned(&'a self) -> CsvRow<'static> {
+        CsvRow {
+            data: match &self.data {
+                Cow::Borrowed(b) => Cow::Owned(b.to_string()),
+                Cow::Owned(o) => Cow::Owned(o.to_string()),
+            },
+            indexes: self.indexes.to_owned(),
+            offset: self.offset,
+            record_type: self.record_type,
+        }
+    }
+    pub fn from_data_with_vec(data: &'a str, indexes: &'a mut Vec<usize>) -> Result<CsvRow<'a>> {
+        if !data.is_ascii() {
+            return Err(Error::UnexpectedRowType(format!(
+                "Row contained non ascii characters: {data}"
+            )));
+        }
+        if data.is_empty() {
+            return Err(Error::UnexpectedRowType("row was empty".to_string()));
+        }
+        indexes.clear();
+
+        let mut state = CsvState::Base;
+        for (idx, char) in data.trim_end().chars().enumerate() {
+            match (char, state) {
+                (',', CsvState::Base) => {
+                    indexes.push(idx);
+                }
+                ('"', CsvState::Base) => {
+                    state = CsvState::QuotedField;
+                }
+                ('"', CsvState::QuotedField) => {
+                    state = CsvState::Base;
+                }
+                _ => {
+                    // ignore, data only
+                }
+            }
+        }
+
+        Ok(CsvRow {
+            data: Cow::Borrowed(data.trim_end()),
+            indexes: IndexOptions::MutVec(indexes),
+            offset: 0,
+            record_type: data[0..1].parse()?,
+        })
+    }
+
+    pub fn from_data(data: &'a str) -> Result<CsvRow<'a>> {
+        if !data.is_ascii() {
+            return Err(Error::UnexpectedRowType(format!(
+                "Row contained non ascii characters: {data}"
+            )));
+        }
+        if data.is_empty() {
+            return Err(Error::UnexpectedRowType("row was empty".to_string()));
+        }
+
+        let mut indexes = Vec::with_capacity(10); // random heuristic!
+
+        let mut state = CsvState::Base;
+        for (idx, char) in data.trim_end().chars().enumerate() {
+            match (char, state) {
+                (',', CsvState::Base) => {
+                    indexes.push(idx);
+                }
+                ('"', CsvState::Base) => {
+                    state = CsvState::QuotedField;
+                }
+                ('"', CsvState::QuotedField) => {
+                    state = CsvState::Base;
+                }
+                _ => {
+                    // ignore, data only
+                }
+            }
+        }
+
+        Ok(CsvRow {
+            data: Cow::Borrowed(data.trim_end()),
+            indexes: IndexOptions::Owned(indexes),
+            offset: 0,
+            record_type: data[0..1].parse()?,
+        })
+    }
+}
+
+// impl<'a> Record for CsvRow<'a> {
+impl<'a> CsvRow<'a> {
+    pub fn range(&self, i: usize) -> Option<Range<usize>> {
+        if i >= self.count_fields() {
+            return None;
+        }
+
+        // let lower = i.checked_sub(1).and_then(|idx| self.get_end_of_field(idx).map(|lower| lower + 1)).unwrap_or(0);
+        // let upper = self.get_end_of_field(i);
+
+        Some(Range {
+            start: self.get_start_of_field(i)?,
+            end: self.get_end_of_field(i)?,
+        })
+    }
+
+    pub fn get_range(&self, name: &'static str, idx: usize) -> Result<Range<usize>> {
+        self.range(idx).ok_or_else(|| Error::CannotFindFieldInRow {
+            name,
+            row: self.to_owned(),
+            idx,
+        })
+    }
+
+    pub fn get_opt_range(&self, name: &'static str, idx: usize) -> Result<Range<usize>> {
+        if self.range(idx).map(|r| r.is_empty()).unwrap_or(true) {
+            return Ok(Range { start: 0, end: 0})
+        }
+        
+        self.get_range(name, idx)
+    }
+
+    pub fn as_slice(&self) -> &str {
+        &self.data
+    }
+
+    pub fn count_fields(&self) -> usize {
+        self.indexes.len() + 1
+    }
+    fn get(&self, idx: usize) -> Option<&str> {
+        let range = self.range(idx)?;
+        Some(self.as_slice().index(range))
+    }
+
+    pub fn get_at_idx(&'a self, name: &'static str, idx: usize) -> Result<&'a str> {
+        self.get(idx).ok_or_else(|| Error::CannotFindFieldInRow {
+            name,
+            row: self.to_owned(),
+            idx,
+        })
+    }
+
+    pub fn get_parsed_at_idx<E, T>(&'a self, name: &'static str, idx: usize) -> Result<T>
+    where
+        T: FromStr<Err = E>,
+        Error: From<E>,
+    {
+        let data = self.get_at_idx(name, idx)?;
+        match data.parse() {
+            Ok(t) => Ok(t),
+            Err(e) => Err(Error::CannotParseField {
+                source: Box::new(Error::from(e)),
+                data: data.to_string(),
+                name,
+                raw_row: self.to_owned(),
+            }),
+        }
+    }
+
+    pub fn get_custom_parsed_at_idx<E, T, F>(
+        &'a self,
+        name: &'static str,
+        idx: usize,
+        parser: F,
+    ) -> Result<T>
+    where
+        F: Fn(&str) -> core::result::Result<T, E>,
+        Error: From<E>,
+    {
+        let data = self.get_at_idx(name, idx)?;
+        match parser(data) {
+            Ok(t) => Ok(t),
+            Err(e) => Err(Error::CannotParseField {
+                source: Box::new(Error::from(e)),
+                data: data.to_string(),
+                name,
+                raw_row: self.to_owned(),
+            }),
+        }
+    }
+
+    pub fn get_opt_at_idx(&'a self, name: &'static str, idx: usize) -> Result<Option<&'a str>> {
+        if self.get(idx).map(|s| s.is_empty()).unwrap_or(true) {
+            return Ok(None);
+        }
+
+        self.get_at_idx(name, idx).map(Some)
+    }
+
+    pub fn get_opt_parsed_at_idx<E, T>(
+        &'a self,
+        name: &'static str,
+        idx: usize,
+    ) -> Result<Option<T>>
+    where
+        T: FromStr<Err = E>,
+        Error: From<E>,
+    {
+        if self.get(idx).map(|s| s.is_empty()).unwrap_or(true) {
+            return Ok(None);
+        }
+
+        self.get_parsed_at_idx(name, idx).map(Some)
+    }
+
+    pub fn get_opt_custom_parsed_at_idx<E, T, F>(
+        &'a self,
+        name: &'static str,
+        idx: usize,
+        parser: F,
+    ) -> Result<Option<T>>
+    where
+        F: Fn(&str) -> core::result::Result<T, E>,
+        Error: From<E>,
+    {
+        if self.get(idx).map(|s| s.is_empty()).unwrap_or(true) {
+            return Ok(None);
+        }
+
+        self.get_custom_parsed_at_idx(name, idx, parser).map(Some)
+    }
 }
 
 pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {}
 
 pub trait CompareWithRow {
-    type Row: GetTable;
-    fn compare_with_row(&self, row: &Self::Row) -> bool;
+    type Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool;
 }
 
 pub trait CompareWithPrimaryKey {
@@ -198,158 +761,67 @@ pub trait CompareWithPrimaryKey {
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool;
 }
 
-// handle the INSERT-UPDATE logic with lastchanged if applicibale
-// if the rows don't match via CompareWithRow, then the self should always be returned
-// only when the rows match and the other 'row' is newer, and this replacement behaviour is defined
-// should the other 'row' be returned
-pub trait LatestRow: GetTable + CompareWithRow<Row = Self> {
-    fn latest_row(&mut self, row: Self) -> Self;
-}
+// // handle the INSERT-UPDATE logic with lastchanged if applicibale
+// // if the rows don't match via CompareWithRow, then the self should always be returned
+// // only when the rows match and the other 'row' is newer, and this replacement behaviour is defined
+// // should the other 'row' be returned
+// pub trait LatestRow<'data>: GetTable<'data> + CompareWithRow<'data, Row = Self<'data>> {
+//     fn latest_row(&mut self, row: Self) -> Self;
+// }
 
-#[cfg(feature = "sql_server")]
-pub trait SaveToSqlServer: GetTable {
-    const SQL_EXEC: &'static str;
-}
-
-#[cfg(feature = "arrow")]
-pub trait ArrowSchema: GetTable {
-    fn arrow_schema() -> arrow2::datatypes::Schema;
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> crate::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>;
-}
-
-pub fn data_partition_to_csv<T, W>(
-    partition: collections::BTreeMap<T::PrimaryKey, T>,
-    writer: &mut W,
-) -> crate::Result<()>
-where
-    T: GetTable + CompareWithRow<Row = T>,
-    W: io::Write,
-{
-    let mut csv_wtr = csv::WriterBuilder::new()
-        .has_headers(true)
-        .from_writer(writer);
-
-    for (_, row) in partition {
-        csv_wtr.serialize(row)?;
-    }
-
-    csv_wtr.flush()?;
-
-    Ok(())
-}
-
-pub fn data_partition_from_csv<T, R>(
-    reader: R,
-) -> crate::Result<collections::BTreeMap<T::PrimaryKey, T>>
-where
-    T: GetTable + CompareWithRow<Row = T>,
-    R: io::Read,
-{
-    let mut reader = csv::ReaderBuilder::new()
-        .has_headers(true)
-        .from_reader(reader);
-    let mut output = collections::BTreeMap::new();
-    for res in reader.deserialize() {
-        let row: T = res?;
-        output.insert(row.primary_key(), row);
-    }
-    Ok(output)
-}
-
-pub fn required_partitions<T>(data: &[T]) -> collections::HashSet<T::Partition>
-where
-    T: serde::de::DeserializeOwned + Send + GetTable + CompareWithRow<Row = T>,
-{
-    data.iter().map(|row| row.partition_suffix()).collect()
-}
+// pub fn required_partitions<'data, T>(data: &[T]) -> BTreeSet<T::Partition>
+// where
+//     T: Send + GetTable<'data> + CompareWithRow<'data, Row = T>,
+// {
+//     data.iter().map(|row| row.partition_suffix()).collect()
+// }
 
 // in memory
 // the input map is all
-pub fn merge_with_partitions<T>(
-    mut existing: collections::HashMap<
-        <T as GetTable>::Partition,
-        collections::BTreeMap<T::PrimaryKey, T>,
-    >,
-    data: &[T],
-) -> collections::HashMap<<T as GetTable>::Partition, collections::BTreeMap<T::PrimaryKey, T>>
-where
-    T: serde::Serialize + Send + GetTable + CompareWithRow<Row = T> + fmt::Debug,
-{
-    for row in data {
-        let partition = row.partition_suffix();
-        let pk = row.primary_key();
-        if let Some(entry) = existing.get_mut(&partition) {
-            entry.entry(pk).or_insert_with(|| row.clone());
-        } else {
-            existing.insert(partition, iter::once((pk, row.clone())).collect());
-        }
-    }
-
-    existing
-}
-
-// on filesystem
-// potentially do one partition at a time
-// then we can do each partition in a seperate thread where they are available
-// fn append_or_create_csv_at<P, T>(path: P, data: &[T]) -> crate::Result<()>
+// pub fn merge_with_partitions<'data, T>(
+//     mut existing: BTreeMap<<T as GetTable<'data>>::Partition, collections::BTreeMap<T::PrimaryKey, T>>,
+//     data: &[T],
+// ) -> BTreeMap<<T as GetTable<'static>>::Partition, collections::BTreeMap<T::PrimaryKey, T>>
 // where
-//     T: serde::Serialize + Send + GetTable + CompareWithRow<Row=T> + fmt::Debug,
-//     P: AsRef<path::Path>,
+//     T: Send + GetTable<'data> + CompareWithRow<'data, Row = T> + fmt::Debug,
 // {
-
-//     let mut files = collections::HashMap::new();
 //     for row in data {
-//         let  file_name = format!("{}{}.csv", row.partition_name(), row.partition_suffix().get_suffix());
-
-//         let file_path = path.as_ref().join(&file_name);
-//         // check if we already have the file handle and data
-//         if files.get_mut(&file_name).is_none() {
-//             let mut csv_writer = csv::WriterBuilder::new();
-//             let mut file_data = collections::BTreeMap::new();
-//             if file_path.exists() {
-//                 let f = fs::File::open(&file_path)?;
-//                 let buf = io::BufReader::new(f);
-//                 let mut reader = csv::Reader::from_reader(buf);
-//                 for result in reader.deserialize() {
-//                     let existing_row: T = result?;
-//                     file_data.insert(existing_row.primary_key(), existing_row);
-//                 }
-//                 csv_writer.has_headers(false);
-//             } else {
-//                 csv_writer.has_headers(true);
-//             }
-
-//             let file_handle = fs::OpenOptions::new().append(true).create(true).open(&file_path)?;
-//             let csv_writer = csv_writer.from_writer(file_handle);
-
-//             files.insert(file_name.to_string(), (csv_writer, file_data));
-//         }
-
-//         if let Some((csv_writer, file_data)) = files.get_mut(&file_name) {
-//             if let Some(_existing_val) = file_data.get_mut(&row.primary_key()) {
-//                 log::warn!("Row {:?} was already present in file {:?}", row, &file_path);
-//                 // let latest = existing_val.latest_row(row);
-//                 // csv_writer.serialize()
-//                 // #TODO: compare against lastchanged if relevant
-//             } else {
-//                 csv_writer.serialize(row)?;
-//             }
-
+//         let partition = row.partition_suffix();
+//         let pk = row.primary_key();
+//         if let Some(entry) = existing.get_mut(&partition) {
+//             entry.entry(pk).or_insert_with(|| row.to_owned());
+//         } else {
+//             existing.insert(partition, iter::once((pk, row.clone())).to_owned());
 //         }
 //     }
 
-//     Ok(())
+//     existing
 // }
 
 // gets period, 1 based
-fn naive_time_to_five_min_period(nt: chrono::NaiveTime) -> u16 {
-    (nt.sub(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap())
-        .num_minutes()
-        .div(5)
-        .add(1))
-    .try_into()
+pub fn naive_time_to_five_min_period(nt: chrono::NaiveTime) -> NonZeroU16 {
+    NonZeroU16::new(
+        u16::try_from(
+            nt.sub(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap())
+                .num_minutes()
+                .div(5)
+                .add(1),
+        )
+        .unwrap(),
+    )
+    .unwrap()
+}
+
+pub fn naive_time_to_thirty_min_period(nt: chrono::NaiveTime) -> NonZeroU8 {
+    NonZeroU8::new(
+        u8::try_from(
+            nt.sub(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap())
+                .num_minutes()
+                .div(30)
+                .add(1),
+        )
+        .unwrap(),
+    )
     .unwrap()
 }
 
@@ -361,7 +833,16 @@ pub struct DispatchPeriod {
     period: u16,
 }
 
+impl From<DispatchPeriod> for NaiveDateTime {
+    fn from(value: DispatchPeriod) -> Self {
+        value.date.and_time(value.time())
+    }
+}
+
 impl DispatchPeriod {
+    pub fn time(&self) -> chrono::NaiveTime {
+        NaiveTime::MIN + Duration::minutes(5 * i64::from(self.period - 1))
+    }
     pub fn date(&self) -> chrono::NaiveDate {
         self.date
     }
@@ -370,16 +851,6 @@ impl DispatchPeriod {
     }
     fn format() -> &'static str {
         "%Y%m%d"
-    }
-    fn db_format() -> &'static str {
-        "%Y-%m-%dT%H:%M:%S"
-    }
-    pub fn from_db_str(s: String) -> Result<Self> {
-        let dt = chrono::NaiveDateTime::parse_from_str(&s, Self::db_format())?;
-        Ok(crate::DispatchPeriod {
-            date: dt.date(),
-            period: naive_time_to_five_min_period(dt.time()),
-        })
     }
     pub fn start(&self) -> chrono::NaiveDateTime {
         self.date
@@ -390,18 +861,28 @@ impl DispatchPeriod {
             )
             .unwrap()
     }
+    pub fn from_end(end_time: NaiveDateTime) -> DispatchPeriod {
+        DispatchPeriod::from_start(end_time - Duration::minutes(5))
+    }
+    pub fn from_start(start_time: NaiveDateTime) -> DispatchPeriod {
+        DispatchPeriod {
+            date: start_time.date(),
+            period: naive_time_to_five_min_period(start_time.time()).get(),
+        }
+    }
+
     //    pub fn datetime_ending(&self) -> chrono::NaiveDateTime {
     //        self.datetime_starting() + chrono::Duration::minutes(5)
     //    }
 }
 
-impl std::fmt::Display for DispatchPeriod {
+impl fmt::Display for DispatchPeriod {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}{:03}", self.date.format(Self::format()), self.period)
     }
 }
 
-impl std::str::FromStr for DispatchPeriod {
+impl str::FromStr for DispatchPeriod {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
         if !s.is_ascii() || s.len() != 11 {
@@ -415,39 +896,11 @@ impl std::str::FromStr for DispatchPeriod {
         }
 
         Ok(crate::DispatchPeriod {
-            date: chrono::NaiveDate::parse_from_str(&s[0..8], DispatchPeriod::format())?,
+            date: mms_period_datepart::parse(&s[0..8])?,
             period,
         })
     }
 }
-
-impl<'de> serde::Deserialize<'de> for DispatchPeriod {
-    fn deserialize<D>(d: D) -> result::Result<crate::DispatchPeriod, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(d)?;
-
-        match s
-            .parse()
-            .or_else(|_| crate::DispatchPeriod::from_db_str(s.clone()))
-        {
-            Err(e) => Err(serde::de::Error::custom(e)),
-            Ok(o) => Ok(o),
-        }
-    }
-}
-
-impl serde::Serialize for DispatchPeriod {
-    fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(&self.to_string())
-    }
-}
-
-// #[allow(dead_code)] // Depending on features this may not be used
 
 // Represents a given trading period (30 min period)
 // Parsed from YYYYMMDDPP
@@ -457,7 +910,16 @@ pub struct TradingPeriod {
     period: u8,
 }
 
+impl From<TradingPeriod> for NaiveDateTime {
+    fn from(value: TradingPeriod) -> Self {
+        value.date.and_time(value.time())
+    }
+}
+
 impl TradingPeriod {
+    pub fn time(&self) -> chrono::NaiveTime {
+        NaiveTime::MIN + Duration::minutes(30 * i64::from(self.period - 1))
+    }
     pub fn year(&self) -> i32 {
         self.date.year()
     }
@@ -482,156 +944,398 @@ impl TradingPeriod {
             )
             .unwrap()
     }
+
+    pub fn from_end(end_time: NaiveDateTime) -> TradingPeriod {
+        TradingPeriod::from_start(end_time - Duration::minutes(30))
+    }
+    pub fn from_start(start_time: NaiveDateTime) -> TradingPeriod {
+        TradingPeriod {
+            date: start_time.date(),
+            period: naive_time_to_thirty_min_period(start_time.time()).get(),
+        }
+    }
 }
 
-impl std::fmt::Display for TradingPeriod {
+impl fmt::Display for TradingPeriod {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}{:02}", self.date.format(Self::format()), self.period)
     }
 }
 
-impl std::str::FromStr for TradingPeriod {
+impl str::FromStr for TradingPeriod {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self> {
-        if !s.is_ascii() || s.len() != 10 {
+        if !s.is_ascii() {
             return Err(Error::InvalidTradingPeriod(s.into()));
         };
 
-        let period = s[8..10].parse::<u8>()?;
+        match s.len() {
+            10 => {
+                let period = s[8..10].parse::<u8>()?;
 
-        if !(1..=48).contains(&period) {
-            return Err(Error::InvalidTradingPeriod(s.into()));
+                if !(1..=48).contains(&period) {
+                    return Err(Error::InvalidTradingPeriod(s.into()));
+                }
+
+                Ok(crate::TradingPeriod {
+                    date: mms_period_datepart::parse(&s[0..8])?,
+                    period,
+                })
+            }
+            19 | 21 => mms_datetime::parse(s).map(TradingPeriod::from_end),
+            _ => Err(Error::InvalidTradingPeriod(s.into())),
         }
-
-        Ok(crate::TradingPeriod {
-            date: chrono::NaiveDate::parse_from_str(&s[0..8], TradingPeriod::format())?,
-            period,
-        })
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for TradingPeriod {
-    fn deserialize<D>(d: D) -> result::Result<crate::TradingPeriod, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(d)?;
-        s.parse().map_err(serde::de::Error::custom)
-    }
-}
-
-impl serde::Serialize for TradingPeriod {
-    fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(&self.to_string())
     }
 }
 
 // Following the pattern from: https://serde.rs/custom-date-format.html
 // To allow use with serde(with = "")
 pub mod mms_datetime {
-    use serde::{de::Error, Deserialize, Deserializer, Serializer};
-    const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
-    const DB_FORMAT: &str = "%Y-%m-%dT%H:%M:%S";
+    use crate::{DispatchPeriod, Error, Result, TradingPeriod};
+    use alloc::string::ToString;
+    use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 
-    pub fn serialize<S>(d: &chrono::NaiveDateTime, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let s = d.format(FORMAT).to_string();
-        serializer.serialize_str(&s)
-    }
+    pub fn parse(input: &str) -> Result<NaiveDateTime> {
+        let dt = if input.starts_with('"') {
+            if input.len() != 21 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!(
+                        "Incorrect length, expected 21 but got {}",
+                        input.len()
+                    ),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
 
-    pub fn deserialize<'de, D>(d: D) -> Result<chrono::NaiveDateTime, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(d)?;
+            let year = input[1..=4]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[1..=4].to_string()))?;
+            let month = input[6..=7]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[6..=7].to_string()))?;
+            let day = input[9..=10]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[9..=10].to_string()))?;
+            let hour = input[12..=13]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[11..=13].to_string()))?;
+            let minute = input[15..=16]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[15..=16].to_string()))?;
+            let second = input[18..=19]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[18..=19].to_string()))?;
 
-        chrono::NaiveDateTime::parse_from_str(&s, FORMAT)
-            .or_else(|_| chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT))
-            .map_err(Error::custom)
+            let date = NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| {
+                Error::ParseDateInternal {
+                    message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                }
+            })?;
+
+            let time = NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| {
+                Error::ParseDateInternal {
+                    message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                }
+            })?;
+
+            date.and_time(time)
+        } else {
+            match input.len() {
+                19 => (),
+                10 => return Ok(NaiveDateTime::from(input.parse::<TradingPeriod>()?)),
+                11 => return Ok(NaiveDateTime::from(input.parse::<DispatchPeriod>()?)),
+                _ => {
+                    return Err(Error::ParseDateInternal {
+                        message: alloc::format!(
+                            "Incorrect length, expected `19` but got {}",
+                            input.len()
+                        ),
+                        input: input.to_string(),
+                        format: "%Y/%m/%d %H:%M:%S",
+                    });
+                }
+            }
+
+            let year = input[0..=3]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[0..=3].to_string()))?;
+            let month = input[5..=6]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[5..=6].to_string()))?;
+            let day = input[8..=9]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[8..=9].to_string()))?;
+            let hour = input[11..=12]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[10..=12].to_string()))?;
+            let minute = input[14..=15]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[14..=15].to_string()))?;
+            let second = input[17..=18]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[17..=18].to_string()))?;
+
+            let date = NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| {
+                Error::ParseDateInternal {
+                    message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                }
+            })?;
+
+            let time = NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| {
+                Error::ParseDateInternal {
+                    message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                }
+            })?;
+
+            date.and_time(time)
+        };
+
+        Ok(dt)
     }
 }
 
-pub mod mms_datetime_opt {
-    use serde::{de::Error, Deserialize, Deserializer, Serializer};
+pub mod mms_decimal {
+    use rust_decimal::Decimal;
 
-    const FORMAT: &str = "%Y/%m/%d %H:%M:%S";
-    const DB_FORMAT: &str = "%Y-%m-%dT%H:%M:%S";
+    use crate::Result;
 
-    pub fn serialize<S>(d: &Option<chrono::NaiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let s = match d {
-            Some(date) => date.format(FORMAT).to_string(),
-            None => "".to_string(),
-        };
-        serializer.serialize_str(&s)
-    }
-
-    pub fn deserialize<'de, D>(d: D) -> Result<Option<chrono::NaiveDateTime>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(d)?;
-        if s.is_empty() {
-            Ok(None)
-        } else {
-            chrono::NaiveDateTime::parse_from_str(&s, FORMAT)
-                .or_else(|_| chrono::NaiveDateTime::parse_from_str(&s, DB_FORMAT))
-                .map_err(Error::custom)
-                .map(Some)
+    pub fn parse(input: &str) -> Result<Decimal> {
+        match input.parse() {
+            Ok(d) => Ok(d),
+            Err(e) => {
+                if input.contains("E-") || input.contains("e-") {
+                    Ok(Decimal::ZERO)
+                } else {
+                    Err(e.into())
+                }
+            }
         }
     }
 }
 
-pub mod mms_date {
-    use serde::{de::Error, Deserialize, Deserializer, Serializer};
+pub mod mms_decimal_opt {
+    use rust_decimal::Decimal;
 
-    const FORMAT: &str = "%Y/%m/%d";
+    use crate::{mms_decimal, Result};
 
-    // because the serialize fn always expects a reference
-    #[allow(clippy::trivially_copy_pass_by_ref)]
-    pub fn serialize<S>(d: &chrono::NaiveDate, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let s = d.format(FORMAT).to_string();
-        serializer.serialize_str(&s)
+    pub fn parse(input: &str) -> Result<Option<Decimal>> {
+        if input.is_empty() {
+            Ok(None)
+        } else {
+            Ok(Some(mms_decimal::parse(&input)?))
+        }
     }
-    pub fn deserialize<'de, D>(d: D) -> std::result::Result<chrono::NaiveDate, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(d)?;
-        chrono::NaiveDate::parse_from_str(&s, FORMAT).map_err(Error::custom)
+}
+
+pub mod mms_datetime_opt {
+    use crate::mms_datetime;
+    use crate::Result;
+    use chrono::NaiveDateTime;
+
+    pub fn parse(input: &str) -> Result<Option<NaiveDateTime>> {
+        if input.trim().is_empty() {
+            return Ok(None);
+        }
+
+        mms_datetime::parse(input).map(Some)
+    }
+}
+
+pub mod mms_date {
+    use crate::{Error, Result};
+    use alloc::string::ToString;
+    use chrono::NaiveDate;
+
+    pub fn parse(input: &str) -> Result<NaiveDate> {
+        if input.starts_with('"') {
+            if input.len() != 12 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!(
+                        "Incorrect length, expected 12 but got {}",
+                        input.len()
+                    ),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
+
+            let year = input[1..=4]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[1..=4].to_string()))?;
+            let month = input[6..=7]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[6..=7].to_string()))?;
+            let day = input[9..=10]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[9..=10].to_string()))?;
+
+            NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
+                message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            })
+        } else {
+            if input.len() != 10 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!(
+                        "Incorrect length, expected 10 but got {}",
+                        input.len()
+                    ),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
+
+            let year = input[0..=3]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[0..=3].to_string()))?;
+            let month = input[5..=6]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[5..=6].to_string()))?;
+            let day = input[8..=9]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[8..=9].to_string()))?;
+
+            NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
+                message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            })
+        }
+    }
+}
+
+pub mod mms_period_datepart {
+    use crate::{Error, Result};
+    use alloc::string::ToString;
+    use chrono::NaiveDate;
+
+    pub fn parse(input: &str) -> Result<NaiveDate> {
+        if input.starts_with('"') {
+            if input.len() != 10 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!(
+                        "Incorrect length, expected 12 but got {}",
+                        input.len()
+                    ),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
+
+            let year = input[1..=4]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[1..=4].to_string()))?;
+            let month = input[5..=6]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[5..=6].to_string()))?;
+            let day = input[7..=8]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[7..=8].to_string()))?;
+
+            NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
+                message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            })
+        } else {
+            if input.len() != 8 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!(
+                        "Incorrect length, expected 10 but got {}",
+                        input.len()
+                    ),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
+
+            let year = input[0..=3]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[0..=3].to_string()))?;
+            let month = input[4..=5]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[4..=5].to_string()))?;
+            let day = input[6..=7]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[6..=7].to_string()))?;
+
+            NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
+                message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            })
+        }
     }
 }
 
 pub mod mms_time {
-    use serde::{de::Error, Deserialize, Deserializer, Serializer};
+    use crate::{Error, Result};
+    use alloc::string::ToString;
+    use chrono::NaiveTime;
 
-    const FORMAT: &str = "%H:%M:%S";
+    pub fn parse(input: &str) -> Result<NaiveTime> {
+        if input.starts_with('"') {
+            if input.len() != 10 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!(
+                        "Incorrect length, expected 10 but got {}",
+                        input.len()
+                    ),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
 
-    // because the serialize fn always expects a reference
-    #[allow(clippy::trivially_copy_pass_by_ref)]
-    pub fn serialize<S>(d: &chrono::NaiveTime, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let s = d.format(FORMAT).to_string();
-        serializer.serialize_str(&s)
-    }
-    pub fn deserialize<'de, D>(d: D) -> Result<chrono::NaiveTime, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(d)?;
-        chrono::NaiveTime::parse_from_str(&s, FORMAT).map_err(Error::custom)
+            let hour = input[1..=2]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[1..=2].to_string()))?;
+            let minute = input[4..=5]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[4..=5].to_string()))?;
+            let second = input[7..=8]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[7..=8].to_string()))?;
+
+            NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| Error::ParseDateInternal {
+                message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            })
+        } else {
+            if input.len() != 8 {
+                return Err(Error::ParseDateInternal {
+                    message: alloc::format!("Incorrect length, expected 8 but got {}", input.len()),
+                    input: input.to_string(),
+                    format: "%Y/%m/%d %H:%M:%S",
+                });
+            }
+
+            let hour = input[0..=1]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[0..=1].to_string()))?;
+            let minute = input[3..=4]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[3..=4].to_string()))?;
+            let second = input[6..=7]
+                .parse()
+                .map_err(|e| Error::ParseIntDetailed(e, input[6..=7].to_string()))?;
+
+            NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| Error::ParseDateInternal {
+                message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            })
+        }
     }
 }
 
@@ -639,30 +1343,61 @@ pub mod mms_time {
 mod tests {
     use super::*;
 
+    extern crate std;
+
+    use std::dbg;
+
+    #[test]
+    fn test_csv_parse_header() {
+        let data = "C,NEMP.WORLD,NEXT_DAY_DISPATCH,AEMO,PUBLIC,2023/01/06,04:10:01,0000000378281515,NEXT_DAY_DISPATCH,0000000378281511";
+
+        let row = CsvRow::from_data(&data).unwrap();
+        dbg!(&row, row.iter_fields().collect::<Vec<_>>());
+
+        AemoHeader::from_row(row).unwrap();
+    }
+
+    #[test]
+    fn csv_parse_headings() {
+        let data = "I,DISPATCH,UNIT_SOLUTION,3,SETTLEMENTDATE,RUNNO,DUID,TRADETYPE,DISPATCHINTERVAL,INTERVENTION,CONNECTIONPOINTID,DISPATCHMODE,AGCSTATUS,INITIALMW,TOTALCLEARED,RAMPDOWNRATE,RAMPUPRATE,LOWER5MIN,LOWER60SEC,LOWER6SEC,RAISE5MIN,RAISE60SEC,RAISE6SEC,DOWNEPF,UPEPF,MARGINAL5MINVALUE,MARGINAL60SECVALUE,MARGINAL6SECVALUE,MARGINALVALUE,VIOLATION5MINDEGREE,VIOLATION60SECDEGREE,VIOLATION6SECDEGREE,VIOLATIONDEGREE,LASTCHANGED,LOWERREG,RAISEREG,AVAILABILITY,RAISE6SECFLAGS,RAISE60SECFLAGS,RAISE5MINFLAGS,RAISEREGFLAGS,LOWER6SECFLAGS,LOWER60SECFLAGS,LOWER5MINFLAGS,LOWERREGFLAGS,RAISEREGAVAILABILITY,RAISEREGENABLEMENTMAX,RAISEREGENABLEMENTMIN,LOWERREGAVAILABILITY,LOWERREGENABLEMENTMAX,LOWERREGENABLEMENTMIN,RAISE6SECACTUALAVAILABILITY,RAISE60SECACTUALAVAILABILITY,RAISE5MINACTUALAVAILABILITY,RAISEREGACTUALAVAILABILITY,LOWER6SECACTUALAVAILABILITY,LOWER60SECACTUALAVAILABILITY,LOWER5MINACTUALAVAILABILITY,LOWERREGACTUALAVAILABILITY,SEMIDISPATCHCAP,DISPATCHMODETIME";
+
+        let mut row = CsvRow::from_data(&data).unwrap();
+
+        let (_, headings) = row.split_at_field(3).unwrap();
+        dbg!(&headings);
+
+        assert_eq!(headings.iter_fields().count(), 57);
+
+        FileKey::from_row(row).unwrap();
+    }
+
     #[test]
     fn naive_time_to_dispatch_period() {
         assert_eq!(
-            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()),
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap()).get(),
             1
         );
         assert_eq!(
-            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(1, 0, 0).unwrap()),
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(1, 0, 0).unwrap()).get(),
             13
         );
         assert_eq!(
-            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(6, 3, 0).unwrap()),
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(6, 3, 0).unwrap()).get(),
             73
         );
         assert_eq!(
-            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(12, 47, 0).unwrap()),
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(12, 47, 0).unwrap())
+                .get(),
             154
         );
         assert_eq!(
-            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(14, 30, 0).unwrap()),
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(14, 30, 0).unwrap())
+                .get(),
             175
         );
         assert_eq!(
-            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(23, 59, 59).unwrap()),
+            naive_time_to_five_min_period(chrono::NaiveTime::from_hms_opt(23, 59, 59).unwrap())
+                .get(),
             288
         );
     }
@@ -745,406 +1480,5 @@ mod tests {
                 .and_hms_opt(23, 30, 0)
                 .unwrap(),
         );
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct MemoryFile {
-    pub header: AemoHeader,
-    pub data: collections::HashMap<FileKey, Subtable>,
-}
-
-#[derive(Debug)]
-pub struct DiskFile {
-    pub header: AemoHeader,
-    handle: zip::ZipArchive<fs::File>,
-    keys: collections::HashMap<FileKey, csv::StringRecord>,
-}
-
-pub struct FileIter<'a, T>
-where
-    T: serde::de::DeserializeOwned + Send + GetTable,
-{
-    file_key: FileKey,
-    inner: csv::StringRecordsIntoIter<zip::read::ZipFile<'a>>,
-    _d: std::marker::PhantomData<T>,
-    headings: csv::StringRecord,
-    found_records: bool,
-}
-
-impl<'a, T> Iterator for FileIter<'a, T>
-where
-    T: serde::de::DeserializeOwned + Send + GetTable,
-{
-    type Item = Result<T>;
-    fn next(&mut self) -> Option<Self::Item> {
-        // we loop here as we may need to scan through multiple records of the underlying iterator
-        // to return one here.
-
-        // optimization: once we start not finding matches after finding at leaast one, we cna always return none.
-        while let Some(val) = self.inner.next() {
-            // record can be safely unwrapped here as we have already checked when creating the AemoDiskFile
-            // we also don't need to check the row length as it has been checked already
-            let record = val.unwrap();
-            if &record[0] == "D"
-                && self.file_key.data_set_name == record[1]
-                && self
-                    .file_key
-                    .table_name
-                    .as_ref()
-                    .map(|n| n == &record[2])
-                    .unwrap_or_else(|| record[2].is_empty())
-                && self.file_key.version.to_string() == record[3]
-            {
-                self.found_records = true;
-                return Some(record.deserialize(Some(&self.headings)).map_err(|cause| {
-                    Error::CsvRowDe {
-                        cause,
-                        headings: Some(self.headings.clone()),
-                        data: record.clone(),
-                    }
-                }));
-            } else if self.found_records {
-                return None;
-            } else {
-                continue;
-            }
-        }
-        None
-    }
-}
-
-pub type AemoDiskFile = DiskFile;
-pub type AemoFile = MemoryFile;
-
-pub enum MmsFile<'a> {
-    Disk(&'a mut DiskFile),
-    Memory(&'a mut MemoryFile),
-}
-
-impl<'a> MmsFile<'a> {
-    pub fn file_keys(&self) -> collections::HashSet<FileKey> {
-        match self {
-            MmsFile::Disk(d) => d.keys.keys().cloned().collect(),
-            MmsFile::Memory(m) => m.data.keys().cloned().collect(),
-        }
-    }
-    pub fn get_table<T>(&mut self) -> Result<Vec<T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable + 'static,
-    {
-        match self {
-            MmsFile::Disk(d) => d.get_table()?.collect(),
-            MmsFile::Memory(m) => m.get_table(),
-        }
-    }
-    pub fn header(&self) -> &AemoHeader {
-        match self {
-            MmsFile::Disk(d) => &d.header,
-            MmsFile::Memory(m) => &m.header,
-        }
-    }
-}
-
-impl<'a> From<&'a mut DiskFile> for MmsFile<'a> {
-    fn from(d: &'a mut DiskFile) -> Self {
-        MmsFile::Disk(d)
-    }
-}
-impl<'a> From<&'a mut MemoryFile> for MmsFile<'a> {
-    fn from(m: &'a mut MemoryFile) -> Self {
-        MmsFile::Memory(m)
-    }
-}
-
-impl DiskFile {
-    pub fn contains_file(&self, key: &FileKey) -> bool {
-        self.keys.contains_key(key)
-    }
-
-    pub fn get_table<T>(&'_ mut self) -> Result<FileIter<'_, T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable + 'static,
-    {
-        let latest_version = T::get_file_key();
-        for version in (1..=latest_version.version).rev() {
-            let current_key = latest_version.with_version(version);
-            if self.contains_file(&current_key) {
-                return self.get_specific_table(current_key);
-            } else {
-                log::warn!(
-                    "For file key {}, version {} was not available",
-                    latest_version,
-                    version,
-                );
-            }
-        }
-        Err(Error::MissingFile(latest_version))
-    }
-    pub fn get_specific_table<T>(&'_ mut self, file_key: FileKey) -> Result<FileIter<'_, T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable,
-    {
-        // assert that the key exists
-        let headings = self
-            .keys
-            .get(&file_key)
-            .ok_or_else(|| Error::MissingFile(file_key.clone()))?
-            .to_owned();
-
-        log::info!("Table found and parsed for file key {}", file_key);
-
-        let inner_file = self.handle.by_index(0)?;
-
-        Ok(FileIter {
-            headings,
-            file_key,
-
-            inner: csv::ReaderBuilder::new()
-                .has_headers(false)
-                .flexible(true)
-                .from_reader(inner_file)
-                .into_records(),
-            _d: std::marker::PhantomData,
-            found_records: false,
-        })
-    }
-
-    /// This assumes that the file is in the standard ZIP format as downloaded
-    /// from nemweb.com.au or FTP server.
-    /// This simply validates the file and stores which subfiles are present
-    /// but doesn't actually parse the data.
-    /// This is more memory efficient than using AemoFile and reading into memory
-    pub fn from_path(path: impl AsRef<std::path::Path>) -> Result<Self> {
-        // baked in assumption that data is a ZIP and contains only one file.
-        let f = fs::File::open(path.as_ref())?;
-        let mut zip = zip::ZipArchive::new(f)?;
-        let (header, keys) = {
-            let inner_file = zip.by_index(0)?;
-            let mut reader = csv::ReaderBuilder::new()
-                .has_headers(false)
-                .flexible(true)
-                .from_reader(inner_file);
-            let mut records = reader.records();
-            let first = records.next().ok_or(Error::MissingHeaderRecord)??;
-
-            let header: AemoHeader = first.deserialize(None).map_err(|cause| Error::CsvRowDe {
-                cause,
-                headings: None,
-                data: first,
-            })?;
-
-            // placeholder
-            let mut footer: Result<AemoFooter> = Err(Error::MissingFooterRecord);
-            let mut keys: collections::HashMap<FileKey, csv::StringRecord> =
-                collections::HashMap::new();
-
-            let mut num_rows = 1;
-
-            for record in records {
-                let record = record?;
-                match record.get(0) {
-                    Some("D") => {
-                        num_rows += 1;
-                        let row_len = record.len();
-                        if row_len < 5 {
-                            return Err(Error::TooShortRow(row_len));
-                        }
-                    }
-                    Some("I") => {
-                        num_rows += 1;
-                        let row_len = record.len();
-                        if row_len < 5 {
-                            return Err(Error::TooShortRow(row_len));
-                        }
-                        let key = FileKey {
-                            data_set_name: record[1].to_string(),
-                            table_name: match &record[2] {
-                                "" => None,
-                                otherwise => Some(otherwise.to_string()),
-                            },
-                            version: record[3].parse()?,
-                        };
-                        let lowercased = record.iter().map(|v| v.to_lowercase()).collect();
-
-                        keys.insert(key, lowercased);
-                    }
-                    Some("C") => {
-                        num_rows += 1;
-
-                        footer = record.deserialize(None).map_err(|cause| Error::CsvRowDe {
-                            cause,
-                            headings: None,
-                            data: record,
-                        });
-                    }
-                    Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
-                    None => return Err(Error::EmptyRow),
-                }
-            }
-
-            let expected_line_count = footer?.line_count_inclusive;
-
-            if num_rows != expected_line_count {
-                return Err(Error::IncorrectLineCount {
-                    got: num_rows,
-                    expected: expected_line_count,
-                });
-            }
-            (header, keys)
-        };
-
-        Ok(AemoDiskFile {
-            header,
-            handle: zip,
-            keys,
-        })
-    }
-}
-
-impl MemoryFile {
-    pub fn get_table<T>(&self) -> Result<Vec<T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable,
-    {
-        let latest_version = T::get_file_key();
-        for version in (1..=latest_version.version).rev() {
-            let current_key = latest_version.with_version(version);
-            match self.get_specific_table(&current_key) {
-                Ok(parsed) => {
-                    log::info!("Table found and parsed for file key {}", current_key);
-                    return Ok(parsed);
-                }
-                Err(e) => {
-                    log::warn!(
-                        "For file key {}, version {} was not available: {}",
-                        latest_version,
-                        version,
-                        e,
-                    );
-                }
-            }
-        }
-        Err(Error::MissingFile(latest_version))
-    }
-    pub fn get_specific_table<T>(&self, file_key: &FileKey) -> Result<Vec<T>>
-    where
-        T: serde::de::DeserializeOwned + Send + GetTable,
-    {
-        let subtable = self
-            .data
-            .get(file_key)
-            .ok_or_else(|| Error::MissingFile(file_key.clone()))?;
-
-        subtable
-            .data
-            .iter()
-            .map(|rec| {
-                rec.deserialize(Some(&subtable.headings))
-                    .map_err(|cause| Error::CsvRowDe {
-                        cause,
-                        headings: Some(subtable.headings.clone()),
-                        data: rec.clone(),
-                    })
-            })
-            .collect()
-    }
-
-    pub fn file_keys(&self) -> std::collections::hash_map::Keys<FileKey, Subtable> {
-        self.data.keys()
-    }
-
-    pub fn contains_file(&self, key: FileKey) -> bool {
-        self.data.contains_key(&key)
-    }
-
-    pub fn from_reader(br: impl io::Read) -> Result<Self> {
-        let mut reader = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .flexible(true)
-            .from_reader(br);
-        let mut records = reader.records();
-        let first = records.next().ok_or(Error::MissingHeaderRecord)??;
-
-        let header: AemoHeader = first.deserialize(None).map_err(|cause| Error::CsvRowDe {
-            cause,
-            headings: None,
-            data: first,
-        })?;
-
-        // placeholder
-        let mut footer: Result<AemoFooter> = Err(Error::MissingFooterRecord);
-        let mut data: collections::HashMap<FileKey, Subtable> = collections::HashMap::new();
-
-        for record in records {
-            let record = record?;
-            match record.get(0) {
-                Some("D") => {
-                    let row_len = record.len();
-                    if row_len < 5 {
-                        return Err(Error::TooShortRow(row_len));
-                    }
-                    let key = FileKey {
-                        data_set_name: record[1].to_string(),
-                        table_name: match &record[2] {
-                            "" => None,
-                            otherwise => Some(otherwise.to_string()),
-                        },
-                        version: record[3].parse()?,
-                    };
-
-                    if let Some(v) = data.get_mut(&key) {
-                        v.append(record);
-                    } else {
-                        return Err(Error::MissingSubtableHeadings(key));
-                    }
-                }
-                Some("I") => {
-                    let row_len = record.len();
-                    if row_len < 5 {
-                        return Err(Error::TooShortRow(row_len));
-                    }
-                    let key = FileKey {
-                        data_set_name: record[1].to_string(),
-                        table_name: match &record[2] {
-                            "" => None,
-                            otherwise => Some(otherwise.to_string()),
-                        },
-                        version: record[3].parse()?,
-                    };
-
-                    let lowercased = record.iter().map(|v| v.to_lowercase()).collect();
-
-                    data.insert(key, Subtable::new(lowercased));
-                }
-                Some("C") => {
-                    footer = record.deserialize(None).map_err(|cause| Error::CsvRowDe {
-                        cause,
-                        headings: None,
-                        data: record,
-                    });
-                }
-                Some(t) => return Err(Error::UnexpectedRowType(t.into())), //unexpected row, as correct files only have "C", "I" and "D"
-                None => return Err(Error::EmptyRow),
-            }
-        }
-        // set footer
-        let expected_line_count = footer?.line_count_inclusive;
-
-        let file = Self { header, data };
-
-        let data_rows = file
-            .data
-            .iter()
-            .fold(0, |acc, (_, v)| acc + 1 + v.data.len());
-
-        if data_rows + 2 == expected_line_count {
-            Ok(file)
-        } else {
-            Err(Error::IncorrectLineCount {
-                got: data_rows + 2,
-                expected: expected_line_count,
-            })
-        }
     }
 }

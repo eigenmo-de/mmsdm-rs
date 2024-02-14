@@ -1,14 +1,26 @@
-use heck::{CamelCase, ShoutySnakeCase, SnakeCase, TitleCase};
-use std::{collections, fmt::Debug, fs, ops::ControlFlow, str};
+use anyhow::Context;
+use codegen::{Block, Scope};
+use heck::{ToShoutySnakeCase, ToSnakeCase, ToTitleCase, ToUpperCamelCase};
+use itertools::Itertools;
+use std::{
+    collections::{self, HashMap},
+    fmt::Debug,
+    fs,
+    ops::ControlFlow,
+    str,
+};
+
+use crate::VERSION;
 
 use crate::{mms, pdr};
+use crate::{mms::DataType, KW};
 use serde::Deserialize;
 
 impl mms::DataType {
     fn as_rust_type(&self) -> String {
         match self {
-            mms::DataType::Varchar { .. } => "String",
-            mms::DataType::Char => "char",
+            // mms::DataType::Varchar { .. } | mms::DataType::Char=> "mmsdm_core::MaybeStackStr",
+            mms::DataType::Varchar { .. } | mms::DataType::Char => "alloc::string::String",
             mms::DataType::Date | mms::DataType::DateTime => "chrono::NaiveDateTime",
             mms::DataType::Decimal { .. } => "rust_decimal::Decimal",
             mms::DataType::Integer { .. } => "i64",
@@ -17,46 +29,77 @@ impl mms::DataType {
     }
     fn as_arrow_type(&self) -> String {
         match self {
-            mms::DataType::Varchar { .. } => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
-            mms::DataType::Char => "arrow2::datatypes::DataType::LargeUtf8".to_string(),
+            mms::DataType::Varchar { .. } | mms::DataType::Char => {
+                "arrow::datatypes::DataType::Utf8".to_string()
+            }
             mms::DataType::Date | mms::DataType::DateTime => {
-                "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)"
+                "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Second, None)"
                     .to_string()
             }
             mms::DataType::Decimal { precision, scale } => format!(
-                "arrow2::datatypes::DataType::Decimal({},{})",
+                "arrow::datatypes::DataType::Decimal128({},{})",
                 precision, scale
             ),
-            mms::DataType::Integer { .. } => "arrow2::datatypes::DataType::Int64".to_string(),
+            mms::DataType::Integer { .. } => "arrow::datatypes::DataType::Int64".to_string(),
+        }
+    }
+    fn as_arrow_builder(&self) -> String {
+        match self {
+            mms::DataType::Varchar { .. } | mms::DataType::Char => {
+                "arrow::array::builder::StringBuilder::new()".to_string()
+            }
+            mms::DataType::Date | mms::DataType::DateTime => {
+                "arrow::array::builder::TimestampSecondBuilder::new()".to_string()
+            }
+            mms::DataType::Decimal { .. } => format!(
+                "arrow::array::builder::Decimal128Builder::new().with_data_type({})",
+                self.as_arrow_type()
+            ),
+
+            mms::DataType::Integer { .. } => {
+                "arrow::array::builder::Int64Builder::new()".to_string()
+            }
+        }
+    }
+    fn as_arrow_builder_ty(&self) -> String {
+        match self {
+            mms::DataType::Varchar { .. } | mms::DataType::Char => {
+                "arrow::array::builder::StringBuilder".to_string()
+            }
+            mms::DataType::Date | mms::DataType::DateTime => {
+                "arrow::array::builder::TimestampSecondBuilder".to_string()
+            }
+            mms::DataType::Decimal { .. } => "arrow::array::builder::Decimal128Builder".to_string(),
+
+            mms::DataType::Integer { .. } => "arrow::array::builder::Int64Builder".to_string(),
         }
     }
 }
 
 impl mms::TableColumn {
-    fn clone_or_nothing(&self) -> String {
-        if self.comment.contains("YYYYMMDDPPP")
-            || self.comment.contains("YYYYMMDDPP")
-            || !matches!(self.data_type, mms::DataType::Varchar { .. })
-        {
-            ""
+    fn to_string_or_nothing(&self) -> String {
+        if self.data_stored_in_string() {
+            "().to_string()"
         } else {
-            ".clone()"
+            ""
         }
         .to_string()
     }
     fn to_rust_type(&self) -> String {
-        let formatted_type = if self.comment.contains("YYYYMMDDPPP") {
+        dbg!(
+            self,
+            self.is_dispatch_period(),
+            self.is_trading_period(),
+            &self.comment
+        );
+        if self.is_dispatch_period() {
             "mmsdm_core::DispatchPeriod".to_string()
-        } else if self.comment.contains("YYYYMMDDPP") {
+        } else if self.is_trading_period() {
             "mmsdm_core::TradingPeriod".to_string()
-        } else {
+        } else if self.mandatory {
             self.data_type.as_rust_type()
-        };
-
-        if self.mandatory {
-            formatted_type
         } else {
-            format!("Option<{}>", formatted_type)
+            format!("Option<{}>", self.data_type.as_rust_type())
         }
     }
     fn rust_field_name(&self) -> String {
@@ -67,19 +110,30 @@ impl mms::TableColumn {
         }
     }
     fn as_arrow_type(&self) -> String {
-        if self.comment.contains("YYYYMMDDPPP")
-            || self.comment.contains("YYYYMMDDPP")
-            || self.name.to_lowercase() == "predispatchseqno"
-        {
-            "arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second, None)"
+        if self.is_dispatch_period() || self.is_trading_period() {
+            "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Second, None)"
                 .to_string()
         } else {
             self.data_type.as_arrow_type()
         }
     }
+    fn as_arrow_builder_ty(&self) -> String {
+        if self.is_dispatch_period() || self.is_trading_period() {
+            mms::DataType::DateTime.as_arrow_builder_ty()
+        } else {
+            self.data_type.as_arrow_builder_ty()
+        }
+    }
+    fn as_arrow_builder(&self) -> String {
+        if self.is_dispatch_period() || self.is_trading_period() {
+            mms::DataType::DateTime.as_arrow_builder()
+        } else {
+            self.data_type.as_arrow_builder()
+        }
+    }
     fn as_arrow_field(&self) -> String {
         format!(
-            "arrow2::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
+            "arrow::datatypes::Field::new(\"{name}\", {ty}, {nullable})",
             name = self.rust_field_name(),
             ty = self.as_arrow_type(),
             nullable = !self.mandatory,
@@ -90,22 +144,25 @@ impl mms::TableColumn {
     }
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
-            (_, _) if self.comment.contains("YYYYMMDDPPP") => {
+            (_, _) if self.is_dispatch_period() || self.is_trading_period() => {
                 format!("row.{}.start().timestamp()", self.rust_field_name())
             }
-            (_, _)
-                if self.comment.contains("YYYYMMDDPP")
-                    || self.name.to_lowercase() == "predispatchseqno" =>
-            {
-                format!("row.{}.start().timestamp()", self.rust_field_name())
-            }
-            // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("row.{}.map(|val| val.start().timestamp())", self.rust_field_name()),
-            // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("row.{}.map(|val| val.start().timestamp())", self.rust_field_name()),
-            (mms::DataType::Varchar { .. }, true) => format!("row.{}", self.rust_field_name()),
-            (mms::DataType::Char, true) => format!("row.{}.to_string()", self.rust_field_name()),
+            // (_, false) if self.comment.to_uppercase().contains("YYYYMMDDPPP") || self.comment.to_uppercase().contains("YYYYMMDDPP") => {
+            //     format!("row.{}.map(|v| v.start().timestamp())", self.rust_field_name())
+            // }
+            // (mms::DataType::Varchar { .. }, true) if !self.data_stored_in_string() => {
+            //     format!("row.{}.start().timestamp()", self.rust_field_name())
+            // }
+            // (mms::DataType::Varchar { .. }, false) if !self.data_stored_in_string() => {
+            //     format!("row.{}.map(|v| v.start().timestamp())", self.rust_field_name())
+            // }
             (mms::DataType::Date | mms::DataType::DateTime, true) => {
                 format!("row.{}.timestamp()", self.rust_field_name())
             }
+            (mms::DataType::Date | mms::DataType::DateTime, false) => {
+                format!("row.{}.map(|val| val.timestamp())", self.rust_field_name())
+            }
+
             (mms::DataType::Decimal { scale, .. }, true) => format!(
                 "{{
                 let mut val = row.{};
@@ -115,14 +172,6 @@ impl mms::TableColumn {
                 self.rust_field_name(),
                 scale = scale
             ),
-            (mms::DataType::Integer { .. }, true) => format!("row.{}", self.rust_field_name()),
-            (mms::DataType::Varchar { .. }, false) => format!("row.{}", self.rust_field_name()),
-            (mms::DataType::Char, false) => {
-                format!("row.{}.map(|val| val.to_string())", self.rust_field_name())
-            }
-            (mms::DataType::Date | mms::DataType::DateTime, false) => {
-                format!("row.{}.map(|val| val.timestamp())", self.rust_field_name())
-            }
             (mms::DataType::Decimal { scale, .. }, false) => format!(
                 "{{
                 row.{}.map(|mut val| {{
@@ -133,79 +182,24 @@ impl mms::TableColumn {
                 self.rust_field_name(),
                 scale = scale
             ),
-            (mms::DataType::Integer { .. }, false) => format!("row.{}", self.rust_field_name()),
-        };
-        format!(
-            "{array}.push({extractor});",
-            array = self.as_arrow_array_name(),
-            extractor = extractor,
-        )
-    }
-    fn as_arrow_array_constructor(&self) -> String {
-        match (&self.data_type, self.mandatory) {
-            (_, _) if self.comment.contains("YYYYMMDDPPP") => format!(
-                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (_, _)
-                if self.comment.contains("YYYYMMDDPP")
-                    || self.name.to_lowercase() == "predispatchseqno" =>
-            {
-                format!(
-                    "arrow2::array::PrimitiveArray::from_vec({}).to({})",
-                    self.as_arrow_array_name(),
-                    self.as_arrow_type()
-                )
+
+            (mms::DataType::Varchar { .. } | mms::DataType::Char, _) => {
+                format!("row.{}()", self.rust_field_name())
             }
-            // (_, false) if self.comment.contains("YYYYMMDDPPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
-            // (_, false) if self.comment.contains("YYYYMMDDPP") => format!("arrow2::array::PrimitiveArray::from({})", self.as_arrow_array_name()),
-            (mms::DataType::Varchar { .. }, true) => format!(
-                "arrow2::array::Utf8Array::<i64>::from_slice({})",
-                self.as_arrow_array_name()
-            ),
-            (mms::DataType::Char, true) => format!(
-                "arrow2::array::Utf8Array::<i64>::from_slice({})",
-                self.as_arrow_array_name()
-            ),
-
-            (mms::DataType::Varchar { .. }, false) => format!(
-                "arrow2::array::Utf8Array::<i64>::from({})",
-                self.as_arrow_array_name()
-            ),
-            (mms::DataType::Char, false) => format!(
-                "arrow2::array::Utf8Array::<i64>::from({})",
-                self.as_arrow_array_name()
-            ),
-
-            (mms::DataType::Date | mms::DataType::DateTime, true) => format!(
-                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (mms::DataType::Decimal { .. }, true) => format!(
-                "arrow2::array::PrimitiveArray::from_vec({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (mms::DataType::Integer { .. }, true) => format!(
-                "arrow2::array::PrimitiveArray::from_vec({})",
-                self.as_arrow_array_name()
-            ),
-            (mms::DataType::Date | mms::DataType::DateTime, false) => format!(
-                "arrow2::array::PrimitiveArray::from({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (mms::DataType::Decimal { .. }, false) => format!(
-                "arrow2::array::PrimitiveArray::from({}).to({})",
-                self.as_arrow_array_name(),
-                self.as_arrow_type()
-            ),
-            (mms::DataType::Integer { .. }, false) => format!(
-                "arrow2::array::PrimitiveArray::from({})",
-                self.as_arrow_array_name()
-            ),
+            (mms::DataType::Integer { .. }, _) => format!("row.{}", self.rust_field_name()),
+        };
+        if self.mandatory || self.is_dispatch_period() || self.is_trading_period() {
+            format!(
+                "builder.{array}.append_value({extractor});",
+                array = self.as_arrow_array_name(),
+                extractor = extractor,
+            )
+        } else {
+            format!(
+                "builder.{array}.append_option({extractor});",
+                array = self.as_arrow_array_name(),
+                extractor = extractor,
+            )
         }
     }
 }
@@ -213,9 +207,9 @@ impl mms::TableColumn {
 impl mms::TableColumns {
     fn as_arrow_schema(&self) -> String {
         format!(
-            "arrow2::datatypes::Schema::from(vec![
+            "arrow::datatypes::Schema::new(alloc::vec::Vec::from([
     {fields}
-])",
+]))",
             fields = self
                 .columns
                 .iter()
@@ -318,21 +312,38 @@ impl pdr::Report {
             version = self.version,
         )
     }
-
-    pub fn get_rust_struct_name(&self) -> String {
+    pub fn get_rust_manager_struct_name(&self) -> String {
         if let Some(sub_type) = &self.sub_type {
             format!(
                 "{}{}{}",
-                self.name.to_camel_case(),
-                sub_type.to_camel_case(),
+                self.name.to_upper_camel_case(),
+                sub_type.to_upper_camel_case(),
                 self.version
             )
         } else {
-            format!("{}{}", self.name.to_camel_case(), self.version)
+            format!("{}{}", self.name.to_upper_camel_case(), self.version)
         }
     }
+    pub fn get_rust_struct_name(&self) -> String {
+        if let Some(sub_type) = &self.sub_type {
+            format!(
+                "{}{}{}Row",
+                self.name.to_upper_camel_case(),
+                sub_type.to_upper_camel_case(),
+                self.version
+            )
+        } else {
+            format!("{}{}Row", self.name.to_upper_camel_case(), self.version)
+        }
+    }
+    pub fn get_rust_struct_mapping_name(&self) -> String {
+        format!("{}Mapping", self.get_rust_manager_struct_name())
+    }
+    pub fn get_rust_arrow_builder_name(&self) -> String {
+        format!("{}Builder", self.get_rust_manager_struct_name())
+    }
     pub fn get_rust_pk_name(&self) -> String {
-        format!("{}PrimaryKey", self.get_rust_struct_name())
+        format!("{}PrimaryKey", self.get_rust_manager_struct_name())
     }
     pub fn get_partition_base(&self) -> String {
         if let Some(sub_type) = &self.sub_type {
@@ -346,23 +357,6 @@ impl pdr::Report {
             format!("{}_v{}", self.name.to_snake_case(), self.version,)
         }
     }
-    pub fn get_rust_file_key_literal(&self) -> String {
-        format!(
-            r#"mmsdm_core::FileKey {{
-    data_set_name: "{data_set}".into(),
-    table_name: Some("{table}".into()),
-    version: {version},
-}}"#,
-            data_set = self.name.to_shouty_snake_case(),
-            table = if let Some(sub_type) = &self.sub_type {
-                sub_type
-            } else {
-                ""
-            }
-            .to_shouty_snake_case(),
-            version = self.version,
-        )
-    }
 }
 
 fn codegen_struct(
@@ -370,75 +364,118 @@ fn codegen_struct(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
+    let mut manager_struct = codegen::Struct::new(&pdr_report.get_rust_manager_struct_name());
+    manager_struct.vis("pub");
+    manager_struct.fmt(fmtr)?;
+
+
+    let mut mapping = codegen::Struct::new(&pdr_report.get_rust_struct_mapping_name());
+    mapping.vis("pub");
+    mapping.tuple_field(format!("[usize; {}]", table.columns().columns.len()));
+    mapping.fmt(fmtr)?;
+
     let mut current_struct = codegen::Struct::new(&pdr_report.get_rust_struct_name());
     current_struct
         .vis("pub")
         .doc(&table.get_rust_doc(pdr_report))
         .derive("Debug")
-        .derive("Clone")
         .derive("PartialEq")
         .derive("Eq")
-        .derive("serde::Deserialize")
-        .derive("serde::Serialize");
+        .generic("'data");
+
     for col in table.columns().columns.iter() {
-        if &col.field_name() == "type" {
-            let mut field = codegen::Field::new("pub r#type", &col.to_rust_type());
-            field.annotation(vec!["#[serde(rename = \"type\")]"]);
-            field.doc(vec![&col.comment.replace('\t', "")]);
-            current_struct.push_field(field);
-        } else if col.comment.contains("YYYYMMDDPPP") {
+        dbg!(
+            col.is_dispatch_period(),
+            col.is_trading_period(),
+            &col.comment
+        );
+        if col.is_dispatch_period() {
             // parse as DispatchPeriod
             let mut field = codegen::Field::new(
                 &format!("pub {}", col.field_name()),
                 "mmsdm_core::DispatchPeriod",
             );
-            // field.annotation(vec!["#[serde(with = \"crate::dispatch_period\")]"]);
-            field.doc(vec![&col.comment.replace('\t', "")]);
+            field.doc(col.comment.replace('\t', ""));
             current_struct.push_field(field);
-        } else if col.comment.contains("YYYYMMDDPP") 
-        // special case for PredispatchMnspbidtrk1
-        // which is missing the YYYYMMDDPP comment
-        || col.name.to_lowercase() == "predispatchseqno"
-        {
+        } else if col.is_trading_period() {
             // parse as TradingPeriod
             let mut field = codegen::Field::new(
                 &format!("pub {}", col.field_name()),
                 "mmsdm_core::TradingPeriod",
             );
-            // field.annotation(vec!["#[serde(with = \"crate::trading_period\")]"]);
-            field.doc(vec![&col.comment.replace('\t', "")]);
+            field.doc(col.comment.replace('\t', ""));
+            current_struct.push_field(field);
+        } else if matches!(
+            col.data_type,
+            mms::DataType::Char | mms::DataType::Varchar { .. }
+        ) {
+            let mut field = codegen::Field::new(
+                &format!("pub {}", col.escaped_field_name()),
+                "core::ops::Range<usize>",
+            );
+            field.doc(col.comment.replace('\t', ""));
             current_struct.push_field(field);
         } else if matches!(col.data_type, mms::DataType::Date | mms::DataType::DateTime) {
-            let mut field =
-                codegen::Field::new(&format!("pub {}", col.field_name()), &col.to_rust_type());
-            if col.mandatory {
-                field.annotation(vec!["#[serde(with = \"mmsdm_core::mms_datetime\")]"]);
-            } else {
-                field.annotation(vec!["#[serde(with = \"mmsdm_core::mms_datetime_opt\")]"]);
-            };
-            field.doc(vec![&col.comment.replace('\t', "")]);
+            let mut field = codegen::Field::new(
+                &format!("pub {}", col.escaped_field_name()),
+                &col.to_rust_type(),
+            );
+            field.doc(col.comment.replace('\t', ""));
             current_struct.push_field(field);
-        // } else if matches!(col.data_type, mms::DataType::Decimal { .. })
-        // {
-        //     let mut field = codegen::Field::new(
-        //         &format!("pub {}", col.field_name()),
-        //         &col.to_rust_type(),
-        //     );
-        //     if col.mandatory {
-        //         field.annotation(vec!["#[serde(with = \"rust_decimal::serde::str\")]"]);
-        //     } else {
-        //         field.annotation(vec!["#[serde(with = \"crate::decimal_opt\")]"]);
-        //     };
-        //     field.doc(vec![&col.comment.replace('\t', "")]);
-        //     current_struct.push_field(field);
         } else {
-            let mut field =
-                codegen::Field::new(&format!("pub {}", col.field_name()), &col.to_rust_type());
-            field.doc(vec![&col.comment.replace('\t', "")]);
+            let mut field = codegen::Field::new(
+                &format!("pub {}", col.escaped_field_name()),
+                &col.to_rust_type(),
+            );
+            field.doc(col.comment.replace('\t', ""));
             current_struct.push_field(field);
         };
     }
+
+    if table.has_any_string_columns() {
+        current_struct.push_field(codegen::Field::new(
+            "backing_data",
+            "mmsdm_core::CsvRow<'data>",
+        ));
+    } else {
+        current_struct.push_field(codegen::Field::new(
+            "backing_data",
+            "core::marker::PhantomData<&'data ()>",
+        ));
+    }
+
     current_struct.fmt(fmtr)?;
+
+    {
+        let mut struct_impl =
+            codegen::Impl::new(format!("{}<'data>", pdr_report.get_rust_struct_name()));
+        struct_impl.generic("'data");
+
+        for col in table.columns().columns.iter() {
+            if col.data_stored_in_string() {
+                // need to add a getter function
+                let field_name = col.escaped_field_name();
+                let func = struct_impl.new_fn(&format!("{field_name}"));
+
+                func.vis("pub");
+                func.arg_ref_self();
+
+                if col.mandatory {
+                    func.ret("&str");
+                    func.line(format!("core::ops::Index::index(self.backing_data.as_slice(), self.{field_name}.clone())"));
+                } else {
+                    func.ret("Option<&str>");
+                    func.line(format!("if self.{field_name}.is_empty() {{"));
+                    func.line("None");
+                    func.line("} else {");
+                    func.line(format!("Some(core::ops::Index::index(self.backing_data.as_slice(), self.{field_name}.clone()))"));
+                    func.line("}");
+                }
+            }
+        }
+
+        struct_impl.fmt(fmtr)?;
+    }
 
     Ok(())
 }
@@ -448,19 +485,163 @@ fn codegen_impl_get_table(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut current_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+    let mut current_impl = codegen::Impl::new(&pdr_report.get_rust_manager_struct_name());
     current_impl.impl_trait("mmsdm_core::GetTable");
+    // current_impl.generic("'data");
 
-    let mut get_file_key = codegen::Function::new("get_file_key");
-    get_file_key.ret("mmsdm_core::FileKey");
+    current_impl.associate_type(
+        "Row<'row>",
+        format!("{}<'row>", pdr_report.get_rust_struct_name()),
+    );
 
-    get_file_key.line(&pdr_report.get_rust_file_key_literal());
+    {
+        let mut from_row = codegen::Function::new("from_row");
+        from_row.generic("'data");
+        from_row.arg("row", "mmsdm_core::CsvRow<'data>");
+        from_row.arg("field_mapping", "&Self::FieldMapping");
+        from_row.ret("mmsdm_core::Result<Self::Row<'data>>");
+        from_row.line(&format!("Ok({} {{", pdr_report.get_rust_struct_name()));
 
-    current_impl.push_fn(get_file_key);
+        for (idx, col) in table.columns().columns.iter().enumerate() {
+            let field_name = col.field_name();
+            let field_name_escaped = col.escaped_field_name();
+            let mandatory_part = match col.mandatory {
+                true => "",
+                // dispatch and trading period columns are _never_ null, even if they are stated as not mandatory...
+                false if col.is_trading_period() || col.is_dispatch_period() => "",
+                false => "opt_",
+            };
+            match &col.data_type {
+                mms::DataType::DateTime | mms::DataType::Date
+                    if !(col.is_trading_period() || col.is_dispatch_period()) =>
+                {
+                    from_row.line(format!("{field_name_escaped}: row.get_{mandatory_part}custom_parsed_at_idx(\"{field_name}\", field_mapping.0[{idx}], mmsdm_core::mms_datetime::parse)?,"));
+                }
+
+                _ if col.data_stored_in_string() => {
+                    from_row.line(format!(
+                        "{field_name_escaped}: row.get_{mandatory_part}range(\"{field_name}\", field_mapping.0[{idx}])?,"
+                    ));
+                }
+                mms::DataType::Decimal { .. }
+                    if !(col.is_trading_period() || col.is_dispatch_period()) =>
+                {
+                    from_row.line(format!("{field_name_escaped}: row.get_{mandatory_part}custom_parsed_at_idx(\"{field_name}\", field_mapping.0[{idx}], mmsdm_core::mms_decimal::parse)?,"));
+                }
+                _ => {
+                    from_row.line(format!("{field_name_escaped}: row.get_{mandatory_part}parsed_at_idx(\"{field_name}\", field_mapping.0[{idx}])?,"));
+                }
+            }
+        }
+
+        if table.has_any_string_columns() {
+            from_row.line("backing_data: row,");
+        } else {
+            from_row.line("backing_data: core::marker::PhantomData,");
+        };
+
+        from_row.line("})");
+
+        current_impl.push_fn(from_row);
+    }
+
+    {
+        let mut field_mapping_from_row = codegen::Function::new("field_mapping_from_row");
+        field_mapping_from_row.ret("mmsdm_core::Result<Self::FieldMapping>");
+        field_mapping_from_row.generic("'a");
+
+        field_mapping_from_row.arg("mut row", "mmsdm_core::CsvRow<'a>");
+
+        // verify it is an I row
+        field_mapping_from_row.line("if !matches!(row.record_type(), mmsdm_core::RecordType::I) {");
+        field_mapping_from_row.line("return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(\"Expected an I row but got {row:?}\")));");
+        field_mapping_from_row.line("}");
+
+        // verify file key matches
+        field_mapping_from_row.line("let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;");
+        field_mapping_from_row.line("if !Self::matches_file_key(&row_key, row_key.version) {");
+        field_mapping_from_row.line("return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(\"Expected a row matching {}.{}.v{} but got {row_key}\", Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION)));");
+        field_mapping_from_row.line("}");
+
+        // calculate mapping
+        field_mapping_from_row.line("let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;");
+        field_mapping_from_row.line("for (field_index, field) in Self::COLUMNS.iter().enumerate() {");
+        // usize MAX is fine here, this will only happen for nullable fields.
+        field_mapping_from_row.line("base_mapping[field_index] = row.iter_fields().position(|f| f == *field).unwrap_or(usize::MAX);");
+        field_mapping_from_row.line("}");
+        field_mapping_from_row.line(format!("Ok({}(base_mapping))", pdr_report.get_rust_struct_mapping_name()));
+
+        current_impl.push_fn(field_mapping_from_row);
+
+    }
+
+    {
+        let mut partition_suffix_from_row = codegen::Function::new("partition_suffix_from_row");
+        partition_suffix_from_row.ret("mmsdm_core::Result<Self::Partition>");
+        partition_suffix_from_row.generic("'a");
+
+        if let ControlFlow::Break(col) = table.partition_column() {
+            partition_suffix_from_row.arg("row", "mmsdm_core::CsvRow<'a>");
+            let (idx, _) = table
+                .columns()
+                .columns
+                .iter()
+                .enumerate()
+                .find(|(_, search_col)| search_col.field_name() == col.field_name())
+                .unwrap();
+            let field_name = col.field_name();
+            let idx = idx + 4;
+            let field_name_escaped = col.escaped_field_name();
+
+            match &col.data_type {
+                mms::DataType::DateTime | mms::DataType::Date
+                    if !(col.is_trading_period() || col.is_dispatch_period()) =>
+                {
+                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}= row.get_custom_parsed_at_idx("{field_name}", {idx}, mmsdm_core::mms_datetime::parse)?;"#));
+                }
+                _ if col.is_trading_period() => {
+                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::TradingPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
+                }
+                _ if col.is_dispatch_period() => {
+                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::DispatchPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
+                }
+                otherwise => {
+                    // panic!("Invalid partition column: {col:?} of type {:?}", col.data_type);
+                }
+            }
+
+            partition_suffix_from_row.line(format!(r#"Ok(mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from({colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from({colname}).month()).unwrap() }})"#, colname = col.field_name()));
+        } else {
+            partition_suffix_from_row.arg("_row", "mmsdm_core::CsvRow<'a>");
+            partition_suffix_from_row.line("Ok(())");
+        }
+        current_impl.push_fn(partition_suffix_from_row);
+    }
+
+    let mut file_version = codegen::Function::new("matches_file_key");
+    file_version.arg("key", "&mmsdm_core::FileKey<'_>");
+    file_version.arg("version", "i32");
+    file_version.ret("bool");
+    file_version.line("version == key.version && Self::DATA_SET_NAME == key.data_set_name() && Self::TABLE_NAME == key.table_name()");
+    current_impl.push_fn(file_version);
+
+    current_impl.associate_type("FieldMapping", pdr_report.get_rust_struct_mapping_name());
+    current_impl.associate_const("VERSION", "i32", pdr_report.version.to_string(), "");
+    current_impl.associate_const("DATA_SET_NAME", "&'static str", format!("\"{}\"", pdr_report.name), "");
+    current_impl.associate_const("TABLE_NAME", "&'static str", format!("\"{}\"", pdr_report.sub_type.as_deref().unwrap_or_default()), "");
+    
+    // the +4 here is to offset for the skipped columns!
+    let array_contents = table.columns().columns.iter().enumerate().map(|(idx, _)| format!("{}", idx + 4)).collect::<Vec<_>>().join(",");
+
+    current_impl.associate_const("DEFAULT_FIELD_MAPPING", "Self::FieldMapping", format!("{}([{array_contents}])", pdr_report.get_rust_struct_mapping_name()), "");
+
+    let array_contents = table.columns().columns.iter().map(|c| format!("\"{}\"", c.name)).collect::<Vec<_>>().join(",");
+    current_impl.associate_const("COLUMNS", "&'static [&'static str]", format!("&[{array_contents}]"), "");
+
 
     let mut primary_key = codegen::Function::new("primary_key");
     primary_key.ret(&pdr_report.get_rust_pk_name());
-    primary_key.arg_ref_self();
+    primary_key.arg("row", "&Self::Row<'_>");
     primary_key.line(&format!(
         r#"{pk_name} {{
 {pk_fields}
@@ -471,7 +652,7 @@ fn codegen_impl_get_table(
             .cols
             .iter()
             .map(|name| format!(
-                "    {0}: self.{0}{1}",
+                "    {0}: row.{0}{1}",
                 lowercase_and_escape(name),
                 table
                     .columns()
@@ -479,7 +660,7 @@ fn codegen_impl_get_table(
                     .iter()
                     .find(|col| &col.name == name)
                     .unwrap()
-                    .clone_or_nothing()
+                    .to_string_or_nothing()
             ))
             .collect::<Vec<String>>()
             .join(",\n"),
@@ -491,28 +672,36 @@ fn codegen_impl_get_table(
 
     let mut partition_suffix = codegen::Function::new("partition_suffix");
     partition_suffix.ret("Self::Partition");
-    partition_suffix.arg_ref_self();
-
+    
+    // if pdr_report.name == "PREDISPATCH" && pdr_report.sub_type.as_deref() == Some("REGIONFCASREQUIREMENT") {
+        
+        //     dbg!(table.partition_column(), table.find_column("predispatchseqno"), &table.columns());
+        //     panic!()
+        // }
+        
     if let ControlFlow::Break(col) = table.partition_column() {
+        partition_suffix.arg("row", "&Self::Row<'_>");
         current_impl.associate_type("Partition", "mmsdm_core::YearMonth");
-        partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: self.{colname}.year(), month: num_traits::FromPrimitive::from_u32(self.{colname}.month()).unwrap() }}"#, colname = col.field_name()));
+        partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from(row.{colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from(row.{colname}).month()).unwrap() }}"#, colname = col.field_name()));
     } else {
+        partition_suffix.arg("_row", "&Self::Row<'_>");
         current_impl.associate_type("Partition", "()");
     }
     current_impl.push_fn(partition_suffix);
 
     let mut partition_name = codegen::Function::new("partition_name");
-    partition_name.ret("String");
-    partition_name.arg_ref_self();
-
+    partition_name.ret("alloc::string::String");
+    
     if table.partition_column().is_break() {
+        partition_name.arg("row", "&Self::Row<'_>");
         partition_name.line(
             &format!(
-                r#"format!("{}_{{}}_{{}}", self.partition_suffix().year, self.partition_suffix().month.number_from_month())"#,
+                r#"alloc::format!("{}_{{}}_{{}}", Self::partition_suffix(&row).year, Self::partition_suffix(&row).month.number_from_month())"#,
                 pdr_report.get_partition_base()
             )
         );
     } else {
+        partition_name.arg("_row", "&Self::Row<'_>");
         partition_name.line(&format!(
             r#""{}".to_string()"#,
             pdr_report.get_partition_base()
@@ -520,6 +709,40 @@ fn codegen_impl_get_table(
     }
 
     current_impl.push_fn(partition_name);
+
+    {
+        let mut to_owned = codegen::Function::new("to_static");
+        to_owned.generic("'a");
+        to_owned.arg("row", "&Self::Row<'a>");
+        to_owned.ret("Self::Row<'static>");
+
+        to_owned.line(&format!("{} {{", pdr_report.get_rust_struct_name()));
+
+        for (_, col) in table.columns().columns.iter().enumerate() {
+            let field_name = col.field_name();
+
+            let field_name_escaped = if KW.contains(&field_name.as_str()) {
+                format!("r#{field_name}")
+            } else {
+                field_name.to_string()
+            };
+
+            // this .clone() is cheap as all fields are copy!
+            to_owned.line(format!(
+                "{field_name_escaped}: row.{field_name_escaped}.clone(),"
+            ));
+        }
+
+        if table.has_any_string_columns() {
+            to_owned.line("backing_data: row.backing_data.to_owned(),");
+        } else {
+            to_owned.line("backing_data: core::marker::PhantomData,");
+        };
+
+        to_owned.line("}");
+
+        current_impl.push_fn(to_owned);
+    }
 
     current_impl.fmt(fmtr)?;
     Ok(())
@@ -538,7 +761,6 @@ fn codegen_pk(
         .derive("PartialEq")
         .derive("Eq")
         .derive("PartialOrd")
-        .derive("serde::Serialize")
         .derive("Ord");
 
     for pk_col_name in table.primary_key_columns().cols.iter() {
@@ -554,21 +776,14 @@ fn codegen_pk(
             panic!("Non mandatory column in primary key: {:?}", col);
         }
 
-        if &col.field_name() == "type" {
-            let field = codegen::Field::new("pub r#type", &col.to_rust_type());
-            pk_struct.push_field(field);
-        } else if col.comment.contains("YYYYMMDDPPP") {
+        if col.is_dispatch_period() {
             // parse as DispatchPeriod
             let field = codegen::Field::new(
                 &format!("pub {}", col.field_name()),
                 "mmsdm_core::DispatchPeriod",
             );
             pk_struct.push_field(field);
-        } else if col.comment.contains("YYYYMMDDPP") 
-        // special case for PredispatchMnspbidtrk1
-        // which is missing the YYYYMMDDPP comment
-        || col.name.to_lowercase() == "predispatchseqno"
-        {
+        } else if col.is_trading_period() {
             // parse as TradingPeriod
             let field = codegen::Field::new(
                 &format!("pub {}", col.field_name()),
@@ -582,8 +797,10 @@ fn codegen_pk(
         //     );
         //     pk_struct.push_field(field);
         } else {
-            let field =
-                codegen::Field::new(&format!("pub {}", col.field_name()), &col.to_rust_type());
+            let field = codegen::Field::new(
+                &format!("pub {}", col.escaped_field_name()),
+                &col.to_rust_type(),
+            );
             pk_struct.push_field(field);
         };
     }
@@ -605,19 +822,38 @@ fn codegen_impl_compare_with_row_on_struct(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut compare_with_row_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+    let mut compare_with_row_impl =
+        codegen::Impl::new(format!("{}<'data>", pdr_report.get_rust_struct_name()));
     compare_with_row_impl.impl_trait("mmsdm_core::CompareWithRow");
-    compare_with_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
+    compare_with_row_impl.generic("'data");
+    compare_with_row_impl.associate_type(
+        "Row<'other>",
+        format!("{}<'other>", pdr_report.get_rust_struct_name()),
+    );
     let mut compare_with_other = codegen::Function::new("compare_with_row");
+    compare_with_other.generic("'other");
     compare_with_other.ret("bool");
     compare_with_other.arg_ref_self();
-    compare_with_other.arg("row", "&Self::Row");
+    compare_with_other.arg("row", "&Self::Row<'other>");
     compare_with_other.line(
         &table
             .primary_key_columns()
             .cols
             .iter()
-            .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
+            .map(|name| {
+                if table
+                    .columns()
+                    .columns
+                    .iter()
+                    .find(|c| c.name == *name)
+                    .unwrap()
+                    .data_stored_in_string()
+                {
+                    format!("self.{0}() == row.{0}()", lowercase_and_escape(name))
+                } else {
+                    format!("self.{0} == row.{0}", lowercase_and_escape(name))
+                }
+            })
             .collect::<Vec<String>>()
             .join("\n&& "),
     );
@@ -632,7 +868,9 @@ fn codegen_impl_compare_with_pk_on_struct(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut compare_with_pk_impl = codegen::Impl::new(pdr_report.get_rust_struct_name());
+    let mut compare_with_pk_impl =
+        codegen::Impl::new(format!("{}<'data>", pdr_report.get_rust_struct_name()));
+    compare_with_pk_impl.generic("'data");
     compare_with_pk_impl.impl_trait("mmsdm_core::CompareWithPrimaryKey");
     compare_with_pk_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
     let mut compare_with_key = codegen::Function::new("compare_with_key");
@@ -642,7 +880,20 @@ fn codegen_impl_compare_with_pk_on_struct(
             .primary_key_columns()
             .cols
             .iter()
-            .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
+            .map(|name| {
+                if table
+                    .columns()
+                    .columns
+                    .iter()
+                    .find(|c| c.name == *name)
+                    .unwrap()
+                    .data_stored_in_string()
+                {
+                    format!("self.{0}() == key.{0}", lowercase_and_escape(name))
+                } else {
+                    format!("self.{0} == key.{0}", lowercase_and_escape(name))
+                }
+            })
             .collect::<Vec<String>>()
             .join("\n&& "),
     );
@@ -660,17 +911,35 @@ fn codegen_impl_compare_with_row_on_pk(
 ) -> anyhow::Result<()> {
     let mut pk_compare_row_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
     pk_compare_row_impl.impl_trait("mmsdm_core::CompareWithRow");
-    pk_compare_row_impl.associate_type("Row", pdr_report.get_rust_struct_name());
+    pk_compare_row_impl.generic("'data");
+    pk_compare_row_impl.associate_type(
+        "Row<'other>",
+        format!("{}<'other>", pdr_report.get_rust_struct_name()),
+    );
     let mut compare_with_row = codegen::Function::new("compare_with_row");
+    compare_with_row.generic("'other");
     compare_with_row.ret("bool");
     compare_with_row.arg_ref_self();
-    compare_with_row.arg("row", "&Self::Row");
+    compare_with_row.arg("row", "&Self::Row<'other>");
     compare_with_row.line(
         &table
             .primary_key_columns()
             .cols
             .iter()
-            .map(|name| format!("self.{0} == row.{0}", lowercase_and_escape(name)))
+            .map(|name| {
+                if table
+                    .columns()
+                    .columns
+                    .iter()
+                    .find(|c| c.name == *name)
+                    .unwrap()
+                    .data_stored_in_string()
+                {
+                    format!("self.{0} == row.{0}()", lowercase_and_escape(name))
+                } else {
+                    format!("self.{0} == row.{0}", lowercase_and_escape(name))
+                }
+            })
             .collect::<Vec<String>>()
             .join("\n&& "),
     );
@@ -711,57 +980,121 @@ fn codegen_impl_arrow_schema(
     table: &mms::TablePage,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
-    let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_struct_name());
-    arrow_trait.impl_trait("mmsdm_core::ArrowSchema");
-    arrow_trait.r#macro("#[cfg(feature = \"arrow\")]");
+    {
+        let mut arrow_trait = codegen::Impl::new(&pdr_report.get_rust_manager_struct_name());
+        arrow_trait.impl_trait("mmsdm_core::ArrowSchema");
+        arrow_trait.r#macro("#[cfg(feature = \"arrow\")]");
 
-    let mut arrow_schema = codegen::Function::new("arrow_schema");
-    arrow_schema.ret("arrow2::datatypes::Schema");
-    arrow_schema.line(&table.columns().as_arrow_schema());
-    arrow_trait.push_fn(arrow_schema);
+        let mut arrow_schema = codegen::Function::new("schema");
+        arrow_schema.ret("arrow::datatypes::Schema");
+        arrow_schema.line(&table.columns().as_arrow_schema());
+        arrow_trait.push_fn(arrow_schema);
 
-    let mut partition_to_batch = codegen::Function::new("partition_to_chunk");
-    partition_to_batch
-        .ret("mmsdm_core::Result<arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>>");
-    partition_to_batch.arg("partition", "impl Iterator<Item=Self>");
+        // let mut partition_to_batch = codegen::Function::new("partition_to_batch");
+        // partition_to_batch
+        //     .ret("mmsdm_core::Result<arrow::array::RecordBatch>");
+        // partition_to_batch.generic("'reader");
+        // partition_to_batch.generic("R: std::io::Read + std::io::Seek");
+        // partition_to_batch.arg("reader", "&mut mmsdm_core::FileReader<'reader, R>");
+        // partition_to_batch.arg("partition", "<Self as mmsdm_core::GetTable>::Partition");
 
-    // partition_to_batch.line("use std::convert::TryFrom;");
+        // // partition_to_batch.line("use std::convert::TryFrom;");
 
-    for col in &table.columns().columns {
-        partition_to_batch.line(&format!(
-            "let mut {} = Vec::new();",
-            col.as_arrow_array_name()
-        ));
+        // for col in &table.columns().columns {
+        //     partition_to_batch.line(&format!(
+        //         "let mut {builder_name} = {builder};",
+        //         builder_name = col.as_arrow_array_name(),
+        //         builder= col.as_arrow_builder(),
+        //     ));
+        // }
+        // partition_to_batch.line("let mut iter = reader.iter_partition::<Self>(partition)?;");
+
+        // partition_to_batch.line("while let Some(maybe_row) = iter.next() {");
+
+        // partition_to_batch.line("let Some(row) = maybe_row.transpose()? else {");
+        // partition_to_batch.line("continue;");
+        // partition_to_batch.line("};");
+
+        // for col in &table.columns().columns {
+        //     partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
+        // }
+
+        // arrow_trait.push_fn(partition_to_batch);
+
+        arrow_trait.associate_type("Builder", pdr_report.get_rust_arrow_builder_name());
+
+        let new_builder = arrow_trait.new_fn("new_builder");
+        new_builder.ret("Self::Builder");
+        new_builder.line(format!("{} {{", pdr_report.get_rust_arrow_builder_name()));
+        for col in &table.columns().columns {
+            new_builder.line(format!(
+                "{}: {},",
+                col.as_arrow_array_name(),
+                col.as_arrow_builder()
+            ));
+        }
+        new_builder.line("}");
+
+        let append_row = arrow_trait.new_fn("append_builder");
+        append_row.arg("builder", "&mut Self::Builder");
+        append_row.arg("row", "Self::Row<'_>");
+        for col in &table.columns().columns {
+            append_row.line(&format!("    {}", col.as_arrow_array_extractor()));
+        }
+
+        let finalize = arrow_trait.new_fn("finalize_builder");
+        finalize.arg("builder", "&mut Self::Builder");
+        finalize.ret("mmsdm_core::Result<arrow::array::RecordBatch>");
+        finalize.line(
+            "arrow::array::RecordBatch::try_new(
+    alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+    alloc::vec::Vec::from([",
+        );
+
+        for col in &table.columns().columns {
+            finalize.line(&format!(
+                "        alloc::sync::Arc::new(builder.{}.finish()) as alloc::sync::Arc<dyn arrow::array::Array>,",
+                col.as_arrow_array_name()
+            ));
+        }
+
+        finalize.line(
+            "    ])
+    ).map_err(Into::into)",
+        );
+
+        arrow_trait.fmt(fmtr)?;
     }
 
-    partition_to_batch.line("for row in partition {");
+    {
+        let mut scope = Scope::new();
+        scope.raw("#[cfg(feature = \"arrow\")]");
 
-    for col in &table.columns().columns {
-        partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
-    }
-    partition_to_batch.line(
-        "}
+        scope.fmt(fmtr)?;
+        let mut batch_builder = codegen::Struct::new(&pdr_report.get_rust_arrow_builder_name());
+        batch_builder.vis("pub");
+        for col in &table.columns().columns {
+            batch_builder.push_field(codegen::Field::new(
+                &col.as_arrow_array_name(),
+                col.as_arrow_builder_ty(),
+            ));
+        }
 
-arrow2::chunk::Chunk::try_new(
-//std::sync::Arc::new(Self::arrow_schema()),
-vec![",
-    );
-
-    for col in &table.columns().columns {
-        partition_to_batch.line(&format!(
-            "        std::sync::Arc::new({}) as std::sync::Arc<dyn arrow2::array::Array>,",
-            col.as_arrow_array_constructor()
-        ));
+        batch_builder.fmt(fmtr)?;
     }
 
-    partition_to_batch.line(
-        "    ]
-).map_err(Into::into)",
-    );
+    // {
+    //     let mut batch_builder_trait =
+    //         codegen::Impl::new(&format!("{}", pdr_report.get_rust_arrow_builder_name()));
+    //     batch_builder_trait.impl_trait("mmsdm_core::BatchBuilder");
+    //     batch_builder_trait.r#macro("#[cfg(feature = \"arrow\")]");
+    //     batch_builder_trait.associate_type(
+    //         "Row<'a>",
+    //         format!("{}<'a>", pdr_report.get_rust_struct_name()),
+    //     );
 
-    arrow_trait.push_fn(partition_to_batch);
-
-    arrow_trait.fmt(fmtr)?;
+    //     batch_builder_trait.fmt(fmtr)?;
+    // }
     Ok(())
 }
 
@@ -785,78 +1118,33 @@ repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"
 resolver = "2"
 
-[dependencies.log]
-version = "0.4.14"
-default-features = false
-features = []
-
-[dependencies.zip]
-version = "0.6.2"
-default-features = false
-features = []
-
-[dependencies.csv]
-version = "1.1.6"
-default-features = false
-features = []
-
-[dependencies.chrono-tz]
-version = "0.8.0"
-default-features = false
-features = []
-
-[dependencies.thiserror]
-version = "1.0.30"
-default-features = false
+[dependencies.tracing]
+workspace = true
 features = []
 
 [dependencies.rust_decimal]
-version = "1.26.1"
-default-features = false
-features = ["std", "serde"]
-
-[dependencies.serde_json]
-version = "1.0.79"
-default-features = false
-features = ["std"]
-
-[dependencies.num-traits]
-version = "0.2.14"
-default-features = false
+workspace = true
 features = []
 
-[dependencies.serde]
-version = "1.0.136"
-features = ["derive"]
-default-features = false
+[dependencies.num-traits]
+workspace = true
+features = []
 
 [dependencies.chrono]
-version = "0.4.23"
-features = ["serde", "std"]
+workspace = true
 default-features = false
 
-[dependencies.arrow2]
-version = "0.14.2"
-optional = true
-default-features = false
-
-[dependencies.tiberius]
-version = "0.12.2"
-features = ["rust_decimal", "tds73", "chrono"]
-default-features = false
-optional = true
-
-[dependencies.futures-util]
-version = "0.3.21"
+[dependencies.arrow]
+workspace = true
 optional = true
 
 [dependencies.mmsdm_core]
 # version = "0.3.0"
 path = "../mmsdm_core"
+default-features = false
 
 [features]
-arrow = ["arrow2", "mmsdm_core/arrow"]
-sql_server = ["tiberius", "futures-util", "mmsdm_core/sql_server"]
+arrow = ["dep:arrow", "mmsdm_core/arrow", "mmsdm_core/std"]
 default = []"#,
             data_set = data_set.to_snake_case(),
         ),
@@ -864,189 +1152,146 @@ default = []"#,
     Ok(())
 }
 
-pub const VERSION: &str = "5.1";
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[allow(dead_code)]
 pub struct TableMapping {
-    row: usize,
-    mmsdm_package_name: String, //	Package name as per the MMS Data Model documentation	DISPATCH
-    mmsdm_table_name: String,   //	Table name as per the MMS Data Model documentation	DISPATCHPRICE
-    file_identifier: String, //	File identifier as per the MMS Data Subscriptions web page	DISPATCHIS
-    file_name: String, //	File name. Note parameters in the table below	<#VISIBILITY_ID>_DISPATCHIS_<#CASE_DATETIME>_<#EVENT_QUEUE_ID>.CSV
-    pdr_record_type: String, //	PDR Loader record type (File configuration) as shown in Replication Manager	DISPATCHIS
-    pdr_report_name: String, //	PDR Loader report name (CSV Record configuration) as shown in Replication Manager	DISPATCH
-    pdr_report_sub_type: Option<String>, //	PDR Loader report sub type (CSV Record configuration) as shown in Replication Manager	PRICE
-    pdr_report_version: u8, //	PDR Loader report version (CSV Record configuration) as shown in Replication Manager	2
-    pdr_report_transaction_type: String, //	PDR Loader report transaction type - data loading action	INSERT-UPDATE
-    pdr_report_row_filter_type: String, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+    report_name: String, //	PDR Loader report name (CSV Record configuration) as shown in Replication Manager	DISPATCH
+    report_sub_type: Option<String>, //	PDR Loader report sub type (CSV Record configuration) as shown in Replication Manager	PRICE
+    version: u8, //	PDR Loader report version (CSV Record configuration) as shown in Replication Manager	2
+    destination_table: String, //	Table name as per the MMS Data Model documentation	DISPATCHPRICE
+    transaction_type: String, //	PDR Loader report transaction type - data loading action	INSERT-UPDATE
+    row_filter_type: String, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+}
+
+impl TableMapping {
+    pub fn read() -> anyhow::Result<HashMap<mms::Report, pdr::Report>> {
+        let mut mapping = csv::ReaderBuilder::new()
+            .delimiter(b'\t')
+            .from_path(format!("table_config_v{VERSION}.csv"))?;
+
+        let mut map = collections::HashMap::<_, pdr::Report>::new();
+
+        for row in mapping.deserialize::<TableMapping>() {
+            let row = row?;
+
+            map.entry(row.mms())
+                .and_modify(|e| {
+                    let other_pdr = row.pdr();
+                    if other_pdr.version > e.version {
+                        *e = other_pdr;
+                    }
+                })
+                .or_insert(row.pdr());
+        }
+        Ok(map)
+    }
 }
 
 impl TableMapping {
     pub fn mms(&self) -> mms::Report {
         mms::Report {
-            name: self.mmsdm_package_name.clone(),
-            sub_type: self.mmsdm_table_name.clone(),
+            sub_type: self.destination_table.clone(),
         }
     }
     pub fn pdr(&self) -> pdr::Report {
         pdr::Report {
-            name: self.pdr_report_name.clone(),
-            sub_type: self.pdr_report_sub_type.clone(),
-            version: self.pdr_report_version,
-            transaction_type: self.pdr_report_transaction_type.clone(),
-            row_filter: self.pdr_report_row_filter_type.clone(),
+            name: self.report_name.clone(),
+            sub_type: self.report_sub_type.clone(),
+            version: self.version,
+            transaction_type: self.transaction_type.clone(),
+            row_filter: self.row_filter_type.clone(),
         }
     }
 }
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
-    let mut mapping = csv::Reader::from_path(format!("table_mapping_v{VERSION}.csv"))?;
-    let mut map = collections::HashMap::new();
-
-    for row in mapping.deserialize::<TableMapping>() {
-        let row = row?;
-        map.insert(row.mms(), row.pdr());
-    }
+    let map = TableMapping::read()?;
 
     // abv
     let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
 
-    for (mut data_set, tables) in local_info.into_iter() {
-        dbg!(&data_set);
-        if data_set == "MTPASA" {
-            // dbg!(&tables);
-            data_set.push_str("_SOLUTION");
+    for (data_set, tables) in local_info.into_iter() {
+        println!("Processing data set {data_set}");
+
+        if data_set == "HISTORICAL" {
+            // skip
+            continue;
         }
-        prepare_data_set_crate(&data_set)?;
+        // if data_set == "MTPASA" {
+        //     // dbg!(&tables);
+        //     data_set.push_str("_SOLUTION");
+        // }
+        prepare_data_set_crate(&data_set)
+            .with_context(|| format!("prepare data set {data_set:?}"))?;
 
         let mut fmt_str = String::new();
-        fmt_str.push_str("#[allow(unused_imports)]\nuse chrono::Datelike as _;\n");
+        fmt_str.push_str("#![no_std]\n#![allow(unused_imports)]\nextern crate alloc;\nuse alloc::string::ToString;\nuse chrono::Datelike as _;\n#[cfg(feature = \"arrow\")]\nextern crate std;");
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
 
         for (table_key, table) in tables.clone().into_iter() {
+            println!("Processing table {table_key}");
+            // panic!();
             let mms_report = mms::Report {
-                name: data_set.clone(),
-                sub_type: table_key,
+                sub_type: table_key.clone(),
             };
 
             if mms_report.should_skip() {
                 continue;
             }
 
+            // dbg!(&data_set, &table_key, &table);
+
             match map.get(&mms_report) {
                 Some(pdr_report) => {
-                    codegen_struct(pdr_report, &table, &mut fmtr)?;
-                    codegen_impl_get_table(pdr_report, &table, &mut fmtr)?;
+                    codegen_struct(pdr_report, &table, &mut fmtr).context("codegen_struct")?;
+                    // codegen_impl_from_row(pdr_report, &table, &mut fmtr).context("codegen_impl_from_row")?;
+                    codegen_impl_get_table(pdr_report, &table, &mut fmtr)
+                        .context("codegen_impl_get_table")?;
 
-                    codegen_pk(pdr_report, &table, &mut fmtr)?;
-                    codegen_impl_pk(pdr_report, &mut fmtr)?;
+                    codegen_pk(pdr_report, &table, &mut fmtr).context("codegen_pk")?;
+                    codegen_impl_pk(pdr_report, &mut fmtr).context("codegen_impl_pk")?;
 
-                    codegen_impl_compare_with_row_on_struct(pdr_report, &table, &mut fmtr)?;
-                    codegen_impl_compare_with_pk_on_struct(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_compare_with_row_on_struct(pdr_report, &table, &mut fmtr)
+                        .context("codegen_impl_compare_with_row_on_struct")?;
+                    codegen_impl_compare_with_pk_on_struct(pdr_report, &table, &mut fmtr)
+                        .context("codegen_impl_compare_with_pk_on_struct")?;
 
-                    codegen_impl_compare_with_row_on_pk(pdr_report, &table, &mut fmtr)?;
-                    codegen_impl_compare_with_pk_on_pk(pdr_report, &table, &mut fmtr)?;
+                    codegen_impl_compare_with_row_on_pk(pdr_report, &table, &mut fmtr)
+                        .context("codegen_impl_compare_with_row_on_pk")?;
+                    codegen_impl_compare_with_pk_on_pk(pdr_report, &table, &mut fmtr)
+                        .context("codegen_impl_compare_with_pk_on_pk")?;
 
+                    // TODO, fix this!
                     codegen_impl_arrow_schema(pdr_report, &table, &mut fmtr)?;
                 }
                 None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
             }
         }
 
-        let mut apply_all_fn = codegen::Function::new("save");
-        apply_all_fn
-            .vis("pub")
-            .set_async(true)
-            .attr(r#"cfg(feature = "sql_server")"#)
-            .generic("'a")
-            .generic("S")
-            .bound(
-                "S",
-                "futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send",
-            )
-            .arg("mms_file", "&mut mmsdm_core::MmsFile<'a>")
-            .arg("file_key", "&mmsdm_core::FileKey")
-            .arg("client", "&mut tiberius::Client<S>")
-            .arg("chunk_size", "Option<usize>")
-            .ret("mmsdm_core::Result<()>")
-            .line(
-                r#"match (
-    file_key.table_name.as_deref(),
-    file_key.version,
-) {"#,
-            );
-        let mut rendered_match_arms = 0;
-        for (table_key, _) in tables.into_iter() {
-            let mms_report = mms::Report {
-                name: data_set.clone(),
-                sub_type: table_key,
+       
+        // apply_all_fn.fmt(false, &mut fmtr)?;
+        let path = format!("crates/{}/src/lib.rs", data_set.to_snake_case());
+
+        let formatted =
+            match syn::parse_file(&fmt_str).map(|parsed| prettyplease::unparse(&parsed)) {
+                Ok(formatted) => formatted,
+                _ => {
+                    eprintln!("Failed to format file {path}, saving anyway");
+                    fmt_str
+                }
             };
 
-            if mms_report.should_skip() {
-                continue;
-            }
-
-            match map.get(&mms_report) {
-                Some(pdr_report) => {
-                    apply_all_fn.line(format!(
-r#"    ({table_name}, version) if version <= {version}_i32 => {{
-        let d: Vec<{local_name}> = mms_file.get_table()?;
-        mmsdm_core::sql_server::batched_insert(client, file_key, mms_file.header(), &d, "exec mmsdm_proc.Insert{db_name} @P1, @P2", chunk_size).await?;
-    }}"#,
-                        // data_set_name = pdr_report.name,
-                        table_name = if let Some(sub_type) = &pdr_report.sub_type {
-                            format!("Some(\"{}\")", sub_type)
-                        } else {
-                            "None".to_string()
-                        },
-                        version = pdr_report.version,
-                        local_name = pdr_report.get_rust_struct_name(),
-                        db_name = pdr_report.sql_table_name(),
-                    ));
-                    rendered_match_arms += 1;
-                }
-                None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
-            }
-        }
-        apply_all_fn.line(
-            r#"    _ => {
-        log::error!("Unexpected file key {:?}", file_key);
-    }
-}
-Ok(())"#,
-        );
-        if rendered_match_arms > 0 {
-            apply_all_fn.fmt(false, &mut fmtr)?;
-
-            let parsed = syn::parse_file(&fmt_str)?;
-            let formatted = prettyplease::unparse(&parsed);
-
-            fs::write(
-                format!("crates/{}/src/lib.rs", data_set.to_snake_case()),
-                formatted,
-            )?;
-        } else {
-            eprintln!("No match arms rendered for data set {data_set}");
-            remove_data_set_crate(&data_set)?;
-        }
+        fs::write(&path, formatted).with_context(|| format!("writing out to {path}"))?;
     }
 
     Ok(())
 }
 
-const KW: [&str; 51] = [
-    "as", "break", "const", "continue", "crate", "else", "enum", "extern", "false", "fn", "for",
-    "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref", "return",
-    "self", "Self", "static", "struct", "super", "trait", "true", "type", "unsafe", "use", "where",
-    "while", "async", "await", "dyn", "abstract", "become", "box", "do", "final", "macro",
-    "override", "priv", "typeof", "unsized", "virtual", "yield", "try",
-];
-
 fn lowercase_and_escape(col_name: &str) -> String {
-    if KW.contains(&col_name.to_lowercase().as_str()) {
+    if crate::KW.contains(&col_name.to_lowercase().as_str()) {
         format!("r#{}", col_name.to_lowercase())
     } else {
         col_name.to_lowercase()

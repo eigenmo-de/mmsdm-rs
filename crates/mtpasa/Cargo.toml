@@ -1,0 +1,37 @@
+[package]
+name = "mmsdm_mtpasa"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/eigenmo-de/mmsdm-rs"
+description = "Parse and Transform MMSDM data"
+resolver = "2"
+
+[dependencies.tracing]
+workspace = true
+features = []
+
+[dependencies.rust_decimal]
+workspace = true
+features = []
+
+[dependencies.num-traits]
+workspace = true
+features = []
+
+[dependencies.chrono]
+workspace = true
+default-features = false
+
+[dependencies.arrow]
+workspace = true
+optional = true
+
+[dependencies.mmsdm_core]
+# version = "0.3.0"
+path = "../mmsdm_core"
+default-features = false
+
+[features]
+arrow = ["dep:arrow", "mmsdm_core/arrow", "mmsdm_core/std"]
+default = []

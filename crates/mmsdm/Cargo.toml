@@ -1,0 +1,268 @@
+[package]
+name = "mmsdm"
+version = "0.3.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/eigenmo-de/mmsdm-rs"
+description = "Parse and Transform MMSDM data"
+resolver = "2"
+
+
+[[example]]
+path = "../../examples/parse_typed.rs"
+name = "parse_typed"
+required-features = [ "mmsdm", "arrow"]
+
+[[example]]
+path = "../../examples/parse.rs"
+name = "parse"
+required-features = [ "mmsdm"]
+
+[dependencies.mmsdm_core]
+# version = "0.3.0"
+path = "../mmsdm_core"
+
+[dependencies.zip]
+workspace = true
+default-features = false
+features = ["deflate"]
+optional = true
+
+[dependencies.tracing]
+workspace = true
+features = []
+
+[dependencies.chrono]
+workspace = true 
+features = ["std", "now"]
+default-features = false
+
+[dependencies.chrono-tz]
+workspace = true 
+optional = true
+default-features = false
+features = []
+
+[dependencies.arrow]
+workspace = true
+optional = true
+
+[dependencies.mmsdm_asoffer]
+# version = "0.1.0"
+path = "../asoffer"
+optional = true 
+
+[dependencies.mmsdm_bids]
+# version = "0.1.0"
+path = "../bids"
+optional = true 
+
+[dependencies.mmsdm_billing_config]
+# version = "0.1.0"
+path = "../billing_config"
+optional = true 
+
+[dependencies.mmsdm_billing_run]
+# version = "0.1.0"
+path = "../billing_run"
+optional = true 
+
+[dependencies.mmsdm_demand_forecasts]
+# version = "0.1.0"
+path = "../demand_forecasts"
+optional = true 
+
+[dependencies.mmsdm_dispatch]
+# version = "0.1.0"
+path = "../dispatch"
+optional = true 
+
+[dependencies.mmsdm_force_majeure]
+# version = "0.1.0"
+path = "../force_majeure"
+optional = true 
+
+[dependencies.mmsdm_gd_instruct]
+# version = "0.1.0"
+path = "../gd_instruct"
+optional = true 
+
+[dependencies.mmsdm_generic_constraint]
+# version = "0.1.0"
+path = "../generic_constraint"
+optional = true 
+
+[dependencies.mmsdm_irauction]
+# version = "0.1.0"
+path = "../irauction"
+optional = true 
+
+[dependencies.mmsdm_market_config]
+# version = "0.1.0"
+path = "../market_config"
+optional = true 
+
+[dependencies.mmsdm_market_notice]
+# version = "0.1.0"
+path = "../market_notice"
+optional = true 
+
+[dependencies.mmsdm_mcc_dispatch]
+# version = "0.1.0"
+path = "../mcc_dispatch"
+optional = true 
+
+[dependencies.mmsdm_meter_data]
+# version = "0.1.0"
+path = "../meter_data"
+optional = true 
+
+[dependencies.mmsdm_mtpasa]
+# version = "0.1.0"
+path = "../mtpasa"
+optional = true 
+
+[dependencies.mmsdm_network]
+# version = "0.1.0"
+path = "../network"
+optional = true 
+
+[dependencies.mmsdm_p5min]
+# version = "0.1.0"
+path = "../p5min"
+optional = true 
+
+[dependencies.mmsdm_participant_registration]
+# version = "0.1.0"
+path = "../participant_registration"
+optional = true 
+
+[dependencies.mmsdm_pdpasa]
+# version = "0.1.0"
+path = "../pdpasa"
+optional = true 
+
+[dependencies.mmsdm_pre_dispatch]
+# version = "0.1.0"
+path = "../pre_dispatch"
+optional = true 
+
+[dependencies.mmsdm_prudentials]
+# version = "0.1.0"
+path = "../prudentials"
+optional = true 
+
+[dependencies.mmsdm_reserve_data]
+# version = "0.1.0"
+path = "../reserve_data"
+optional = true 
+
+[dependencies.mmsdm_settlement_config]
+# version = "0.1.0"
+path = "../settlement_config"
+optional = true 
+
+[dependencies.mmsdm_settlement_data]
+# version = "0.1.0"
+path = "../settlement_data"
+optional = true 
+
+[dependencies.mmsdm_stpasa_solution]
+# version = "0.1.0"
+path = "../stpasa_solution"
+optional = true 
+
+[dependencies.mmsdm_trading_data]
+# version = "0.1.0"
+path = "../trading_data"
+optional = true 
+
+
+[features]
+arrow = [
+    "dep:arrow", 
+    "mmsdm_core/arrow",
+    "mmsdm_asoffer?/arrow",
+    "mmsdm_bids?/arrow",
+    "mmsdm_billing_config?/arrow",
+    "mmsdm_billing_run?/arrow",
+    "mmsdm_demand_forecasts?/arrow",
+    "mmsdm_dispatch?/arrow",
+    "mmsdm_force_majeure?/arrow",
+    "mmsdm_gd_instruct?/arrow",
+    "mmsdm_generic_constraint?/arrow",
+    "mmsdm_irauction?/arrow",
+    "mmsdm_market_config?/arrow",
+    "mmsdm_market_notice?/arrow",
+    "mmsdm_mcc_dispatch?/arrow",
+    "mmsdm_meter_data?/arrow",
+    "mmsdm_mtpasa?/arrow",
+    "mmsdm_network?/arrow",
+    "mmsdm_p5min?/arrow",
+    "mmsdm_participant_registration?/arrow",
+    "mmsdm_pdpasa?/arrow",
+    "mmsdm_pre_dispatch?/arrow",
+    "mmsdm_prudentials?/arrow",
+    "mmsdm_reserve_data?/arrow",
+    "mmsdm_settlement_config?/arrow",
+    "mmsdm_settlement_data?/arrow",
+    "mmsdm_stpasa_solution?/arrow",
+    "mmsdm_trading_data?/arrow",
+    "std",
+]
+asoffer = ["mmsdm_asoffer"]
+bids = ["mmsdm_bids"]
+billing_config = ["mmsdm_billing_config"]
+billing_run = ["mmsdm_billing_run"]
+demand_forecasts = ["mmsdm_demand_forecasts"]
+dispatch = ["mmsdm_dispatch"]
+force_majeure = ["mmsdm_force_majeure"]
+gd_instruct = ["mmsdm_gd_instruct"]
+generic_constraint = ["mmsdm_generic_constraint"]
+irauction = ["mmsdm_irauction"]
+market_config = ["mmsdm_market_config"]
+market_notice = ["mmsdm_market_notice"]
+mcc_dispatch = ["mmsdm_mcc_dispatch"]
+meter_data = ["mmsdm_meter_data"]
+mtpasa = ["mmsdm_mtpasa"]
+network = ["mmsdm_network"]
+p5min = ["mmsdm_p5min"]
+participant_registration = ["mmsdm_participant_registration"]
+pdpasa = ["mmsdm_pdpasa"]
+pre_dispatch = ["mmsdm_pre_dispatch"]
+prudentials = ["mmsdm_prudentials"]
+reserve_data = ["mmsdm_reserve_data"]
+settlement_config = ["mmsdm_settlement_config"]
+settlement_data = ["mmsdm_settlement_data"]
+stpasa_solution = ["mmsdm_stpasa_solution"]
+trading_data = ["mmsdm_trading_data"]
+mmsdm = [
+    "asoffer",
+    "bids",
+    "billing_config",
+    "billing_run",
+    "demand_forecasts",
+    "dispatch",
+    "force_majeure",
+    "gd_instruct",
+    "generic_constraint",
+    "irauction",
+    "market_config",
+    "market_notice",
+    "mcc_dispatch",
+    "meter_data",
+    "mtpasa",
+    "network",
+    "p5min",
+    "participant_registration",
+    "pdpasa",
+    "pre_dispatch",
+    "prudentials",
+    "reserve_data",
+    "settlement_config",
+    "settlement_data",
+    "stpasa_solution",
+    "trading_data",
+]
+default = ["mmsdm", "arrow", "std"]
+std = ["dep:zip", "mmsdm_core/std"]

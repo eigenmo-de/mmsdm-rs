@@ -1,4 +1,6 @@
+use crate::KW;
 use anyhow::anyhow;
+use heck::{ToSnakeCase, ToUpperCamelCase};
 use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, ops::ControlFlow, str};
@@ -16,34 +18,34 @@ lazy_static::lazy_static! {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct Report {
-    pub name: String,
+    // pub name: String,
     pub sub_type: String,
 }
 
 impl Report {
     pub fn should_skip(&self) -> bool {
         // skip historical dataset - there are no table definitions anyway
-        (self.name == "HISTORICAL")
-        || (self.name == "CONFIGURATION")
+        // self.name == "HISTORICAL"
+        // || (self.name == "CONFIGURATION")
         // all the below seems to be missing
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTAGC")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTLOADSHED")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTREACTIVEPOWER")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTRESTARTSERVICES")
-        || (self.name == "ANCILLARY_SERVICES" && self.sub_type == "CONTRACTRESTARTUNITS")
-        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_RUN")
-        || (self.name == "DEMAND_FORECASTS" && self.sub_type == "INTERMITTENT_P5_PRED")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCCOMPENSATION")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGAPCRECOVERY")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_RECOVERY")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_RES_TRADER_PAYMENT")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLINGIRFM")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLING_DIRECTION_RECONCILIATN")
-        || (self.name == "BILLING_RUN" && self.sub_type == "BILLWHITEHOLE")
-        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRESERVERECOVERY")
-        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETLSHEDRECOVERY")
-        || (self.name == "SETTLEMENT_DATA" && self.sub_type == "SETRPOWERRECOVERY")
-        || (self.name == "VOLTAGE_INSTRUCTIONS")
+        self.sub_type == "CONTRACTAGC"
+            || self.sub_type == "CONTRACTLOADSHED"
+            || self.sub_type == "CONTRACTREACTIVEPOWER"
+            || self.sub_type == "CONTRACTRESTARTSERVICES"
+            || self.sub_type == "CONTRACTRESTARTUNITS"
+            || self.sub_type == "INTERMITTENT_P5_RUN"
+            || self.sub_type == "INTERMITTENT_P5_PRED"
+            || self.sub_type == "BILLINGAPCCOMPENSATION"
+            || self.sub_type == "BILLINGAPCRECOVERY"
+            || self.sub_type == "BILLING_RES_TRADER_RECOVERY"
+            || self.sub_type == "BILLING_RES_TRADER_PAYMENT"
+            || self.sub_type == "BILLINGIRFM"
+            || self.sub_type == "BILLING_DIRECTION_RECONCILIATN"
+            || self.sub_type == "BILLWHITEHOLE"
+            || self.sub_type == "SETRESERVERECOVERY"
+            || self.sub_type == "SETLSHEDRECOVERY"
+            || self.sub_type == "SETRPOWERRECOVERY"
+            || self.sub_type == ""
     }
 }
 
@@ -59,6 +61,12 @@ pub struct TablePage {
 }
 
 impl TablePage {
+    pub fn has_any_string_columns(&self) -> bool {
+        self.columns
+            .columns
+            .iter()
+            .any(|c| matches!(c.data_type, DataType::Char | DataType::Varchar { .. }))
+    }
     pub fn columns(&self) -> TableColumns {
         let mut base = self.columns.clone();
 
@@ -111,6 +119,8 @@ impl TablePage {
         self.find_column("settlementdate")?;
         self.find_column("day")?;
         self.find_column("offerdate")?;
+        self.find_column("periodid")?;
+        self.find_column("datetime")?;
 
         // these are more like transaction time so
         // they are last preference
@@ -333,9 +343,62 @@ pub struct TableColumn {
 }
 
 impl TableColumn {
+    pub fn is_trading_period(&self) -> bool {
+        (
+            matches!(self.data_type, DataType::Varchar { length } if length >= 10)
+            ||
+            matches!(self.data_type, DataType::Decimal { scale: 0, precision } if precision >= 10)   
+            || 
+            matches!(self.data_type, DataType::Integer { precision } if precision >= 10)
+        )
+        && 
+        !self.is_dispatch_period()
+        &&
+        (
+            self.comment.to_uppercase().contains("YYYYMMDDPP")
+            || self.comment == "Date and Time of trading interval"
+            || self.comment.starts_with("Settlements Trading Interval")
+            || self.comment.starts_with("Settlement Trading Interval")
+            || self.comment.starts_with("Market Trading Interval")
+            || self.comment.starts_with("Trading Interval")
+            || self.comment.contains("Predispatch run identifier")
+            || self.comment.contains("predispatchseqno")
+            || self
+                .comment
+                .to_lowercase()
+                .contains("predispatch sequence number")
+        )
+    }
+    pub fn is_dispatch_period(&self) -> bool {
+        (
+        matches!(self.data_type, DataType::Varchar { length } if length >= 11)
+        ||
+        matches!(self.data_type, DataType::Decimal { scale: 0, precision } if precision >= 11)   
+        || 
+        matches!(self.data_type, DataType::Integer { precision } if precision >= 11)
+        )
+        && 
+        (
+            self.comment.to_uppercase().contains("YYYYMMDDPPP")
+            || 
+            self.comment.contains("Settlement period")
+        )
+    }
+    pub fn data_stored_in_string(&self) -> bool {
+        matches!(self.data_type, DataType::Char | DataType::Varchar { .. })
+            && !self.is_dispatch_period()
+            && !self.is_trading_period()
+    }
     pub fn field_name(&self) -> String {
-        use heck::SnakeCase;
         self.name.to_snake_case()
+    }
+    pub fn escaped_field_name(&self) -> String {
+        let field_name = self.field_name();
+        if KW.contains(&field_name.as_str()) {
+            format!("r#{field_name}")
+        } else {
+            field_name
+        }
     }
     fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumn> {
         let mut cells = tab.select(&P);

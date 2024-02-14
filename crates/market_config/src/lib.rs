@@ -1,5 +1,12 @@
-#[allow(unused_imports)]
+#![no_std]
+#![allow(unused_imports)]
+extern crate alloc;
+use alloc::string::ToString;
 use chrono::Datelike as _;
+#[cfg(feature = "arrow")]
+extern crate std;
+pub struct MarketConfigBidtypes1;
+pub struct MarketConfigBidtypes1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## BIDTYPES
@@ -12,93 +19,261 @@ use chrono::Datelike as _;
 /// # Description
 ///  BIDTYPES  is public to participants Source BIDTYPES updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * BIDTYPE
 /// * EFFECTIVEDATE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigBidtypes1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigBidtypes1Row<'data> {
     /// Bid Type Identifier
-    pub bidtype: String,
+    pub bidtype: core::ops::Range<usize>,
     /// Market date starting at 04:30 inclusive
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Record version number
     pub versionno: rust_decimal::Decimal,
     /// Description of this Bid Type
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Number of active bands (1 to 10)
     pub numberofbands: Option<rust_decimal::Decimal>,
     /// Number of days prior to the Market Day when prices are locked from 12:30pm
     pub numdaysaheadpricelocked: Option<rust_decimal::Decimal>,
     /// ENERGY or AS validation rules to apply.
-    pub validationrule: Option<String>,
+    pub validationrule: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Alias for this BIDTYPE used in the SPD Solver
-    pub spdalias: Option<String>,
+    pub spdalias: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigBidtypes1Row<'data> {
+    pub fn bidtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn validationrule(&self) -> Option<&str> {
+        if self.validationrule.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.validationrule.clone(),
+                ),
+            )
+        }
+    }
+    pub fn spdalias(&self) -> Option<&str> {
+        if self.spdalias.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.spdalias.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "BIDTYPES";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypes1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "BIDTYPE",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "DESCRIPTION",
+        "NUMBEROFBANDS",
+        "NUMDAYSAHEADPRICELOCKED",
+        "VALIDATIONRULE",
+        "LASTCHANGED",
+        "SPDALIAS",
+    ];
+    type Row<'row> = MarketConfigBidtypes1Row<'row>;
+    type FieldMapping = MarketConfigBidtypes1Mapping;
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("BIDTYPES".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigBidtypes1Row {
+            bidtype: row.get_range("bidtype", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            description: row.get_opt_range("description", field_mapping.0[3])?,
+            numberofbands: row
+                .get_opt_custom_parsed_at_idx(
+                    "numberofbands",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            numdaysaheadpricelocked: row
+                .get_opt_custom_parsed_at_idx(
+                    "numdaysaheadpricelocked",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            validationrule: row.get_opt_range("validationrule", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            spdalias: row.get_opt_range("spdalias", field_mapping.0[8])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigBidtypes1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigBidtypes1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigBidtypes1PrimaryKey {
         MarketConfigBidtypes1PrimaryKey {
-            bidtype: self.bidtype.clone(),
-            effectivedate: self.effectivedate,
-            versionno: self.versionno,
+            bidtype: row.bidtype().to_string(),
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_bidtypes_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_bidtypes_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigBidtypes1Row {
+            bidtype: row.bidtype.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            description: row.description.clone(),
+            numberofbands: row.numberofbands.clone(),
+            numdaysaheadpricelocked: row.numdaysaheadpricelocked.clone(),
+            validationrule: row.validationrule.clone(),
+            lastchanged: row.lastchanged.clone(),
+            spdalias: row.spdalias.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigBidtypes1PrimaryKey {
-    pub bidtype: String,
+    pub bidtype: alloc::string::String,
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigBidtypes1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigBidtypes1 {
-    type Row = MarketConfigBidtypes1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.bidtype == row.bidtype && self.effectivedate == row.effectivedate
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigBidtypes1Row<'data> {
+    type Row<'other> = MarketConfigBidtypes1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype() == row.bidtype() && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypes1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypes1Row<'data> {
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype && self.effectivedate == key.effectivedate
+        self.bidtype() == key.bidtype && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigBidtypes1PrimaryKey {
-    type Row = MarketConfigBidtypes1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.bidtype == row.bidtype && self.effectivedate == row.effectivedate
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigBidtypes1PrimaryKey {
+    type Row<'other> = MarketConfigBidtypes1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype == row.bidtype() && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
@@ -111,108 +286,158 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypes1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("bidtype",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("numberofbands",
-                arrow2::datatypes::DataType::Decimal(3, 0), true),
-                arrow2::datatypes::Field::new("numdaysaheadpricelocked",
-                arrow2::datatypes::DataType::Decimal(2, 0), true),
-                arrow2::datatypes::Field::new("validationrule",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("spdalias",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = MarketConfigBidtypes1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "numberofbands",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "numdaysaheadpricelocked",
+                    arrow::datatypes::DataType::Decimal128(2, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "validationrule",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "spdalias",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut bidtype_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut numberofbands_array = Vec::new();
-        let mut numdaysaheadpricelocked_array = Vec::new();
-        let mut validationrule_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut spdalias_array = Vec::new();
-        for row in partition {
-            bidtype_array.push(row.bidtype);
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            description_array.push(row.description);
-            numberofbands_array
-                .push({
-                    row.numberofbands
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            numdaysaheadpricelocked_array
-                .push({
-                    row.numdaysaheadpricelocked
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            validationrule_array.push(row.validationrule);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            spdalias_array.push(row.spdalias);
+    fn new_builder() -> Self::Builder {
+        MarketConfigBidtypes1Builder {
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            numberofbands_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            numdaysaheadpricelocked_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
+            validationrule_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            spdalias_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(bidtype_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(numberofbands_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(numdaysaheadpricelocked_array)
-                    .to(arrow2::datatypes::DataType::Decimal(2, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(validationrule_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(spdalias_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.bidtype_array.append_value(row.bidtype());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.description_array.append_option(row.description());
+        builder
+            .numberofbands_array
+            .append_option({
+                row.numberofbands
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .numdaysaheadpricelocked_array
+            .append_option({
+                row.numdaysaheadpricelocked
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.validationrule_array.append_option(row.validationrule());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder.spdalias_array.append_option(row.spdalias());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.numberofbands_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.numdaysaheadpricelocked_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.validationrule_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.spdalias_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigBidtypes1Builder {
+    bidtype_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    description_array: arrow::array::builder::StringBuilder,
+    numberofbands_array: arrow::array::builder::Decimal128Builder,
+    numdaysaheadpricelocked_array: arrow::array::builder::Decimal128Builder,
+    validationrule_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    spdalias_array: arrow::array::builder::StringBuilder,
+}
+pub struct MarketConfigBidtypestrk1;
+pub struct MarketConfigBidtypestrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## BIDTYPESTRK
@@ -225,80 +450,199 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
 /// # Description
 ///  BIDTYPESTRK is public to participants Source BIDTYPESTRK updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * EFFECTIVEDATE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigBidtypestrk1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigBidtypestrk1Row<'data> {
     /// Market date starting at 04:30 inclusive
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Record version number
     pub versionno: rust_decimal::Decimal,
     /// Date of record authorisation. A NULL value indicates the record is not authorised.
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User that authorised record. A NULL value indicates the record is not authorised.
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigBidtypestrk1Row<'data> {
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "BIDTYPESTRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypestrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigBidtypestrk1Row<'row>;
+    type FieldMapping = MarketConfigBidtypestrk1Mapping;
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("BIDTYPESTRK".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigBidtypestrk1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigBidtypestrk1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigBidtypestrk1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigBidtypestrk1PrimaryKey {
         MarketConfigBidtypestrk1PrimaryKey {
-            effectivedate: self.effectivedate,
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_bidtypestrk_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_bidtypestrk_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigBidtypestrk1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigBidtypestrk1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigBidtypestrk1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigBidtypestrk1 {
-    type Row = MarketConfigBidtypestrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigBidtypestrk1Row<'data> {
+    type Row<'other> = MarketConfigBidtypestrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypestrk1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypestrk1Row<'data> {
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigBidtypestrk1PrimaryKey {
-    type Row = MarketConfigBidtypestrk1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigBidtypestrk1PrimaryKey {
+    type Row<'other> = MarketConfigBidtypestrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
@@ -310,67 +654,105 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigBidtypestrk1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigBidtypestrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigBidtypestrk1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigBidtypestrk1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigInterconnector1;
+pub struct MarketConfigInterconnector1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTERCONNECTOR
@@ -383,69 +765,204 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
 /// # Description
 ///  INTERCONNECTOR is public data, available to all participants. Source INTERCONNECTOR changes infrequently, usually annually.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * INTERCONNECTORID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigInterconnector1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigInterconnector1Row<'data> {
     /// Unique Id of this interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Starting region of the interconnect
-    pub regionfrom: Option<String>,
+    pub regionfrom: core::ops::Range<usize>,
     /// Not used
-    pub rsoid: Option<String>,
+    pub rsoid: core::ops::Range<usize>,
     /// Ending region of the interconnect
-    pub regionto: Option<String>,
+    pub regionto: core::ops::Range<usize>,
     /// Description of interconnector
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigInterconnector1Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn regionfrom(&self) -> Option<&str> {
+        if self.regionfrom.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionfrom.clone(),
+                ),
+            )
+        }
+    }
+    pub fn rsoid(&self) -> Option<&str> {
+        if self.rsoid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(self.backing_data.as_slice(), self.rsoid.clone()),
+            )
+        }
+    }
+    pub fn regionto(&self) -> Option<&str> {
+        if self.regionto.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionto.clone(),
+                ),
+            )
+        }
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "INTERCONNECTOR";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnector1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "INTERCONNECTORID",
+        "REGIONFROM",
+        "RSOID",
+        "REGIONTO",
+        "DESCRIPTION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigInterconnector1Row<'row>;
+    type FieldMapping = MarketConfigInterconnector1Mapping;
     type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("INTERCONNECTOR".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigInterconnector1Row {
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[0])?,
+            regionfrom: row.get_opt_range("regionfrom", field_mapping.0[1])?,
+            rsoid: row.get_opt_range("rsoid", field_mapping.0[2])?,
+            regionto: row.get_opt_range("regionto", field_mapping.0[3])?,
+            description: row.get_opt_range("description", field_mapping.0[4])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigInterconnector1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigInterconnector1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigInterconnector1PrimaryKey {
         MarketConfigInterconnector1PrimaryKey {
-            interconnectorid: self.interconnectorid.clone(),
+            interconnectorid: row.interconnectorid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "market_config_interconnector_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigInterconnector1Row {
+            interconnectorid: row.interconnectorid.clone(),
+            regionfrom: row.regionfrom.clone(),
+            rsoid: row.rsoid.clone(),
+            regionto: row.regionto.clone(),
+            description: row.description.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigInterconnector1PrimaryKey {
-    pub interconnectorid: String,
+    pub interconnectorid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigInterconnector1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigInterconnector1 {
-    type Row = MarketConfigInterconnector1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigInterconnector1Row<'data> {
+    type Row<'other> = MarketConfigInterconnector1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interconnectorid() == row.interconnectorid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1Row<'data> {
     type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.interconnectorid == key.interconnectorid
+        self.interconnectorid() == key.interconnectorid
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigInterconnector1PrimaryKey {
-    type Row = MarketConfigInterconnector1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.interconnectorid == row.interconnectorid
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigInterconnector1PrimaryKey {
+    type Row<'other> = MarketConfigInterconnector1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interconnectorid == row.interconnectorid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1PrimaryKey {
@@ -456,67 +973,100 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnector1PrimaryKey
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionfrom",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("rsoid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("regionto",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigInterconnector1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionfrom",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rsoid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionto",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut interconnectorid_array = Vec::new();
-        let mut regionfrom_array = Vec::new();
-        let mut rsoid_array = Vec::new();
-        let mut regionto_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            interconnectorid_array.push(row.interconnectorid);
-            regionfrom_array.push(row.regionfrom);
-            rsoid_array.push(row.rsoid);
-            regionto_array.push(row.regionto);
-            description_array.push(row.description);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigInterconnector1Builder {
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            regionfrom_array: arrow::array::builder::StringBuilder::new(),
+            rsoid_array: arrow::array::builder::StringBuilder::new(),
+            regionto_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionfrom_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(rsoid_array)) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionto_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >, std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.regionfrom_array.append_option(row.regionfrom());
+        builder.rsoid_array.append_option(row.rsoid());
+        builder.regionto_array.append_option(row.regionto());
+        builder.description_array.append_option(row.description());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionfrom_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rsoid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionto_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigInterconnector1Builder {
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    regionfrom_array: arrow::array::builder::StringBuilder,
+    rsoid_array: arrow::array::builder::StringBuilder,
+    regionto_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigInterconnectoralloc1;
+pub struct MarketConfigInterconnectoralloc1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## INTERCONNECTORALLOC
@@ -529,8 +1079,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
 /// # Description
 ///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -539,92 +1088,222 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
 /// * PARTICIPANTID
 /// * REGIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigInterconnectoralloc1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigInterconnectoralloc1Row<'data> {
     /// Effective Date of Allocation Details
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No in respect to effective date
     pub versionno: rust_decimal::Decimal,
     /// Interconnector identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Region Identifier
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Allocation % / 100
     pub allocation: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigInterconnectoralloc1Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "INTERCONNECTORALLOC";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectoralloc1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "REGIONID",
+        "PARTICIPANTID",
+        "ALLOCATION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigInterconnectoralloc1Row<'row>;
+    type FieldMapping = MarketConfigInterconnectoralloc1Mapping;
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("INTERCONNECTORALLOC".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigInterconnectoralloc1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[2])?,
+            regionid: row.get_range("regionid", field_mapping.0[3])?,
+            participantid: row.get_range("participantid", field_mapping.0[4])?,
+            allocation: row
+                .get_opt_custom_parsed_at_idx(
+                    "allocation",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigInterconnectoralloc1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigInterconnectoralloc1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigInterconnectoralloc1PrimaryKey {
         MarketConfigInterconnectoralloc1PrimaryKey {
-            effectivedate: self.effectivedate,
-            interconnectorid: self.interconnectorid.clone(),
-            participantid: self.participantid.clone(),
-            regionid: self.regionid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            interconnectorid: row.interconnectorid().to_string(),
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_interconnectoralloc_v1_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_interconnectoralloc_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigInterconnectoralloc1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            regionid: row.regionid.clone(),
+            participantid: row.participantid.clone(),
+            allocation: row.allocation.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigInterconnectoralloc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub interconnectorid: String,
-    pub participantid: String,
-    pub regionid: String,
+    pub interconnectorid: alloc::string::String,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigInterconnectoralloc1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigInterconnectoralloc1 {
-    type Row = MarketConfigInterconnectoralloc1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigInterconnectoralloc1Row<'data> {
+    type Row<'other> = MarketConfigInterconnectoralloc1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid && self.regionid == row.regionid
-            && self.versionno == row.versionno
+            && self.interconnectorid() == row.interconnectorid()
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigInterconnectoralloc1Row<'data> {
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid && self.regionid == key.regionid
-            && self.versionno == key.versionno
+            && self.interconnectorid() == key.interconnectorid
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigInterconnectoralloc1PrimaryKey {
-    type Row = MarketConfigInterconnectoralloc1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigInterconnectoralloc1PrimaryKey {
+    type Row<'other> = MarketConfigInterconnectoralloc1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
-            && self.participantid == row.participantid && self.regionid == row.regionid
-            && self.versionno == row.versionno
+            && self.interconnectorid == row.interconnectorid()
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1PrimaryKey {
@@ -638,88 +1317,129 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectoralloc1Prima
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(5, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("allocation",
-                arrow2::datatypes::DataType::Decimal(12, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigInterconnectoralloc1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "allocation",
+                    arrow::datatypes::DataType::Decimal128(12, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut allocation_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            regionid_array.push(row.regionid);
-            participantid_array.push(row.participantid);
-            allocation_array
-                .push({
-                    row.allocation
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigInterconnectoralloc1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            allocation_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(allocation_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .allocation_array
+            .append_option({
+                row.allocation
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.allocation_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigInterconnectoralloc1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    allocation_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigInterconnectorconstraint1;
+pub struct MarketConfigInterconnectorconstraint1Mapping([usize; 22]);
 /// # Summary
 ///
 /// ## INTERCONNECTORCONSTRAINT
@@ -732,27 +1452,25 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
 /// # Description
 ///  INTERCONNECTORCONSTRAINT is public data, available to all participants. Source INTERCONNECTORCONSTRAINT changes infrequently, typically annually.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * EFFECTIVEDATE
 /// * INTERCONNECTORID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigInterconnectorconstraint1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigInterconnectorconstraint1Row<'data> {
     /// SPD Factor
     pub reserveoverallloadfactor: Option<rust_decimal::Decimal>,
     /// Loss share attributable to from region
     pub fromregionlossshare: Option<rust_decimal::Decimal>,
     /// Date that this limit is effective from
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version for this date
     pub versionno: rust_decimal::Decimal,
     /// Unique Id of this interconnector
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Limit of energy flowing into the RegionFrom
     pub maxmwin: Option<rust_decimal::Decimal>,
     /// Limit of energy flowing out of the Region
@@ -762,14 +1480,13 @@ pub struct MarketConfigInterconnectorconstraint1 {
     /// Linear coefficient of loss factor calculation
     pub lossflowcoefficient: Option<rust_decimal::Decimal>,
     /// Identifies the EMS entity that represents the interconnector flow
-    pub emsmeasurand: Option<String>,
+    pub emsmeasurand: core::ops::Range<usize>,
     /// User authorising record
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Date record authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Not used
-    pub dynamicrhs: Option<String>,
+    pub dynamicrhs: core::ops::Range<usize>,
     /// Interconnector import limit
     pub importlimit: Option<rust_decimal::Decimal>,
     /// Interconnector export limit
@@ -783,72 +1500,374 @@ pub struct MarketConfigInterconnectorconstraint1 {
     /// Interconnector overload for 6 sec
     pub overloadfactor6sec: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate that the interconnector cannot support FCAS Transfers
     pub fcassupportunavailable: Option<rust_decimal::Decimal>,
     /// Interconnector type - Currently either "REGULATED" or "MNSP"
-    pub ictype: Option<String>,
+    pub ictype: core::ops::Range<usize>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigInterconnectorconstraint1Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn emsmeasurand(&self) -> Option<&str> {
+        if self.emsmeasurand.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.emsmeasurand.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
+    pub fn dynamicrhs(&self) -> Option<&str> {
+        if self.dynamicrhs.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.dynamicrhs.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ictype(&self) -> Option<&str> {
+        if self.ictype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ictype.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "INTERCONNECTORCONSTRAINT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectorconstraint1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RESERVEOVERALLLOADFACTOR",
+        "FROMREGIONLOSSSHARE",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "MAXMWIN",
+        "MAXMWOUT",
+        "LOSSCONSTANT",
+        "LOSSFLOWCOEFFICIENT",
+        "EMSMEASURAND",
+        "AUTHORISEDBY",
+        "AUTHORISEDDATE",
+        "DYNAMICRHS",
+        "IMPORTLIMIT",
+        "EXPORTLIMIT",
+        "OUTAGEDERATIONFACTOR",
+        "NONPHYSICALLOSSFACTOR",
+        "OVERLOADFACTOR60SEC",
+        "OVERLOADFACTOR6SEC",
+        "LASTCHANGED",
+        "FCASSUPPORTUNAVAILABLE",
+        "ICTYPE",
+    ];
+    type Row<'row> = MarketConfigInterconnectorconstraint1Row<'row>;
+    type FieldMapping = MarketConfigInterconnectorconstraint1Mapping;
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("INTERCONNECTORCONSTRAINT".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigInterconnectorconstraint1Row {
+            reserveoverallloadfactor: row
+                .get_opt_custom_parsed_at_idx(
+                    "reserveoverallloadfactor",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            fromregionlossshare: row
+                .get_opt_custom_parsed_at_idx(
+                    "fromregionlossshare",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[4])?,
+            maxmwin: row
+                .get_opt_custom_parsed_at_idx(
+                    "maxmwin",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            maxmwout: row
+                .get_opt_custom_parsed_at_idx(
+                    "maxmwout",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lossconstant: row
+                .get_opt_custom_parsed_at_idx(
+                    "lossconstant",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lossflowcoefficient: row
+                .get_opt_custom_parsed_at_idx(
+                    "lossflowcoefficient",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            emsmeasurand: row.get_opt_range("emsmeasurand", field_mapping.0[9])?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[10])?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            dynamicrhs: row.get_opt_range("dynamicrhs", field_mapping.0[12])?,
+            importlimit: row
+                .get_opt_custom_parsed_at_idx(
+                    "importlimit",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            exportlimit: row
+                .get_opt_custom_parsed_at_idx(
+                    "exportlimit",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            outagederationfactor: row
+                .get_opt_custom_parsed_at_idx(
+                    "outagederationfactor",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            nonphysicallossfactor: row
+                .get_opt_custom_parsed_at_idx(
+                    "nonphysicallossfactor",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            overloadfactor60sec: row
+                .get_opt_custom_parsed_at_idx(
+                    "overloadfactor60sec",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            overloadfactor6sec: row
+                .get_opt_custom_parsed_at_idx(
+                    "overloadfactor6sec",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[19],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            fcassupportunavailable: row
+                .get_opt_custom_parsed_at_idx(
+                    "fcassupportunavailable",
+                    field_mapping.0[20],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ictype: row.get_opt_range("ictype", field_mapping.0[21])?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigInterconnectorconstraint1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigInterconnectorconstraint1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                6,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> MarketConfigInterconnectorconstraint1PrimaryKey {
         MarketConfigInterconnectorconstraint1PrimaryKey {
-            effectivedate: self.effectivedate,
-            interconnectorid: self.interconnectorid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            interconnectorid: row.interconnectorid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_interconnectorconstraint_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_interconnectorconstraint_v1_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigInterconnectorconstraint1Row {
+            reserveoverallloadfactor: row.reserveoverallloadfactor.clone(),
+            fromregionlossshare: row.fromregionlossshare.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            maxmwin: row.maxmwin.clone(),
+            maxmwout: row.maxmwout.clone(),
+            lossconstant: row.lossconstant.clone(),
+            lossflowcoefficient: row.lossflowcoefficient.clone(),
+            emsmeasurand: row.emsmeasurand.clone(),
+            authorisedby: row.authorisedby.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            dynamicrhs: row.dynamicrhs.clone(),
+            importlimit: row.importlimit.clone(),
+            exportlimit: row.exportlimit.clone(),
+            outagederationfactor: row.outagederationfactor.clone(),
+            nonphysicallossfactor: row.nonphysicallossfactor.clone(),
+            overloadfactor60sec: row.overloadfactor60sec.clone(),
+            overloadfactor6sec: row.overloadfactor6sec.clone(),
+            lastchanged: row.lastchanged.clone(),
+            fcassupportunavailable: row.fcassupportunavailable.clone(),
+            ictype: row.ictype.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigInterconnectorconstraint1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub interconnectorid: String,
+    pub interconnectorid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigInterconnectorconstraint1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigInterconnectorconstraint1 {
-    type Row = MarketConfigInterconnectorconstraint1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for MarketConfigInterconnectorconstraint1Row<'data> {
+    type Row<'other> = MarketConfigInterconnectorconstraint1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
+            && self.interconnectorid() == row.interconnectorid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigInterconnectorconstraint1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigInterconnectorconstraint1Row<'data> {
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.interconnectorid == key.interconnectorid
+            && self.interconnectorid() == key.interconnectorid
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigInterconnectorconstraint1PrimaryKey {
-    type Row = MarketConfigInterconnectorconstraint1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow
+for MarketConfigInterconnectorconstraint1PrimaryKey {
+    type Row<'other> = MarketConfigInterconnectorconstraint1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
+            && self.interconnectorid == row.interconnectorid()
             && self.versionno == row.versionno
     }
 }
@@ -863,276 +1882,393 @@ for MarketConfigInterconnectorconstraint1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("reserveoverallloadfactor",
-                arrow2::datatypes::DataType::Decimal(5, 2), true),
-                arrow2::datatypes::Field::new("fromregionlossshare",
-                arrow2::datatypes::DataType::Decimal(5, 2), true),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("maxmwin",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("maxmwout",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("lossconstant",
-                arrow2::datatypes::DataType::Decimal(15, 6), true),
-                arrow2::datatypes::Field::new("lossflowcoefficient",
-                arrow2::datatypes::DataType::Decimal(27, 17), true),
-                arrow2::datatypes::Field::new("emsmeasurand",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("dynamicrhs",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("importlimit",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("exportlimit",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("outagederationfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("nonphysicallossfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("overloadfactor60sec",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("overloadfactor6sec",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("fcassupportunavailable",
-                arrow2::datatypes::DataType::Decimal(1, 0), true),
-                arrow2::datatypes::Field::new("ictype",
-                arrow2::datatypes::DataType::LargeUtf8, true)
-            ],
+    type Builder = MarketConfigInterconnectorconstraint1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "reserveoverallloadfactor",
+                    arrow::datatypes::DataType::Decimal128(5, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromregionlossshare",
+                    arrow::datatypes::DataType::Decimal128(5, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "maxmwin",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "maxmwout",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lossconstant",
+                    arrow::datatypes::DataType::Decimal128(15, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lossflowcoefficient",
+                    arrow::datatypes::DataType::Decimal128(27, 17),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "emsmeasurand",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "dynamicrhs",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "importlimit",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "exportlimit",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "outagederationfactor",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "nonphysicallossfactor",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "overloadfactor60sec",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "overloadfactor6sec",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fcassupportunavailable",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ictype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut reserveoverallloadfactor_array = Vec::new();
-        let mut fromregionlossshare_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut maxmwin_array = Vec::new();
-        let mut maxmwout_array = Vec::new();
-        let mut lossconstant_array = Vec::new();
-        let mut lossflowcoefficient_array = Vec::new();
-        let mut emsmeasurand_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut dynamicrhs_array = Vec::new();
-        let mut importlimit_array = Vec::new();
-        let mut exportlimit_array = Vec::new();
-        let mut outagederationfactor_array = Vec::new();
-        let mut nonphysicallossfactor_array = Vec::new();
-        let mut overloadfactor60sec_array = Vec::new();
-        let mut overloadfactor6sec_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut fcassupportunavailable_array = Vec::new();
-        let mut ictype_array = Vec::new();
-        for row in partition {
-            reserveoverallloadfactor_array
-                .push({
-                    row.reserveoverallloadfactor
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            fromregionlossshare_array
-                .push({
-                    row.fromregionlossshare
-                        .map(|mut val| {
-                            val.rescale(2);
-                            val.mantissa()
-                        })
-                });
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            maxmwin_array
-                .push({
-                    row.maxmwin
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            maxmwout_array
-                .push({
-                    row.maxmwout
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lossconstant_array
-                .push({
-                    row.lossconstant
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            lossflowcoefficient_array
-                .push({
-                    row.lossflowcoefficient
-                        .map(|mut val| {
-                            val.rescale(17);
-                            val.mantissa()
-                        })
-                });
-            emsmeasurand_array.push(row.emsmeasurand);
-            authorisedby_array.push(row.authorisedby);
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            dynamicrhs_array.push(row.dynamicrhs);
-            importlimit_array
-                .push({
-                    row.importlimit
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            exportlimit_array
-                .push({
-                    row.exportlimit
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            outagederationfactor_array
-                .push({
-                    row.outagederationfactor
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            nonphysicallossfactor_array
-                .push({
-                    row.nonphysicallossfactor
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            overloadfactor60sec_array
-                .push({
-                    row.overloadfactor60sec
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            overloadfactor6sec_array
-                .push({
-                    row.overloadfactor6sec
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            fcassupportunavailable_array
-                .push({
-                    row.fcassupportunavailable
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            ictype_array.push(row.ictype);
+    fn new_builder() -> Self::Builder {
+        MarketConfigInterconnectorconstraint1Builder {
+            reserveoverallloadfactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 2)),
+            fromregionlossshare_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 2)),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            maxmwin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            maxmwout_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lossconstant_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 6)),
+            lossflowcoefficient_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(27, 17)),
+            emsmeasurand_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dynamicrhs_array: arrow::array::builder::StringBuilder::new(),
+            importlimit_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            exportlimit_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            outagederationfactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            nonphysicallossfactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            overloadfactor60sec_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            overloadfactor6sec_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            fcassupportunavailable_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            ictype_array: arrow::array::builder::StringBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(reserveoverallloadfactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(fromregionlossshare_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 2))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxmwin_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(maxmwout_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lossconstant_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lossflowcoefficient_array)
-                    .to(arrow2::datatypes::DataType::Decimal(27, 17))) as std::sync::Arc
-                    < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(emsmeasurand_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(dynamicrhs_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(importlimit_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(exportlimit_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(outagederationfactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(nonphysicallossfactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(overloadfactor60sec_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(overloadfactor6sec_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(fcassupportunavailable_array)
-                    .to(arrow2::datatypes::DataType::Decimal(1, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(ictype_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .reserveoverallloadfactor_array
+            .append_option({
+                row.reserveoverallloadfactor
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .fromregionlossshare_array
+            .append_option({
+                row.fromregionlossshare
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder
+            .maxmwin_array
+            .append_option({
+                row.maxmwin
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .maxmwout_array
+            .append_option({
+                row.maxmwout
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lossconstant_array
+            .append_option({
+                row.lossconstant
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lossflowcoefficient_array
+            .append_option({
+                row.lossflowcoefficient
+                    .map(|mut val| {
+                        val.rescale(17);
+                        val.mantissa()
+                    })
+            });
+        builder.emsmeasurand_array.append_option(row.emsmeasurand());
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.dynamicrhs_array.append_option(row.dynamicrhs());
+        builder
+            .importlimit_array
+            .append_option({
+                row.importlimit
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .exportlimit_array
+            .append_option({
+                row.exportlimit
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .outagederationfactor_array
+            .append_option({
+                row.outagederationfactor
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .nonphysicallossfactor_array
+            .append_option({
+                row.nonphysicallossfactor
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .overloadfactor60sec_array
+            .append_option({
+                row.overloadfactor60sec
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .overloadfactor6sec_array
+            .append_option({
+                row.overloadfactor6sec
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .fcassupportunavailable_array
+            .append_option({
+                row.fcassupportunavailable
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.ictype_array.append_option(row.ictype());
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(
+                        builder.reserveoverallloadfactor_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromregionlossshare_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.maxmwin_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.maxmwout_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lossconstant_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lossflowcoefficient_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.emsmeasurand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.dynamicrhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.importlimit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.exportlimit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.outagederationfactor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.nonphysicallossfactor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.overloadfactor60sec_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.overloadfactor6sec_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fcassupportunavailable_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ictype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigInterconnectorconstraint1Builder {
+    reserveoverallloadfactor_array: arrow::array::builder::Decimal128Builder,
+    fromregionlossshare_array: arrow::array::builder::Decimal128Builder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    maxmwin_array: arrow::array::builder::Decimal128Builder,
+    maxmwout_array: arrow::array::builder::Decimal128Builder,
+    lossconstant_array: arrow::array::builder::Decimal128Builder,
+    lossflowcoefficient_array: arrow::array::builder::Decimal128Builder,
+    emsmeasurand_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    dynamicrhs_array: arrow::array::builder::StringBuilder,
+    importlimit_array: arrow::array::builder::Decimal128Builder,
+    exportlimit_array: arrow::array::builder::Decimal128Builder,
+    outagederationfactor_array: arrow::array::builder::Decimal128Builder,
+    nonphysicallossfactor_array: arrow::array::builder::Decimal128Builder,
+    overloadfactor60sec_array: arrow::array::builder::Decimal128Builder,
+    overloadfactor6sec_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    fcassupportunavailable_array: arrow::array::builder::Decimal128Builder,
+    ictype_array: arrow::array::builder::StringBuilder,
+}
+pub struct MarketConfigIntraregionalloc1;
+pub struct MarketConfigIntraregionalloc1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTRAREGIONALLOC
@@ -1145,8 +2281,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
 /// # Description
 ///  INTRAREGIONALLOC data is confidential to the relevant participant. Source The data in INTRAREGIONALLOC changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Private
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1154,85 +2289,205 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
 /// * PARTICIPANTID
 /// * REGIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigIntraregionalloc1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigIntraregionalloc1Row<'data> {
     /// Effective Date of Allocation Details
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No in respect to effective date
     pub versionno: rust_decimal::Decimal,
     /// Region Identifier
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Unique participant identifier
-    pub participantid: String,
+    pub participantid: core::ops::Range<usize>,
     /// Allocation Percent / 100
     pub allocation: Option<rust_decimal::Decimal>,
     /// Last changed date/time
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigIntraregionalloc1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "INTRAREGIONALLOC";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigIntraregionalloc1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "REGIONID",
+        "PARTICIPANTID",
+        "ALLOCATION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigIntraregionalloc1Row<'row>;
+    type FieldMapping = MarketConfigIntraregionalloc1Mapping;
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("INTRAREGIONALLOC".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigIntraregionalloc1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            allocation: row
+                .get_opt_custom_parsed_at_idx(
+                    "allocation",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigIntraregionalloc1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigIntraregionalloc1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigIntraregionalloc1PrimaryKey {
         MarketConfigIntraregionalloc1PrimaryKey {
-            effectivedate: self.effectivedate,
-            participantid: self.participantid.clone(),
-            regionid: self.regionid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_intraregionalloc_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_intraregionalloc_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigIntraregionalloc1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            regionid: row.regionid.clone(),
+            participantid: row.participantid.clone(),
+            allocation: row.allocation.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigIntraregionalloc1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub participantid: String,
-    pub regionid: String,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigIntraregionalloc1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigIntraregionalloc1 {
-    type Row = MarketConfigIntraregionalloc1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigIntraregionalloc1Row<'data> {
+    type Row<'other> = MarketConfigIntraregionalloc1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid && self.regionid == row.regionid
-            && self.versionno == row.versionno
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigIntraregionalloc1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigIntraregionalloc1Row<'data> {
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid && self.regionid == key.regionid
-            && self.versionno == key.versionno
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigIntraregionalloc1PrimaryKey {
-    type Row = MarketConfigIntraregionalloc1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigIntraregionalloc1PrimaryKey {
+    type Row<'other> = MarketConfigIntraregionalloc1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid && self.regionid == row.regionid
-            && self.versionno == row.versionno
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigIntraregionalloc1PrimaryKey {
@@ -1245,81 +2500,119 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigIntraregionalloc1PrimaryK
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(5, 0), false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("participantid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("allocation",
-                arrow2::datatypes::DataType::Decimal(12, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigIntraregionalloc1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "allocation",
+                    arrow::datatypes::DataType::Decimal128(12, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut participantid_array = Vec::new();
-        let mut allocation_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            regionid_array.push(row.regionid);
-            participantid_array.push(row.participantid);
-            allocation_array
-                .push({
-                    row.allocation
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigIntraregionalloc1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            allocation_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(5, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(participantid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(allocation_array)
-                    .to(arrow2::datatypes::DataType::Decimal(12, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.regionid_array.append_value(row.regionid());
+        builder.participantid_array.append_value(row.participantid());
+        builder
+            .allocation_array
+            .append_option({
+                row.allocation
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.allocation_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigIntraregionalloc1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    allocation_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigLossfactormodel1;
+pub struct MarketConfigLossfactormodel1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## LOSSFACTORMODEL
@@ -1332,8 +2625,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
 /// # Description
 ///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1341,85 +2633,208 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
 /// * INTERCONNECTORID
 /// * REGIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigLossfactormodel1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigLossfactormodel1Row<'data> {
     /// Calendar date data set is effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number within effective date of the status proposed
     pub versionno: rust_decimal::Decimal,
     /// The unique identifier for the interconnector.
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// The unique region identifier for a connection point of the interconnector
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// The coefficient applied to the region demand in the calculation of the interconnector loss factor
     pub demandcoefficient: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigLossfactormodel1Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "LOSSFACTORMODEL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossfactormodel1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "REGIONID",
+        "DEMANDCOEFFICIENT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigLossfactormodel1Row<'row>;
+    type FieldMapping = MarketConfigLossfactormodel1Mapping;
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("LOSSFACTORMODEL".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigLossfactormodel1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[2])?,
+            regionid: row.get_range("regionid", field_mapping.0[3])?,
+            demandcoefficient: row
+                .get_opt_custom_parsed_at_idx(
+                    "demandcoefficient",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigLossfactormodel1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigLossfactormodel1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigLossfactormodel1PrimaryKey {
         MarketConfigLossfactormodel1PrimaryKey {
-            effectivedate: self.effectivedate,
-            interconnectorid: self.interconnectorid.clone(),
-            regionid: self.regionid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            interconnectorid: row.interconnectorid().to_string(),
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_lossfactormodel_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_lossfactormodel_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigLossfactormodel1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            regionid: row.regionid.clone(),
+            demandcoefficient: row.demandcoefficient.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigLossfactormodel1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub interconnectorid: String,
-    pub regionid: String,
+    pub interconnectorid: alloc::string::String,
+    pub regionid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigLossfactormodel1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigLossfactormodel1 {
-    type Row = MarketConfigLossfactormodel1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigLossfactormodel1Row<'data> {
+    type Row<'other> = MarketConfigLossfactormodel1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
-            && self.regionid == row.regionid && self.versionno == row.versionno
+            && self.interconnectorid() == row.interconnectorid()
+            && self.regionid() == row.regionid() && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossfactormodel1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigLossfactormodel1Row<'data> {
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.interconnectorid == key.interconnectorid
-            && self.regionid == key.regionid && self.versionno == key.versionno
+            && self.interconnectorid() == key.interconnectorid
+            && self.regionid() == key.regionid && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigLossfactormodel1PrimaryKey {
-    type Row = MarketConfigLossfactormodel1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigLossfactormodel1PrimaryKey {
+    type Row<'other> = MarketConfigLossfactormodel1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
-            && self.regionid == row.regionid && self.versionno == row.versionno
+            && self.interconnectorid == row.interconnectorid()
+            && self.regionid == row.regionid() && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossfactormodel1PrimaryKey {
@@ -1432,81 +2847,119 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossfactormodel1PrimaryKe
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("demandcoefficient",
-                arrow2::datatypes::DataType::Decimal(27, 17), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigLossfactormodel1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "demandcoefficient",
+                    arrow::datatypes::DataType::Decimal128(27, 17),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut demandcoefficient_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            regionid_array.push(row.regionid);
-            demandcoefficient_array
-                .push({
-                    row.demandcoefficient
-                        .map(|mut val| {
-                            val.rescale(17);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigLossfactormodel1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            demandcoefficient_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(27, 17)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(demandcoefficient_array)
-                    .to(arrow2::datatypes::DataType::Decimal(27, 17))) as std::sync::Arc
-                    < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .demandcoefficient_array
+            .append_option({
+                row.demandcoefficient
+                    .map(|mut val| {
+                        val.rescale(17);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demandcoefficient_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigLossfactormodel1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    demandcoefficient_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigLossmodel1;
+pub struct MarketConfigLossmodel1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## LOSSMODEL
@@ -1519,8 +2972,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
 /// # Description
 ///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
@@ -1528,17 +2980,16 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
 /// * INTERCONNECTORID
 /// * LOSSSEGMENT
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigLossmodel1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigLossmodel1Row<'data> {
     /// Calendar date data set is effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version number within effective date
     pub versionno: rust_decimal::Decimal,
     /// Interconnector identifier
-    pub interconnectorid: String,
+    pub interconnectorid: core::ops::Range<usize>,
     /// Not used
-    pub periodid: Option<String>,
+    pub periodid: core::ops::Range<usize>,
     /// Segment Identifier (1 to 80 at present)
     pub losssegment: rust_decimal::Decimal,
     /// MW Value for segment
@@ -1546,70 +2997,220 @@ pub struct MarketConfigLossmodel1 {
     /// Not used
     pub lossfactor: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigLossmodel1Row<'data> {
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+    pub fn periodid(&self) -> Option<&str> {
+        if self.periodid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.periodid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "LOSSMODEL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossmodel1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "INTERCONNECTORID",
+        "PERIODID",
+        "LOSSSEGMENT",
+        "MWBREAKPOINT",
+        "LOSSFACTOR",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigLossmodel1Row<'row>;
+    type FieldMapping = MarketConfigLossmodel1Mapping;
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("LOSSMODEL".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigLossmodel1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[2])?,
+            periodid: row.get_opt_range("periodid", field_mapping.0[3])?,
+            losssegment: row
+                .get_custom_parsed_at_idx(
+                    "losssegment",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            mwbreakpoint: row
+                .get_opt_custom_parsed_at_idx(
+                    "mwbreakpoint",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lossfactor: row
+                .get_opt_custom_parsed_at_idx(
+                    "lossfactor",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigLossmodel1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigLossmodel1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigLossmodel1PrimaryKey {
         MarketConfigLossmodel1PrimaryKey {
-            effectivedate: self.effectivedate,
-            interconnectorid: self.interconnectorid.clone(),
-            losssegment: self.losssegment,
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            interconnectorid: row.interconnectorid().to_string(),
+            losssegment: row.losssegment,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_lossmodel_v1_{}_{}", self.partition_suffix().year, self
-            .partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_lossmodel_v1_{}_{}", Self::partition_suffix(& row).year,
+            Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigLossmodel1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            periodid: row.periodid.clone(),
+            losssegment: row.losssegment.clone(),
+            mwbreakpoint: row.mwbreakpoint.clone(),
+            lossfactor: row.lossfactor.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigLossmodel1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub interconnectorid: String,
+    pub interconnectorid: alloc::string::String,
     pub losssegment: rust_decimal::Decimal,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigLossmodel1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigLossmodel1 {
-    type Row = MarketConfigLossmodel1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigLossmodel1Row<'data> {
+    type Row<'other> = MarketConfigLossmodel1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
+            && self.interconnectorid() == row.interconnectorid()
             && self.losssegment == row.losssegment && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossmodel1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigLossmodel1Row<'data> {
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.interconnectorid == key.interconnectorid
+            && self.interconnectorid() == key.interconnectorid
             && self.losssegment == key.losssegment && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigLossmodel1PrimaryKey {
-    type Row = MarketConfigLossmodel1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigLossmodel1PrimaryKey {
+    type Row<'other> = MarketConfigLossmodel1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
-            && self.interconnectorid == row.interconnectorid
+            && self.interconnectorid == row.interconnectorid()
             && self.losssegment == row.losssegment && self.versionno == row.versionno
     }
 }
@@ -1623,107 +3224,155 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigLossmodel1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("interconnectorid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("periodid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("losssegment",
-                arrow2::datatypes::DataType::Decimal(6, 0), false),
-                arrow2::datatypes::Field::new("mwbreakpoint",
-                arrow2::datatypes::DataType::Decimal(6, 0), true),
-                arrow2::datatypes::Field::new("lossfactor",
-                arrow2::datatypes::DataType::Decimal(16, 6), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigLossmodel1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "losssegment",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "mwbreakpoint",
+                    arrow::datatypes::DataType::Decimal128(6, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lossfactor",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut interconnectorid_array = Vec::new();
-        let mut periodid_array = Vec::new();
-        let mut losssegment_array = Vec::new();
-        let mut mwbreakpoint_array = Vec::new();
-        let mut lossfactor_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            interconnectorid_array.push(row.interconnectorid);
-            periodid_array.push(row.periodid);
-            losssegment_array
-                .push({
-                    let mut val = row.losssegment;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            mwbreakpoint_array
-                .push({
-                    row.mwbreakpoint
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            lossfactor_array
-                .push({
-                    row.lossfactor
-                        .map(|mut val| {
-                            val.rescale(6);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigLossmodel1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::StringBuilder::new(),
+            losssegment_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            mwbreakpoint_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            lossfactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(interconnectorid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(periodid_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(losssegment_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(mwbreakpoint_array)
-                    .to(arrow2::datatypes::DataType::Decimal(6, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lossfactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(16, 6))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder.periodid_array.append_option(row.periodid());
+        builder
+            .losssegment_array
+            .append_value({
+                let mut val = row.losssegment;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .mwbreakpoint_array
+            .append_option({
+                row.mwbreakpoint
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lossfactor_array
+            .append_option({
+                row.lossfactor
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.losssegment_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.mwbreakpoint_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lossfactor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigLossmodel1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    interconnectorid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::StringBuilder,
+    losssegment_array: arrow::array::builder::Decimal128Builder,
+    mwbreakpoint_array: arrow::array::builder::Decimal128Builder,
+    lossfactor_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigMarketPriceThresholds1;
+pub struct MarketConfigMarketPriceThresholds1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## MARKET_PRICE_THRESHOLDS
@@ -1736,17 +3385,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
 /// # Description
 ///  MARKET_PRICE_THRESHOLDS data is public, so is available to all participants. Source MARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * EFFECTIVEDATE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigMarketPriceThresholds1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigMarketPriceThresholds1Row<'data> {
     /// Calendar date that this record becomes effective
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// version no for the effective date
     pub versionno: rust_decimal::Decimal,
@@ -1757,65 +3404,214 @@ pub struct MarketConfigMarketPriceThresholds1 {
     /// Threshold value beyond which Aggregate Prices per Region over 336 Trade Intervals (Energy), or 2016 Dispatch Intervals (FCAS), will result in an Administered Price declaration
     pub administered_price_threshold: Option<rust_decimal::Decimal>,
     /// date data authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// user authorising
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigMarketPriceThresholds1Row<'data> {
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "MARKET_PRICE_THRESHOLDS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigMarketPriceThresholds1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "VOLL",
+        "MARKETPRICEFLOOR",
+        "ADMINISTERED_PRICE_THRESHOLD",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigMarketPriceThresholds1Row<'row>;
+    type FieldMapping = MarketConfigMarketPriceThresholds1Mapping;
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("MARKET_PRICE_THRESHOLDS".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigMarketPriceThresholds1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            voll: row
+                .get_opt_custom_parsed_at_idx(
+                    "voll",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            marketpricefloor: row
+                .get_opt_custom_parsed_at_idx(
+                    "marketpricefloor",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            administered_price_threshold: row
+                .get_opt_custom_parsed_at_idx(
+                    "administered_price_threshold",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigMarketPriceThresholds1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigMarketPriceThresholds1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigMarketPriceThresholds1PrimaryKey {
         MarketConfigMarketPriceThresholds1PrimaryKey {
-            effectivedate: self.effectivedate,
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_market_price_thresholds_v1_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_market_price_thresholds_v1_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigMarketPriceThresholds1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            voll: row.voll.clone(),
+            marketpricefloor: row.marketpricefloor.clone(),
+            administered_price_threshold: row.administered_price_threshold.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigMarketPriceThresholds1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigMarketPriceThresholds1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigMarketPriceThresholds1 {
-    type Row = MarketConfigMarketPriceThresholds1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigMarketPriceThresholds1Row<'data> {
+    type Row<'other> = MarketConfigMarketPriceThresholds1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigMarketPriceThresholds1Row<'data> {
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigMarketPriceThresholds1PrimaryKey {
-    type Row = MarketConfigMarketPriceThresholds1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigMarketPriceThresholds1PrimaryKey {
+    type Row<'other> = MarketConfigMarketPriceThresholds1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
@@ -1827,109 +3623,163 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigMarketPriceThresholds1Pri
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(4, 0), false),
-                arrow2::datatypes::Field::new("voll",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("marketpricefloor",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("administered_price_threshold",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigMarketPriceThresholds1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "voll",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "marketpricefloor",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "administered_price_threshold",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut voll_array = Vec::new();
-        let mut marketpricefloor_array = Vec::new();
-        let mut administered_price_threshold_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            voll_array
-                .push({
-                    row.voll
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            marketpricefloor_array
-                .push({
-                    row.marketpricefloor
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            administered_price_threshold_array
-                .push({
-                    row.administered_price_threshold
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigMarketPriceThresholds1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            voll_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            marketpricefloor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            administered_price_threshold_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(4, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(voll_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(marketpricefloor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(administered_price_threshold_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .voll_array
+            .append_option({
+                row.voll
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .marketpricefloor_array
+            .append_option({
+                row.marketpricefloor
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .administered_price_threshold_array
+            .append_option({
+                row.administered_price_threshold
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.voll_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marketpricefloor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.administered_price_threshold_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigMarketPriceThresholds1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    voll_array: arrow::array::builder::Decimal128Builder,
+    marketpricefloor_array: arrow::array::builder::Decimal128Builder,
+    administered_price_threshold_array: arrow::array::builder::Decimal128Builder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigRegion1;
+pub struct MarketConfigRegion1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## REGION
@@ -1942,65 +3792,168 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
 /// # Description
 ///  REGION data is public, so is available to all participants. Source REGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * REGIONID
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigRegion1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigRegion1Row<'data> {
     /// Differentiates this region from all other regions
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// Full description of region
-    pub description: Option<String>,
+    pub description: core::ops::Range<usize>,
     /// Status of the region e.g. working, inactive, archive.
-    pub regionstatus: Option<String>,
+    pub regionstatus: core::ops::Range<usize>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigRegion1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn description(&self) -> Option<&str> {
+        if self.description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.description.clone(),
+                ),
+            )
+        }
+    }
+    pub fn regionstatus(&self) -> Option<&str> {
+        if self.regionstatus.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionstatus.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigRegion1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "REGION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegion1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "REGIONID",
+        "DESCRIPTION",
+        "REGIONSTATUS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigRegion1Row<'row>;
+    type FieldMapping = MarketConfigRegion1Mapping;
     type PrimaryKey = MarketConfigRegion1PrimaryKey;
     type Partition = ();
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("REGION".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigRegion1Row {
+            regionid: row.get_range("regionid", field_mapping.0[0])?,
+            description: row.get_opt_range("description", field_mapping.0[1])?,
+            regionstatus: row.get_opt_range("regionstatus", field_mapping.0[2])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigRegion1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigRegion1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigRegion1PrimaryKey {
         MarketConfigRegion1PrimaryKey {
-            regionid: self.regionid.clone(),
+            regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {}
-    fn partition_name(&self) -> String {
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
         "market_config_region_v1".to_string()
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigRegion1Row {
+            regionid: row.regionid.clone(),
+            description: row.description.clone(),
+            regionstatus: row.regionstatus.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigRegion1PrimaryKey {
-    pub regionid: String,
+    pub regionid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigRegion1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigRegion1 {
-    type Row = MarketConfigRegion1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigRegion1Row<'data> {
+    type Row<'other> = MarketConfigRegion1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.regionid() == row.regionid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1Row<'data> {
     type PrimaryKey = MarketConfigRegion1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.regionid == key.regionid
+        self.regionid() == key.regionid
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigRegion1PrimaryKey {
-    type Row = MarketConfigRegion1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigRegion1PrimaryKey {
+    type Row<'other> = MarketConfigRegion1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.regionid == row.regionid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1PrimaryKey {
@@ -2011,55 +3964,80 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegion1PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("description",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("regionstatus",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigRegion1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionstatus",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut regionid_array = Vec::new();
-        let mut description_array = Vec::new();
-        let mut regionstatus_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            regionid_array.push(row.regionid);
-            description_array.push(row.description);
-            regionstatus_array.push(row.regionstatus);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigRegion1Builder {
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::builder::StringBuilder::new(),
+            regionstatus_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(description_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionstatus_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.regionid_array.append_value(row.regionid());
+        builder.description_array.append_option(row.description());
+        builder.regionstatus_array.append_option(row.regionstatus());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionstatus_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigRegion1Builder {
+    regionid_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::builder::StringBuilder,
+    regionstatus_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigRegionstandingdata1;
+pub struct MarketConfigRegionstandingdata1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## REGIONSTANDINGDATA
@@ -2072,96 +4050,271 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
 /// # Description
 ///  REGIONSTANDINGDATA data is public, so is available to all participants. Source REGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * EFFECTIVEDATE
 /// * REGIONID
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigRegionstandingdata1 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigRegionstandingdata1Row<'data> {
     /// Effective date of this record, only the latest date applies
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version No of the standing data that should be effective on this date
     pub versionno: rust_decimal::Decimal,
     /// Differentiates this region from all other regions
-    pub regionid: String,
+    pub regionid: core::ops::Range<usize>,
     /// the unique identifier of the participant with responsibility for the region.
-    pub rsoid: Option<String>,
+    pub rsoid: core::ops::Range<usize>,
     /// unique id of a connection point, being the reference point for this region
-    pub regionalreferencepointid: Option<String>,
+    pub regionalreferencepointid: core::ops::Range<usize>,
     /// Period identifier of the peak trading period of this connection point
     pub peaktradingperiod: Option<rust_decimal::Decimal>,
     /// Date record authorised
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// User authorising record
-    pub authorisedby: Option<String>,
+    pub authorisedby: core::ops::Range<usize>,
     /// Scaling factor for regional FCAS requirement
     pub scalingfactor: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigRegionstandingdata1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn rsoid(&self) -> Option<&str> {
+        if self.rsoid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(self.backing_data.as_slice(), self.rsoid.clone()),
+            )
+        }
+    }
+    pub fn regionalreferencepointid(&self) -> Option<&str> {
+        if self.regionalreferencepointid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionalreferencepointid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn authorisedby(&self) -> Option<&str> {
+        if self.authorisedby.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.authorisedby.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "REGIONSTANDINGDATA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegionstandingdata1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "REGIONID",
+        "RSOID",
+        "REGIONALREFERENCEPOINTID",
+        "PEAKTRADINGPERIOD",
+        "AUTHORISEDDATE",
+        "AUTHORISEDBY",
+        "SCALINGFACTOR",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigRegionstandingdata1Row<'row>;
+    type FieldMapping = MarketConfigRegionstandingdata1Mapping;
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("REGIONSTANDINGDATA".into()),
-            version: 1,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigRegionstandingdata1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            rsoid: row.get_opt_range("rsoid", field_mapping.0[3])?,
+            regionalreferencepointid: row
+                .get_opt_range("regionalreferencepointid", field_mapping.0[4])?,
+            peaktradingperiod: row
+                .get_opt_custom_parsed_at_idx(
+                    "peaktradingperiod",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            authorisedby: row.get_opt_range("authorisedby", field_mapping.0[7])?,
+            scalingfactor: row
+                .get_opt_custom_parsed_at_idx(
+                    "scalingfactor",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigRegionstandingdata1PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigRegionstandingdata1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                4,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigRegionstandingdata1PrimaryKey {
         MarketConfigRegionstandingdata1PrimaryKey {
-            effectivedate: self.effectivedate,
-            regionid: self.regionid.clone(),
-            versionno: self.versionno,
+            effectivedate: row.effectivedate,
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_regionstandingdata_v1_{}_{}", self.partition_suffix().year,
-            self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_regionstandingdata_v1_{}_{}", Self::partition_suffix(& row)
+            .year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigRegionstandingdata1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            regionid: row.regionid.clone(),
+            rsoid: row.rsoid.clone(),
+            regionalreferencepointid: row.regionalreferencepointid.clone(),
+            peaktradingperiod: row.peaktradingperiod.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            authorisedby: row.authorisedby.clone(),
+            scalingfactor: row.scalingfactor.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigRegionstandingdata1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
-    pub regionid: String,
+    pub regionid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigRegionstandingdata1PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigRegionstandingdata1 {
-    type Row = MarketConfigRegionstandingdata1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigRegionstandingdata1Row<'data> {
+    type Row<'other> = MarketConfigRegionstandingdata1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.regionid() == row.regionid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegionstandingdata1 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigRegionstandingdata1Row<'data> {
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.regionid == key.regionid
+        self.effectivedate == key.effectivedate && self.regionid() == key.regionid
             && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigRegionstandingdata1PrimaryKey {
-    type Row = MarketConfigRegionstandingdata1;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.effectivedate == row.effectivedate && self.regionid == row.regionid
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigRegionstandingdata1PrimaryKey {
+    type Row<'other> = MarketConfigRegionstandingdata1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.regionid == row.regionid()
             && self.versionno == row.versionno
     }
 }
@@ -2174,115 +4327,176 @@ impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegionstandingdata1Primar
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(3, 0), false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("rsoid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("regionalreferencepointid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("peaktradingperiod",
-                arrow2::datatypes::DataType::Decimal(3, 0), true),
-                arrow2::datatypes::Field::new("authoriseddate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("authorisedby",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("scalingfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5), true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true)
-            ],
+    type Builder = MarketConfigRegionstandingdata1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "rsoid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionalreferencepointid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "peaktradingperiod",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "authorisedby",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "scalingfactor",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut rsoid_array = Vec::new();
-        let mut regionalreferencepointid_array = Vec::new();
-        let mut peaktradingperiod_array = Vec::new();
-        let mut authoriseddate_array = Vec::new();
-        let mut authorisedby_array = Vec::new();
-        let mut scalingfactor_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        for row in partition {
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            regionid_array.push(row.regionid);
-            rsoid_array.push(row.rsoid);
-            regionalreferencepointid_array.push(row.regionalreferencepointid);
-            peaktradingperiod_array
-                .push({
-                    row.peaktradingperiod
-                        .map(|mut val| {
-                            val.rescale(0);
-                            val.mantissa()
-                        })
-                });
-            authoriseddate_array.push(row.authoriseddate.map(|val| val.timestamp()));
-            authorisedby_array.push(row.authorisedby);
-            scalingfactor_array
-                .push({
-                    row.scalingfactor
-                        .map(|mut val| {
-                            val.rescale(5);
-                            val.mantissa()
-                        })
-                });
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
+    fn new_builder() -> Self::Builder {
+        MarketConfigRegionstandingdata1Builder {
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            rsoid_array: arrow::array::builder::StringBuilder::new(),
+            regionalreferencepointid_array: arrow::array::builder::StringBuilder::new(),
+            peaktradingperiod_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            scalingfactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(regionid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(rsoid_array)) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionalreferencepointid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(peaktradingperiod_array)
-                    .to(arrow2::datatypes::DataType::Decimal(3, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(authoriseddate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(authorisedby_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(scalingfactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.regionid_array.append_value(row.regionid());
+        builder.rsoid_array.append_option(row.rsoid());
+        builder
+            .regionalreferencepointid_array
+            .append_option(row.regionalreferencepointid());
+        builder
+            .peaktradingperiod_array
+            .append_option({
+                row.peaktradingperiod
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .authoriseddate_array
+            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+        builder.authorisedby_array.append_option(row.authorisedby());
+        builder
+            .scalingfactor_array
+            .append_option({
+                row.scalingfactor
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rsoid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.regionalreferencepointid_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.peaktradingperiod_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.scalingfactor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
+#[cfg(feature = "arrow")]
+pub struct MarketConfigRegionstandingdata1Builder {
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    rsoid_array: arrow::array::builder::StringBuilder,
+    regionalreferencepointid_array: arrow::array::builder::StringBuilder,
+    peaktradingperiod_array: arrow::array::builder::Decimal128Builder,
+    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authorisedby_array: arrow::array::builder::StringBuilder,
+    scalingfactor_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+}
+pub struct MarketConfigTransmissionlossfactor2;
+pub struct MarketConfigTransmissionlossfactor2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## TRANSMISSIONLOSSFACTOR
@@ -2295,89 +4509,233 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
 /// # Description
 ///  TRANSMISSIONLOSSFACTOR is public data, and is available to all participants. Source TRANSMISSIONLOSSFACTOR updates when new connection points are created or loss factors change.
 ///
-/// # Notes
-///  * (Visibility) Data in this table is: Public
+///
 ///
 /// # Primary Key Columns
 ///
 /// * CONNECTIONPOINTID
 /// * EFFECTIVEDATE
 /// * VERSIONNO
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
-pub struct MarketConfigTransmissionlossfactor2 {
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigTransmissionlossfactor2Row<'data> {
     /// Transmission Loss Factor
     pub transmissionlossfactor: rust_decimal::Decimal,
     /// Effective date of record
-    #[serde(with = "mmsdm_core::mms_datetime")]
     pub effectivedate: chrono::NaiveDateTime,
     /// Version no of record for given effective date
     pub versionno: rust_decimal::Decimal,
     /// Connection Point ID
-    pub connectionpointid: String,
+    pub connectionpointid: core::ops::Range<usize>,
     /// &nbsp;
-    pub regionid: Option<String>,
+    pub regionid: core::ops::Range<usize>,
     /// Record creation timestamp
-    #[serde(with = "mmsdm_core::mms_datetime_opt")]
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Secondary transmission loss factor applied in settlements for generator purchases.
     pub secondary_tlf: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigTransmissionlossfactor2Row<'data> {
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
+        )
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
 }
 impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "TRANSMISSIONLOSSFACTOR";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigTransmissionlossfactor2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "TRANSMISSIONLOSSFACTOR",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "CONNECTIONPOINTID",
+        "REGIONID",
+        "LASTCHANGED",
+        "SECONDARY_TLF",
+    ];
+    type Row<'row> = MarketConfigTransmissionlossfactor2Row<'row>;
+    type FieldMapping = MarketConfigTransmissionlossfactor2Mapping;
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
-    fn get_file_key() -> mmsdm_core::FileKey {
-        mmsdm_core::FileKey {
-            data_set_name: "MARKET_CONFIG".into(),
-            table_name: Some("TRANSMISSIONLOSSFACTOR".into()),
-            version: 2,
-        }
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigTransmissionlossfactor2Row {
+            transmissionlossfactor: row
+                .get_custom_parsed_at_idx(
+                    "transmissionlossfactor",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[3])?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[4])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            secondary_tlf: row
+                .get_opt_custom_parsed_at_idx(
+                    "secondary_tlf",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
     }
-    fn primary_key(&self) -> MarketConfigTransmissionlossfactor2PrimaryKey {
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigTransmissionlossfactor2Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        let effectivedate = row
+            .get_custom_parsed_at_idx(
+                "effectivedate",
+                5,
+                mmsdm_core::mms_datetime::parse,
+            )?;
+        Ok(mmsdm_core::YearMonth {
+            year: chrono::NaiveDateTime::from(effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(effectivedate).month(),
+                )
+                .unwrap(),
+        })
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> MarketConfigTransmissionlossfactor2PrimaryKey {
         MarketConfigTransmissionlossfactor2PrimaryKey {
-            connectionpointid: self.connectionpointid.clone(),
-            effectivedate: self.effectivedate,
-            versionno: self.versionno,
+            connectionpointid: row.connectionpointid().to_string(),
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
         }
     }
-    fn partition_suffix(&self) -> Self::Partition {
+    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: self.effectivedate.year(),
-            month: num_traits::FromPrimitive::from_u32(self.effectivedate.month())
+            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            month: num_traits::FromPrimitive::from_u32(
+                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                )
                 .unwrap(),
         }
     }
-    fn partition_name(&self) -> String {
-        format!(
-            "market_config_transmissionlossfactor_v2_{}_{}", self.partition_suffix()
-            .year, self.partition_suffix().month.number_from_month()
+    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_transmissionlossfactor_v2_{}_{}", Self::partition_suffix(&
+            row).year, Self::partition_suffix(& row).month.number_from_month()
         )
     }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigTransmissionlossfactor2Row {
+            transmissionlossfactor: row.transmissionlossfactor.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            regionid: row.regionid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            secondary_tlf: row.secondary_tlf.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
 }
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, serde::Serialize, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MarketConfigTransmissionlossfactor2PrimaryKey {
-    pub connectionpointid: String,
+    pub connectionpointid: alloc::string::String,
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for MarketConfigTransmissionlossfactor2PrimaryKey {}
-impl mmsdm_core::CompareWithRow for MarketConfigTransmissionlossfactor2 {
-    type Row = MarketConfigTransmissionlossfactor2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.connectionpointid == row.connectionpointid
+impl<'data> mmsdm_core::CompareWithRow
+for MarketConfigTransmissionlossfactor2Row<'data> {
+    type Row<'other> = MarketConfigTransmissionlossfactor2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.connectionpointid() == row.connectionpointid()
             && self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for MarketConfigTransmissionlossfactor2 {
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigTransmissionlossfactor2Row<'data> {
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.connectionpointid == key.connectionpointid
+        self.connectionpointid() == key.connectionpointid
             && self.effectivedate == key.effectivedate && self.versionno == key.versionno
     }
 }
-impl mmsdm_core::CompareWithRow for MarketConfigTransmissionlossfactor2PrimaryKey {
-    type Row = MarketConfigTransmissionlossfactor2;
-    fn compare_with_row(&self, row: &Self::Row) -> bool {
-        self.connectionpointid == row.connectionpointid
+impl<'data> mmsdm_core::CompareWithRow
+for MarketConfigTransmissionlossfactor2PrimaryKey {
+    type Row<'other> = MarketConfigTransmissionlossfactor2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.connectionpointid == row.connectionpointid()
             && self.effectivedate == row.effectivedate && self.versionno == row.versionno
     }
 }
@@ -2391,250 +4749,131 @@ for MarketConfigTransmissionlossfactor2PrimaryKey {
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
-    fn arrow_schema() -> arrow2::datatypes::Schema {
-        arrow2::datatypes::Schema::from(
-            vec![
-                arrow2::datatypes::Field::new("transmissionlossfactor",
-                arrow2::datatypes::DataType::Decimal(15, 5), false),
-                arrow2::datatypes::Field::new("effectivedate",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), false), arrow2::datatypes::Field::new("versionno",
-                arrow2::datatypes::DataType::Decimal(22, 0), false),
-                arrow2::datatypes::Field::new("connectionpointid",
-                arrow2::datatypes::DataType::LargeUtf8, false),
-                arrow2::datatypes::Field::new("regionid",
-                arrow2::datatypes::DataType::LargeUtf8, true),
-                arrow2::datatypes::Field::new("lastchanged",
-                arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                None), true), arrow2::datatypes::Field::new("secondary_tlf",
-                arrow2::datatypes::DataType::Decimal(18, 8), true)
-            ],
+    type Builder = MarketConfigTransmissionlossfactor2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "transmissionlossfactor",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(22, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Second,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "secondary_tlf",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
         )
     }
-    fn partition_to_chunk(
-        partition: impl Iterator<Item = Self>,
-    ) -> mmsdm_core::Result<
-        arrow2::chunk::Chunk<std::sync::Arc<dyn arrow2::array::Array>>,
-    > {
-        let mut transmissionlossfactor_array = Vec::new();
-        let mut effectivedate_array = Vec::new();
-        let mut versionno_array = Vec::new();
-        let mut connectionpointid_array = Vec::new();
-        let mut regionid_array = Vec::new();
-        let mut lastchanged_array = Vec::new();
-        let mut secondary_tlf_array = Vec::new();
-        for row in partition {
-            transmissionlossfactor_array
-                .push({
-                    let mut val = row.transmissionlossfactor;
-                    val.rescale(5);
-                    val.mantissa()
-                });
-            effectivedate_array.push(row.effectivedate.timestamp());
-            versionno_array
-                .push({
-                    let mut val = row.versionno;
-                    val.rescale(0);
-                    val.mantissa()
-                });
-            connectionpointid_array.push(row.connectionpointid);
-            regionid_array.push(row.regionid);
-            lastchanged_array.push(row.lastchanged.map(|val| val.timestamp()));
-            secondary_tlf_array
-                .push({
-                    row.secondary_tlf
-                        .map(|mut val| {
-                            val.rescale(8);
-                            val.mantissa()
-                        })
-                });
+    fn new_builder() -> Self::Builder {
+        MarketConfigTransmissionlossfactor2Builder {
+            transmissionlossfactor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            secondary_tlf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
-        arrow2::chunk::Chunk::try_new(
-                vec![
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(transmissionlossfactor_array)
-                    .to(arrow2::datatypes::DataType::Decimal(15, 5))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(effectivedate_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from_vec(versionno_array)
-                    .to(arrow2::datatypes::DataType::Decimal(22, 0))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from_slice(connectionpointid_array)) as std::sync::Arc < dyn
-                    arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::Utf8Array::< i64
-                    >::from(regionid_array)) as std::sync::Arc < dyn arrow2::array::Array
-                    >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(lastchanged_array)
-                    .to(arrow2::datatypes::DataType::Timestamp(arrow2::datatypes::TimeUnit::Second,
-                    None))) as std::sync::Arc < dyn arrow2::array::Array >,
-                    std::sync::Arc::new(arrow2::array::PrimitiveArray::from(secondary_tlf_array)
-                    .to(arrow2::datatypes::DataType::Decimal(18, 8))) as std::sync::Arc <
-                    dyn arrow2::array::Array >,
-                ],
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .transmissionlossfactor_array
+            .append_value({
+                let mut val = row.transmissionlossfactor;
+                val.rescale(5);
+                val.mantissa()
+            });
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder.regionid_array.append_option(row.regionid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp()));
+        builder
+            .secondary_tlf_array
+            .append_option({
+                row.secondary_tlf
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.transmissionlossfactor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.secondary_tlf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
             )
             .map_err(Into::into)
     }
 }
-#[cfg(feature = "sql_server")]
-pub async fn save<'a, S>(
-    mms_file: &mut mmsdm_core::MmsFile<'a>,
-    file_key: &mmsdm_core::FileKey,
-    client: &mut tiberius::Client<S>,
-    chunk_size: Option<usize>,
-) -> mmsdm_core::Result<()>
-where
-    S: futures_util::AsyncRead + futures_util::AsyncWrite + Unpin + Send,
-{
-    match (file_key.table_name.as_deref(), file_key.version) {
-        (Some("BIDTYPES"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigBidtypes1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigBidtypes1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("BIDTYPESTRK"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigBidtypestrk1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigBidtypestrk1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERCONNECTOR"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigInterconnector1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigInterconnector1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERCONNECTORALLOC"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigInterconnectoralloc1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigInterconnectoralloc1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTERCONNECTORCONSTRAINT"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigInterconnectorconstraint1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigInterconnectorconstraint1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("INTRAREGIONALLOC"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigIntraregionalloc1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigIntraregionalloc1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("LOSSFACTORMODEL"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigLossfactormodel1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigLossfactormodel1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("LOSSMODEL"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigLossmodel1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigLossmodel1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("MARKET_PRICE_THRESHOLDS"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigMarketPriceThresholds1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigMarketPriceThresholds1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("REGION"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigRegion1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigRegion1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("REGIONSTANDINGDATA"), version) if version <= 1_i32 => {
-            let d: Vec<MarketConfigRegionstandingdata1> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigRegionstandingdata1 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        (Some("TRANSMISSIONLOSSFACTOR"), version) if version <= 2_i32 => {
-            let d: Vec<MarketConfigTransmissionlossfactor2> = mms_file.get_table()?;
-            mmsdm_core::sql_server::batched_insert(
-                    client,
-                    file_key,
-                    mms_file.header(),
-                    &d,
-                    "exec mmsdm_proc.InsertMarketConfigTransmissionlossfactor2 @P1, @P2",
-                    chunk_size,
-                )
-                .await?;
-        }
-        _ => {
-            log::error!("Unexpected file key {:?}", file_key);
-        }
-    }
-    Ok(())
+#[cfg(feature = "arrow")]
+pub struct MarketConfigTransmissionlossfactor2Builder {
+    transmissionlossfactor_array: arrow::array::builder::Decimal128Builder,
+    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    secondary_tlf_array: arrow::array::builder::Decimal128Builder,
 }

@@ -1,4 +1,4 @@
-use heck::CamelCase;
+use heck::ToUpperCamelCase;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -13,13 +13,13 @@ impl Report {
     pub fn sql_table_name(&self) -> String {
         format!(
             "{}{}{}",
-            self.name.to_camel_case(),
+            self.name.to_upper_camel_case(),
             if let Some(sub_type) = &self.sub_type {
                 sub_type
             } else {
                 ""
             }
-            .to_camel_case(),
+            .to_upper_camel_case(),
             self.version
         )
     }
