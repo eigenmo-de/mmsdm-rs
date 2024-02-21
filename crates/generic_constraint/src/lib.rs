@@ -229,7 +229,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -243,7 +243,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
             spd_type_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             grouping_id_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -253,7 +253,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
         builder.grouping_id_array.append_option(row.grouping_id());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -282,7 +282,7 @@ pub struct GenericConstraintEmsmaster1Builder {
     spd_type_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
     grouping_id_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GencondataNull6;
 pub struct GencondataNull6Mapping([usize; 26]);
@@ -848,7 +848,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -891,7 +891,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -909,7 +909,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -989,7 +989,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
     }
     fn new_builder() -> Self::Builder {
         GencondataNull6Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             genconid_array: arrow::array::builder::StringBuilder::new(),
@@ -1000,11 +1000,11 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             status_array: arrow::array::builder::StringBuilder::new(),
             genericconstraintweight_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
             dynamicrhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             dispatch_array: arrow::array::builder::StringBuilder::new(),
             predispatch_array: arrow::array::builder::StringBuilder::new(),
             stpasa_array: arrow::array::builder::StringBuilder::new(),
@@ -1023,7 +1023,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1055,7 +1055,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .dynamicrhs_array
@@ -1068,7 +1068,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.dispatch_array.append_option(row.dispatch());
         builder.predispatch_array.append_option(row.predispatch());
         builder.stpasa_array.append_option(row.stpasa());
@@ -1157,7 +1157,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
 }
 #[cfg(feature = "arrow")]
 pub struct GencondataNull6Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::builder::StringBuilder,
     constrainttype_array: arrow::array::builder::StringBuilder,
@@ -1165,10 +1165,10 @@ pub struct GencondataNull6Builder {
     description_array: arrow::array::builder::StringBuilder,
     status_array: arrow::array::builder::StringBuilder,
     genericconstraintweight_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
     dynamicrhs_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     dispatch_array: arrow::array::builder::StringBuilder,
     predispatch_array: arrow::array::builder::StringBuilder,
     stpasa_array: arrow::array::builder::StringBuilder,
@@ -1435,7 +1435,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1453,7 +1453,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
                 arrow::datatypes::Field::new(
                     "genconeffdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1466,7 +1466,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1477,19 +1477,19 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
     fn new_builder() -> Self::Builder {
         GenconsetNull1Builder {
             genconsetid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             genconid_array: arrow::array::builder::StringBuilder::new(),
-            genconeffdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            genconeffdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconversionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1500,7 +1500,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
         builder.genconid_array.append_value(row.genconid());
         builder
             .genconeffdate_array
-            .append_option(row.genconeffdate.map(|val| val.timestamp()));
+            .append_option(row.genconeffdate.map(|val| val.timestamp_millis()));
         builder
             .genconversionno_array
             .append_option({
@@ -1512,7 +1512,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1542,12 +1542,12 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
 #[cfg(feature = "arrow")]
 pub struct GenconsetNull1Builder {
     genconsetid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::builder::StringBuilder,
-    genconeffdate_array: arrow::array::builder::TimestampSecondBuilder,
+    genconeffdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconversionno_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GenconsetinvokeNull2;
 pub struct GenconsetinvokeNull2Mapping([usize; 14]);
@@ -1871,7 +1871,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1889,7 +1889,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1922,7 +1922,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1930,7 +1930,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 arrow::datatypes::Field::new(
                     "startintervaldatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1938,7 +1938,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 arrow::datatypes::Field::new(
                     "endintervaldatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1954,26 +1954,26 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
     fn new_builder() -> Self::Builder {
         GenconsetinvokeNull2Builder {
             invocation_id_array: arrow::array::builder::Int64Builder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             genconsetid_array: arrow::array::builder::StringBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             startauthorisedby_array: arrow::array::builder::StringBuilder::new(),
             endauthorisedby_array: arrow::array::builder::StringBuilder::new(),
             intervention_array: arrow::array::builder::StringBuilder::new(),
             asconstrainttype_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startintervaldatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            endintervaldatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            endintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             systemnormal_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.invocation_id_array.append_value(row.invocation_id);
-        builder.startdate_array.append_value(row.startdate.timestamp());
+        builder.startdate_array.append_value(row.startdate.timestamp_millis());
         builder
             .startperiod_array
             .append_value({
@@ -1982,7 +1982,9 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 val.mantissa()
             });
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -1998,13 +2000,13 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
         builder.asconstrainttype_array.append_option(row.asconstrainttype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .startintervaldatetime_array
-            .append_option(row.startintervaldatetime.map(|val| val.timestamp()));
+            .append_option(row.startintervaldatetime.map(|val| val.timestamp_millis()));
         builder
             .endintervaldatetime_array
-            .append_option(row.endintervaldatetime.map(|val| val.timestamp()));
+            .append_option(row.endintervaldatetime.map(|val| val.timestamp_millis()));
         builder.systemnormal_array.append_option(row.systemnormal());
     }
     fn finalize_builder(
@@ -2049,18 +2051,18 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
 #[cfg(feature = "arrow")]
 pub struct GenconsetinvokeNull2Builder {
     invocation_id_array: arrow::array::builder::Int64Builder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startperiod_array: arrow::array::builder::Decimal128Builder,
     genconsetid_array: arrow::array::builder::StringBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     endperiod_array: arrow::array::builder::Decimal128Builder,
     startauthorisedby_array: arrow::array::builder::StringBuilder,
     endauthorisedby_array: arrow::array::builder::StringBuilder,
     intervention_array: arrow::array::builder::StringBuilder,
     asconstrainttype_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
-    startintervaldatetime_array: arrow::array::builder::TimestampSecondBuilder,
-    endintervaldatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    endintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     systemnormal_array: arrow::array::builder::StringBuilder,
 }
 pub struct GenconsettrkNull2;
@@ -2399,7 +2401,7 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2422,7 +2424,7 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2430,7 +2432,7 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2461,13 +2463,13 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
     fn new_builder() -> Self::Builder {
         GenconsettrkNull2Builder {
             genconsetid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             description_array: arrow::array::builder::StringBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             coverage_array: arrow::array::builder::StringBuilder::new(),
             modifications_array: arrow::array::builder::StringBuilder::new(),
             systemnormal_array: arrow::array::builder::StringBuilder::new(),
@@ -2476,7 +2478,7 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2488,10 +2490,10 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.coverage_array.append_option(row.coverage());
         builder.modifications_array.append_option(row.modifications());
         builder.systemnormal_array.append_option(row.systemnormal());
@@ -2533,12 +2535,12 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
 #[cfg(feature = "arrow")]
 pub struct GenconsettrkNull2Builder {
     genconsetid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     description_array: arrow::array::builder::StringBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     coverage_array: arrow::array::builder::StringBuilder,
     modifications_array: arrow::array::builder::StringBuilder,
     systemnormal_array: arrow::array::builder::StringBuilder,
@@ -2932,7 +2934,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3000,7 +3002,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3011,7 +3013,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
     fn new_builder() -> Self::Builder {
         GcrhsNull1Builder {
             genconid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             scope_array: arrow::array::builder::StringBuilder::new(),
@@ -3029,12 +3031,12 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
             parameterterm1_array: arrow::array::builder::StringBuilder::new(),
             parameterterm2_array: arrow::array::builder::StringBuilder::new(),
             parameterterm3_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconid_array.append_value(row.genconid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3085,7 +3087,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
         builder.parameterterm3_array.append_option(row.parameterterm3());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3131,7 +3133,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
 #[cfg(feature = "arrow")]
 pub struct GcrhsNull1Builder {
     genconid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     scope_array: arrow::array::builder::StringBuilder,
     termid_array: arrow::array::builder::Decimal128Builder,
@@ -3144,7 +3146,7 @@ pub struct GcrhsNull1Builder {
     parameterterm1_array: arrow::array::builder::StringBuilder,
     parameterterm2_array: arrow::array::builder::StringBuilder,
     parameterterm3_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GeqdescNull2;
 pub struct GeqdescNull2Mapping([usize; 9]);
@@ -3439,7 +3441,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3481,7 +3483,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
         GeqdescNull2Builder {
             equationid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             impact_array: arrow::array::builder::StringBuilder::new(),
             source_array: arrow::array::builder::StringBuilder::new(),
             limittype_array: arrow::array::builder::StringBuilder::new(),
@@ -3495,7 +3497,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.impact_array.append_option(row.impact());
         builder.source_array.append_option(row.source());
         builder.limittype_array.append_option(row.limittype());
@@ -3536,7 +3538,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
 pub struct GeqdescNull2Builder {
     equationid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     impact_array: arrow::array::builder::StringBuilder,
     source_array: arrow::array::builder::StringBuilder,
     limittype_array: arrow::array::builder::StringBuilder,
@@ -3916,7 +3918,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3979,7 +3981,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3990,7 +3992,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
     fn new_builder() -> Self::Builder {
         GeqrhsNull1Builder {
             equationid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             termid_array: arrow::array::builder::Decimal128Builder::new()
@@ -4007,12 +4009,12 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
             parameterterm1_array: arrow::array::builder::StringBuilder::new(),
             parameterterm2_array: arrow::array::builder::StringBuilder::new(),
             parameterterm3_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.equationid_array.append_value(row.equationid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4062,7 +4064,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
         builder.parameterterm3_array.append_option(row.parameterterm3());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4106,7 +4108,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
 #[cfg(feature = "arrow")]
 pub struct GeqrhsNull1Builder {
     equationid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     termid_array: arrow::array::builder::Decimal128Builder,
     groupid_array: arrow::array::builder::Decimal128Builder,
@@ -4118,7 +4120,7 @@ pub struct GeqrhsNull1Builder {
     parameterterm1_array: arrow::array::builder::StringBuilder,
     parameterterm2_array: arrow::array::builder::StringBuilder,
     parameterterm3_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SpdcpcNull2;
 pub struct SpdcpcNull2Mapping([usize; 7]);
@@ -4382,7 +4384,7 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4405,7 +4407,7 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4421,19 +4423,19 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
     fn new_builder() -> Self::Builder {
         SpdcpcNull2Builder {
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             genconid_array: arrow::array::builder::StringBuilder::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.connectionpointid_array.append_value(row.connectionpointid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4453,7 +4455,7 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.bidtype_array.append_value(row.bidtype());
     }
     fn finalize_builder(
@@ -4484,11 +4486,11 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
 #[cfg(feature = "arrow")]
 pub struct SpdcpcNull2Builder {
     connectionpointid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::builder::StringBuilder,
     factor_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
 }
 pub struct SpdiccNull1;
@@ -4738,7 +4740,7 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4761,7 +4763,7 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4772,18 +4774,18 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
     fn new_builder() -> Self::Builder {
         SpdiccNull1Builder {
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             genconid_array: arrow::array::builder::StringBuilder::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4803,7 +4805,7 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4831,11 +4833,11 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
 #[cfg(feature = "arrow")]
 pub struct SpdiccNull1Builder {
     interconnectorid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::builder::StringBuilder,
     factor_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SpdrcNull2;
 pub struct SpdrcNull2Mapping([usize; 7]);
@@ -5093,7 +5095,7 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5116,7 +5118,7 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5132,19 +5134,19 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
     fn new_builder() -> Self::Builder {
         SpdrcNull2Builder {
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             genconid_array: arrow::array::builder::StringBuilder::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5164,7 +5166,7 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.bidtype_array.append_value(row.bidtype());
     }
     fn finalize_builder(
@@ -5195,10 +5197,10 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
 #[cfg(feature = "arrow")]
 pub struct SpdrcNull2Builder {
     regionid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::builder::StringBuilder,
     factor_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
 }

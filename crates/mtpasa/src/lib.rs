@@ -214,7 +214,7 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -232,7 +232,7 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -242,19 +242,19 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaCaseresult1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             plexos_version_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.plexos_version_array.append_option(row.plexos_version());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -277,10 +277,10 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaCaseresult1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     plexos_version_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaConstraintresult1;
 pub struct MtpasaConstraintresult1Mapping([usize; 15]);
@@ -622,7 +622,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -645,7 +645,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -658,7 +658,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -701,7 +701,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -711,13 +711,13 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaConstraintresult1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
@@ -732,19 +732,19 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             constraintviolation10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
         builder
             .versionno_array
             .append_option({
@@ -810,7 +810,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -855,13 +855,13 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaConstraintresult1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     demand_poe_type_array: arrow::array::builder::StringBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     probabilityofbinding_array: arrow::array::builder::Decimal128Builder,
@@ -869,7 +869,7 @@ pub struct MtpasaConstraintresult1Builder {
     constraintviolation90_array: arrow::array::builder::Decimal128Builder,
     constraintviolation50_array: arrow::array::builder::Decimal128Builder,
     constraintviolation10_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaConstraintsummary1;
 pub struct MtpasaConstraintsummary1Mapping([usize; 11]);
@@ -1175,7 +1175,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1198,7 +1198,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1211,7 +1211,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1234,7 +1234,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1244,31 +1244,31 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaConstraintsummary1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             aggregation_period_array: arrow::array::builder::StringBuilder::new(),
             constrainthoursbinding_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
         builder
             .versionno_array
             .append_option({
@@ -1290,7 +1290,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1327,17 +1327,17 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaConstraintsummary1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     demand_poe_type_array: arrow::array::builder::StringBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     aggregation_period_array: arrow::array::builder::StringBuilder,
     constrainthoursbinding_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaDuidavailability3;
 pub struct MtpasaDuidavailability3Mapping([usize; 10]);
@@ -1620,7 +1620,7 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
                 arrow::datatypes::Field::new(
                     "publish_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1628,7 +1628,7 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1651,7 +1651,7 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
                 arrow::datatypes::Field::new(
                     "latest_offer_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1659,7 +1659,7 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1684,14 +1684,14 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaDuidavailability3Builder {
-            publish_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             pasaavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
-            latest_offer_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             carryoverstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             pasaunitstate_array: arrow::array::builder::StringBuilder::new(),
@@ -1699,8 +1699,10 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.publish_datetime_array.append_value(row.publish_datetime.timestamp());
-        builder.day_array.append_value(row.day.timestamp());
+        builder
+            .publish_datetime_array
+            .append_value(row.publish_datetime.timestamp_millis());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder.duid_array.append_value(row.duid());
         builder
@@ -1714,10 +1716,10 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
             });
         builder
             .latest_offer_datetime_array
-            .append_option(row.latest_offer_datetime.map(|val| val.timestamp()));
+            .append_option(row.latest_offer_datetime.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .carryoverstatus_array
             .append_option({
@@ -1763,13 +1765,13 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaDuidavailability3Builder {
-    publish_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     pasaavailability_array: arrow::array::builder::Decimal128Builder,
-    latest_offer_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     carryoverstatus_array: arrow::array::builder::Decimal128Builder,
     pasaunitstate_array: arrow::array::builder::StringBuilder,
     pasarecalltime_array: arrow::array::builder::Int64Builder,
@@ -2117,7 +2119,7 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2140,7 +2142,7 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2193,7 +2195,7 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2203,11 +2205,11 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaInterconnectorresult1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -2225,15 +2227,15 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             calculatedimportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .periodid_array
@@ -2309,7 +2311,7 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2356,11 +2358,11 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaInterconnectorresult1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     demand_poe_type_array: arrow::array::builder::StringBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     flow90_array: arrow::array::builder::Decimal128Builder,
@@ -2370,7 +2372,7 @@ pub struct MtpasaInterconnectorresult1Builder {
     probabilityofbindingimport_array: arrow::array::builder::Decimal128Builder,
     calculatedexportlimit_array: arrow::array::builder::Decimal128Builder,
     calculatedimportlimit_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaLolpresult1;
 pub struct MtpasaLolpresult1Mapping([usize; 12]);
@@ -2679,7 +2681,7 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2697,7 +2699,7 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2740,7 +2742,7 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2750,10 +2752,10 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaLolpresult1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             worst_interval_periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -2766,14 +2768,14 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
             lossofloadprobability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
             lossofloadmagnitude_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
-        builder.day_array.append_value(row.day.timestamp());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .worst_interval_periodid_array
@@ -2823,7 +2825,7 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
         builder.lossofloadmagnitude_array.append_option(row.lossofloadmagnitude());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2862,10 +2864,10 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaLolpresult1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     worst_interval_periodid_array: arrow::array::builder::Decimal128Builder,
     worst_interval_demand_array: arrow::array::builder::Decimal128Builder,
@@ -2873,7 +2875,7 @@ pub struct MtpasaLolpresult1Builder {
     worst_interval_dsp_array: arrow::array::builder::Decimal128Builder,
     lossofloadprobability_array: arrow::array::builder::Decimal128Builder,
     lossofloadmagnitude_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaRegionavailability4;
 pub struct MtpasaRegionavailability4Mapping([usize; 18]);
@@ -3237,7 +3239,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
                 arrow::datatypes::Field::new(
                     "publish_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3245,7 +3247,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3263,7 +3265,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
                 arrow::datatypes::Field::new(
                     "latest_offer_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3306,7 +3308,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3341,12 +3343,12 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaRegionavailability4Builder {
-            publish_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             pasaavailability_scheduled_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
-            latest_offer_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             energyunconstrainedcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
             energyconstrainedcapacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -3361,7 +3363,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             energyreqdemand50_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             demand10min_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             demand10max_array: arrow::array::builder::Decimal128Builder::new()
@@ -3375,8 +3377,10 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.publish_datetime_array.append_value(row.publish_datetime.timestamp());
-        builder.day_array.append_value(row.day.timestamp());
+        builder
+            .publish_datetime_array
+            .append_value(row.publish_datetime.timestamp_millis());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .pasaavailability_scheduled_array
@@ -3389,7 +3393,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
             });
         builder
             .latest_offer_datetime_array
-            .append_option(row.latest_offer_datetime.map(|val| val.timestamp()));
+            .append_option(row.latest_offer_datetime.map(|val| val.timestamp_millis()));
         builder
             .energyunconstrainedcapacity_array
             .append_option({
@@ -3455,7 +3459,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .demand10min_array
             .append_option({
@@ -3554,11 +3558,11 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaRegionavailability4Builder {
-    publish_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     pasaavailability_scheduled_array: arrow::array::builder::Decimal128Builder,
-    latest_offer_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     energyunconstrainedcapacity_array: arrow::array::builder::Decimal128Builder,
     energyconstrainedcapacity_array: arrow::array::builder::Decimal128Builder,
     nonscheduledgeneration_array: arrow::array::builder::Decimal128Builder,
@@ -3566,7 +3570,7 @@ pub struct MtpasaRegionavailability4Builder {
     demand50_array: arrow::array::builder::Decimal128Builder,
     energyreqdemand10_array: arrow::array::builder::Decimal128Builder,
     energyreqdemand50_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     demand10min_array: arrow::array::builder::Decimal128Builder,
     demand10max_array: arrow::array::builder::Decimal128Builder,
     demand50min_array: arrow::array::builder::Decimal128Builder,
@@ -3775,7 +3779,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
                 arrow::datatypes::Field::new(
                     "publish_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3783,7 +3787,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3791,7 +3795,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3799,7 +3803,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
                 arrow::datatypes::Field::new(
                     "latest_offer_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3809,19 +3813,25 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaRegionavailtrk1Builder {
-            publish_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            latest_offer_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.publish_datetime_array.append_value(row.publish_datetime.timestamp());
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .publish_datetime_array
+            .append_value(row.publish_datetime.timestamp_millis());
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .latest_offer_datetime_array
-            .append_option(row.latest_offer_datetime.map(|val| val.timestamp()));
+            .append_option(row.latest_offer_datetime.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3844,10 +3854,10 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaRegionavailtrk1Builder {
-    publish_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
-    latest_offer_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaRegioniteration1;
 pub struct MtpasaRegioniteration1Mapping([usize; 11]);
@@ -4160,7 +4170,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4188,7 +4198,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
                 arrow::datatypes::Field::new(
                     "period_ending",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4216,7 +4226,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4226,28 +4236,28 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaRegioniteration1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
             aggregation_period_array: arrow::array::builder::StringBuilder::new(),
-            period_ending_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            period_ending_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             use_iteration_id_array: arrow::array::builder::Int64Builder::new(),
             use_iteration_event_number_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             use_iteration_event_average_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
         builder.aggregation_period_array.append_value(row.aggregation_period());
-        builder.period_ending_array.append_value(row.period_ending.timestamp());
+        builder.period_ending_array.append_value(row.period_ending.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder.use_iteration_id_array.append_value(row.use_iteration_id);
         builder
@@ -4270,7 +4280,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4309,17 +4319,17 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaRegioniteration1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     demand_poe_type_array: arrow::array::builder::StringBuilder,
     aggregation_period_array: arrow::array::builder::StringBuilder,
-    period_ending_array: arrow::array::builder::TimestampSecondBuilder,
+    period_ending_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     use_iteration_id_array: arrow::array::builder::Int64Builder,
     use_iteration_event_number_array: arrow::array::builder::Decimal128Builder,
     use_iteration_event_average_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaRegionresult2;
 pub struct MtpasaRegionresult2Mapping([usize; 36]);
@@ -4888,7 +4898,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4911,7 +4921,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
                 arrow::datatypes::Field::new(
                     "day",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5029,7 +5039,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5079,11 +5089,11 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaRegionresult2Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
-            day_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -5127,7 +5137,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             demandsideparticipation10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             totalsemischedulegen90_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             totalsemischedulegen50_array: arrow::array::builder::Decimal128Builder::new()
@@ -5147,11 +5157,11 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp());
+        builder.day_array.append_value(row.day.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .periodid_array
@@ -5344,7 +5354,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .totalsemischedulegen90_array
             .append_option({
@@ -5507,11 +5517,11 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaRegionresult2Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     demand_poe_type_array: arrow::array::builder::StringBuilder,
-    day_array: arrow::array::builder::TimestampSecondBuilder,
+    day_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     demand_array: arrow::array::builder::Decimal128Builder,
@@ -5534,7 +5544,7 @@ pub struct MtpasaRegionresult2Builder {
     demandsideparticipation90_array: arrow::array::builder::Decimal128Builder,
     demandsideparticipation50_array: arrow::array::builder::Decimal128Builder,
     demandsideparticipation10_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     totalsemischedulegen90_array: arrow::array::builder::Decimal128Builder,
     totalsemischedulegen50_array: arrow::array::builder::Decimal128Builder,
     totalsemischedulegen10_array: arrow::array::builder::Decimal128Builder,
@@ -6061,7 +6071,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6089,7 +6099,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
                 arrow::datatypes::Field::new(
                     "period_ending",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6212,7 +6222,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6222,12 +6232,12 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaRegionsummary1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
             aggregation_period_array: arrow::array::builder::StringBuilder::new(),
-            period_ending_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            period_ending_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             nativedemand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
@@ -6273,16 +6283,16 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lrc_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
         builder.aggregation_period_array.append_value(row.aggregation_period());
-        builder.period_ending_array.append_value(row.period_ending.timestamp());
+        builder.period_ending_array.append_value(row.period_ending.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .nativedemand_array
@@ -6484,7 +6494,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6559,12 +6569,12 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaRegionsummary1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     demand_poe_type_array: arrow::array::builder::StringBuilder,
     aggregation_period_array: arrow::array::builder::StringBuilder,
-    period_ending_array: arrow::array::builder::TimestampSecondBuilder,
+    period_ending_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     nativedemand_array: arrow::array::builder::Decimal128Builder,
     use_percentile10_array: arrow::array::builder::Decimal128Builder,
@@ -6588,5 +6598,5 @@ pub struct MtpasaRegionsummary1Builder {
     weight_array: arrow::array::builder::Decimal128Builder,
     use_weighted_avg_array: arrow::array::builder::Decimal128Builder,
     lrc_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

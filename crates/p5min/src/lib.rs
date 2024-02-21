@@ -185,7 +185,7 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -200,12 +200,12 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
     }
     fn new_builder() -> Self::Builder {
         P5minBlockedConstraints1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
     }
     fn finalize_builder(
@@ -225,7 +225,7 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minBlockedConstraints1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
 }
 pub struct P5minCasesolution2;
@@ -608,7 +608,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -696,7 +696,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -711,7 +711,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
     }
     fn new_builder() -> Self::Builder {
         P5minCasesolution2Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startinterval_datetime_array: arrow::array::builder::StringBuilder::new(),
             totalobjective_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 10)),
@@ -743,13 +743,13 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             totalfaststartviolation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.startinterval_datetime_array.append_option(row.startinterval_datetime());
         builder
             .totalobjective_array
@@ -888,7 +888,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .intervention_array
             .append_value({
@@ -952,7 +952,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minCasesolution2Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     startinterval_datetime_array: arrow::array::builder::StringBuilder,
     totalobjective_array: arrow::array::builder::Decimal128Builder,
     nonphysicallosses_array: arrow::array::builder::Decimal128Builder,
@@ -969,7 +969,7 @@ pub struct P5minCasesolution2Builder {
     totalenergyofferviolation_array: arrow::array::builder::Decimal128Builder,
     totalasprofileviolation_array: arrow::array::builder::Decimal128Builder,
     totalfaststartviolation_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct P5minConstraintsolution6;
@@ -1287,7 +1287,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1295,7 +1295,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1323,7 +1323,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1336,7 +1336,7 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 arrow::datatypes::Field::new(
                     "genconid_effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1361,8 +1361,8 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
     }
     fn new_builder() -> Self::Builder {
         P5minConstraintsolution6Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -1370,9 +1370,9 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             violationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            genconid_effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconid_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             lhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -1382,8 +1382,10 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .rhs_array
@@ -1414,11 +1416,11 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.duid_array.append_option(row.duid());
         builder
             .genconid_effectivedate_array
-            .append_option(row.genconid_effectivedate.map(|val| val.timestamp()));
+            .append_option(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
         builder
             .genconid_versionno_array
             .append_option({
@@ -1482,15 +1484,15 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minConstraintsolution6Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    genconid_effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconid_versionno_array: arrow::array::builder::Decimal128Builder,
     lhs_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
@@ -1851,7 +1853,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1859,7 +1861,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1887,7 +1889,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
                 arrow::datatypes::Field::new(
                     "constraint_effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1935,7 +1937,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1945,14 +1947,14 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
     }
     fn new_builder() -> Self::Builder {
         P5minFcasRequirment1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            constraint_effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            constraint_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraint_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -1969,12 +1971,14 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder.regionid_array.append_value(row.regionid());
         builder.bidtype_array.append_value(row.bidtype());
@@ -1987,7 +1991,9 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
             });
         builder
             .constraint_effectivedate_array
-            .append_option(row.constraint_effectivedate.map(|val| val.timestamp()));
+            .append_option(
+                row.constraint_effectivedate.map(|val| val.timestamp_millis()),
+            );
         builder
             .constraint_versionno_array
             .append_option({
@@ -2062,7 +2068,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2110,13 +2116,13 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minFcasRequirment1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    constraint_effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    constraint_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraint_versionno_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     base_cost_array: arrow::array::builder::Decimal128Builder,
@@ -2125,7 +2131,7 @@ pub struct P5minFcasRequirment1Builder {
     estimated_crmpf_array: arrow::array::builder::Decimal128Builder,
     recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
     recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct P5minInterconnectorsoln4;
 pub struct P5minInterconnectorsoln4Mapping([usize; 22]);
@@ -2565,7 +2571,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2578,7 +2584,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2651,7 +2657,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2686,9 +2692,9 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
     }
     fn new_builder() -> Self::Builder {
         P5minInterconnectorsoln4Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             meteredmwflow_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             mwflow_array: arrow::array::builder::Decimal128Builder::new()
@@ -2713,7 +2719,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             fcasimportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             local_price_adjustment_export_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
             locally_constrained_export_array: arrow::array::builder::Decimal128Builder::new()
@@ -2727,9 +2733,11 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder
             .meteredmwflow_array
             .append_option({
@@ -2833,7 +2841,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .local_price_adjustment_export_array
             .append_option({
@@ -2939,9 +2947,9 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minInterconnectorsoln4Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
     mwlosses_array: arrow::array::builder::Decimal128Builder,
@@ -2955,7 +2963,7 @@ pub struct P5minInterconnectorsoln4Builder {
     importgenconid_array: arrow::array::builder::StringBuilder,
     fcasexportlimit_array: arrow::array::builder::Decimal128Builder,
     fcasimportlimit_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     local_price_adjustment_export_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_export_array: arrow::array::builder::Decimal128Builder,
     local_price_adjustment_import_array: arrow::array::builder::Decimal128Builder,
@@ -3682,7 +3690,7 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3695,7 +3703,7 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3928,7 +3936,7 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3938,9 +3946,9 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
     }
     fn new_builder() -> Self::Builder {
         P5minIntersensitivities1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             intervention_active_array: arrow::array::builder::Decimal128Builder::new()
@@ -4031,13 +4039,15 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             mwflow43_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -4443,7 +4453,7 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4556,9 +4566,9 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minIntersensitivities1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     intervention_active_array: arrow::array::builder::Decimal128Builder,
     mwflow1_array: arrow::array::builder::Decimal128Builder,
@@ -4604,7 +4614,7 @@ pub struct P5minIntersensitivities1Builder {
     mwflow41_array: arrow::array::builder::Decimal128Builder,
     mwflow42_array: arrow::array::builder::Decimal128Builder,
     mwflow43_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct P5minLocalPrice1;
 pub struct P5minLocalPrice1Mapping([usize; 5]);
@@ -4828,7 +4838,7 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4836,7 +4846,7 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4861,8 +4871,8 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
     }
     fn new_builder() -> Self::Builder {
         P5minLocalPrice1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
@@ -4871,8 +4881,10 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .local_price_adjustment_array
@@ -4916,8 +4928,8 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minLocalPrice1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
@@ -5635,7 +5647,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5648,7 +5660,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5881,7 +5893,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5891,9 +5903,9 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
     }
     fn new_builder() -> Self::Builder {
         P5minPricesensitivities1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             intervention_active_array: arrow::array::builder::Decimal128Builder::new()
@@ -5984,13 +5996,15 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             rrp43_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -6396,7 +6410,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6509,9 +6523,9 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minPricesensitivities1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     intervention_active_array: arrow::array::builder::Decimal128Builder,
     rrp1_array: arrow::array::builder::Decimal128Builder,
@@ -6557,7 +6571,7 @@ pub struct P5minPricesensitivities1Builder {
     rrp41_array: arrow::array::builder::Decimal128Builder,
     rrp42_array: arrow::array::builder::Decimal128Builder,
     rrp43_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct P5minRegionsolution8;
 pub struct P5minRegionsolution8Mapping([usize; 112]);
@@ -7966,7 +7980,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -7974,7 +7988,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -8412,7 +8426,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8537,8 +8551,8 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
     }
     fn new_builder() -> Self::Builder {
         P5minRegionsolution8Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -8710,7 +8724,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lower6secviolation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             totalintermittentgeneration_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             demand_and_nonschedgen_array: arrow::array::builder::Decimal128Builder::new()
@@ -8760,8 +8774,10 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .rrp_array
@@ -9530,7 +9546,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .totalintermittentgeneration_array
             .append_option({
@@ -9978,8 +9994,8 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minRegionsolution8Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     rop_array: arrow::array::builder::Decimal128Builder,
@@ -10066,7 +10082,7 @@ pub struct P5minRegionsolution8Builder {
     lowerregviolation_array: arrow::array::builder::Decimal128Builder,
     lower60secviolation_array: arrow::array::builder::Decimal128Builder,
     lower6secviolation_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     totalintermittentgeneration_array: arrow::array::builder::Decimal128Builder,
     demand_and_nonschedgen_array: arrow::array::builder::Decimal128Builder,
     uigf_array: arrow::array::builder::Decimal128Builder,
@@ -10320,7 +10336,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -10328,7 +10344,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -10353,8 +10369,8 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
     }
     fn new_builder() -> Self::Builder {
         P5minScenariodemand1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             scenario_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -10363,8 +10379,10 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder
             .scenario_array
             .append_value({
@@ -10406,8 +10424,8 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minScenariodemand1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     scenario_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
     deltamw_array: arrow::array::builder::Decimal128Builder,
@@ -10621,7 +10639,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -10629,7 +10647,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -10637,7 +10655,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10645,7 +10663,7 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10655,21 +10673,23 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
     }
     fn new_builder() -> Self::Builder {
         P5minScenariodemandtrk1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -10692,10 +10712,10 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minScenariodemandtrk1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct P5minUnitsolution5;
 pub struct P5minUnitsolution5Mapping([usize; 37]);
@@ -11287,7 +11307,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11295,7 +11315,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11428,7 +11448,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11483,8 +11503,8 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
     }
     fn new_builder() -> Self::Builder {
         P5minUnitsolution5Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
             tradetype_array: arrow::array::builder::Decimal128Builder::new()
@@ -11533,7 +11553,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lowerregflags_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             semidispatchcap_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
@@ -11555,8 +11575,10 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.connectionpointid_array.append_option(row.connectionpointid());
         builder
@@ -11768,7 +11790,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .semidispatchcap_array
             .append_option({
@@ -11936,8 +11958,8 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
 }
 #[cfg(feature = "arrow")]
 pub struct P5minUnitsolution5Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
     tradetype_array: arrow::array::builder::Decimal128Builder,
@@ -11963,7 +11985,7 @@ pub struct P5minUnitsolution5Builder {
     lower60secflags_array: arrow::array::builder::Decimal128Builder,
     lower5minflags_array: arrow::array::builder::Decimal128Builder,
     lowerregflags_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     semidispatchcap_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     dispatchmodetime_array: arrow::array::builder::Decimal128Builder,

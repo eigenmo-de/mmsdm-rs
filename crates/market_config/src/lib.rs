@@ -298,7 +298,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -331,7 +331,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -347,7 +347,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
     fn new_builder() -> Self::Builder {
         MarketConfigBidtypes1Builder {
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             description_array: arrow::array::builder::StringBuilder::new(),
@@ -356,13 +356,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
             numdaysaheadpricelocked_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             validationrule_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             spdalias_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.bidtype_array.append_value(row.bidtype());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -392,7 +392,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
         builder.validationrule_array.append_option(row.validationrule());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.spdalias_array.append_option(row.spdalias());
     }
     fn finalize_builder(
@@ -427,13 +427,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
 #[cfg(feature = "arrow")]
 pub struct MarketConfigBidtypes1Builder {
     bidtype_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     description_array: arrow::array::builder::StringBuilder,
     numberofbands_array: arrow::array::builder::Decimal128Builder,
     numdaysaheadpricelocked_array: arrow::array::builder::Decimal128Builder,
     validationrule_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     spdalias_array: arrow::array::builder::StringBuilder,
 }
 pub struct MarketConfigBidtypestrk1;
@@ -661,7 +661,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -674,7 +674,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -687,7 +687,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -697,16 +697,16 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigBidtypestrk1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -716,11 +716,11 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -745,11 +745,11 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigBidtypestrk1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigInterconnector1;
 pub struct MarketConfigInterconnector1Mapping([usize; 6]);
@@ -1005,7 +1005,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1020,7 +1020,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
             rsoid_array: arrow::array::builder::StringBuilder::new(),
             regionto_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1031,7 +1031,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1063,7 +1063,7 @@ pub struct MarketConfigInterconnector1Builder {
     rsoid_array: arrow::array::builder::StringBuilder,
     regionto_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigInterconnectoralloc1;
 pub struct MarketConfigInterconnectoralloc1Mapping([usize; 7]);
@@ -1324,7 +1324,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1357,7 +1357,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1367,7 +1367,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigInterconnectoralloc1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
@@ -1375,11 +1375,11 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
             participantid_array: arrow::array::builder::StringBuilder::new(),
             allocation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1401,7 +1401,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1430,13 +1430,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigInterconnectoralloc1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
     allocation_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigInterconnectorconstraint1;
 pub struct MarketConfigInterconnectorconstraint1Mapping([usize; 22]);
@@ -1899,7 +1899,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1947,7 +1947,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1990,7 +1990,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2014,7 +2014,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 2)),
             fromregionlossshare_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 2)),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
@@ -2028,7 +2028,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 17)),
             emsmeasurand_array: arrow::array::builder::StringBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             dynamicrhs_array: arrow::array::builder::StringBuilder::new(),
             importlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
@@ -2042,7 +2042,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             overloadfactor6sec_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             fcassupportunavailable_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             ictype_array: arrow::array::builder::StringBuilder::new(),
@@ -2067,7 +2067,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                         val.mantissa()
                     })
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2116,7 +2116,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.dynamicrhs_array.append_option(row.dynamicrhs());
         builder
             .importlimit_array
@@ -2174,7 +2174,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .fcassupportunavailable_array
             .append_option({
@@ -2246,7 +2246,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
 pub struct MarketConfigInterconnectorconstraint1Builder {
     reserveoverallloadfactor_array: arrow::array::builder::Decimal128Builder,
     fromregionlossshare_array: arrow::array::builder::Decimal128Builder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     maxmwin_array: arrow::array::builder::Decimal128Builder,
@@ -2255,7 +2255,7 @@ pub struct MarketConfigInterconnectorconstraint1Builder {
     lossflowcoefficient_array: arrow::array::builder::Decimal128Builder,
     emsmeasurand_array: arrow::array::builder::StringBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     dynamicrhs_array: arrow::array::builder::StringBuilder,
     importlimit_array: arrow::array::builder::Decimal128Builder,
     exportlimit_array: arrow::array::builder::Decimal128Builder,
@@ -2263,7 +2263,7 @@ pub struct MarketConfigInterconnectorconstraint1Builder {
     nonphysicallossfactor_array: arrow::array::builder::Decimal128Builder,
     overloadfactor60sec_array: arrow::array::builder::Decimal128Builder,
     overloadfactor6sec_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     fcassupportunavailable_array: arrow::array::builder::Decimal128Builder,
     ictype_array: arrow::array::builder::StringBuilder,
 }
@@ -2507,7 +2507,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2535,7 +2535,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2545,18 +2545,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigIntraregionalloc1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             allocation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2577,7 +2577,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2604,12 +2604,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigIntraregionalloc1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
     allocation_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigLossfactormodel1;
 pub struct MarketConfigLossfactormodel1Mapping([usize; 6]);
@@ -2854,7 +2854,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2882,7 +2882,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2892,18 +2892,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigLossfactormodel1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             demandcoefficient_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 17)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2924,7 +2924,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2951,12 +2951,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigLossfactormodel1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     demandcoefficient_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigLossmodel1;
 pub struct MarketConfigLossmodel1Mapping([usize; 8]);
@@ -3231,7 +3231,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3269,7 +3269,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3279,7 +3279,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigLossmodel1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
@@ -3290,11 +3290,11 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             lossfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3331,7 +3331,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3362,14 +3362,14 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigLossmodel1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::StringBuilder,
     losssegment_array: arrow::array::builder::Decimal128Builder,
     mwbreakpoint_array: arrow::array::builder::Decimal128Builder,
     lossfactor_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigMarketPriceThresholds1;
 pub struct MarketConfigMarketPriceThresholds1Mapping([usize; 8]);
@@ -3630,7 +3630,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3658,7 +3658,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3671,7 +3671,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3681,7 +3681,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigMarketPriceThresholds1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             voll_array: arrow::array::builder::Decimal128Builder::new()
@@ -3690,13 +3690,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             administered_price_threshold_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3733,11 +3733,11 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3769,14 +3769,14 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigMarketPriceThresholds1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     voll_array: arrow::array::builder::Decimal128Builder,
     marketpricefloor_array: arrow::array::builder::Decimal128Builder,
     administered_price_threshold_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigRegion1;
 pub struct MarketConfigRegion1Mapping([usize; 4]);
@@ -3986,7 +3986,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3999,7 +3999,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
             regionid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             regionstatus_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -4008,7 +4008,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
         builder.regionstatus_array.append_option(row.regionstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4034,7 +4034,7 @@ pub struct MarketConfigRegion1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
     regionstatus_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigRegionstandingdata1;
 pub struct MarketConfigRegionstandingdata1Mapping([usize; 10]);
@@ -4334,7 +4334,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4367,7 +4367,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4385,7 +4385,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4395,7 +4395,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigRegionstandingdata1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -4403,15 +4403,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             regionalreferencepointid_array: arrow::array::builder::StringBuilder::new(),
             peaktradingperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
             scalingfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4435,7 +4435,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .scalingfactor_array
@@ -4448,7 +4448,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4484,16 +4484,16 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigRegionstandingdata1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
     rsoid_array: arrow::array::builder::StringBuilder,
     regionalreferencepointid_array: arrow::array::builder::StringBuilder,
     peaktradingperiod_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
     scalingfactor_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigTransmissionlossfactor2;
 pub struct MarketConfigTransmissionlossfactor2Mapping([usize; 7]);
@@ -4761,7 +4761,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4784,7 +4784,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4801,12 +4801,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
         MarketConfigTransmissionlossfactor2Builder {
             transmissionlossfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             secondary_tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -4819,7 +4819,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
                 val.rescale(5);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4831,7 +4831,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
         builder.regionid_array.append_option(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .secondary_tlf_array
             .append_option({
@@ -4870,10 +4870,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
 #[cfg(feature = "arrow")]
 pub struct MarketConfigTransmissionlossfactor2Builder {
     transmissionlossfactor_array: arrow::array::builder::Decimal128Builder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     secondary_tlf_array: arrow::array::builder::Decimal128Builder,
 }

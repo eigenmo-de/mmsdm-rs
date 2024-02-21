@@ -353,7 +353,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
                 arrow::datatypes::Field::new(
                     "prudential_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -446,7 +446,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -456,7 +456,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
     }
     fn new_builder() -> Self::Builder {
         PrudentialCompanyPosition1Builder {
-            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             company_id_array: arrow::array::builder::StringBuilder::new(),
             mcl_array: arrow::array::builder::Decimal128Builder::new()
@@ -489,11 +489,13 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             percentage_outstandings_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder
+            .prudential_date_array
+            .append_value(row.prudential_date.timestamp_millis());
         builder.runno_array.append_value(row.runno);
         builder.company_id_array.append_value(row.company_id());
         builder
@@ -633,7 +635,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -688,7 +690,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
 }
 #[cfg(feature = "arrow")]
 pub struct PrudentialCompanyPosition1Builder {
-    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     company_id_array: arrow::array::builder::StringBuilder,
     mcl_array: arrow::array::builder::Decimal128Builder,
@@ -706,7 +708,7 @@ pub struct PrudentialCompanyPosition1Builder {
     prudential_margin_array: arrow::array::builder::Decimal128Builder,
     early_payment_amount_array: arrow::array::builder::Decimal128Builder,
     percentage_outstandings_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct PrudentialRuntrk1;
 pub struct PrudentialRuntrk1Mapping([usize; 5]);
@@ -904,7 +906,7 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
                 arrow::datatypes::Field::new(
                     "prudential_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -922,7 +924,7 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -930,7 +932,7 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -940,23 +942,25 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
     }
     fn new_builder() -> Self::Builder {
         PrudentialRuntrk1Builder {
-            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder
+            .prudential_date_array
+            .append_value(row.prudential_date.timestamp_millis());
         builder.runno_array.append_value(row.runno);
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -981,9 +985,9 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct PrudentialRuntrk1Builder {
-    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

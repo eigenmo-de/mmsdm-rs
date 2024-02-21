@@ -415,7 +415,7 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -433,7 +433,7 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
                 arrow::datatypes::Field::new(
                     "issuedtime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -441,7 +441,7 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
                 arrow::datatypes::Field::new(
                     "targettime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -449,7 +449,7 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -470,12 +470,12 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             reason_array: arrow::array::builder::StringBuilder::new(),
             instlevel_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            issuedtime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            targettime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            issuedtime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            targettime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -504,18 +504,18 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.participantid_array.append_option(row.participantid());
         builder
             .issuedtime_array
-            .append_option(row.issuedtime.map(|val| val.timestamp()));
+            .append_option(row.issuedtime.map(|val| val.timestamp_millis()));
         builder
             .targettime_array
-            .append_option(row.targettime.map(|val| val.timestamp()));
+            .append_option(row.targettime.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -569,12 +569,12 @@ pub struct GdInstructGdinstruct1Builder {
     instructionclassid_array: arrow::array::builder::StringBuilder,
     reason_array: arrow::array::builder::StringBuilder,
     instlevel_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    issuedtime_array: arrow::array::builder::TimestampSecondBuilder,
-    targettime_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    issuedtime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    targettime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GdInstructInstructionsubtype1;
 pub struct GdInstructInstructionsubtype1Mapping([usize; 4]);
@@ -790,7 +790,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -803,7 +803,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
             instructiontypeid_array: arrow::array::builder::StringBuilder::new(),
             instructionsubtypeid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -812,7 +812,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -838,7 +838,7 @@ pub struct GdInstructInstructionsubtype1Builder {
     instructiontypeid_array: arrow::array::builder::StringBuilder,
     instructionsubtypeid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GdInstructInstructiontype1;
 pub struct GdInstructInstructiontype1Mapping([usize; 4]);
@@ -1051,7 +1051,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1064,7 +1064,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
             instructiontypeid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1073,7 +1073,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
         builder.regionid_array.append_option(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1099,5 +1099,5 @@ pub struct GdInstructInstructiontype1Builder {
     instructiontypeid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

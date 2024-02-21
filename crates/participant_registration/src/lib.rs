@@ -269,7 +269,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -277,7 +277,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -290,7 +290,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -303,7 +303,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -314,26 +314,28 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationAdgDetail1Builder {
             adg_id_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             adg_type_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.adg_id_array.append_value(row.adg_id());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder.adg_type_array.append_option(row.adg_type());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -363,12 +365,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationAdgDetail1Builder {
     adg_id_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     adg_type_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationAggregateDispatchGroup1;
 pub struct ParticipantRegistrationAggregateDispatchGroup1Mapping([usize; 3]);
@@ -557,7 +559,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -569,7 +571,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
         ParticipantRegistrationAggregateDispatchGroup1Builder {
             adg_id_array: arrow::array::builder::StringBuilder::new(),
             comments_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -577,7 +579,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
         builder.comments_array.append_option(row.comments());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -600,7 +602,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
 pub struct ParticipantRegistrationAggregateDispatchGroup1Builder {
     adg_id_array: arrow::array::builder::StringBuilder,
     comments_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationBidduiddetails1;
 pub struct ParticipantRegistrationBidduiddetails1Mapping([usize; 10]);
@@ -892,7 +894,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -935,7 +937,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -946,7 +948,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationBidduiddetails1Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
@@ -960,12 +962,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             maxupperangle_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1021,7 +1023,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1057,7 +1059,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationBidduiddetails1Builder {
     duid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     bidtype_array: arrow::array::builder::StringBuilder,
     maxcapacity_array: arrow::array::builder::Decimal128Builder,
@@ -1065,7 +1067,7 @@ pub struct ParticipantRegistrationBidduiddetails1Builder {
     maxenablementlevel_array: arrow::array::builder::Decimal128Builder,
     maxlowerangle_array: arrow::array::builder::Decimal128Builder,
     maxupperangle_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationBidduiddetailstrk1;
 pub struct ParticipantRegistrationBidduiddetailstrk1Mapping([usize; 6]);
@@ -1320,7 +1322,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1333,7 +1335,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1346,7 +1348,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1357,17 +1359,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationBidduiddetailstrk1Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1377,11 +1379,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1409,11 +1411,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationBidduiddetailstrk1Builder {
     duid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationDispatchableunit1;
 pub struct ParticipantRegistrationDispatchableunit1Mapping([usize; 4]);
@@ -1629,7 +1631,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1642,7 +1644,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
             duid_array: arrow::array::builder::StringBuilder::new(),
             duname_array: arrow::array::builder::StringBuilder::new(),
             unittype_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1651,7 +1653,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
         builder.unittype_array.append_option(row.unittype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1677,7 +1679,7 @@ pub struct ParticipantRegistrationDispatchableunit1Builder {
     duid_array: arrow::array::builder::StringBuilder,
     duname_array: arrow::array::builder::StringBuilder,
     unittype_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationDualloc1;
 pub struct ParticipantRegistrationDualloc1Mapping([usize; 5]);
@@ -1904,7 +1906,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1927,7 +1929,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1937,16 +1939,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDualloc1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             duid_array: arrow::array::builder::StringBuilder::new(),
             gensetid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1958,7 +1960,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
         builder.gensetid_array.append_value(row.gensetid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1983,11 +1985,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationDualloc1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     duid_array: arrow::array::builder::StringBuilder,
     gensetid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationDudetail5;
 pub struct ParticipantRegistrationDudetail5Mapping([usize; 22]);
@@ -2496,7 +2498,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2569,7 +2571,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2577,7 +2579,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2617,7 +2619,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDudetail5Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -2634,8 +2636,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
             physicaldetailsflag_array: arrow::array::builder::StringBuilder::new(),
             spinningreserveflag_array: arrow::array::builder::StringBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intermittentflag_array: arrow::array::builder::StringBuilder::new(),
             semi_schedule_flag_array: arrow::array::builder::StringBuilder::new(),
             maxrateofchangeup_array: arrow::array::builder::Decimal128Builder::new()
@@ -2647,7 +2649,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .versionno_array
@@ -2685,10 +2687,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.intermittentflag_array.append_option(row.intermittentflag());
         builder.semi_schedule_flag_array.append_option(row.semi_schedule_flag());
         builder
@@ -2769,7 +2771,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail5 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationDudetail5Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
@@ -2783,8 +2785,8 @@ pub struct ParticipantRegistrationDudetail5Builder {
     physicaldetailsflag_array: arrow::array::builder::StringBuilder,
     spinningreserveflag_array: arrow::array::builder::StringBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     intermittentflag_array: arrow::array::builder::StringBuilder,
     semi_schedule_flag_array: arrow::array::builder::StringBuilder,
     maxrateofchangeup_array: arrow::array::builder::Decimal128Builder,
@@ -3247,7 +3249,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
                 arrow::datatypes::Field::new(
                     "start_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3255,7 +3257,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
                 arrow::datatypes::Field::new(
                     "end_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3288,7 +3290,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3364,14 +3366,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDudetailsummary6Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
-            start_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            end_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            start_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            end_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             dispatchtype_array: arrow::array::builder::StringBuilder::new(),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             stationid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             transmissionlossfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             starttype_array: arrow::array::builder::StringBuilder::new(),
@@ -3398,8 +3400,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.start_date_array.append_value(row.start_date.timestamp());
-        builder.end_date_array.append_value(row.end_date.timestamp());
+        builder.start_date_array.append_value(row.start_date.timestamp_millis());
+        builder.end_date_array.append_value(row.end_date.timestamp_millis());
         builder.dispatchtype_array.append_option(row.dispatchtype());
         builder.connectionpointid_array.append_option(row.connectionpointid());
         builder.regionid_array.append_option(row.regionid());
@@ -3407,7 +3409,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
         builder.participantid_array.append_option(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .transmissionlossfactor_array
             .append_option({
@@ -3552,14 +3554,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary6 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationDudetailsummary6Builder {
     duid_array: arrow::array::builder::StringBuilder,
-    start_date_array: arrow::array::builder::TimestampSecondBuilder,
-    end_date_array: arrow::array::builder::TimestampSecondBuilder,
+    start_date_array: arrow::array::builder::TimestampMillisecondBuilder,
+    end_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     dispatchtype_array: arrow::array::builder::StringBuilder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     stationid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     transmissionlossfactor_array: arrow::array::builder::Decimal128Builder,
     starttype_array: arrow::array::builder::StringBuilder,
     distributionlossfactor_array: arrow::array::builder::Decimal128Builder,
@@ -3974,7 +3976,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "applydate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3992,7 +3994,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4000,7 +4002,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "comdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4008,7 +4010,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "decomdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4016,7 +4018,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4024,7 +4026,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4032,7 +4034,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4050,16 +4052,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
             meterclass_array: arrow::array::builder::StringBuilder::new(),
             voltagelevel_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            applydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            applydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            comdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            decomdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            comdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            decomdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -4078,7 +4080,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                         val.mantissa()
                     })
             });
-        builder.applydate_array.append_value(row.applydate.timestamp());
+        builder.applydate_array.append_value(row.applydate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4089,14 +4091,22 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
-        builder.comdate_array.append_option(row.comdate.map(|val| val.timestamp()));
-        builder.decomdate_array.append_option(row.decomdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+        builder
+            .comdate_array
+            .append_option(row.comdate.map(|val| val.timestamp_millis()));
+        builder
+            .decomdate_array
+            .append_option(row.decomdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4150,15 +4160,15 @@ pub struct ParticipantRegistrationGenmeter1Builder {
     metertype_array: arrow::array::builder::StringBuilder,
     meterclass_array: arrow::array::builder::StringBuilder,
     voltagelevel_array: arrow::array::builder::Decimal128Builder,
-    applydate_array: arrow::array::builder::TimestampSecondBuilder,
+    applydate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    comdate_array: arrow::array::builder::TimestampSecondBuilder,
-    decomdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    comdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    decomdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationGenunits2;
 pub struct ParticipantRegistrationGenunits2Mapping([usize; 19]);
@@ -4666,7 +4676,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4710,7 +4720,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             gensettype_array: arrow::array::builder::StringBuilder::new(),
             gensetname_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             co2e_emissions_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             co2e_energy_source_array: arrow::array::builder::StringBuilder::new(),
@@ -4767,7 +4777,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits2 {
         builder.gensetname_array.append_option(row.gensetname());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .co2e_emissions_factor_array
             .append_option({
@@ -4846,7 +4856,7 @@ pub struct ParticipantRegistrationGenunits2Builder {
     maxcapacity_array: arrow::array::builder::Decimal128Builder,
     gensettype_array: arrow::array::builder::StringBuilder,
     gensetname_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     co2e_emissions_factor_array: arrow::array::builder::Decimal128Builder,
     co2e_energy_source_array: arrow::array::builder::StringBuilder,
     co2e_data_source_array: arrow::array::builder::StringBuilder,
@@ -5137,7 +5147,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5175,7 +5185,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5186,7 +5196,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenunitsUnit1Builder {
             gensetid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             unit_grouping_label_array: arrow::array::builder::StringBuilder::new(),
@@ -5198,12 +5208,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
             aggregation_flag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.gensetid_array.append_value(row.gensetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5250,7 +5260,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5284,14 +5294,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationGenunitsUnit1Builder {
     gensetid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     unit_grouping_label_array: arrow::array::builder::StringBuilder,
     unit_count_array: arrow::array::builder::Decimal128Builder,
     unit_size_array: arrow::array::builder::Decimal128Builder,
     unit_max_size_array: arrow::array::builder::Decimal128Builder,
     aggregation_flag_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationMnspInterconnector2;
 pub struct ParticipantRegistrationMnspInterconnector2Mapping([usize; 15]);
@@ -5666,7 +5676,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5714,7 +5724,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5727,7 +5737,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5748,7 +5758,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationMnspInterconnector2Builder {
             linkid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
@@ -5762,9 +5772,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 7)),
             meterflowconstant_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 7)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             from_region_tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 7)),
             to_region_tlf_array: arrow::array::builder::Decimal128Builder::new()
@@ -5773,7 +5783,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.linkid_array.append_value(row.linkid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5822,11 +5832,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .from_region_tlf_array
             .append_option({
@@ -5890,7 +5900,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationMnspInterconnector2Builder {
     linkid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     fromregion_array: arrow::array::builder::StringBuilder,
@@ -5899,9 +5909,9 @@ pub struct ParticipantRegistrationMnspInterconnector2Builder {
     tlf_array: arrow::array::builder::Decimal128Builder,
     lhsfactor_array: arrow::array::builder::Decimal128Builder,
     meterflowconstant_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     from_region_tlf_array: arrow::array::builder::Decimal128Builder,
     to_region_tlf_array: arrow::array::builder::Decimal128Builder,
 }
@@ -6151,7 +6161,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6169,7 +6179,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6180,16 +6190,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationMnspParticipant1Builder {
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -6200,7 +6210,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6226,10 +6236,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationMnspParticipant1Builder {
     interconnectorid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipant1;
 pub struct ParticipantRegistrationParticipant1Mapping([usize; 7]);
@@ -6507,7 +6517,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6523,7 +6533,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
             description_array: arrow::array::builder::StringBuilder::new(),
             acn_array: arrow::array::builder::StringBuilder::new(),
             primarybusiness_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -6535,7 +6545,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
         builder.primarybusiness_array.append_option(row.primarybusiness());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6570,7 +6580,7 @@ pub struct ParticipantRegistrationParticipant1Builder {
     description_array: arrow::array::builder::StringBuilder,
     acn_array: arrow::array::builder::StringBuilder,
     primarybusiness_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantaccount1;
 pub struct ParticipantRegistrationParticipantaccount1Mapping([usize; 15]);
@@ -6977,7 +6987,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6985,7 +6995,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6993,7 +7003,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7023,9 +7033,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
             nemmcodebitaccountnumber_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             abn_array: arrow::array::builder::StringBuilder::new(),
         }
     }
@@ -7075,13 +7085,13 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.abn_array.append_option(row.abn());
     }
     fn finalize_builder(
@@ -7140,9 +7150,9 @@ pub struct ParticipantRegistrationParticipantaccount1Builder {
     nemmcocreditaccountnumber_array: arrow::array::builder::Decimal128Builder,
     nemmcodebitaccountnumber_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     abn_array: arrow::array::builder::StringBuilder,
 }
 pub struct ParticipantRegistrationParticipantcategory1;
@@ -7340,7 +7350,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7352,7 +7362,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
         ParticipantRegistrationParticipantcategory1Builder {
             participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -7360,7 +7370,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -7383,7 +7393,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
 pub struct ParticipantRegistrationParticipantcategory1Builder {
     participantcategoryid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantcategoryalloc1;
 pub struct ParticipantRegistrationParticipantcategoryalloc1Mapping([usize; 3]);
@@ -7579,7 +7589,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7591,7 +7601,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
         ParticipantRegistrationParticipantcategoryalloc1Builder {
             participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -7599,7 +7609,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
         builder.participantid_array.append_value(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -7622,7 +7632,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
 pub struct ParticipantRegistrationParticipantcategoryalloc1Builder {
     participantcategoryid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantclass1;
 pub struct ParticipantRegistrationParticipantclass1Mapping([usize; 3]);
@@ -7818,7 +7828,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7830,7 +7840,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
         ParticipantRegistrationParticipantclass1Builder {
             participantclassid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -7838,7 +7848,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -7861,7 +7871,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
 pub struct ParticipantRegistrationParticipantclass1Builder {
     participantclassid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantcreditdetail1;
 pub struct ParticipantRegistrationParticipantcreditdetail1Mapping([usize; 6]);
@@ -8109,7 +8119,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -8132,7 +8142,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8140,7 +8150,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8150,17 +8160,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcreditdetail1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             creditlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.participantid_array.append_value(row.participantid());
         builder
             .creditlimit_array
@@ -8174,10 +8184,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -8204,12 +8214,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantcreditdetail1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
     creditlimit_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationPmsGroup1;
 pub struct ParticipantRegistrationPmsGroup1Mapping([usize; 3]);
@@ -8381,7 +8391,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
                 arrow::datatypes::Field::new(
                     "createddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8389,7 +8399,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8401,8 +8411,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
         ParticipantRegistrationPmsGroup1Builder {
             groupid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(20, 0)),
-            createddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            createddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8415,10 +8425,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
             });
         builder
             .createddate_array
-            .append_option(row.createddate.map(|val| val.timestamp()));
+            .append_option(row.createddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -8440,8 +8450,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationPmsGroup1Builder {
     groupid_array: arrow::array::builder::Decimal128Builder,
-    createddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    createddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationPmsGroupnmi1;
 pub struct ParticipantRegistrationPmsGroupnmi1Mapping([usize; 17]);
@@ -8813,7 +8823,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 arrow::datatypes::Field::new(
                     "versionfrom",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8821,7 +8831,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 arrow::datatypes::Field::new(
                     "versionto",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8829,7 +8839,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8837,7 +8847,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8890,7 +8900,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 arrow::datatypes::Field::new(
                     "approveddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8898,7 +8908,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8912,10 +8922,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(20, 0)),
             groupid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(20, 0)),
-            versionfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            versionto_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             nmi_array: arrow::array::builder::StringBuilder::new(),
             sitename_array: arrow::array::builder::StringBuilder::new(),
             nerrgrouppremises_array: arrow::array::builder::Decimal128Builder::new()
@@ -8929,8 +8939,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             unavailable_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            approveddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            approveddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8952,10 +8962,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
             });
         builder
             .versionfrom_array
-            .append_option(row.versionfrom.map(|val| val.timestamp()));
-        builder.versionto_array.append_option(row.versionto.map(|val| val.timestamp()));
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+            .append_option(row.versionfrom.map(|val| val.timestamp_millis()));
+        builder
+            .versionto_array
+            .append_option(row.versionto.map(|val| val.timestamp_millis()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder.nmi_array.append_option(row.nmi());
         builder.sitename_array.append_option(row.sitename());
         builder
@@ -8999,10 +9015,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
             });
         builder
             .approveddate_array
-            .append_option(row.approveddate.map(|val| val.timestamp()));
+            .append_option(row.approveddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9053,10 +9069,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
 pub struct ParticipantRegistrationPmsGroupnmi1Builder {
     groupnmiid_array: arrow::array::builder::Decimal128Builder,
     groupid_array: arrow::array::builder::Decimal128Builder,
-    versionfrom_array: arrow::array::builder::TimestampSecondBuilder,
-    versionto_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionto_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     nmi_array: arrow::array::builder::StringBuilder,
     sitename_array: arrow::array::builder::StringBuilder,
     nerrgrouppremises_array: arrow::array::builder::Decimal128Builder,
@@ -9066,8 +9082,8 @@ pub struct ParticipantRegistrationPmsGroupnmi1Builder {
     retailcustomer_array: arrow::array::builder::StringBuilder,
     suspended_array: arrow::array::builder::Decimal128Builder,
     unavailable_array: arrow::array::builder::Decimal128Builder,
-    approveddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    approveddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationPmsGroupservice1;
 pub struct ParticipantRegistrationPmsGroupservice1Mapping([usize; 16]);
@@ -9439,7 +9455,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 arrow::datatypes::Field::new(
                     "versionfrom",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9447,7 +9463,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 arrow::datatypes::Field::new(
                     "versionto",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9455,7 +9471,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9463,7 +9479,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9511,7 +9527,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 arrow::datatypes::Field::new(
                     "approveddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9519,7 +9535,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9533,10 +9549,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(20, 0)),
             groupid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(20, 0)),
-            versionfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            versionto_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            versionfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             market_array: arrow::array::builder::StringBuilder::new(),
             servicetype_array: arrow::array::builder::StringBuilder::new(),
             entitytype_array: arrow::array::builder::StringBuilder::new(),
@@ -9547,8 +9563,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
             maximumrampratepermin_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             region_array: arrow::array::builder::StringBuilder::new(),
-            approveddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            approveddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -9570,10 +9586,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
             });
         builder
             .versionfrom_array
-            .append_option(row.versionfrom.map(|val| val.timestamp()));
-        builder.versionto_array.append_option(row.versionto.map(|val| val.timestamp()));
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+            .append_option(row.versionfrom.map(|val| val.timestamp_millis()));
+        builder
+            .versionto_array
+            .append_option(row.versionto.map(|val| val.timestamp_millis()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder.market_array.append_option(row.market());
         builder.servicetype_array.append_option(row.servicetype());
         builder.entitytype_array.append_option(row.entitytype());
@@ -9600,10 +9622,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
         builder.region_array.append_option(row.region());
         builder
             .approveddate_array
-            .append_option(row.approveddate.map(|val| val.timestamp()));
+            .append_option(row.approveddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9652,10 +9674,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
 pub struct ParticipantRegistrationPmsGroupservice1Builder {
     groupserviceid_array: arrow::array::builder::Decimal128Builder,
     groupid_array: arrow::array::builder::Decimal128Builder,
-    versionfrom_array: arrow::array::builder::TimestampSecondBuilder,
-    versionto_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    versionfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionto_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     market_array: arrow::array::builder::StringBuilder,
     servicetype_array: arrow::array::builder::StringBuilder,
     entitytype_array: arrow::array::builder::StringBuilder,
@@ -9664,8 +9686,8 @@ pub struct ParticipantRegistrationPmsGroupservice1Builder {
     mrcreason_array: arrow::array::builder::StringBuilder,
     maximumrampratepermin_array: arrow::array::builder::Decimal128Builder,
     region_array: arrow::array::builder::StringBuilder,
-    approveddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    approveddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationStadualloc1;
 pub struct ParticipantRegistrationStadualloc1Mapping([usize; 5]);
@@ -9897,7 +9919,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -9915,7 +9937,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9926,16 +9948,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStadualloc1Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             stationid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.stationid_array.append_value(row.stationid());
         builder
             .versionno_array
@@ -9946,7 +9968,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9972,10 +9994,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStadualloc1Builder {
     duid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     stationid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationStation1;
 pub struct ParticipantRegistrationStation1Mapping([usize; 11]);
@@ -10337,7 +10359,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10361,7 +10383,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
             city_array: arrow::array::builder::StringBuilder::new(),
             state_array: arrow::array::builder::StringBuilder::new(),
             postcode_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
@@ -10377,7 +10399,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
         builder.postcode_array.append_option(row.postcode());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.connectionpointid_array.append_option(row.connectionpointid());
     }
     fn finalize_builder(
@@ -10424,7 +10446,7 @@ pub struct ParticipantRegistrationStation1Builder {
     city_array: arrow::array::builder::StringBuilder,
     state_array: arrow::array::builder::StringBuilder,
     postcode_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
 }
 pub struct ParticipantRegistrationStationoperatingstatus1;
@@ -10694,7 +10716,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -10722,7 +10744,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10730,7 +10752,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10740,18 +10762,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationoperatingstatus1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             stationid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             status_array: arrow::array::builder::StringBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.stationid_array.append_value(row.stationid());
         builder
             .versionno_array
@@ -10764,10 +10786,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -10796,13 +10818,13 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStationoperatingstatus1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     stationid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     status_array: arrow::array::builder::StringBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationStationowner1;
 pub struct ParticipantRegistrationStationowner1Mapping([usize; 5]);
@@ -11038,7 +11060,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11061,7 +11083,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11071,16 +11093,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationowner1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             stationid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.participantid_array.append_value(row.participantid());
         builder.stationid_array.append_value(row.stationid());
         builder
@@ -11092,7 +11114,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11117,11 +11139,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStationowner1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
     stationid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationStationownertrk1;
 pub struct ParticipantRegistrationStationownertrk1Mapping([usize; 6]);
@@ -11373,7 +11395,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11396,7 +11418,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11404,7 +11426,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11414,17 +11436,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationownertrk1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.participantid_array.append_value(row.participantid());
         builder
             .versionno_array
@@ -11436,10 +11458,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11466,10 +11488,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStationownertrk1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

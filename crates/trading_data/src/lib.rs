@@ -215,7 +215,7 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
                 arrow::datatypes::Field::new(
                     "perioddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -243,7 +243,7 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -253,18 +253,18 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
     }
     fn new_builder() -> Self::Builder {
         TradingAverageprice301Builder {
-            perioddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            perioddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             price_confidence_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.perioddate_array.append_value(row.perioddate.timestamp());
+        builder.perioddate_array.append_value(row.perioddate.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .periodid_array
@@ -285,7 +285,7 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
         builder.price_confidence_array.append_option(row.price_confidence());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -312,12 +312,12 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
 }
 #[cfg(feature = "arrow")]
 pub struct TradingAverageprice301Builder {
-    perioddate_array: arrow::array::builder::TimestampSecondBuilder,
+    perioddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     price_confidence_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct TradingInterconnectorres2;
 pub struct TradingInterconnectorres2Mapping([usize; 8]);
@@ -582,7 +582,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -620,7 +620,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -630,7 +630,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
     }
     fn new_builder() -> Self::Builder {
         TradingInterconnectorres2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
@@ -642,11 +642,11 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             mwlosses_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -691,7 +691,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -722,14 +722,14 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
 }
 #[cfg(feature = "arrow")]
 pub struct TradingInterconnectorres2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
     mwlosses_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct TradingPrice3;
 pub struct TradingPrice3Mapping([usize; 30]);
@@ -1246,7 +1246,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1284,7 +1284,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1404,7 +1404,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
     }
     fn new_builder() -> Self::Builder {
         TradingPrice3Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -1415,7 +1415,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
             eep_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             invalidflag_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             rop_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             raise6secrrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -1462,7 +1462,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -1499,7 +1499,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
         builder.invalidflag_array.append_option(row.invalidflag());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .rop_array
             .append_option({
@@ -1764,14 +1764,14 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
 }
 #[cfg(feature = "arrow")]
 pub struct TradingPrice3Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     eep_array: arrow::array::builder::Decimal128Builder,
     invalidflag_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     rop_array: arrow::array::builder::Decimal128Builder,
     raise6secrrp_array: arrow::array::builder::Decimal128Builder,
     raise6secrop_array: arrow::array::builder::Decimal128Builder,

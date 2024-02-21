@@ -247,7 +247,7 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -270,7 +270,7 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -285,19 +285,19 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
     }
     fn new_builder() -> Self::Builder {
         DispatchocdConstraintrelaxation2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -317,7 +317,7 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .versionno_array
             .append_value({
@@ -351,11 +351,11 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchocdConstraintrelaxation2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     constraintid_array: arrow::array::builder::StringBuilder,
     rhs_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DispatchBlockedConstraints1;
@@ -558,7 +558,7 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -578,14 +578,14 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchBlockedConstraints1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -614,7 +614,7 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchBlockedConstraints1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     constraintid_array: arrow::array::builder::StringBuilder,
 }
@@ -1066,7 +1066,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1169,7 +1169,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1194,7 +1194,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
     }
     fn new_builder() -> Self::Builder {
         DispatchCaseSolution2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
@@ -1231,7 +1231,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             totalenergyofferviolation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             switchruninitialstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             switchrunbeststatus_array: arrow::array::builder::Decimal128Builder::new()
@@ -1241,7 +1241,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -1395,7 +1395,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .switchruninitialstatus_array
             .append_option({
@@ -1488,7 +1488,7 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchCaseSolution2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     casesubtype_array: arrow::array::builder::StringBuilder,
@@ -1508,7 +1508,7 @@ pub struct DispatchCaseSolution2Builder {
     totalasprofileviolation_array: arrow::array::builder::Decimal128Builder,
     totalfaststartviolation_array: arrow::array::builder::Decimal128Builder,
     totalenergyofferviolation_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     switchruninitialstatus_array: arrow::array::builder::Decimal128Builder,
     switchrunbeststatus_array: arrow::array::builder::Decimal128Builder,
     switchrunbeststatus_int_array: arrow::array::builder::Decimal128Builder,
@@ -1838,7 +1838,7 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1856,7 +1856,7 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 arrow::datatypes::Field::new(
                     "dispatchinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1884,7 +1884,7 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1897,7 +1897,7 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 arrow::datatypes::Field::new(
                     "genconid_effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1917,11 +1917,11 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
     }
     fn new_builder() -> Self::Builder {
         DispatchConstraint5Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
-            dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -1930,9 +1930,9 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             violationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            genconid_effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconid_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             lhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -1940,7 +1940,7 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -1951,7 +1951,7 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .dispatchinterval_array
-            .append_value(row.dispatchinterval.start().timestamp());
+            .append_value(row.dispatchinterval.start().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -1988,11 +1988,11 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.duid_array.append_option(row.duid());
         builder
             .genconid_effectivedate_array
-            .append_option(row.genconid_effectivedate.map(|val| val.timestamp()));
+            .append_option(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
         builder
             .genconid_versionno_array
             .append_option({
@@ -2051,17 +2051,17 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchConstraint5Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     constraintid_array: arrow::array::builder::StringBuilder,
-    dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    genconid_effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconid_versionno_array: arrow::array::builder::Decimal128Builder,
     lhs_array: arrow::array::builder::Decimal128Builder,
 }
@@ -2502,7 +2502,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2520,7 +2520,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 arrow::datatypes::Field::new(
                     "dispatchinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2558,7 +2558,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2623,11 +2623,11 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
     }
     fn new_builder() -> Self::Builder {
         DispatchInterconnectorres3Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             meteredmwflow_array: arrow::array::builder::Decimal128Builder::new()
@@ -2640,7 +2640,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             violationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             exportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             importlimit_array: arrow::array::builder::Decimal128Builder::new()
@@ -2664,7 +2664,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -2675,7 +2675,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .dispatchinterval_array
-            .append_value(row.dispatchinterval.start().timestamp());
+            .append_value(row.dispatchinterval.start().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -2730,7 +2730,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .exportlimit_array
             .append_option({
@@ -2876,17 +2876,17 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchInterconnectorres3Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
-    dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
     mwlosses_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     exportlimit_array: arrow::array::builder::Decimal128Builder,
     importlimit_array: arrow::array::builder::Decimal128Builder,
     marginalloss_array: arrow::array::builder::Decimal128Builder,
@@ -3789,7 +3789,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3812,7 +3812,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
                 arrow::datatypes::Field::new(
                     "dispatchinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3940,7 +3940,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4125,13 +4125,13 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
     }
     fn new_builder() -> Self::Builder {
         DispatchUnitSolution4Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             duid_array: arrow::array::builder::StringBuilder::new(),
             tradetype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
@@ -4179,7 +4179,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             violationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lowerreg_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             raisereg_array: arrow::array::builder::Decimal128Builder::new()
@@ -4253,7 +4253,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -4273,7 +4273,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
             });
         builder
             .dispatchinterval_array
-            .append_value(row.dispatchinterval.start().timestamp());
+            .append_value(row.dispatchinterval.start().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -4482,7 +4482,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .lowerreg_array
             .append_option({
@@ -4952,11 +4952,11 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution4 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchUnitSolution4Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     duid_array: arrow::array::builder::StringBuilder,
     tradetype_array: arrow::array::builder::Decimal128Builder,
-    dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
     dispatchmode_array: arrow::array::builder::Decimal128Builder,
@@ -4981,7 +4981,7 @@ pub struct DispatchUnitSolution4Builder {
     violation60secdegree_array: arrow::array::builder::Decimal128Builder,
     violation6secdegree_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     lowerreg_array: arrow::array::builder::Decimal128Builder,
     raisereg_array: arrow::array::builder::Decimal128Builder,
     availability_array: arrow::array::builder::Decimal128Builder,
@@ -5250,7 +5250,7 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5268,7 +5268,7 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
                 arrow::datatypes::Field::new(
                     "bidsettlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5276,7 +5276,7 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
                 arrow::datatypes::Field::new(
                     "bidofferdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5284,7 +5284,7 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5294,27 +5294,27 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchOffertrk1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            bidsettlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            bidofferdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            bidofferdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp()));
+            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
         builder
             .bidofferdate_array
-            .append_option(row.bidofferdate.map(|val| val.timestamp()));
+            .append_option(row.bidofferdate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5341,12 +5341,12 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchOffertrk1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
-    bidsettlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    bidofferdate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    bidofferdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DispatchPrice5;
 pub struct DispatchPrice5Mapping([usize; 66]);
@@ -6269,7 +6269,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6287,7 +6287,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 arrow::datatypes::Field::new(
                     "dispatchinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6325,7 +6325,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6610,11 +6610,11 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
     }
     fn new_builder() -> Self::Builder {
         DispatchPrice5Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -6627,7 +6627,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             marketsuspendedflag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             raise6secrrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             raise6secrop_array: arrow::array::builder::Decimal128Builder::new()
@@ -6738,7 +6738,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -6749,7 +6749,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .dispatchinterval_array
-            .append_value(row.dispatchinterval.start().timestamp());
+            .append_value(row.dispatchinterval.start().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -6804,7 +6804,7 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .raise6secrrp_array
             .append_option({
@@ -7433,17 +7433,17 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchPrice5Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
-    dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     eep_array: arrow::array::builder::Decimal128Builder,
     rop_array: arrow::array::builder::Decimal128Builder,
     apcflag_array: arrow::array::builder::Decimal128Builder,
     marketsuspendedflag_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     raise6secrrp_array: arrow::array::builder::Decimal128Builder,
     raise6secrop_array: arrow::array::builder::Decimal128Builder,
     raise6secapcflag_array: arrow::array::builder::Decimal128Builder,
@@ -8994,7 +8994,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -9012,7 +9012,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
                 arrow::datatypes::Field::new(
                     "dispatchinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -9315,7 +9315,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9605,11 +9605,11 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
     }
     fn new_builder() -> Self::Builder {
         DispatchRegionsum7Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             totaldemand_array: arrow::array::builder::Decimal128Builder::new()
@@ -9728,7 +9728,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             aggregatedispatcherror_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             initialsupply_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             clearedsupply_array: arrow::array::builder::Decimal128Builder::new()
@@ -9844,7 +9844,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -9855,7 +9855,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .dispatchinterval_array
-            .append_value(row.dispatchinterval.start().timestamp());
+            .append_value(row.dispatchinterval.start().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -10387,7 +10387,7 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .initialsupply_array
             .append_option({
@@ -11160,10 +11160,10 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum7 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchRegionsum7Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
-    dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     totaldemand_array: arrow::array::builder::Decimal128Builder,
     availablegeneration_array: arrow::array::builder::Decimal128Builder,
@@ -11223,7 +11223,7 @@ pub struct DispatchRegionsum7Builder {
     raise6secsupplyprice_array: arrow::array::builder::Decimal128Builder,
     aggegatedispatcherror_array: arrow::array::builder::Decimal128Builder,
     aggregatedispatcherror_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     initialsupply_array: arrow::array::builder::Decimal128Builder,
     clearedsupply_array: arrow::array::builder::Decimal128Builder,
     lowerregimport_array: arrow::array::builder::Decimal128Builder,
@@ -11544,7 +11544,7 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11572,7 +11572,7 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11597,12 +11597,12 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchocdConstraintFcasOcd1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             intervention_array: arrow::array::builder::Int64Builder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Int64Builder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -11612,14 +11612,14 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.runno_array.append_value(row.runno);
         builder.intervention_array.append_value(row.intervention);
         builder.constraintid_array.append_value(row.constraintid());
         builder.versionno_array.append_value(row.versionno);
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .rhs_array
             .append_option({
@@ -11679,12 +11679,12 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchocdConstraintFcasOcd1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     intervention_array: arrow::array::builder::Int64Builder,
     constraintid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Int64Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
@@ -12042,7 +12042,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -12075,7 +12075,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
                 arrow::datatypes::Field::new(
                     "genconeffectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -12093,7 +12093,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -12133,7 +12133,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
     }
     fn new_builder() -> Self::Builder {
         DispatchFcasReq2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
@@ -12141,12 +12141,12 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
             genconid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            genconeffectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconversionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             base_cost_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
@@ -12162,7 +12162,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -12182,7 +12182,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
         builder.bidtype_array.append_value(row.bidtype());
         builder
             .genconeffectivedate_array
-            .append_option(row.genconeffectivedate.map(|val| val.timestamp()));
+            .append_option(row.genconeffectivedate.map(|val| val.timestamp_millis()));
         builder
             .genconversionno_array
             .append_option({
@@ -12203,7 +12203,7 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .base_cost_array
             .append_option({
@@ -12304,16 +12304,16 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReq2 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchFcasReq2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
-    genconeffectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconversionno_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     base_cost_array: arrow::array::builder::Decimal128Builder,
     adjusted_cost_array: arrow::array::builder::Decimal128Builder,
     estimated_cmpf_array: arrow::array::builder::Decimal128Builder,
@@ -12627,7 +12627,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -12655,7 +12655,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
                 arrow::datatypes::Field::new(
                     "dispatchinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -12688,7 +12688,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -12698,14 +12698,14 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchInterconnection1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             from_regionid_array: arrow::array::builder::StringBuilder::new(),
             to_regionid_array: arrow::array::builder::StringBuilder::new(),
-            dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             irlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             mwflow_array: arrow::array::builder::Decimal128Builder::new()
@@ -12716,11 +12716,11 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             to_region_mw_losses_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -12739,7 +12739,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
         builder.to_regionid_array.append_value(row.to_regionid());
         builder
             .dispatchinterval_array
-            .append_value(row.dispatchinterval.start().timestamp());
+            .append_value(row.dispatchinterval.start().timestamp_millis());
         builder
             .irlf_array
             .append_option({
@@ -12787,7 +12787,7 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -12826,18 +12826,18 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchInterconnection1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     from_regionid_array: arrow::array::builder::StringBuilder,
     to_regionid_array: arrow::array::builder::StringBuilder,
-    dispatchinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     irlf_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
     from_region_mw_losses_array: arrow::array::builder::Decimal128Builder,
     to_region_mw_losses_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DispatchLocalPrice1;
 pub struct DispatchLocalPrice1Mapping([usize; 4]);
@@ -13043,7 +13043,7 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -13068,7 +13068,7 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchLocalPrice1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
@@ -13077,7 +13077,7 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .local_price_adjustment_array
@@ -13119,7 +13119,7 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchLocalPrice1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
@@ -13381,7 +13381,7 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -13404,7 +13404,7 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
                 arrow::datatypes::Field::new(
                     "offersettlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13412,7 +13412,7 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
                 arrow::datatypes::Field::new(
                     "offereffectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13425,7 +13425,7 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13435,20 +13435,20 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchMnspbidtrk1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             linkid_array: arrow::array::builder::StringBuilder::new(),
-            offersettlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offereffectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offersettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offereffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerversionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -13460,10 +13460,10 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
         builder.linkid_array.append_value(row.linkid());
         builder
             .offersettlementdate_array
-            .append_option(row.offersettlementdate.map(|val| val.timestamp()));
+            .append_option(row.offersettlementdate.map(|val| val.timestamp_millis()));
         builder
             .offereffectivedate_array
-            .append_option(row.offereffectivedate.map(|val| val.timestamp()));
+            .append_option(row.offereffectivedate.map(|val| val.timestamp_millis()));
         builder
             .offerversionno_array
             .append_option({
@@ -13475,7 +13475,7 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -13506,14 +13506,14 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchMnspbidtrk1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     linkid_array: arrow::array::builder::StringBuilder,
-    offersettlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offereffectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    offersettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offereffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerversionno_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DispatchMrScheduleTrk1;
 pub struct DispatchMrScheduleTrk1Mapping([usize; 5]);
@@ -13731,7 +13731,7 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -13744,7 +13744,7 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "mr_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13752,7 +13752,7 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13760,7 +13760,7 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13770,23 +13770,25 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchMrScheduleTrk1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            mr_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            mr_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.mr_date_array.append_option(row.mr_date.map(|val| val.timestamp()));
+        builder
+            .mr_date_array
+            .append_option(row.mr_date.map(|val| val.timestamp_millis()));
         builder
             .version_datetime_array
-            .append_option(row.version_datetime.map(|val| val.timestamp()));
+            .append_option(row.version_datetime.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -13811,11 +13813,11 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchMrScheduleTrk1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    mr_date_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    mr_date_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct PriceloadPriceRevision1;
 pub struct PriceloadPriceRevision1Mapping([usize; 9]);
@@ -14093,7 +14095,7 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -14136,7 +14138,7 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -14146,7 +14148,7 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
     }
     fn new_builder() -> Self::Builder {
         PriceloadPriceRevision1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
@@ -14158,11 +14160,11 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             rrp_old_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -14200,7 +14202,7 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -14233,7 +14235,7 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
 }
 #[cfg(feature = "arrow")]
 pub struct PriceloadPriceRevision1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
@@ -14241,7 +14243,7 @@ pub struct PriceloadPriceRevision1Builder {
     versionno_array: arrow::array::builder::Int64Builder,
     rrp_new_array: arrow::array::builder::Decimal128Builder,
     rrp_old_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DispatchUnitConformance2;
 pub struct DispatchUnitConformance2Mapping([usize; 21]);
@@ -14654,7 +14656,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -14742,7 +14744,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -14767,7 +14769,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
     }
     fn new_builder() -> Self::Builder {
         DispatchUnitConformance2Builder {
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             totalcleared_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
@@ -14794,7 +14796,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
             status_array: arrow::array::builder::StringBuilder::new(),
             participant_status_action_array: arrow::array::builder::StringBuilder::new(),
             operating_mode_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             adg_id_array: arrow::array::builder::StringBuilder::new(),
             semidispatchcap_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -14803,7 +14805,9 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .totalcleared_array
@@ -14904,7 +14908,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
         builder.operating_mode_array.append_option(row.operating_mode());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.adg_id_array.append_option(row.adg_id());
         builder
             .semidispatchcap_array
@@ -14981,7 +14985,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchUnitConformance2Builder {
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     totalcleared_array: arrow::array::builder::Decimal128Builder,
     actualmw_array: arrow::array::builder::Decimal128Builder,
@@ -14998,7 +15002,7 @@ pub struct DispatchUnitConformance2Builder {
     status_array: arrow::array::builder::StringBuilder,
     participant_status_action_array: arrow::array::builder::StringBuilder,
     operating_mode_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     adg_id_array: arrow::array::builder::StringBuilder,
     semidispatchcap_array: arrow::array::builder::Decimal128Builder,
     conformance_mode_array: arrow::array::builder::Decimal128Builder,
@@ -15193,7 +15197,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitScada1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -15213,14 +15217,14 @@ impl mmsdm_core::ArrowSchema for DispatchUnitScada1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchUnitScada1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             scadavalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .scadavalue_array
@@ -15251,7 +15255,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitScada1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchUnitScada1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     scadavalue_array: arrow::array::builder::Decimal128Builder,
 }
@@ -15478,7 +15482,7 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -15501,7 +15505,7 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -15511,16 +15515,16 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchIntermittentForecastTrk1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             origin_array: arrow::array::builder::StringBuilder::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.origin_array.append_option(row.origin());
         builder
@@ -15534,7 +15538,7 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
             });
         builder
             .offerdatetime_array
-            .append_option(row.offerdatetime.map(|val| val.timestamp()));
+            .append_option(row.offerdatetime.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -15559,11 +15563,11 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchIntermittentForecastTrk1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     origin_array: arrow::array::builder::StringBuilder,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DispatchNegativeResidue1;
 pub struct DispatchNegativeResidue1Mapping([usize; 15]);
@@ -15908,7 +15912,7 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -15916,7 +15920,7 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 arrow::datatypes::Field::new(
                     "nrm_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -15959,7 +15963,7 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 arrow::datatypes::Field::new(
                     "predispatchseqno",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -15967,7 +15971,7 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 arrow::datatypes::Field::new(
                     "event_activated_di",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -15975,7 +15979,7 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 arrow::datatypes::Field::new(
                     "event_deactivated_di",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -16000,8 +16004,8 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
     }
     fn new_builder() -> Self::Builder {
         DispatchNegativeResidue1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            nrm_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            nrm_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             directional_interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             nrm_activated_flag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
@@ -16014,9 +16018,9 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
             negresidue_pd_next_ti_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             price_revision_array: arrow::array::builder::StringBuilder::new(),
-            predispatchseqno_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            event_activated_di_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            event_deactivated_di_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            event_activated_di_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            event_deactivated_di_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             di_notbinding_count_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             di_violated_count_array: arrow::array::builder::Decimal128Builder::new()
@@ -16026,8 +16030,8 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
-        builder.nrm_datetime_array.append_value(row.nrm_datetime.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder.nrm_datetime_array.append_value(row.nrm_datetime.timestamp_millis());
         builder
             .directional_interconnectorid_array
             .append_value(row.directional_interconnectorid());
@@ -16079,13 +16083,13 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
         builder.price_revision_array.append_option(row.price_revision());
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp());
+            .append_value(row.predispatchseqno.start().timestamp_millis());
         builder
             .event_activated_di_array
-            .append_option(row.event_activated_di.map(|val| val.timestamp()));
+            .append_option(row.event_activated_di.map(|val| val.timestamp_millis()));
         builder
             .event_deactivated_di_array
-            .append_option(row.event_deactivated_di.map(|val| val.timestamp()));
+            .append_option(row.event_deactivated_di.map(|val| val.timestamp_millis()));
         builder
             .di_notbinding_count_array
             .append_option({
@@ -16160,8 +16164,8 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DispatchNegativeResidue1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    nrm_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    nrm_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     directional_interconnectorid_array: arrow::array::builder::StringBuilder,
     nrm_activated_flag_array: arrow::array::builder::Decimal128Builder,
     cumul_negresidue_amount_array: arrow::array::builder::Decimal128Builder,
@@ -16169,9 +16173,9 @@ pub struct DispatchNegativeResidue1Builder {
     negresidue_current_ti_array: arrow::array::builder::Decimal128Builder,
     negresidue_pd_next_ti_array: arrow::array::builder::Decimal128Builder,
     price_revision_array: arrow::array::builder::StringBuilder,
-    predispatchseqno_array: arrow::array::builder::TimestampSecondBuilder,
-    event_activated_di_array: arrow::array::builder::TimestampSecondBuilder,
-    event_deactivated_di_array: arrow::array::builder::TimestampSecondBuilder,
+    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
+    event_activated_di_array: arrow::array::builder::TimestampMillisecondBuilder,
+    event_deactivated_di_array: arrow::array::builder::TimestampMillisecondBuilder,
     di_notbinding_count_array: arrow::array::builder::Decimal128Builder,
     di_violated_count_array: arrow::array::builder::Decimal128Builder,
     nrmconstraint_blocked_flag_array: arrow::array::builder::Decimal128Builder,

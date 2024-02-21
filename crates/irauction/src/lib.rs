@@ -258,7 +258,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 arrow::datatypes::Field::new(
                     "auctiondate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -266,7 +266,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 arrow::datatypes::Field::new(
                     "notifydate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -274,7 +274,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -282,7 +282,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -295,7 +295,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -308,7 +308,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -319,34 +319,38 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
     fn new_builder() -> Self::Builder {
         IrauctionConfigAuction1Builder {
             auctionid_array: arrow::array::builder::StringBuilder::new(),
-            auctiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.auctionid_array.append_value(row.auctionid());
         builder
             .auctiondate_array
-            .append_option(row.auctiondate.map(|val| val.timestamp()));
+            .append_option(row.auctiondate.map(|val| val.timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp()));
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -380,14 +384,14 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
 #[cfg(feature = "arrow")]
 pub struct IrauctionConfigAuction1Builder {
     auctionid_array: arrow::array::builder::StringBuilder,
-    auctiondate_array: arrow::array::builder::TimestampSecondBuilder,
-    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionCalendar2;
 pub struct IrauctionConfigAuctionCalendar2Mapping([usize; 12]);
@@ -671,7 +675,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -679,7 +683,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -687,7 +691,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "notifydate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -695,7 +699,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "paymentdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -703,7 +707,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "reconciliationdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -711,7 +715,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -719,7 +723,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "prelimpurchasestmtdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -727,7 +731,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "prelimproceedsstmtdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -735,7 +739,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "finalpurchasestmtdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -743,7 +747,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 arrow::datatypes::Field::new(
                     "finalproceedsstmtdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -757,16 +761,16 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             quarter_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            paymentdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            reconciliationdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            prelimpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            prelimproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            finalpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            finalproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            paymentdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            reconciliationdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            prelimpurchasestmtdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            prelimproceedsstmtdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            finalpurchasestmtdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            finalproceedsstmtdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -784,32 +788,36 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp()));
+            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
         builder
             .paymentdate_array
-            .append_option(row.paymentdate.map(|val| val.timestamp()));
+            .append_option(row.paymentdate.map(|val| val.timestamp_millis()));
         builder
             .reconciliationdate_array
-            .append_option(row.reconciliationdate.map(|val| val.timestamp()));
+            .append_option(row.reconciliationdate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .prelimpurchasestmtdate_array
-            .append_option(row.prelimpurchasestmtdate.map(|val| val.timestamp()));
+            .append_option(row.prelimpurchasestmtdate.map(|val| val.timestamp_millis()));
         builder
             .prelimproceedsstmtdate_array
-            .append_option(row.prelimproceedsstmtdate.map(|val| val.timestamp()));
+            .append_option(row.prelimproceedsstmtdate.map(|val| val.timestamp_millis()));
         builder
             .finalpurchasestmtdate_array
-            .append_option(row.finalpurchasestmtdate.map(|val| val.timestamp()));
+            .append_option(row.finalpurchasestmtdate.map(|val| val.timestamp_millis()));
         builder
             .finalproceedsstmtdate_array
-            .append_option(row.finalproceedsstmtdate.map(|val| val.timestamp()));
+            .append_option(row.finalproceedsstmtdate.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -850,16 +858,16 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
 pub struct IrauctionConfigAuctionCalendar2Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
-    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
-    paymentdate_array: arrow::array::builder::TimestampSecondBuilder,
-    reconciliationdate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
-    prelimpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder,
-    prelimproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder,
-    finalpurchasestmtdate_array: arrow::array::builder::TimestampSecondBuilder,
-    finalproceedsstmtdate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    paymentdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    reconciliationdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    prelimpurchasestmtdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    prelimproceedsstmtdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    finalpurchasestmtdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    finalproceedsstmtdate_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionIcAllocations2;
 pub struct IrauctionConfigAuctionIcAllocations2Mapping([usize; 12]);
@@ -1203,7 +1211,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 arrow::datatypes::Field::new(
                     "changedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1216,7 +1224,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1245,9 +1253,9 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
             auctionfee_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
-            changedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            changedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             changedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             auctionfee_sales_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -1305,11 +1313,11 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
             });
         builder
             .changedate_array
-            .append_option(row.changedate.map(|val| val.timestamp()));
+            .append_option(row.changedate.map(|val| val.timestamp_millis()));
         builder.changedby_array.append_option(row.changedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .auctionfee_sales_array
             .append_option({
@@ -1365,9 +1373,9 @@ pub struct IrauctionConfigAuctionIcAllocations2Builder {
     maximumunits_array: arrow::array::builder::Decimal128Builder,
     proportion_array: arrow::array::builder::Decimal128Builder,
     auctionfee_array: arrow::array::builder::Decimal128Builder,
-    changedate_array: arrow::array::builder::TimestampSecondBuilder,
+    changedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     changedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionfee_sales_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct IrauctionConfigAuctionRevenueEstimate1;
@@ -1697,7 +1705,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1705,7 +1713,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1718,7 +1726,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1739,11 +1747,11 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
             fromregionid_array: arrow::array::builder::StringBuilder::new(),
             monthno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             revenue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1778,8 +1786,12 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .revenue_array
             .append_option({
@@ -1791,7 +1803,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1835,10 +1847,10 @@ pub struct IrauctionConfigAuctionRevenueEstimate1Builder {
     interconnectorid_array: arrow::array::builder::StringBuilder,
     fromregionid_array: arrow::array::builder::StringBuilder,
     monthno_array: arrow::array::builder::Decimal128Builder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     revenue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionRevenueTrack1;
 pub struct IrauctionConfigAuctionRevenueTrack1Mapping([usize; 10]);
@@ -2145,7 +2157,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2163,7 +2175,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2176,7 +2188,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2193,12 +2205,12 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
             valuationid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             status_array: arrow::array::builder::StringBuilder::new(),
             documentref_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2226,16 +2238,16 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
             });
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
         builder.status_array.append_option(row.status());
         builder.documentref_array.append_option(row.documentref());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2274,12 +2286,12 @@ pub struct IrauctionConfigAuctionRevenueTrack1Builder {
     quarter_array: arrow::array::builder::Decimal128Builder,
     valuationid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     status_array: arrow::array::builder::StringBuilder,
     documentref_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionRpEstimate1;
 pub struct IrauctionConfigAuctionRpEstimate1Mapping([usize; 8]);
@@ -2567,7 +2579,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2588,7 +2600,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
             fromregionid_array: arrow::array::builder::StringBuilder::new(),
             rpestimate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2627,7 +2639,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2665,7 +2677,7 @@ pub struct IrauctionConfigAuctionRpEstimate1Builder {
     interconnectorid_array: arrow::array::builder::StringBuilder,
     fromregionid_array: arrow::array::builder::StringBuilder,
     rpestimate_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionTranche1;
 pub struct IrauctionConfigAuctionTranche1Mapping([usize; 10]);
@@ -2955,7 +2967,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 arrow::datatypes::Field::new(
                     "auctiondate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2963,7 +2975,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 arrow::datatypes::Field::new(
                     "notifydate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2976,7 +2988,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 arrow::datatypes::Field::new(
                     "changedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2989,7 +3001,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3007,13 +3019,13 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             tranche_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            auctiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             unitallocation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            changedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            changedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             changedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3047,10 +3059,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
             });
         builder
             .auctiondate_array
-            .append_option(row.auctiondate.map(|val| val.timestamp()));
+            .append_option(row.auctiondate.map(|val| val.timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp()));
+            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
         builder
             .unitallocation_array
             .append_option({
@@ -3062,11 +3074,11 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
             });
         builder
             .changedate_array
-            .append_option(row.changedate.map(|val| val.timestamp()));
+            .append_option(row.changedate.map(|val| val.timestamp_millis()));
         builder.changedby_array.append_option(row.changedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3105,12 +3117,12 @@ pub struct IrauctionConfigAuctionTranche1Builder {
     quarter_array: arrow::array::builder::Decimal128Builder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     tranche_array: arrow::array::builder::Decimal128Builder,
-    auctiondate_array: arrow::array::builder::TimestampSecondBuilder,
-    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
+    auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
     unitallocation_array: arrow::array::builder::Decimal128Builder,
-    changedate_array: arrow::array::builder::TimestampSecondBuilder,
+    changedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     changedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigResiduecontractpayments1;
 pub struct SettlementConfigResiduecontractpayments1Mapping([usize; 3]);
@@ -3298,7 +3310,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3310,7 +3322,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
         SettlementConfigResiduecontractpayments1Builder {
             contractid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3318,7 +3330,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3341,7 +3353,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
 pub struct SettlementConfigResiduecontractpayments1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionBidsFileTrk1;
 pub struct IrauctionBidsFileTrk1Mapping([usize; 8]);
@@ -3612,7 +3624,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
                 arrow::datatypes::Field::new(
                     "loaddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3635,7 +3647,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3652,24 +3664,24 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
         IrauctionBidsFileTrk1Builder {
             contractid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             filename_array: arrow::array::builder::StringBuilder::new(),
             ackfilename_array: arrow::array::builder::StringBuilder::new(),
             status_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_option(row.contractid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
         builder.filename_array.append_option(row.filename());
         builder.ackfilename_array.append_option(row.ackfilename());
         builder.status_array.append_option(row.status());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.auctionid_array.append_value(row.auctionid());
     }
     fn finalize_builder(
@@ -3703,11 +3715,11 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
 pub struct IrauctionBidsFileTrk1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     filename_array: arrow::array::builder::StringBuilder,
     ackfilename_array: arrow::array::builder::StringBuilder,
     status_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
 pub struct IrauctionResidueBidTrk1;
@@ -3942,7 +3954,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
                 arrow::datatypes::Field::new(
                     "bidloaddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3950,7 +3962,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3969,8 +3981,8 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            bidloaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            bidloaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
@@ -3986,10 +3998,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .bidloaddate_array
-            .append_option(row.bidloaddate.map(|val| val.timestamp()));
+            .append_option(row.bidloaddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.auctionid_array.append_value(row.auctionid());
     }
     fn finalize_builder(
@@ -4020,8 +4032,8 @@ pub struct IrauctionResidueBidTrk1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
-    bidloaddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    bidloaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
 pub struct IrauctionResidueContracts1;
@@ -4438,7 +4450,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4446,7 +4458,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4454,7 +4466,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "notifydate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4462,7 +4474,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "auctiondate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4475,7 +4487,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4488,7 +4500,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "notifypostdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4501,7 +4513,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "postdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4514,7 +4526,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4541,18 +4553,18 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
             tranche_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             contractid_array: arrow::array::builder::StringBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            notifydate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            auctiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            notifydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             calcmethod_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            notifypostdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            notifypostdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             notifyby_array: arrow::array::builder::StringBuilder::new(),
-            postdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            postdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             postedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
@@ -4580,28 +4592,34 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 val.mantissa()
             });
         builder.contractid_array.append_option(row.contractid());
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp()));
+            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
         builder
             .auctiondate_array
-            .append_option(row.auctiondate.map(|val| val.timestamp()));
+            .append_option(row.auctiondate.map(|val| val.timestamp_millis()));
         builder.calcmethod_array.append_option(row.calcmethod());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .notifypostdate_array
-            .append_option(row.notifypostdate.map(|val| val.timestamp()));
+            .append_option(row.notifypostdate.map(|val| val.timestamp_millis()));
         builder.notifyby_array.append_option(row.notifyby());
-        builder.postdate_array.append_option(row.postdate.map(|val| val.timestamp()));
+        builder
+            .postdate_array
+            .append_option(row.postdate.map(|val| val.timestamp_millis()));
         builder.postedby_array.append_option(row.postedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder.auctionid_array.append_option(row.auctionid());
     }
@@ -4658,18 +4676,18 @@ pub struct IrauctionResidueContracts1Builder {
     quarter_array: arrow::array::builder::Decimal128Builder,
     tranche_array: arrow::array::builder::Decimal128Builder,
     contractid_array: arrow::array::builder::StringBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
-    notifydate_array: arrow::array::builder::TimestampSecondBuilder,
-    auctiondate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
     calcmethod_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    notifypostdate_array: arrow::array::builder::TimestampSecondBuilder,
+    notifypostdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     notifyby_array: arrow::array::builder::StringBuilder,
-    postdate_array: arrow::array::builder::TimestampSecondBuilder,
+    postdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     postedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     description_array: arrow::array::builder::StringBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
@@ -4963,7 +4981,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4988,7 +5006,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             linkpayment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             secondary_units_sold_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -5025,7 +5043,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .secondary_units_sold_array
             .append_option({
@@ -5074,7 +5092,7 @@ pub struct IrauctionResidueConData2Builder {
     fromregionid_array: arrow::array::builder::StringBuilder,
     unitspurchased_array: arrow::array::builder::Decimal128Builder,
     linkpayment_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     secondary_units_sold_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct IrauctionResidueConEstimatesTrk1;
@@ -5315,7 +5333,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5333,7 +5351,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
             valuationid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5364,7 +5382,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5396,7 +5414,7 @@ pub struct IrauctionResidueConEstimatesTrk1Builder {
     quarter_array: arrow::array::builder::Decimal128Builder,
     valuationid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionResidueConFunds1;
 pub struct IrauctionResidueConFunds1Mapping([usize; 11]);
@@ -5714,7 +5732,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5741,7 +5759,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
             actualreserveprice_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5813,7 +5831,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5860,7 +5878,7 @@ pub struct IrauctionResidueConFunds1Builder {
     meanreserveprice_array: arrow::array::builder::Decimal128Builder,
     scalefactor_array: arrow::array::builder::Decimal128Builder,
     actualreserveprice_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionBidsFundsBid1;
 pub struct IrauctionBidsFundsBid1Mapping([usize; 8]);
@@ -6120,7 +6138,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
                 arrow::datatypes::Field::new(
                     "loaddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6148,7 +6166,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6160,20 +6178,20 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
         IrauctionBidsFundsBid1Builder {
             contractid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             optionid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             fromregionid_array: arrow::array::builder::StringBuilder::new(),
             units_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_value(row.contractid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
         builder
             .optionid_array
             .append_value({
@@ -6194,7 +6212,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6227,12 +6245,12 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
 pub struct IrauctionBidsFundsBid1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     optionid_array: arrow::array::builder::Decimal128Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     fromregionid_array: arrow::array::builder::StringBuilder,
     units_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionResiduePriceBid1;
 pub struct IrauctionResiduePriceBid1Mapping([usize; 7]);
@@ -6475,7 +6493,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
                 arrow::datatypes::Field::new(
                     "loaddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6493,7 +6511,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6510,19 +6528,19 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
         IrauctionResiduePriceBid1Builder {
             contractid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             optionid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             bidprice_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_option(row.contractid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
         builder
             .optionid_array
             .append_value({
@@ -6541,7 +6559,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.auctionid_array.append_value(row.auctionid());
     }
     fn finalize_builder(
@@ -6573,10 +6591,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
 pub struct IrauctionResiduePriceBid1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     optionid_array: arrow::array::builder::Decimal128Builder,
     bidprice_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
 pub struct IrauctionResiduePriceFundsBid1;
@@ -6859,7 +6877,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6879,7 +6897,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
             linkedbidflag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -6914,7 +6932,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
         builder.auctionid_array.append_value(row.auctionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6952,7 +6970,7 @@ pub struct IrauctionResiduePriceFundsBid1Builder {
     bidprice_array: arrow::array::builder::Decimal128Builder,
     linkedbidflag_array: arrow::array::builder::Decimal128Builder,
     auctionid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionResiduePublicData1;
 pub struct IrauctionResiduePublicData1Mapping([usize; 9]);
@@ -7245,7 +7263,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7268,7 +7286,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             reserveprice_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -7320,7 +7338,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -7361,7 +7379,7 @@ pub struct IrauctionResiduePublicData1Builder {
     unitssold_array: arrow::array::builder::Decimal128Builder,
     clearingprice_array: arrow::array::builder::Decimal128Builder,
     reserveprice_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionResidueTrk1;
 pub struct IrauctionResidueTrk1Mapping([usize; 10]);
@@ -7649,7 +7667,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 arrow::datatypes::Field::new(
                     "rundate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7657,7 +7675,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7670,7 +7688,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 arrow::datatypes::Field::new(
                     "postdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7683,7 +7701,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -7706,12 +7724,12 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
             contractid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            rundate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            rundate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            postdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            postdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             postedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             status_array: arrow::array::builder::StringBuilder::new(),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
         }
@@ -7725,16 +7743,20 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.rundate_array.append_option(row.rundate.map(|val| val.timestamp()));
+        builder
+            .rundate_array
+            .append_option(row.rundate.map(|val| val.timestamp_millis()));
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
-        builder.postdate_array.append_option(row.postdate.map(|val| val.timestamp()));
+        builder
+            .postdate_array
+            .append_option(row.postdate.map(|val| val.timestamp_millis()));
         builder.postedby_array.append_option(row.postedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.status_array.append_option(row.status());
         builder.auctionid_array.append_value(row.auctionid());
     }
@@ -7773,12 +7795,12 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
 pub struct IrauctionResidueTrk1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    rundate_array: arrow::array::builder::TimestampSecondBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    rundate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    postdate_array: arrow::array::builder::TimestampSecondBuilder,
+    postdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     postedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     status_array: arrow::array::builder::StringBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
@@ -8053,7 +8075,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
                 arrow::datatypes::Field::new(
                     "provision_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8071,7 +8093,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8079,7 +8101,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
                 arrow::datatypes::Field::new(
                     "finalreturndate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8092,7 +8114,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
                 arrow::datatypes::Field::new(
                     "deletiondate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8100,7 +8122,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8112,16 +8134,16 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
         IrauctionSraCashSecurity1Builder {
             cash_security_id_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            provision_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            provision_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             cash_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            finalreturndate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            finalreturndate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             cash_security_returned_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            deletiondate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            deletiondate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8129,7 +8151,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
         builder.participantid_array.append_option(row.participantid());
         builder
             .provision_date_array
-            .append_option(row.provision_date.map(|val| val.timestamp()));
+            .append_option(row.provision_date.map(|val| val.timestamp_millis()));
         builder
             .cash_amount_array
             .append_option({
@@ -8142,10 +8164,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
         builder.interest_acct_id_array.append_option(row.interest_acct_id());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .finalreturndate_array
-            .append_option(row.finalreturndate.map(|val| val.timestamp()));
+            .append_option(row.finalreturndate.map(|val| val.timestamp_millis()));
         builder
             .cash_security_returned_array
             .append_option({
@@ -8157,10 +8179,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
             });
         builder
             .deletiondate_array
-            .append_option(row.deletiondate.map(|val| val.timestamp()));
+            .append_option(row.deletiondate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -8197,14 +8219,14 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
 pub struct IrauctionSraCashSecurity1Builder {
     cash_security_id_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    provision_date_array: arrow::array::builder::TimestampSecondBuilder,
+    provision_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     cash_amount_array: arrow::array::builder::Decimal128Builder,
     interest_acct_id_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    finalreturndate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    finalreturndate_array: arrow::array::builder::TimestampMillisecondBuilder,
     cash_security_returned_array: arrow::array::builder::Decimal128Builder,
-    deletiondate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    deletiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraFinancialAucpayDetail1;
 pub struct IrauctionSraFinancialAucpayDetail1Mapping([usize; 17]);
@@ -8625,7 +8647,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -8660,7 +8682,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             net_payment_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8754,7 +8776,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -8819,7 +8841,7 @@ pub struct IrauctionSraFinancialAucpayDetail1Builder {
     shortfall_amount_array: arrow::array::builder::Decimal128Builder,
     allocation_array: arrow::array::builder::Decimal128Builder,
     net_payment_amount_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraFinancialAucpaySum1;
 pub struct IrauctionSraFinancialAucpaySum1Mapping([usize; 10]);
@@ -9110,7 +9132,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -9134,7 +9156,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             net_payment_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -9189,7 +9211,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9234,7 +9256,7 @@ pub struct IrauctionSraFinancialAucpaySum1Builder {
     shortfall_amount_array: arrow::array::builder::Decimal128Builder,
     total_shortfall_amount_array: arrow::array::builder::Decimal128Builder,
     net_payment_amount_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraFinancialAucMardetail1;
 pub struct IrauctionSraFinancialAucMardetail1Mapping([usize; 7]);
@@ -10270,7 +10292,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10303,7 +10325,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             receipt_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             proceeds_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             units_sold_array: arrow::array::builder::Decimal128Builder::new()
@@ -10347,7 +10369,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .proceeds_amount_array
             .append_option({
@@ -10416,7 +10438,7 @@ pub struct IrauctionSraFinancialAucReceipts1Builder {
     units_purchased_array: arrow::array::builder::Decimal128Builder,
     clearing_price_array: arrow::array::builder::Decimal128Builder,
     receipt_amount_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     proceeds_amount_array: arrow::array::builder::Decimal128Builder,
     units_sold_array: arrow::array::builder::Decimal128Builder,
 }
@@ -10670,7 +10692,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 arrow::datatypes::Field::new(
                     "rundate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10678,7 +10700,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 arrow::datatypes::Field::new(
                     "posteddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10696,7 +10718,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -10710,11 +10732,11 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
-            rundate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            posteddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            rundate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            posteddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interest_versionno_array: arrow::array::builder::Int64Builder::new(),
             makeup_versionno_array: arrow::array::builder::Int64Builder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -10722,15 +10744,17 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
         builder.sra_quarter_array.append_value(row.sra_quarter);
         builder.sra_runno_array.append_value(row.sra_runno);
         builder.runtype_array.append_option(row.runtype());
-        builder.rundate_array.append_option(row.rundate.map(|val| val.timestamp()));
+        builder
+            .rundate_array
+            .append_option(row.rundate.map(|val| val.timestamp_millis()));
         builder
             .posteddate_array
-            .append_option(row.posteddate.map(|val| val.timestamp()));
+            .append_option(row.posteddate.map(|val| val.timestamp_millis()));
         builder.interest_versionno_array.append_option(row.interest_versionno);
         builder.makeup_versionno_array.append_option(row.makeup_versionno);
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -10767,11 +10791,11 @@ pub struct IrauctionSraFinancialRuntrk1Builder {
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
     runtype_array: arrow::array::builder::StringBuilder,
-    rundate_array: arrow::array::builder::TimestampSecondBuilder,
-    posteddate_array: arrow::array::builder::TimestampSecondBuilder,
+    rundate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    posteddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_versionno_array: arrow::array::builder::Int64Builder,
     makeup_versionno_array: arrow::array::builder::Int64Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraOfferProduct1;
 pub struct IrauctionSraOfferProduct1Mapping([usize; 10]);
@@ -11051,7 +11075,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
                 arrow::datatypes::Field::new(
                     "loaddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11089,7 +11113,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11101,7 +11125,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
         IrauctionSraOfferProduct1Builder {
             auctionid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             optionid_array: arrow::array::builder::Int64Builder::new(),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             fromregionid_array: arrow::array::builder::StringBuilder::new(),
@@ -11109,13 +11133,13 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
             offer_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             trancheid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.auctionid_array.append_value(row.auctionid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
         builder.optionid_array.append_value(row.optionid);
         builder.interconnectorid_array.append_option(row.interconnectorid());
         builder.fromregionid_array.append_option(row.fromregionid());
@@ -11132,7 +11156,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
         builder.trancheid_array.append_option(row.trancheid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11169,14 +11193,14 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
 pub struct IrauctionSraOfferProduct1Builder {
     auctionid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     optionid_array: arrow::array::builder::Int64Builder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     fromregionid_array: arrow::array::builder::StringBuilder,
     offer_quantity_array: arrow::array::builder::Int64Builder,
     offer_price_array: arrow::array::builder::Decimal128Builder,
     trancheid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraOfferProfile1;
 pub struct IrauctionSraOfferProfile1Mapping([usize; 7]);
@@ -11428,7 +11452,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
                 arrow::datatypes::Field::new(
                     "loaddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11451,7 +11475,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -11463,23 +11487,23 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
         IrauctionSraOfferProfile1Builder {
             auctionid_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            loaddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             filename_array: arrow::array::builder::StringBuilder::new(),
             ackfilename_array: arrow::array::builder::StringBuilder::new(),
             transactionid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.auctionid_array.append_value(row.auctionid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp());
+        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
         builder.filename_array.append_option(row.filename());
         builder.ackfilename_array.append_option(row.ackfilename());
         builder.transactionid_array.append_option(row.transactionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11510,11 +11534,11 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
 pub struct IrauctionSraOfferProfile1Builder {
     auctionid_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    loaddate_array: arrow::array::builder::TimestampSecondBuilder,
+    loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     filename_array: arrow::array::builder::StringBuilder,
     ackfilename_array: arrow::array::builder::StringBuilder,
     transactionid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraPrudentialCashSecurity1;
 pub struct IrauctionSraPrudentialCashSecurity1Mapping([usize; 5]);
@@ -11729,7 +11753,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
                 arrow::datatypes::Field::new(
                     "prudential_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -11759,7 +11783,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraPrudentialCashSecurity1Builder {
-            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             cash_security_id_array: arrow::array::builder::StringBuilder::new(),
@@ -11768,7 +11792,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder
+            .prudential_date_array
+            .append_value(row.prudential_date.timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
         builder.participantid_array.append_value(row.participantid());
         builder.cash_security_id_array.append_value(row.cash_security_id());
@@ -11805,7 +11831,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraPrudentialCashSecurity1Builder {
-    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     cash_security_id_array: arrow::array::builder::StringBuilder,
@@ -12027,7 +12053,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
                 arrow::datatypes::Field::new(
                     "prudential_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -12062,7 +12088,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraPrudentialCompPosition1Builder {
-            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             trading_limit_array: arrow::array::builder::Decimal128Builder::new()
@@ -12074,7 +12100,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder
+            .prudential_date_array
+            .append_value(row.prudential_date.timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
         builder.participantid_array.append_value(row.participantid());
         builder
@@ -12131,7 +12159,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraPrudentialCompPosition1Builder {
-    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     trading_limit_array: arrow::array::builder::Decimal128Builder,
@@ -12452,7 +12480,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
                 arrow::datatypes::Field::new(
                     "prudential_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -12500,7 +12528,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
                 arrow::datatypes::Field::new(
                     "offer_submissiontime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -12530,7 +12558,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraPrudentialExposure1Builder {
-            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             sra_year_array: arrow::array::builder::Int64Builder::new(),
@@ -12539,7 +12567,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
             fromregionid_array: arrow::array::builder::StringBuilder::new(),
             max_tranche_array: arrow::array::builder::Int64Builder::new(),
             auctionid_array: arrow::array::builder::StringBuilder::new(),
-            offer_submissiontime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offer_submissiontime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             average_purchase_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             average_cancellation_price_array: arrow::array::builder::Decimal128Builder::new()
@@ -12551,7 +12579,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder
+            .prudential_date_array
+            .append_value(row.prudential_date.timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
         builder.participantid_array.append_value(row.participantid());
         builder.sra_year_array.append_value(row.sra_year);
@@ -12562,7 +12592,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
         builder.auctionid_array.append_option(row.auctionid());
         builder
             .offer_submissiontime_array
-            .append_option(row.offer_submissiontime.map(|val| val.timestamp()));
+            .append_option(row.offer_submissiontime.map(|val| val.timestamp_millis()));
         builder
             .average_purchase_price_array
             .append_option({
@@ -12642,7 +12672,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraPrudentialExposure1Builder {
-    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     sra_year_array: arrow::array::builder::Int64Builder,
@@ -12651,7 +12681,7 @@ pub struct IrauctionSraPrudentialExposure1Builder {
     fromregionid_array: arrow::array::builder::StringBuilder,
     max_tranche_array: arrow::array::builder::Int64Builder,
     auctionid_array: arrow::array::builder::StringBuilder,
-    offer_submissiontime_array: arrow::array::builder::TimestampSecondBuilder,
+    offer_submissiontime_array: arrow::array::builder::TimestampMillisecondBuilder,
     average_purchase_price_array: arrow::array::builder::Decimal128Builder,
     average_cancellation_price_array: arrow::array::builder::Decimal128Builder,
     cancellation_volume_array: arrow::array::builder::Decimal128Builder,
@@ -12814,7 +12844,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
                 arrow::datatypes::Field::new(
                     "prudential_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -12829,12 +12859,14 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraPrudentialRun1Builder {
-            prudential_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.prudential_date_array.append_value(row.prudential_date.timestamp());
+        builder
+            .prudential_date_array
+            .append_value(row.prudential_date.timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
     }
     fn finalize_builder(
@@ -12854,7 +12886,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraPrudentialRun1Builder {
-    prudential_date_array: arrow::array::builder::TimestampSecondBuilder,
+    prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
 }
 pub struct IrauctionValuationid1;
@@ -13042,7 +13074,7 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -13054,7 +13086,7 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
         IrauctionValuationid1Builder {
             valuationid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -13062,7 +13094,7 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -13085,5 +13117,5 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
 pub struct IrauctionValuationid1Builder {
     valuationid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

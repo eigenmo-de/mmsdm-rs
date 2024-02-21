@@ -229,7 +229,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -247,7 +247,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -267,18 +267,20 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
     }
     fn new_builder() -> Self::Builder {
         OperationalDemandActual3Builder {
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             operational_demand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             operational_demand_adjustment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             wdr_estimate_array: arrow::array::builder::Int64Builder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .operational_demand_array
@@ -291,7 +293,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .operational_demand_adjustment_array
             .append_option({
@@ -329,10 +331,10 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
 }
 #[cfg(feature = "arrow")]
 pub struct OperationalDemandActual3Builder {
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     operational_demand_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     operational_demand_adjustment_array: arrow::array::builder::Decimal128Builder,
     wdr_estimate_array: arrow::array::builder::Int64Builder,
 }
@@ -576,7 +578,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -589,7 +591,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
                 arrow::datatypes::Field::new(
                     "load_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -612,7 +614,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -622,22 +624,26 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
     }
     fn new_builder() -> Self::Builder {
         OperationalDemandForecast1Builder {
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            load_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            load_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             operational_demand_poe10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
             operational_demand_poe50_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
             operational_demand_poe90_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.load_date_array.append_option(row.load_date.map(|val| val.timestamp()));
+        builder
+            .load_date_array
+            .append_option(row.load_date.map(|val| val.timestamp_millis()));
         builder
             .operational_demand_poe10_array
             .append_option({
@@ -667,7 +673,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -699,13 +705,13 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
 }
 #[cfg(feature = "arrow")]
 pub struct OperationalDemandForecast1Builder {
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    load_date_array: arrow::array::builder::TimestampSecondBuilder,
+    load_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     operational_demand_poe10_array: arrow::array::builder::Decimal128Builder,
     operational_demand_poe50_array: arrow::array::builder::Decimal128Builder,
     operational_demand_poe90_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DemandIntermittentClusterAvail2;
 pub struct DemandIntermittentClusterAvail2Mapping([usize; 7]);
@@ -960,7 +966,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -973,7 +979,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1003,9 +1009,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentClusterAvail2Builder {
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             clusterid_array: arrow::array::builder::StringBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1016,9 +1022,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.clusterid_array.append_value(row.clusterid());
         builder
             .periodid_array
@@ -1073,9 +1079,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentClusterAvail2Builder {
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     clusterid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     elements_unavailable_array: arrow::array::builder::Decimal128Builder,
@@ -1298,7 +1304,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1311,7 +1317,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1326,16 +1332,16 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentClusterAvailDay1Builder {
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             clusterid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.clusterid_array.append_value(row.clusterid());
     }
     fn finalize_builder(
@@ -1359,9 +1365,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentClusterAvailDay1Builder {
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     clusterid_array: arrow::array::builder::StringBuilder,
 }
 pub struct DemandIntermittentDsPred1;
@@ -1656,7 +1662,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1669,7 +1675,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1677,7 +1683,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1717,10 +1723,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentDsPred1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             origin_array: arrow::array::builder::StringBuilder::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
@@ -1735,10 +1741,12 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.origin_array.append_value(row.origin());
         builder
             .forecast_priority_array
@@ -1817,10 +1825,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentDsPred1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     origin_array: arrow::array::builder::StringBuilder,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     forecast_mean_array: arrow::array::builder::Decimal128Builder,
@@ -2171,7 +2179,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2184,7 +2192,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2212,7 +2220,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2225,7 +2233,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 arrow::datatypes::Field::new(
                     "participant_timestamp",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2250,17 +2258,17 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentDsRun1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             origin_array: arrow::array::builder::StringBuilder::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
             comments_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             model_array: arrow::array::builder::StringBuilder::new(),
-            participant_timestamp_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            participant_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             suppressed_aemo_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             suppressed_participant_array: arrow::array::builder::Decimal128Builder::new()
@@ -2269,9 +2277,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.origin_array.append_value(row.origin());
         builder
             .forecast_priority_array
@@ -2284,11 +2292,11 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
         builder.comments_array.append_option(row.comments());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.model_array.append_option(row.model());
         builder
             .participant_timestamp_array
-            .append_option(row.participant_timestamp.map(|val| val.timestamp()));
+            .append_option(row.participant_timestamp.map(|val| val.timestamp_millis()));
         builder
             .suppressed_aemo_array
             .append_option({
@@ -2348,16 +2356,16 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentDsRun1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     origin_array: arrow::array::builder::StringBuilder,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
     comments_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     model_array: arrow::array::builder::StringBuilder,
-    participant_timestamp_array: arrow::array::builder::TimestampSecondBuilder,
+    participant_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
     suppressed_aemo_array: arrow::array::builder::Decimal128Builder,
     suppressed_participant_array: arrow::array::builder::Decimal128Builder,
     transaction_id_array: arrow::array::builder::StringBuilder,
@@ -2589,7 +2597,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2602,7 +2610,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
                 arrow::datatypes::Field::new(
                     "start_interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2610,7 +2618,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
                 arrow::datatypes::Field::new(
                     "end_interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2623,7 +2631,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2633,24 +2641,24 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
     }
     fn new_builder() -> Self::Builder {
         ForecastIntermittentGen1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            start_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            end_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            start_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            end_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .start_interval_datetime_array
-            .append_value(row.start_interval_datetime.timestamp());
+            .append_value(row.start_interval_datetime.timestamp_millis());
         builder
             .end_interval_datetime_array
-            .append_value(row.end_interval_datetime.timestamp());
+            .append_value(row.end_interval_datetime.timestamp_millis());
         builder
             .versionno_array
             .append_option({
@@ -2662,7 +2670,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2689,12 +2697,12 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForecastIntermittentGen1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    start_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    end_interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    start_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    end_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForecastIntermittentGenData1;
 pub struct ForecastIntermittentGenData1Mapping([usize; 8]);
@@ -2953,7 +2961,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2966,7 +2974,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2994,7 +3002,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3004,9 +3012,9 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
     }
     fn new_builder() -> Self::Builder {
         ForecastIntermittentGenData1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             powermean_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
             powerpoe50_array: arrow::array::builder::Decimal128Builder::new()
@@ -3015,13 +3023,15 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
             powerpoehigh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder
             .powermean_array
             .append_option({
@@ -3060,7 +3070,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3091,14 +3101,14 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForecastIntermittentGenData1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     powermean_array: arrow::array::builder::Decimal128Builder,
     powerpoe50_array: arrow::array::builder::Decimal128Builder,
     powerpoelow_array: arrow::array::builder::Decimal128Builder,
     powerpoehigh_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DemandIntermittentGenLimit1;
 pub struct DemandIntermittentGenLimit1Mapping([usize; 5]);
@@ -3320,7 +3330,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3333,7 +3343,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3353,18 +3363,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenLimit1Builder {
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             uppermwlimit_array: arrow::array::builder::Int64Builder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -3397,9 +3407,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenLimit1Builder {
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     uppermwlimit_array: arrow::array::builder::Int64Builder,
 }
@@ -3670,7 +3680,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3683,7 +3693,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3696,7 +3706,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3716,23 +3726,23 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenLimitDay1Builder {
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedbyuser_array: arrow::array::builder::StringBuilder::new(),
             authorisedbyparticipantid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.participantid_array.append_option(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.authorisedbyuser_array.append_option(row.authorisedbyuser());
         builder
             .authorisedbyparticipantid_array
@@ -3766,11 +3776,11 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenLimitDay1Builder {
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedbyuser_array: arrow::array::builder::StringBuilder,
     authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
 }
@@ -4001,7 +4011,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4031,7 +4041,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
     }
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenScada1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             scada_type_array: arrow::array::builder::StringBuilder::new(),
             scada_value_array: arrow::array::builder::Decimal128Builder::new()
@@ -4040,7 +4050,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.scada_type_array.append_value(row.scada_type());
         builder
@@ -4077,7 +4087,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenScada1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     scada_type_array: arrow::array::builder::StringBuilder,
     scada_value_array: arrow::array::builder::Decimal128Builder,
@@ -4333,7 +4343,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4346,7 +4356,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4359,7 +4369,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4379,11 +4389,11 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
     }
     fn new_builder() -> Self::Builder {
         DemandMtpasaIntermittentAvail2Builder {
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             clusterid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             elements_unavailable_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             elements_available_array: arrow::array::builder::Decimal128Builder::new()
@@ -4391,13 +4401,13 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.clusterid_array.append_value(row.clusterid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .elements_unavailable_array
             .append_option({
@@ -4444,11 +4454,11 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandMtpasaIntermittentAvail2Builder {
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     clusterid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     elements_unavailable_array: arrow::array::builder::Decimal128Builder,
     elements_available_array: arrow::array::builder::Decimal128Builder,
 }
@@ -4707,7 +4717,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4720,7 +4730,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4728,7 +4738,7 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4753,22 +4763,22 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
     }
     fn new_builder() -> Self::Builder {
         DemandMtpasaIntermittentLimit1Builder {
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             uppermwlimit_array: arrow::array::builder::Int64Builder::new(),
             authorisedbyuser_array: arrow::array::builder::StringBuilder::new(),
             authorisedbyparticipantid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.uppermwlimit_array.append_option(row.uppermwlimit);
         builder.authorisedbyuser_array.append_option(row.authorisedbyuser());
         builder
@@ -4803,10 +4813,10 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandMtpasaIntermittentLimit1Builder {
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     uppermwlimit_array: arrow::array::builder::Int64Builder,
     authorisedbyuser_array: arrow::array::builder::StringBuilder,
     authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
@@ -5113,7 +5123,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5121,7 +5131,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5134,7 +5144,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5167,7 +5177,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5182,10 +5192,10 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
     }
     fn new_builder() -> Self::Builder {
         DemandPeriod1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
@@ -5196,7 +5206,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             demand10probability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_schedule_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
         }
@@ -5204,10 +5214,10 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -5251,7 +5261,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .mr_schedule_array
             .append_option({
@@ -5297,16 +5307,16 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandPeriod1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     resdemand_array: arrow::array::builder::Decimal128Builder,
     demand90probability_array: arrow::array::builder::Decimal128Builder,
     demand10probability_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_schedule_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DemandTrk1;
@@ -5582,7 +5592,7 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5595,7 +5605,7 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5613,7 +5623,7 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5626,7 +5636,7 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5636,21 +5646,21 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
     }
     fn new_builder() -> Self::Builder {
         DemandTrk1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             filename_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5661,11 +5671,11 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
         builder.filename_array.append_option(row.filename());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5696,14 +5706,14 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct DemandTrk1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     filename_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct RooftopActual2;
 pub struct RooftopActual2Mapping([usize; 6]);
@@ -5936,7 +5946,7 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5964,7 +5974,7 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5974,18 +5984,20 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
     }
     fn new_builder() -> Self::Builder {
         RooftopActual2Builder {
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             r#type_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             power_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             qi_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 1)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.r#type_array.append_value(row.r#type());
         builder.regionid_array.append_value(row.regionid());
         builder
@@ -6008,7 +6020,7 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6035,12 +6047,12 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
 }
 #[cfg(feature = "arrow")]
 pub struct RooftopActual2Builder {
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     r#type_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     power_array: arrow::array::builder::Decimal128Builder,
     qi_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct RooftopForecast1;
 pub struct RooftopForecast1Mapping([usize; 8]);
@@ -6300,7 +6312,7 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6313,7 +6325,7 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6341,7 +6353,7 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6351,9 +6363,9 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
     }
     fn new_builder() -> Self::Builder {
         RooftopForecast1Builder {
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             powermean_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             powerpoe50_array: arrow::array::builder::Decimal128Builder::new()
@@ -6362,13 +6374,17 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             powerpoehigh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder
             .powermean_array
             .append_option({
@@ -6407,7 +6423,7 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6438,12 +6454,12 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
 }
 #[cfg(feature = "arrow")]
 pub struct RooftopForecast1Builder {
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     powermean_array: arrow::array::builder::Decimal128Builder,
     powerpoe50_array: arrow::array::builder::Decimal128Builder,
     powerpoelow_array: arrow::array::builder::Decimal128Builder,
     powerpoehigh_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

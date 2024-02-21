@@ -606,7 +606,7 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -614,7 +614,7 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -722,7 +722,7 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -769,8 +769,8 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
         OfferBiddayoffer2Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
@@ -808,7 +808,7 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
             t4_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             normalstatus_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             entrytype_array: arrow::array::builder::StringBuilder::new(),
@@ -822,8 +822,8 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
-        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
         builder
             .versionno_array
             .append_option({
@@ -982,7 +982,7 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
         builder.normalstatus_array.append_option(row.normalstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .mr_factor_array
             .append_option({
@@ -1078,8 +1078,8 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer2 {
 pub struct OfferBiddayoffer2Builder {
     duid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     dailyenergyconstraint_array: arrow::array::builder::Decimal128Builder,
@@ -1100,7 +1100,7 @@ pub struct OfferBiddayoffer2Builder {
     t3_array: arrow::array::builder::Decimal128Builder,
     t4_array: arrow::array::builder::Decimal128Builder,
     normalstatus_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_factor_array: arrow::array::builder::Decimal128Builder,
     entrytype_array: arrow::array::builder::StringBuilder,
     rebid_event_time_array: arrow::array::builder::StringBuilder,
@@ -1611,7 +1611,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1629,7 +1629,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
                 arrow::datatypes::Field::new(
                     "bidsettlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1637,7 +1637,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1745,7 +1745,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1765,11 +1765,11 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
     }
     fn new_builder() -> Self::Builder {
         BidBiddayofferD2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            bidsettlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
@@ -1807,20 +1807,22 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
             t4_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             normalstatus_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             entrytype_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp()));
-        builder.offerdate_array.append_option(row.offerdate.map(|val| val.timestamp()));
+            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+        builder
+            .offerdate_array
+            .append_option(row.offerdate.map(|val| val.timestamp_millis()));
         builder
             .versionno_array
             .append_option({
@@ -1979,7 +1981,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
         builder.normalstatus_array.append_option(row.normalstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .mr_factor_array
             .append_option({
@@ -2060,11 +2062,11 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD2 {
 }
 #[cfg(feature = "arrow")]
 pub struct BidBiddayofferD2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
-    bidsettlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     dailyenergyconstraint_array: arrow::array::builder::Decimal128Builder,
@@ -2085,7 +2087,7 @@ pub struct BidBiddayofferD2Builder {
     t3_array: arrow::array::builder::Decimal128Builder,
     t4_array: arrow::array::builder::Decimal128Builder,
     normalstatus_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_factor_array: arrow::array::builder::Decimal128Builder,
     entrytype_array: arrow::array::builder::StringBuilder,
 }
@@ -2424,7 +2426,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2442,7 +2444,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2455,7 +2457,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2473,7 +2475,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 arrow::datatypes::Field::new(
                     "submission_timestamp",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2494,36 +2496,36 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
     fn new_builder() -> Self::Builder {
         BidsBidofferfiletrk1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             filename_array: arrow::array::builder::StringBuilder::new(),
             status_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             transaction_id_array: arrow::array::builder::StringBuilder::new(),
             reference_id_array: arrow::array::builder::StringBuilder::new(),
-            submission_timestamp_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            submission_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             comments_array: arrow::array::builder::StringBuilder::new(),
             submission_method_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
         builder.filename_array.append_value(row.filename());
         builder.status_array.append_option(row.status());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.transaction_id_array.append_option(row.transaction_id());
         builder.reference_id_array.append_option(row.reference_id());
         builder
             .submission_timestamp_array
-            .append_option(row.submission_timestamp.map(|val| val.timestamp()));
+            .append_option(row.submission_timestamp.map(|val| val.timestamp_millis()));
         builder.comments_array.append_option(row.comments());
         builder.submission_method_array.append_option(row.submission_method());
     }
@@ -2565,15 +2567,15 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
 #[cfg(feature = "arrow")]
 pub struct BidsBidofferfiletrk1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     filename_array: arrow::array::builder::StringBuilder,
     status_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     transaction_id_array: arrow::array::builder::StringBuilder,
     reference_id_array: arrow::array::builder::StringBuilder,
-    submission_timestamp_array: arrow::array::builder::TimestampSecondBuilder,
+    submission_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
     comments_array: arrow::array::builder::StringBuilder,
     submission_method_array: arrow::array::builder::StringBuilder,
 }
@@ -3016,7 +3018,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod1 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3024,7 +3026,7 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3136,8 +3138,8 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod1 {
         BidsBidofferperiod1Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             maxavail_array: arrow::array::builder::Decimal128Builder::new()
@@ -3181,8 +3183,8 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -3409,8 +3411,8 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod1 {
 pub struct BidsBidofferperiod1Builder {
     duid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     maxavail_array: arrow::array::builder::Decimal128Builder,
     fixedload_array: arrow::array::builder::Decimal128Builder,
@@ -3924,7 +3926,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3942,7 +3944,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                 arrow::datatypes::Field::new(
                     "bidsettlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3950,7 +3952,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4058,7 +4060,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4071,7 +4073,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4086,11 +4088,11 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
     }
     fn new_builder() -> Self::Builder {
         BidBidperofferD2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
-            bidsettlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
@@ -4131,22 +4133,24 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             bandavail10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             pasaavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_capacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp()));
-        builder.offerdate_array.append_option(row.offerdate.map(|val| val.timestamp()));
+            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+        builder
+            .offerdate_array
+            .append_option(row.offerdate.map(|val| val.timestamp_millis()));
         builder
             .periodid_array
             .append_option({
@@ -4329,7 +4333,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .pasaavailability_array
             .append_option({
@@ -4339,7 +4343,9 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
                         val.mantissa()
                     })
             });
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder
             .mr_capacity_array
             .append_option({
@@ -4421,11 +4427,11 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD2 {
 }
 #[cfg(feature = "arrow")]
 pub struct BidBidperofferD2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
-    bidsettlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     maxavail_array: arrow::array::builder::Decimal128Builder,
@@ -4446,9 +4452,9 @@ pub struct BidBidperofferD2Builder {
     bandavail8_array: arrow::array::builder::Decimal128Builder,
     bandavail9_array: arrow::array::builder::Decimal128Builder,
     bandavail10_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     pasaavailability_array: arrow::array::builder::Decimal128Builder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_capacity_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BidsMnspBidofferperiod1;
@@ -4819,7 +4825,7 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
                 arrow::datatypes::Field::new(
                     "tradingdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4827,7 +4833,7 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4913,8 +4919,8 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
     fn new_builder() -> Self::Builder {
         BidsMnspBidofferperiod1Builder {
             linkid_array: arrow::array::builder::StringBuilder::new(),
-            tradingdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             maxavail_array: arrow::array::builder::Decimal128Builder::new()
@@ -4948,8 +4954,8 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.linkid_array.append_value(row.linkid());
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -5126,8 +5132,8 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
 #[cfg(feature = "arrow")]
 pub struct BidsMnspBidofferperiod1Builder {
     linkid_array: arrow::array::builder::StringBuilder,
-    tradingdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     maxavail_array: arrow::array::builder::Decimal128Builder,
     fixedload_array: arrow::array::builder::Decimal128Builder,
@@ -5640,7 +5646,7 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5648,7 +5654,7 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
                 arrow::datatypes::Field::new(
                     "offerdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5731,7 +5737,7 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5771,8 +5777,8 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
     }
     fn new_builder() -> Self::Builder {
         BidMnspDayoffer2Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
@@ -5799,7 +5805,7 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
             priceband10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             rebid_event_time_array: arrow::array::builder::StringBuilder::new(),
@@ -5810,8 +5816,8 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
-        builder.offerdate_array.append_value(row.offerdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5915,7 +5921,7 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .mr_factor_array
             .append_option({
@@ -5992,8 +5998,8 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
 }
 #[cfg(feature = "arrow")]
 pub struct BidMnspDayoffer2Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    offerdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     linkid_array: arrow::array::builder::StringBuilder,
@@ -6009,7 +6015,7 @@ pub struct BidMnspDayoffer2Builder {
     priceband8_array: arrow::array::builder::Decimal128Builder,
     priceband9_array: arrow::array::builder::Decimal128Builder,
     priceband10_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_factor_array: arrow::array::builder::Decimal128Builder,
     rebid_event_time_array: arrow::array::builder::StringBuilder,
     rebid_aware_time_array: arrow::array::builder::StringBuilder,
@@ -6466,7 +6472,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6479,7 +6485,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6527,7 +6533,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -6608,9 +6614,9 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
     fn new_builder() -> Self::Builder {
         OfferMtpasaOfferdata2Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             unitid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             energy_array: arrow::array::builder::Int64Builder::new(),
             capacity1_array: arrow::array::builder::Int64Builder::new(),
             capacity2_array: arrow::array::builder::Int64Builder::new(),
@@ -6619,7 +6625,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
             capacity5_array: arrow::array::builder::Int64Builder::new(),
             capacity6_array: arrow::array::builder::Int64Builder::new(),
             capacity7_array: arrow::array::builder::Int64Builder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             unitstate1_array: arrow::array::builder::StringBuilder::new(),
             unitstate2_array: arrow::array::builder::StringBuilder::new(),
             unitstate3_array: arrow::array::builder::StringBuilder::new(),
@@ -6638,9 +6644,9 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.unitid_array.append_value(row.unitid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.energy_array.append_option(row.energy);
         builder.capacity1_array.append_option(row.capacity1);
         builder.capacity2_array.append_option(row.capacity2);
@@ -6651,7 +6657,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
         builder.capacity7_array.append_option(row.capacity7);
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.unitstate1_array.append_option(row.unitstate1());
         builder.unitstate2_array.append_option(row.unitstate2());
         builder.unitstate3_array.append_option(row.unitstate3());
@@ -6735,9 +6741,9 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
 #[cfg(feature = "arrow")]
 pub struct OfferMtpasaOfferdata2Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     unitid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     energy_array: arrow::array::builder::Int64Builder,
     capacity1_array: arrow::array::builder::Int64Builder,
     capacity2_array: arrow::array::builder::Int64Builder,
@@ -6746,7 +6752,7 @@ pub struct OfferMtpasaOfferdata2Builder {
     capacity5_array: arrow::array::builder::Int64Builder,
     capacity6_array: arrow::array::builder::Int64Builder,
     capacity7_array: arrow::array::builder::Int64Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     unitstate1_array: arrow::array::builder::StringBuilder,
     unitstate2_array: arrow::array::builder::StringBuilder,
     unitstate3_array: arrow::array::builder::StringBuilder,
@@ -6972,7 +6978,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
                 arrow::datatypes::Field::new(
                     "offerdatetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -6988,13 +6994,13 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
     fn new_builder() -> Self::Builder {
         OfferMtpasaOfferfiletrk1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            offerdatetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             filename_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp());
+        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
         builder.filename_array.append_option(row.filename());
     }
     fn finalize_builder(
@@ -7017,6 +7023,6 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
 #[cfg(feature = "arrow")]
 pub struct OfferMtpasaOfferfiletrk1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    offerdatetime_array: arrow::array::builder::TimestampSecondBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     filename_array: arrow::array::builder::StringBuilder,
 }
