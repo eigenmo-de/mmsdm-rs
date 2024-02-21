@@ -170,7 +170,7 @@ impl mmsdm_core::ArrowSchema for MccCasesolution1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -180,11 +180,11 @@ impl mmsdm_core::ArrowSchema for MccCasesolution1 {
     }
     fn new_builder() -> Self::Builder {
         MccCasesolution1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -201,7 +201,7 @@ impl mmsdm_core::ArrowSchema for MccCasesolution1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MccCasesolution1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MccConstraintsolution1;
 pub struct MccConstraintsolution1Mapping([usize; 4]);
@@ -408,7 +408,7 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -433,7 +433,7 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
     }
     fn new_builder() -> Self::Builder {
         MccConstraintsolution1Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -442,7 +442,7 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .rhs_array
@@ -484,7 +484,7 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MccConstraintsolution1Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,

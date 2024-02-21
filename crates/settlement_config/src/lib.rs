@@ -248,7 +248,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -276,7 +276,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -286,18 +286,18 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
     }
     fn new_builder() -> Self::Builder {
         SettlementConfigAncillaryRecoverySplit1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             service_array: arrow::array::builder::StringBuilder::new(),
             paymenttype_array: arrow::array::builder::StringBuilder::new(),
             customer_portion_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -318,7 +318,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -345,12 +345,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit1 {
 }
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigAncillaryRecoverySplit1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     service_array: arrow::array::builder::StringBuilder,
     paymenttype_array: arrow::array::builder::StringBuilder,
     customer_portion_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigMarketfee1;
 pub struct SettlementConfigMarketfee1Mapping([usize; 8]);
@@ -637,7 +637,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -666,7 +666,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
             marketfeeperiod_array: arrow::array::builder::StringBuilder::new(),
             marketfeetype_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             gl_tcode_array: arrow::array::builder::StringBuilder::new(),
             gl_financialcode_array: arrow::array::builder::StringBuilder::new(),
             fee_class_array: arrow::array::builder::StringBuilder::new(),
@@ -679,7 +679,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.gl_tcode_array.append_option(row.gl_tcode());
         builder.gl_financialcode_array.append_option(row.gl_financialcode());
         builder.fee_class_array.append_option(row.fee_class());
@@ -717,7 +717,7 @@ pub struct SettlementConfigMarketfee1Builder {
     marketfeeperiod_array: arrow::array::builder::StringBuilder,
     marketfeetype_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     gl_tcode_array: arrow::array::builder::StringBuilder,
     gl_financialcode_array: arrow::array::builder::StringBuilder,
     fee_class_array: arrow::array::builder::StringBuilder,
@@ -957,7 +957,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -970,7 +970,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -983,10 +983,10 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
             marketfeeid_array: arrow::array::builder::StringBuilder::new(),
             marketfeeversionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             marketfeevalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -998,7 +998,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .marketfeevalue_array
             .append_option({
@@ -1010,7 +1010,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1037,9 +1037,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
 pub struct SettlementConfigMarketfeedata1Builder {
     marketfeeid_array: arrow::array::builder::StringBuilder,
     marketfeeversionno_array: arrow::array::builder::Decimal128Builder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     marketfeevalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigMarketfeetrk1;
 pub struct SettlementConfigMarketfeetrk1Mapping([usize; 5]);
@@ -1276,7 +1276,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1289,7 +1289,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1297,7 +1297,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1309,10 +1309,10 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
         SettlementConfigMarketfeetrk1Builder {
             marketfeeversionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1323,14 +1323,14 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1356,10 +1356,10 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigMarketfeetrk1Builder {
     marketfeeversionno_array: arrow::array::builder::Decimal128Builder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigMarketFeeCatExcl1;
 pub struct SettlementConfigMarketFeeCatExcl1Mapping([usize; 4]);
@@ -1588,7 +1588,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1596,7 +1596,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1612,15 +1612,17 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
     fn new_builder() -> Self::Builder {
         SettlementConfigMarketFeeCatExcl1Builder {
             marketfeeid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participant_categoryid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.marketfeeid_array.append_value(row.marketfeeid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder.participant_categoryid_array.append_value(row.participant_categoryid());
     }
     fn finalize_builder(
@@ -1645,8 +1647,8 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigMarketFeeCatExcl1Builder {
     marketfeeid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     participant_categoryid_array: arrow::array::builder::StringBuilder,
 }
 pub struct SettlementConfigMarketFeeCatExclTrk1;
@@ -1873,7 +1875,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1881,7 +1883,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1889,7 +1891,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1900,18 +1902,20 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
     fn new_builder() -> Self::Builder {
         SettlementConfigMarketFeeCatExclTrk1Builder {
             marketfeeid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.marketfeeid_array.append_value(row.marketfeeid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1935,9 +1939,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigMarketFeeCatExclTrk1Builder {
     marketfeeid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigMarketFeeExclusion1;
 pub struct SettlementConfigMarketFeeExclusion1Mapping([usize; 5]);
@@ -2178,7 +2182,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2196,7 +2200,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2207,16 +2211,16 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
     fn new_builder() -> Self::Builder {
         SettlementConfigMarketFeeExclusion1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             marketfeeid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2227,7 +2231,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
         builder.marketfeeid_array.append_value(row.marketfeeid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2253,10 +2257,10 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigMarketFeeExclusion1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     marketfeeid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigMarketFeeExclusionTrk1;
 pub struct SettlementConfigMarketFeeExclusionTrk1Mapping([usize; 6]);
@@ -2514,7 +2518,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2532,7 +2536,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2540,7 +2544,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2551,17 +2555,17 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
     fn new_builder() -> Self::Builder {
         SettlementConfigMarketFeeExclusionTrk1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2572,10 +2576,10 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2603,11 +2607,11 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigMarketFeeExclusionTrk1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigParticipantBandfeeAlloc1;
 pub struct SettlementConfigParticipantBandfeeAlloc1Mapping([usize; 7]);
@@ -2885,7 +2889,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2908,7 +2912,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2920,19 +2924,19 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
         SettlementConfigParticipantBandfeeAlloc1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
             marketfeeid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
             marketfeevalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
         builder.marketfeeid_array.append_value(row.marketfeeid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2952,7 +2956,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2983,11 +2987,11 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
 pub struct SettlementConfigParticipantBandfeeAlloc1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
     marketfeeid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantcategoryid_array: arrow::array::builder::StringBuilder,
     marketfeevalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SetcfgReallocation2;
 pub struct SetcfgReallocation2Mapping([usize; 15]);
@@ -3400,7 +3404,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3408,7 +3412,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3416,7 +3420,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3458,9 +3462,9 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
             agreementtype_array: arrow::array::builder::StringBuilder::new(),
             creditreference_array: arrow::array::builder::StringBuilder::new(),
             debitreference_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             current_stepid_array: arrow::array::builder::StringBuilder::new(),
             daytype_array: arrow::array::builder::StringBuilder::new(),
             reallocation_type_array: arrow::array::builder::StringBuilder::new(),
@@ -3479,9 +3483,13 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
         builder.debitreference_array.append_option(row.debitreference());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder.current_stepid_array.append_option(row.current_stepid());
         builder.daytype_array.append_option(row.daytype());
         builder.reallocation_type_array.append_option(row.reallocation_type());
@@ -3546,9 +3554,9 @@ pub struct SetcfgReallocation2Builder {
     agreementtype_array: arrow::array::builder::StringBuilder,
     creditreference_array: arrow::array::builder::StringBuilder,
     debitreference_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     current_stepid_array: arrow::array::builder::StringBuilder,
     daytype_array: arrow::array::builder::StringBuilder,
     reallocation_type_array: arrow::array::builder::StringBuilder,
@@ -3760,7 +3768,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3779,7 +3787,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
             periodid_array: arrow::array::builder::Int64Builder::new(),
             value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             nrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
@@ -3798,7 +3806,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .nrp_array
             .append_option({
@@ -3835,7 +3843,7 @@ pub struct SetcfgReallocationinterval1Builder {
     reallocationid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Int64Builder,
     value_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     nrp_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct SettlementConfigSetcfgParticipantMpf1;
@@ -4114,7 +4122,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4142,7 +4150,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4153,19 +4161,19 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
     fn new_builder() -> Self::Builder {
         SettlementConfigSetcfgParticipantMpf1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
             mpf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4186,7 +4194,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4216,12 +4224,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigSetcfgParticipantMpf1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantcategoryid_array: arrow::array::builder::StringBuilder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
     mpf_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementConfigSetcfgParticipantMpftrk1;
 pub struct SettlementConfigSetcfgParticipantMpftrk1Mapping([usize; 6]);
@@ -4479,7 +4487,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4497,7 +4505,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4505,7 +4513,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4516,17 +4524,17 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
     fn new_builder() -> Self::Builder {
         SettlementConfigSetcfgParticipantMpftrk1Builder {
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4537,10 +4545,10 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4568,11 +4576,11 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigSetcfgParticipantMpftrk1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SetcfgSapsSettPrice1;
 pub struct SetcfgSapsSettPrice1Mapping([usize; 7]);
@@ -4798,7 +4806,7 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
                 arrow::datatypes::Field::new(
                     "fromdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4806,7 +4814,7 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
                 arrow::datatypes::Field::new(
                     "todate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4819,7 +4827,7 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4837,7 +4845,7 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4847,22 +4855,24 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
     }
     fn new_builder() -> Self::Builder {
         SetcfgSapsSettPrice1Builder {
-            fromdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            todate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            fromdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            todate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             saps_rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             isfirm_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.fromdate_array.append_value(row.fromdate.timestamp());
-        builder.todate_array.append_value(row.todate.timestamp());
+        builder.fromdate_array.append_value(row.fromdate.timestamp_millis());
+        builder.todate_array.append_value(row.todate.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder
             .saps_rrp_array
             .append_option({
@@ -4883,7 +4893,7 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4912,13 +4922,13 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
 }
 #[cfg(feature = "arrow")]
 pub struct SetcfgSapsSettPrice1Builder {
-    fromdate_array: arrow::array::builder::TimestampSecondBuilder,
-    todate_array: arrow::array::builder::TimestampSecondBuilder,
+    fromdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    todate_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     saps_rrp_array: arrow::array::builder::Decimal128Builder,
     isfirm_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementsConfigWdrrrCalendar1;
 pub struct SettlementsConfigWdrrrCalendar1Mapping([usize; 6]);
@@ -5140,7 +5150,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5148,7 +5158,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5156,7 +5166,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5164,7 +5174,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5176,21 +5186,27 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
         SettlementsConfigWdrrrCalendar1Builder {
             wdrrrperiod_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.wdrrrperiod_array.append_value(row.wdrrrperiod());
         builder.regionid_array.append_value(row.regionid());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5219,10 +5235,10 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
 pub struct SettlementsConfigWdrrrCalendar1Builder {
     wdrrrperiod_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementsConfigWdrReimburseRate1;
 pub struct SettlementsConfigWdrReimburseRate1Mapping([usize; 6]);
@@ -5444,7 +5460,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -5462,7 +5478,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -5474,18 +5490,20 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
         SettlementsConfigWdrReimburseRate1Builder {
             wdrrrperiod_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             wdrrr_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             isfirm_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.wdrrrperiod_array.append_value(row.wdrrrperiod());
         builder.regionid_array.append_value(row.regionid());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder
             .wdrrr_array
             .append_option({
@@ -5506,7 +5524,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5535,8 +5553,8 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
 pub struct SettlementsConfigWdrReimburseRate1Builder {
     wdrrrperiod_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     wdrrr_array: arrow::array::builder::Decimal128Builder,
     isfirm_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

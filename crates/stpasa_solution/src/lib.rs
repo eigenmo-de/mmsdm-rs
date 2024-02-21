@@ -405,7 +405,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -453,7 +453,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -508,7 +508,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
     }
     fn new_builder() -> Self::Builder {
         StpasaCasesolution3Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             pasaversion_array: arrow::array::builder::StringBuilder::new(),
             reservecondition_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
@@ -524,7 +524,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             interconnectorflowpenalty_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reliabilitylrcdemandoption_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             outagelrcdemandoption_array: arrow::array::builder::Decimal128Builder::new()
@@ -543,7 +543,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
         builder.pasaversion_array.append_option(row.pasaversion());
         builder
             .reservecondition_array
@@ -610,7 +610,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .reliabilitylrcdemandoption_array
             .append_option({
@@ -728,7 +728,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
 }
 #[cfg(feature = "arrow")]
 pub struct StpasaCasesolution3Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     pasaversion_array: arrow::array::builder::StringBuilder,
     reservecondition_array: arrow::array::builder::Decimal128Builder,
     lorcondition_array: arrow::array::builder::Decimal128Builder,
@@ -737,7 +737,7 @@ pub struct StpasaCasesolution3Builder {
     maxsurplusreserveoption_array: arrow::array::builder::Decimal128Builder,
     maxsparecapacityoption_array: arrow::array::builder::Decimal128Builder,
     interconnectorflowpenalty_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     reliabilitylrcdemandoption_array: arrow::array::builder::Decimal128Builder,
     outagelrcdemandoption_array: arrow::array::builder::Decimal128Builder,
     lordemandoption_array: arrow::array::builder::Decimal128Builder,
@@ -1025,7 +1025,7 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1033,7 +1033,7 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1061,7 +1061,7 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1081,8 +1081,8 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
     }
     fn new_builder() -> Self::Builder {
         StpasaConstraintsolution3Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             constraintid_array: arrow::array::builder::StringBuilder::new(),
             capacityrhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
@@ -1090,14 +1090,16 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             capacityviolationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             studyregionid_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .capacityrhs_array
@@ -1128,7 +1130,7 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.runtype_array.append_value(row.runtype());
         builder.studyregionid_array.append_value(row.studyregionid());
     }
@@ -1163,13 +1165,13 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
 }
 #[cfg(feature = "arrow")]
 pub struct StpasaConstraintsolution3Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
     capacityrhs_array: arrow::array::builder::Decimal128Builder,
     capacitymarginalvalue_array: arrow::array::builder::Decimal128Builder,
     capacityviolationdegree_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     runtype_array: arrow::array::builder::StringBuilder,
     studyregionid_array: arrow::array::builder::StringBuilder,
 }
@@ -1513,7 +1515,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1521,7 +1523,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1559,7 +1561,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1589,8 +1591,8 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
     }
     fn new_builder() -> Self::Builder {
         StpasaInterconnectorsoln3Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             capacitymwflow_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
@@ -1602,7 +1604,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             calculatedimportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runtype_array: arrow::array::builder::StringBuilder::new(),
             exportlimitconstraintid_array: arrow::array::builder::StringBuilder::new(),
             importlimitconstraintid_array: arrow::array::builder::StringBuilder::new(),
@@ -1610,8 +1612,10 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .capacitymwflow_array
@@ -1660,7 +1664,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.runtype_array.append_value(row.runtype());
         builder
             .exportlimitconstraintid_array
@@ -1709,15 +1713,15 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
 }
 #[cfg(feature = "arrow")]
 pub struct StpasaInterconnectorsoln3Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     capacitymwflow_array: arrow::array::builder::Decimal128Builder,
     capacitymarginalvalue_array: arrow::array::builder::Decimal128Builder,
     capacityviolationdegree_array: arrow::array::builder::Decimal128Builder,
     calculatedexportlimit_array: arrow::array::builder::Decimal128Builder,
     calculatedimportlimit_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     runtype_array: arrow::array::builder::StringBuilder,
     exportlimitconstraintid_array: arrow::array::builder::StringBuilder,
     importlimitconstraintid_array: arrow::array::builder::StringBuilder,
@@ -2390,7 +2394,7 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                 arrow::datatypes::Field::new(
                     "run_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2398,7 +2402,7 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                 arrow::datatypes::Field::new(
                     "interval_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2496,7 +2500,7 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2626,8 +2630,8 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
     }
     fn new_builder() -> Self::Builder {
         StpasaRegionsolution7Builder {
-            run_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             demand10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
@@ -2663,7 +2667,7 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             aggregatescheduledload_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             aggregatepasaavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
             runtype_array: arrow::array::builder::StringBuilder::new(),
@@ -2714,8 +2718,10 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp());
-        builder.interval_datetime_array.append_value(row.interval_datetime.timestamp());
+        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .demand10_array
@@ -2872,7 +2878,7 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .aggregatepasaavailability_array
             .append_option({
@@ -3192,8 +3198,8 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
 }
 #[cfg(feature = "arrow")]
 pub struct StpasaRegionsolution7Builder {
-    run_datetime_array: arrow::array::builder::TimestampSecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     demand10_array: arrow::array::builder::Decimal128Builder,
     demand50_array: arrow::array::builder::Decimal128Builder,
@@ -3212,7 +3218,7 @@ pub struct StpasaRegionsolution7Builder {
     lorcondition_array: arrow::array::builder::Decimal128Builder,
     aggregatecapacityavailable_array: arrow::array::builder::Decimal128Builder,
     aggregatescheduledload_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     aggregatepasaavailability_array: arrow::array::builder::Decimal128Builder,
     runtype_array: arrow::array::builder::StringBuilder,
     energyreqdemand10_array: arrow::array::builder::Decimal128Builder,

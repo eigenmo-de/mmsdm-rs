@@ -254,7 +254,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -272,7 +272,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -294,10 +294,10 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
         MarketNoticeMarketnoticedata1Builder {
             noticeid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             typeid_array: arrow::array::builder::StringBuilder::new(),
             noticetype_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reason_array: arrow::array::builder::StringBuilder::new(),
             externalreference_array: arrow::array::builder::StringBuilder::new(),
         }
@@ -312,12 +312,12 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
             });
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
         builder.typeid_array.append_option(row.typeid());
         builder.noticetype_array.append_option(row.noticetype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder.externalreference_array.append_option(row.externalreference());
     }
@@ -349,10 +349,10 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
 #[cfg(feature = "arrow")]
 pub struct MarketNoticeMarketnoticedata1Builder {
     noticeid_array: arrow::array::builder::Decimal128Builder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     typeid_array: arrow::array::builder::StringBuilder,
     noticetype_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     reason_array: arrow::array::builder::StringBuilder,
     externalreference_array: arrow::array::builder::StringBuilder,
 }
@@ -565,7 +565,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -578,7 +578,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
             typeid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             raisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -587,7 +587,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
         builder.raisedby_array.append_option(row.raisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -613,7 +613,7 @@ pub struct MarketNoticeMarketnoticetype1Builder {
     typeid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
     raisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketNoticeParticipantnoticetrk1;
 pub struct MarketNoticeParticipantnoticetrk1Mapping([usize; 3]);
@@ -797,7 +797,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -810,7 +810,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
             participantid_array: arrow::array::builder::StringBuilder::new(),
             noticeid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -824,7 +824,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -847,5 +847,5 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
 pub struct MarketNoticeParticipantnoticetrk1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
     noticeid_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

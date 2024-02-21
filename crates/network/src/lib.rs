@@ -284,7 +284,7 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
                 arrow::datatypes::Field::new(
                     "validfrom",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -292,7 +292,7 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
                 arrow::datatypes::Field::new(
                     "validto",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -310,7 +310,7 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -328,11 +328,11 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
             substationid_array: arrow::array::builder::StringBuilder::new(),
             equipmenttype_array: arrow::array::builder::StringBuilder::new(),
             equipmentid_array: arrow::array::builder::StringBuilder::new(),
-            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             voltage_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             elementid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
         }
@@ -341,13 +341,15 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
         builder.substationid_array.append_value(row.substationid());
         builder.equipmenttype_array.append_value(row.equipmenttype());
         builder.equipmentid_array.append_value(row.equipmentid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp());
-        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder
+            .validto_array
+            .append_option(row.validto.map(|val| val.timestamp_millis()));
         builder.voltage_array.append_option(row.voltage());
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .elementid_array
             .append_value({
@@ -390,11 +392,11 @@ pub struct NetworkEquipmentdetail2Builder {
     substationid_array: arrow::array::builder::StringBuilder,
     equipmenttype_array: arrow::array::builder::StringBuilder,
     equipmentid_array: arrow::array::builder::StringBuilder,
-    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
-    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
+    validto_array: arrow::array::builder::TimestampMillisecondBuilder,
     voltage_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct NetworkOutageconstraintset1;
@@ -588,7 +590,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
                 arrow::datatypes::Field::new(
                     "startinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -596,7 +598,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
                 arrow::datatypes::Field::new(
                     "endinterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -609,8 +611,8 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
             outageid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             genconsetid_array: arrow::array::builder::StringBuilder::new(),
-            startinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            endinterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            endinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -624,10 +626,10 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
         builder.genconsetid_array.append_value(row.genconsetid());
         builder
             .startinterval_array
-            .append_option(row.startinterval.map(|val| val.timestamp()));
+            .append_option(row.startinterval.map(|val| val.timestamp_millis()));
         builder
             .endinterval_array
-            .append_option(row.endinterval.map(|val| val.timestamp()));
+            .append_option(row.endinterval.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -652,8 +654,8 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
 pub struct NetworkOutageconstraintset1Builder {
     outageid_array: arrow::array::builder::Decimal128Builder,
     genconsetid_array: arrow::array::builder::StringBuilder,
-    startinterval_array: arrow::array::builder::TimestampSecondBuilder,
-    endinterval_array: arrow::array::builder::TimestampSecondBuilder,
+    startinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
+    endinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct NetworkOutagedetail4;
 pub struct NetworkOutagedetail4Mapping([usize; 19]);
@@ -1066,7 +1068,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 arrow::datatypes::Field::new(
                     "starttime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1074,7 +1076,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 arrow::datatypes::Field::new(
                     "endtime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1082,7 +1084,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 arrow::datatypes::Field::new(
                     "submitteddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1115,7 +1117,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1133,7 +1135,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 arrow::datatypes::Field::new(
                     "actual_starttime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1141,7 +1143,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 arrow::datatypes::Field::new(
                     "actual_endtime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1166,9 +1168,9 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             substationid_array: arrow::array::builder::StringBuilder::new(),
             equipmenttype_array: arrow::array::builder::StringBuilder::new(),
             equipmentid_array: arrow::array::builder::StringBuilder::new(),
-            starttime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            endtime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            submitteddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            starttime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            endtime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            submitteddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             outagestatuscode_array: arrow::array::builder::StringBuilder::new(),
             resubmitreason_array: arrow::array::builder::StringBuilder::new(),
             resubmitoutageid_array: arrow::array::builder::Decimal128Builder::new()
@@ -1177,12 +1179,12 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             recalltimenight_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reason_array: arrow::array::builder::StringBuilder::new(),
             issecondary_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            actual_starttime_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            actual_endtime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            actual_starttime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            actual_endtime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             companyrefcode_array: arrow::array::builder::StringBuilder::new(),
             elementid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
@@ -1199,11 +1201,13 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
         builder.substationid_array.append_value(row.substationid());
         builder.equipmenttype_array.append_value(row.equipmenttype());
         builder.equipmentid_array.append_value(row.equipmentid());
-        builder.starttime_array.append_value(row.starttime.timestamp());
-        builder.endtime_array.append_option(row.endtime.map(|val| val.timestamp()));
+        builder.starttime_array.append_value(row.starttime.timestamp_millis());
+        builder
+            .endtime_array
+            .append_option(row.endtime.map(|val| val.timestamp_millis()));
         builder
             .submitteddate_array
-            .append_option(row.submitteddate.map(|val| val.timestamp()));
+            .append_option(row.submitteddate.map(|val| val.timestamp_millis()));
         builder.outagestatuscode_array.append_option(row.outagestatuscode());
         builder.resubmitreason_array.append_option(row.resubmitreason());
         builder
@@ -1235,7 +1239,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder
             .issecondary_array
@@ -1248,10 +1252,10 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             });
         builder
             .actual_starttime_array
-            .append_option(row.actual_starttime.map(|val| val.timestamp()));
+            .append_option(row.actual_starttime.map(|val| val.timestamp_millis()));
         builder
             .actual_endtime_array
-            .append_option(row.actual_endtime.map(|val| val.timestamp()));
+            .append_option(row.actual_endtime.map(|val| val.timestamp_millis()));
         builder.companyrefcode_array.append_option(row.companyrefcode());
         builder
             .elementid_array
@@ -1316,19 +1320,19 @@ pub struct NetworkOutagedetail4Builder {
     substationid_array: arrow::array::builder::StringBuilder,
     equipmenttype_array: arrow::array::builder::StringBuilder,
     equipmentid_array: arrow::array::builder::StringBuilder,
-    starttime_array: arrow::array::builder::TimestampSecondBuilder,
-    endtime_array: arrow::array::builder::TimestampSecondBuilder,
-    submitteddate_array: arrow::array::builder::TimestampSecondBuilder,
+    starttime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    endtime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    submitteddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     outagestatuscode_array: arrow::array::builder::StringBuilder,
     resubmitreason_array: arrow::array::builder::StringBuilder,
     resubmitoutageid_array: arrow::array::builder::Decimal128Builder,
     recalltimeday_array: arrow::array::builder::Decimal128Builder,
     recalltimenight_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     reason_array: arrow::array::builder::StringBuilder,
     issecondary_array: arrow::array::builder::Decimal128Builder,
-    actual_starttime_array: arrow::array::builder::TimestampSecondBuilder,
-    actual_endtime_array: arrow::array::builder::TimestampSecondBuilder,
+    actual_starttime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    actual_endtime_array: arrow::array::builder::TimestampMillisecondBuilder,
     companyrefcode_array: arrow::array::builder::StringBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
@@ -1519,7 +1523,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1531,7 +1535,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
         NetworkOutagestatuscode1Builder {
             outagestatuscode_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1539,7 +1543,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1562,7 +1566,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
 pub struct NetworkOutagestatuscode1Builder {
     outagestatuscode_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct NetworkRating1;
 pub struct NetworkRating1Mapping([usize; 10]);
@@ -1851,7 +1855,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
                 arrow::datatypes::Field::new(
                     "validfrom",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1859,7 +1863,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
                 arrow::datatypes::Field::new(
                     "validto",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1897,7 +1901,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1908,8 +1912,8 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
     fn new_builder() -> Self::Builder {
         NetworkRating1Builder {
             spd_id_array: arrow::array::builder::StringBuilder::new(),
-            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             substationid_array: arrow::array::builder::StringBuilder::new(),
             equipmenttype_array: arrow::array::builder::StringBuilder::new(),
@@ -1917,13 +1921,15 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
             ratinglevel_array: arrow::array::builder::StringBuilder::new(),
             isdynamic_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.spd_id_array.append_value(row.spd_id());
-        builder.validfrom_array.append_value(row.validfrom.timestamp());
-        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder
+            .validto_array
+            .append_option(row.validto.map(|val| val.timestamp_millis()));
         builder.regionid_array.append_option(row.regionid());
         builder.substationid_array.append_option(row.substationid());
         builder.equipmenttype_array.append_option(row.equipmenttype());
@@ -1940,7 +1946,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1976,15 +1982,15 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
 #[cfg(feature = "arrow")]
 pub struct NetworkRating1Builder {
     spd_id_array: arrow::array::builder::StringBuilder,
-    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
-    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
+    validto_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     substationid_array: arrow::array::builder::StringBuilder,
     equipmenttype_array: arrow::array::builder::StringBuilder,
     equipmentid_array: arrow::array::builder::StringBuilder,
     ratinglevel_array: arrow::array::builder::StringBuilder,
     isdynamic_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct NetworkRealtimerating1;
 pub struct NetworkRealtimerating1Mapping([usize; 3]);
@@ -2179,7 +2185,7 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2199,14 +2205,14 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
     }
     fn new_builder() -> Self::Builder {
         NetworkRealtimerating1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             spd_id_array: arrow::array::builder::StringBuilder::new(),
             ratingvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.spd_id_array.append_value(row.spd_id());
         builder
             .ratingvalue_array
@@ -2235,7 +2241,7 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
 }
 #[cfg(feature = "arrow")]
 pub struct NetworkRealtimerating1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     spd_id_array: arrow::array::builder::StringBuilder,
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
 }
@@ -2520,7 +2526,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
                 arrow::datatypes::Field::new(
                     "validfrom",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2528,7 +2534,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
                 arrow::datatypes::Field::new(
                     "validto",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2541,7 +2547,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2556,11 +2562,11 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
             equipmentid_array: arrow::array::builder::StringBuilder::new(),
             ratinglevel_array: arrow::array::builder::StringBuilder::new(),
             applicationid_array: arrow::array::builder::StringBuilder::new(),
-            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             ratingvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2569,8 +2575,10 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
         builder.equipmentid_array.append_value(row.equipmentid());
         builder.ratinglevel_array.append_value(row.ratinglevel());
         builder.applicationid_array.append_value(row.applicationid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp());
-        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder
+            .validto_array
+            .append_option(row.validto.map(|val| val.timestamp_millis()));
         builder
             .ratingvalue_array
             .append_option({
@@ -2582,7 +2590,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2620,10 +2628,10 @@ pub struct NetworkStaticrating1Builder {
     equipmentid_array: arrow::array::builder::StringBuilder,
     ratinglevel_array: arrow::array::builder::StringBuilder,
     applicationid_array: arrow::array::builder::StringBuilder,
-    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
-    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
+    validto_array: arrow::array::builder::TimestampMillisecondBuilder,
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct NetworkSubstationdetail2;
 pub struct NetworkSubstationdetail2Mapping([usize; 7]);
@@ -2865,7 +2873,7 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
                 arrow::datatypes::Field::new(
                     "validfrom",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2873,7 +2881,7 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
                 arrow::datatypes::Field::new(
                     "validto",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2896,7 +2904,7 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2907,24 +2915,26 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
     fn new_builder() -> Self::Builder {
         NetworkSubstationdetail2Builder {
             substationid_array: arrow::array::builder::StringBuilder::new(),
-            validfrom_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            validto_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             ownerid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.substationid_array.append_value(row.substationid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp());
-        builder.validto_array.append_option(row.validto.map(|val| val.timestamp()));
+        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder
+            .validto_array
+            .append_option(row.validto.map(|val| val.timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder.regionid_array.append_option(row.regionid());
         builder.ownerid_array.append_option(row.ownerid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2954,10 +2964,10 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
 #[cfg(feature = "arrow")]
 pub struct NetworkSubstationdetail2Builder {
     substationid_array: arrow::array::builder::StringBuilder,
-    validfrom_array: arrow::array::builder::TimestampSecondBuilder,
-    validto_array: arrow::array::builder::TimestampSecondBuilder,
+    validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
+    validto_array: arrow::array::builder::TimestampMillisecondBuilder,
     description_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     ownerid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

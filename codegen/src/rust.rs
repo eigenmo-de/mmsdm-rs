@@ -33,7 +33,7 @@ impl mms::DataType {
                 "arrow::datatypes::DataType::Utf8".to_string()
             }
             mms::DataType::Date | mms::DataType::DateTime => {
-                "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Second, None)"
+                "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Millisecond, None)"
                     .to_string()
             }
             mms::DataType::Decimal { precision, scale } => format!(
@@ -49,7 +49,7 @@ impl mms::DataType {
                 "arrow::array::builder::StringBuilder::new()".to_string()
             }
             mms::DataType::Date | mms::DataType::DateTime => {
-                "arrow::array::builder::TimestampSecondBuilder::new()".to_string()
+                "arrow::array::builder::TimestampMillisecondBuilder::new()".to_string()
             }
             mms::DataType::Decimal { .. } => format!(
                 "arrow::array::builder::Decimal128Builder::new().with_data_type({})",
@@ -67,7 +67,7 @@ impl mms::DataType {
                 "arrow::array::builder::StringBuilder".to_string()
             }
             mms::DataType::Date | mms::DataType::DateTime => {
-                "arrow::array::builder::TimestampSecondBuilder".to_string()
+                "arrow::array::builder::TimestampMillisecondBuilder".to_string()
             }
             mms::DataType::Decimal { .. } => "arrow::array::builder::Decimal128Builder".to_string(),
 
@@ -111,7 +111,7 @@ impl mms::TableColumn {
     }
     fn as_arrow_type(&self) -> String {
         if self.is_dispatch_period() || self.is_trading_period() {
-            "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Second, None)"
+            "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Millisecond, None)"
                 .to_string()
         } else {
             self.data_type.as_arrow_type()
@@ -145,22 +145,22 @@ impl mms::TableColumn {
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
             (_, _) if self.is_dispatch_period() || self.is_trading_period() => {
-                format!("row.{}.start().timestamp()", self.rust_field_name())
+                format!("row.{}.start().timestamp_millis()", self.rust_field_name())
             }
             // (_, false) if self.comment.to_uppercase().contains("YYYYMMDDPPP") || self.comment.to_uppercase().contains("YYYYMMDDPP") => {
-            //     format!("row.{}.map(|v| v.start().timestamp())", self.rust_field_name())
+            //     format!("row.{}.map(|v| v.start().timestamp_millis())", self.rust_field_name())
             // }
             // (mms::DataType::Varchar { .. }, true) if !self.data_stored_in_string() => {
-            //     format!("row.{}.start().timestamp()", self.rust_field_name())
+            //     format!("row.{}.start().timestamp_millis()", self.rust_field_name())
             // }
             // (mms::DataType::Varchar { .. }, false) if !self.data_stored_in_string() => {
-            //     format!("row.{}.map(|v| v.start().timestamp())", self.rust_field_name())
+            //     format!("row.{}.map(|v| v.start().timestamp_millis())", self.rust_field_name())
             // }
             (mms::DataType::Date | mms::DataType::DateTime, true) => {
-                format!("row.{}.timestamp()", self.rust_field_name())
+                format!("row.{}.timestamp_millis()", self.rust_field_name())
             }
             (mms::DataType::Date | mms::DataType::DateTime, false) => {
-                format!("row.{}.map(|val| val.timestamp())", self.rust_field_name())
+                format!("row.{}.map(|val| val.timestamp_millis())", self.rust_field_name())
             }
 
             (mms::DataType::Decimal { scale, .. }, true) => format!(

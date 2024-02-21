@@ -253,7 +253,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -261,7 +261,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -284,7 +284,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -294,18 +294,20 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaReservelimit1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reservelimitid_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder.reservelimitid_array.append_value(row.reservelimitid());
         builder.description_array.append_option(row.description());
         builder
@@ -319,7 +321,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -346,12 +348,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaReservelimit1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     reservelimitid_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
     rhs_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaReservelimitRegion1;
 pub struct MtpasaReservelimitRegion1Mapping([usize; 6]);
@@ -595,7 +597,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -603,7 +605,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -626,7 +628,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -636,18 +638,20 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaReservelimitRegion1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reservelimitid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             coef_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder.reservelimitid_array.append_value(row.reservelimitid());
         builder.regionid_array.append_value(row.regionid());
         builder
@@ -661,7 +665,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -688,12 +692,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaReservelimitRegion1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     reservelimitid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     coef_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaReservelimitSet1;
 pub struct MtpasaReservelimitSet1Mapping([usize; 7]);
@@ -961,7 +965,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -969,7 +973,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -987,7 +991,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1000,7 +1004,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1010,27 +1014,29 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
     }
     fn new_builder() -> Self::Builder {
         MtpasaReservelimitSet1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reservelimit_set_id_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder.reservelimit_set_id_array.append_option(row.reservelimit_set_id());
         builder.description_array.append_option(row.description());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1059,13 +1065,13 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MtpasaReservelimitSet1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     reservelimit_set_id_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ReserveDataReserve1;
 pub struct ReserveDataReserve1Mapping([usize; 17]);
@@ -1429,7 +1435,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1482,7 +1488,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1522,7 +1528,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
     }
     fn new_builder() -> Self::Builder {
         ReserveDataReserve1Builder {
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -1540,7 +1546,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             raise6sec_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             pasareserve_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             loadrejectionreservereq_array: arrow::array::builder::Decimal128Builder::new()
@@ -1556,7 +1562,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1628,7 +1634,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .pasareserve_array
             .append_option({
@@ -1731,7 +1737,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ReserveDataReserve1Builder {
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
@@ -1741,7 +1747,7 @@ pub struct ReserveDataReserve1Builder {
     raise5min_array: arrow::array::builder::Decimal128Builder,
     raise60sec_array: arrow::array::builder::Decimal128Builder,
     raise6sec_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     pasareserve_array: arrow::array::builder::Decimal128Builder,
     loadrejectionreservereq_array: arrow::array::builder::Decimal128Builder,
     raisereg_array: arrow::array::builder::Decimal128Builder,

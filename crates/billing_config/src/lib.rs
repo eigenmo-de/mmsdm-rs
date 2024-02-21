@@ -265,7 +265,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -273,7 +273,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -281,7 +281,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "preliminarystatementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -289,7 +289,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "finalstatementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -297,7 +297,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "paymentdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -305,7 +305,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -313,7 +313,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "revision1_statementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -321,7 +321,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 arrow::datatypes::Field::new(
                     "revision2_statementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -335,14 +335,14 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            preliminarystatementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            finalstatementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            paymentdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            revision1_statementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            revision2_statementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            preliminarystatementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            finalstatementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            paymentdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            revision1_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            revision2_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -360,26 +360,36 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .preliminarystatementdate_array
-            .append_option(row.preliminarystatementdate.map(|val| val.timestamp()));
+            .append_option(
+                row.preliminarystatementdate.map(|val| val.timestamp_millis()),
+            );
         builder
             .finalstatementdate_array
-            .append_option(row.finalstatementdate.map(|val| val.timestamp()));
+            .append_option(row.finalstatementdate.map(|val| val.timestamp_millis()));
         builder
             .paymentdate_array
-            .append_option(row.paymentdate.map(|val| val.timestamp()));
+            .append_option(row.paymentdate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .revision1_statementdate_array
-            .append_option(row.revision1_statementdate.map(|val| val.timestamp()));
+            .append_option(
+                row.revision1_statementdate.map(|val| val.timestamp_millis()),
+            );
         builder
             .revision2_statementdate_array
-            .append_option(row.revision2_statementdate.map(|val| val.timestamp()));
+            .append_option(
+                row.revision2_statementdate.map(|val| val.timestamp_millis()),
+            );
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -417,14 +427,14 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
 pub struct BillingConfigBillingcalendar2Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
-    preliminarystatementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    finalstatementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    paymentdate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
-    revision1_statementdate_array: arrow::array::builder::TimestampSecondBuilder,
-    revision2_statementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    preliminarystatementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    finalstatementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    paymentdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    revision1_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    revision2_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstBasClass1;
 pub struct BillingConfigGstBasClass1Mapping([usize; 3]);
@@ -611,7 +621,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -623,7 +633,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
         BillingConfigGstBasClass1Builder {
             bas_class_array: arrow::array::builder::StringBuilder::new(),
             description_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -631,7 +641,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -654,7 +664,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
 pub struct BillingConfigGstBasClass1Builder {
     bas_class_array: arrow::array::builder::StringBuilder,
     description_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstRate1;
 pub struct BillingConfigGstRate1Mapping([usize; 5]);
@@ -879,7 +889,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -902,7 +912,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -912,17 +922,17 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
     }
     fn new_builder() -> Self::Builder {
         BillingConfigGstRate1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             bas_class_array: arrow::array::builder::StringBuilder::new(),
             gst_rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -942,7 +952,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -967,11 +977,11 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingConfigGstRate1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     bas_class_array: arrow::array::builder::StringBuilder,
     gst_rate_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstTransactionClass1;
 pub struct BillingConfigGstTransactionClass1Mapping([usize; 5]);
@@ -1205,7 +1215,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1228,7 +1238,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1238,16 +1248,16 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
     }
     fn new_builder() -> Self::Builder {
         BillingConfigGstTransactionClass1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             transaction_type_array: arrow::array::builder::StringBuilder::new(),
             bas_class_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1259,7 +1269,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
         builder.bas_class_array.append_value(row.bas_class());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1284,11 +1294,11 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingConfigGstTransactionClass1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     transaction_type_array: arrow::array::builder::StringBuilder,
     bas_class_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstTransactionType1;
 pub struct BillingConfigGstTransactionType1Mapping([usize; 5]);
@@ -1525,7 +1535,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1539,7 +1549,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
             description_array: arrow::array::builder::StringBuilder::new(),
             gl_financialcode_array: arrow::array::builder::StringBuilder::new(),
             gl_tcode_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1549,7 +1559,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
         builder.gl_tcode_array.append_option(row.gl_tcode());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1578,7 +1588,7 @@ pub struct BillingConfigGstTransactionType1Builder {
     description_array: arrow::array::builder::StringBuilder,
     gl_financialcode_array: arrow::array::builder::StringBuilder,
     gl_tcode_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigSecdepositInterestRate1;
 pub struct BillingConfigSecdepositInterestRate1Mapping([usize; 4]);
@@ -1810,7 +1820,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1818,7 +1828,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
                 arrow::datatypes::Field::new(
                     "version_datetime",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1834,16 +1844,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
     fn new_builder() -> Self::Builder {
         BillingConfigSecdepositInterestRate1Builder {
             interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            version_datetime_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interest_rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.interest_acct_id_array.append_value(row.interest_acct_id());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
-        builder.version_datetime_array.append_value(row.version_datetime.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .version_datetime_array
+            .append_value(row.version_datetime.timestamp_millis());
         builder
             .interest_rate_array
             .append_option({
@@ -1876,8 +1888,8 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
 #[cfg(feature = "arrow")]
 pub struct BillingConfigSecdepositInterestRate1Builder {
     interest_acct_id_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    version_datetime_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingConfigSecdepositProvision1;
@@ -2148,7 +2160,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
                 arrow::datatypes::Field::new(
                     "transaction_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2190,7 +2202,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
         BillingConfigSecdepositProvision1Builder {
             security_deposit_id_array: arrow::array::builder::StringBuilder::new(),
             participantid_array: arrow::array::builder::StringBuilder::new(),
-            transaction_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            transaction_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             maturity_contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             maturity_weekno_array: arrow::array::builder::Decimal128Builder::new()
@@ -2208,7 +2220,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .transaction_date_array
-            .append_option(row.transaction_date.map(|val| val.timestamp()));
+            .append_option(row.transaction_date.map(|val| val.timestamp_millis()));
         builder
             .maturity_contractyear_array
             .append_option({
@@ -2281,7 +2293,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
 pub struct BillingConfigSecdepositProvision1Builder {
     security_deposit_id_array: arrow::array::builder::StringBuilder,
     participantid_array: arrow::array::builder::StringBuilder,
-    transaction_date_array: arrow::array::builder::TimestampSecondBuilder,
+    transaction_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     maturity_contractyear_array: arrow::array::builder::Decimal128Builder,
     maturity_weekno_array: arrow::array::builder::Decimal128Builder,
     amount_array: arrow::array::builder::Decimal128Builder,

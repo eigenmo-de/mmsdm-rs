@@ -267,7 +267,7 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 arrow::datatypes::Field::new(
                     "effectivefrominterval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -275,7 +275,7 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 arrow::datatypes::Field::new(
                     "effectivetointerval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -293,7 +293,7 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 arrow::datatypes::Field::new(
                     "startauthoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -306,7 +306,7 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 arrow::datatypes::Field::new(
                     "endauthoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -314,7 +314,7 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -326,14 +326,14 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
         ApApevent1Builder {
             apeventid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            effectivefrominterval_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            effectivetointerval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivefrominterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            effectivetointerval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             reason_array: arrow::array::builder::StringBuilder::new(),
             startauthorisedby_array: arrow::array::builder::StringBuilder::new(),
-            startauthoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endauthorisedby_array: arrow::array::builder::StringBuilder::new(),
-            endauthoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            endauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -346,22 +346,22 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
             });
         builder
             .effectivefrominterval_array
-            .append_option(row.effectivefrominterval.map(|val| val.timestamp()));
+            .append_option(row.effectivefrominterval.map(|val| val.timestamp_millis()));
         builder
             .effectivetointerval_array
-            .append_option(row.effectivetointerval.map(|val| val.timestamp()));
+            .append_option(row.effectivetointerval.map(|val| val.timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder.startauthorisedby_array.append_option(row.startauthorisedby());
         builder
             .startauthoriseddate_array
-            .append_option(row.startauthoriseddate.map(|val| val.timestamp()));
+            .append_option(row.startauthoriseddate.map(|val| val.timestamp_millis()));
         builder.endauthorisedby_array.append_option(row.endauthorisedby());
         builder
             .endauthoriseddate_array
-            .append_option(row.endauthoriseddate.map(|val| val.timestamp()));
+            .append_option(row.endauthoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -395,14 +395,14 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
 #[cfg(feature = "arrow")]
 pub struct ApApevent1Builder {
     apeventid_array: arrow::array::builder::Decimal128Builder,
-    effectivefrominterval_array: arrow::array::builder::TimestampSecondBuilder,
-    effectivetointerval_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivefrominterval_array: arrow::array::builder::TimestampMillisecondBuilder,
+    effectivetointerval_array: arrow::array::builder::TimestampMillisecondBuilder,
     reason_array: arrow::array::builder::StringBuilder,
     startauthorisedby_array: arrow::array::builder::StringBuilder,
-    startauthoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    startauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     endauthorisedby_array: arrow::array::builder::StringBuilder,
-    endauthoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    endauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ApApeventregion2;
 pub struct ApApeventregion2Mapping([usize; 14]);
@@ -705,7 +705,7 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -773,7 +773,7 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
             apeventid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             energyapflag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             raise6secapflag_array: arrow::array::builder::Decimal128Builder::new()
@@ -809,7 +809,7 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .energyapflag_array
             .append_option({
@@ -953,7 +953,7 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
 pub struct ApApeventregion2Builder {
     apeventid_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     energyapflag_array: arrow::array::builder::Decimal128Builder,
     raise6secapflag_array: arrow::array::builder::Decimal128Builder,
     raise60secapflag_array: arrow::array::builder::Decimal128Builder,
@@ -1211,7 +1211,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1239,7 +1239,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1247,7 +1247,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1258,7 +1258,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
     fn new_builder() -> Self::Builder {
         ForceMajeureIrfmamount1Builder {
             irfmid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
@@ -1266,15 +1266,15 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
             amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.irfmid_array.append_value(row.irfmid());
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp()));
+            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
         builder
             .versionno_array
             .append_value({
@@ -1301,10 +1301,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1336,13 +1336,13 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureIrfmamount1Builder {
     irfmid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     amount_array: arrow::array::builder::Decimal128Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForceMajeureIrfmevents1;
 pub struct ForceMajeureIrfmevents1Mapping([usize; 6]);
@@ -1550,7 +1550,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1563,7 +1563,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1576,7 +1576,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1587,18 +1587,20 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
     fn new_builder() -> Self::Builder {
         ForceMajeureIrfmevents1Builder {
             irfmid_array: arrow::array::builder::StringBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.irfmid_array.append_value(row.irfmid());
-        builder.startdate_array.append_option(row.startdate.map(|val| val.timestamp()));
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.timestamp_millis()));
         builder
             .startperiod_array
             .append_option({
@@ -1608,7 +1610,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
                         val.mantissa()
                     })
             });
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -1620,7 +1624,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1648,11 +1652,11 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureIrfmevents1Builder {
     irfmid_array: arrow::array::builder::StringBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startperiod_array: arrow::array::builder::Decimal128Builder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     endperiod_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForceMajeureMarketSuspendRegimeSum1;
 pub struct ForceMajeureMarketSuspendRegimeSum1Mapping([usize; 6]);
@@ -1886,7 +1890,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
                 arrow::datatypes::Field::new(
                     "start_interval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1894,7 +1898,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
                 arrow::datatypes::Field::new(
                     "end_interval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1907,7 +1911,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1919,23 +1923,23 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
         ForceMajeureMarketSuspendRegimeSum1Builder {
             suspension_id_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            start_interval_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            end_interval_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            start_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            end_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             pricing_regime_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.suspension_id_array.append_value(row.suspension_id());
         builder.regionid_array.append_value(row.regionid());
-        builder.start_interval_array.append_value(row.start_interval.timestamp());
+        builder.start_interval_array.append_value(row.start_interval.timestamp_millis());
         builder
             .end_interval_array
-            .append_option(row.end_interval.map(|val| val.timestamp()));
+            .append_option(row.end_interval.map(|val| val.timestamp_millis()));
         builder.pricing_regime_array.append_option(row.pricing_regime());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1964,10 +1968,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
 pub struct ForceMajeureMarketSuspendRegimeSum1Builder {
     suspension_id_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    start_interval_array: arrow::array::builder::TimestampSecondBuilder,
-    end_interval_array: arrow::array::builder::TimestampSecondBuilder,
+    start_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
+    end_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     pricing_regime_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForceMajeureMarketSuspendRegionSum1;
 pub struct ForceMajeureMarketSuspendRegionSum1Mapping([usize; 6]);
@@ -2187,7 +2191,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
                 arrow::datatypes::Field::new(
                     "initial_interval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2195,7 +2199,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
                 arrow::datatypes::Field::new(
                     "end_region_interval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2203,7 +2207,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
                 arrow::datatypes::Field::new(
                     "end_suspension_interval",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2211,7 +2215,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2223,10 +2227,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
         ForceMajeureMarketSuspendRegionSum1Builder {
             suspension_id_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            initial_interval_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            end_region_interval_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            end_suspension_interval_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            initial_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            end_region_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            end_suspension_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2234,16 +2238,18 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .initial_interval_array
-            .append_option(row.initial_interval.map(|val| val.timestamp()));
+            .append_option(row.initial_interval.map(|val| val.timestamp_millis()));
         builder
             .end_region_interval_array
-            .append_option(row.end_region_interval.map(|val| val.timestamp()));
+            .append_option(row.end_region_interval.map(|val| val.timestamp_millis()));
         builder
             .end_suspension_interval_array
-            .append_option(row.end_suspension_interval.map(|val| val.timestamp()));
+            .append_option(
+                row.end_suspension_interval.map(|val| val.timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2272,10 +2278,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
 pub struct ForceMajeureMarketSuspendRegionSum1Builder {
     suspension_id_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
-    initial_interval_array: arrow::array::builder::TimestampSecondBuilder,
-    end_region_interval_array: arrow::array::builder::TimestampSecondBuilder,
-    end_suspension_interval_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    initial_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
+    end_region_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
+    end_suspension_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForceMajeureMarketSuspendSchedule2;
 pub struct ForceMajeureMarketSuspendSchedule2Mapping([usize; 16]);
@@ -2623,7 +2629,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2691,7 +2697,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -2711,7 +2717,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureMarketSuspendSchedule2Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             day_type_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
@@ -2734,7 +2740,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lreg_rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             l1_rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             r1_rrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -2742,7 +2748,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder.day_type_array.append_value(row.day_type());
         builder.regionid_array.append_value(row.regionid());
         builder
@@ -2835,7 +2841,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .l1_rrp_array
             .append_option({
@@ -2900,7 +2906,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureMarketSuspendSchedule2Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     day_type_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
@@ -2913,7 +2919,7 @@ pub struct ForceMajeureMarketSuspendSchedule2Builder {
     l60_rrp_array: arrow::array::builder::Decimal128Builder,
     l5_rrp_array: arrow::array::builder::Decimal128Builder,
     lreg_rrp_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     l1_rrp_array: arrow::array::builder::Decimal128Builder,
     r1_rrp_array: arrow::array::builder::Decimal128Builder,
 }
@@ -3156,7 +3162,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3164,7 +3170,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "source_start_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3172,7 +3178,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "source_end_date",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3185,7 +3191,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3193,7 +3199,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3203,29 +3209,29 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureMarketSuspendScheduleTrk1Builder {
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            source_start_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            source_end_date_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            source_start_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            source_end_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             comments_array: arrow::array::builder::StringBuilder::new(),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .source_start_date_array
-            .append_option(row.source_start_date.map(|val| val.timestamp()));
+            .append_option(row.source_start_date.map(|val| val.timestamp_millis()));
         builder
             .source_end_date_array
-            .append_option(row.source_end_date.map(|val| val.timestamp()));
+            .append_option(row.source_end_date.map(|val| val.timestamp_millis()));
         builder.comments_array.append_option(row.comments());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3252,12 +3258,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureMarketSuspendScheduleTrk1Builder {
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
-    source_start_date_array: arrow::array::builder::TimestampSecondBuilder,
-    source_end_date_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    source_start_date_array: arrow::array::builder::TimestampMillisecondBuilder,
+    source_end_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     comments_array: arrow::array::builder::StringBuilder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForceMajeureOverriderrp1;
 pub struct ForceMajeureOverriderrp1Mapping([usize; 10]);
@@ -3540,7 +3546,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
                 arrow::datatypes::Field::new(
                     "startdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3553,7 +3559,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
                 arrow::datatypes::Field::new(
                     "enddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3586,7 +3592,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3597,10 +3603,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
     fn new_builder() -> Self::Builder {
         ForceMajeureOverriderrp1Builder {
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            enddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -3608,12 +3614,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
             description_array: arrow::array::builder::StringBuilder::new(),
             authorisestart_array: arrow::array::builder::StringBuilder::new(),
             authoriseend_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.startdate_array.append_value(row.startdate.timestamp());
+        builder.startdate_array.append_value(row.startdate.timestamp_millis());
         builder
             .startperiod_array
             .append_value({
@@ -3621,7 +3627,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.enddate_array.append_option(row.enddate.map(|val| val.timestamp()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -3645,7 +3653,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
         builder.authoriseend_array.append_option(row.authoriseend());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3681,15 +3689,15 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureOverriderrp1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
-    startdate_array: arrow::array::builder::TimestampSecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startperiod_array: arrow::array::builder::Decimal128Builder,
-    enddate_array: arrow::array::builder::TimestampSecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     endperiod_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     description_array: arrow::array::builder::StringBuilder,
     authorisestart_array: arrow::array::builder::StringBuilder,
     authoriseend_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ApRegionapc1;
 pub struct ApRegionapc1Mapping([usize; 6]);
@@ -3937,7 +3945,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -3950,7 +3958,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
                 arrow::datatypes::Field::new(
                     "authoriseddate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3963,7 +3971,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -3974,17 +3982,17 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
     fn new_builder() -> Self::Builder {
         ApRegionapc1Builder {
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authoriseddate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3994,11 +4002,11 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp()));
+            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4026,11 +4034,11 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
 #[cfg(feature = "arrow")]
 pub struct ApRegionapc1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    authoriseddate_array: arrow::array::builder::TimestampSecondBuilder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authorisedby_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ApRegionapcintervals1;
 pub struct ApRegionapcintervals1Mapping([usize; 9]);
@@ -4307,7 +4315,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
                 arrow::datatypes::Field::new(
                     "effectivedate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -4330,7 +4338,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -4356,14 +4364,14 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
     fn new_builder() -> Self::Builder {
         ApRegionapcintervals1Builder {
             regionid_array: arrow::array::builder::StringBuilder::new(),
-            effectivedate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             apcvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             apctype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             fcasapcvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -4374,7 +4382,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp());
+        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4400,7 +4408,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
         builder
             .apctype_array
             .append_option({
@@ -4461,11 +4469,11 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
 #[cfg(feature = "arrow")]
 pub struct ApRegionapcintervals1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
-    effectivedate_array: arrow::array::builder::TimestampSecondBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     apcvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     apctype_array: arrow::array::builder::Decimal128Builder,
     fcasapcvalue_array: arrow::array::builder::Decimal128Builder,
     apfvalue_array: arrow::array::builder::Decimal128Builder,

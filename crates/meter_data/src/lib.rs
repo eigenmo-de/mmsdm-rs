@@ -305,7 +305,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -348,7 +348,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -360,7 +360,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
         MeterdataAggregateReads1Builder {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             connectionpointid_array: arrow::array::builder::StringBuilder::new(),
             meter_type_array: arrow::array::builder::StringBuilder::new(),
             frmp_array: arrow::array::builder::StringBuilder::new(),
@@ -371,7 +371,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             exportvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -382,7 +382,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.connectionpointid_array.append_value(row.connectionpointid());
         builder.meter_type_array.append_value(row.meter_type());
         builder.frmp_array.append_value(row.frmp());
@@ -410,7 +410,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -446,7 +446,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
 #[cfg(feature = "arrow")]
 pub struct MeterdataAggregateReads1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
     meter_type_array: arrow::array::builder::StringBuilder,
     frmp_array: arrow::array::builder::StringBuilder,
@@ -454,7 +454,7 @@ pub struct MeterdataAggregateReads1Builder {
     periodid_array: arrow::array::builder::Decimal128Builder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MeterdataIndividualReads1;
 pub struct MeterdataIndividualReads1Mapping([usize; 12]);
@@ -766,7 +766,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -819,7 +819,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -831,7 +831,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
         MeterdataIndividualReads1Builder {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             meter_id_array: arrow::array::builder::StringBuilder::new(),
             meter_id_suffix_array: arrow::array::builder::StringBuilder::new(),
             frmp_array: arrow::array::builder::StringBuilder::new(),
@@ -844,7 +844,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             exportvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -855,7 +855,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.meter_id_array.append_value(row.meter_id());
         builder.meter_id_suffix_array.append_value(row.meter_id_suffix());
         builder.frmp_array.append_value(row.frmp());
@@ -885,7 +885,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -925,7 +925,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
 #[cfg(feature = "arrow")]
 pub struct MeterdataIndividualReads1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     meter_id_array: arrow::array::builder::StringBuilder,
     meter_id_suffix_array: arrow::array::builder::StringBuilder,
     frmp_array: arrow::array::builder::StringBuilder,
@@ -935,7 +935,7 @@ pub struct MeterdataIndividualReads1Builder {
     meter_type_array: arrow::array::builder::StringBuilder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MeterdataInterconnector1;
 pub struct MeterdataInterconnector1Mapping([usize; 7]);
@@ -1192,7 +1192,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1220,7 +1220,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1232,7 +1232,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
         MeterdataInterconnector1Builder {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interconnectorid_array: arrow::array::builder::StringBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1240,7 +1240,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             exportvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1251,7 +1251,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .periodid_array
@@ -1280,7 +1280,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1310,12 +1310,12 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
 #[cfg(feature = "arrow")]
 pub struct MeterdataInterconnector1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     interconnectorid_array: arrow::array::builder::StringBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MeterdataMeterdataSaps1;
 pub struct MeterdataMeterdataSaps1Mapping([usize; 10]);
@@ -1619,7 +1619,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -1662,7 +1662,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
                 arrow::datatypes::Field::new(
                     "lastchanged",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     true,
@@ -1674,7 +1674,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
         MeterdataMeterdataSaps1Builder {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             connectionpoint_id_array: arrow::array::builder::StringBuilder::new(),
             meter_type_array: arrow::array::builder::StringBuilder::new(),
             frmp_array: arrow::array::builder::StringBuilder::new(),
@@ -1685,7 +1685,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             exportvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1696,7 +1696,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.connectionpoint_id_array.append_value(row.connectionpoint_id());
         builder.meter_type_array.append_value(row.meter_type());
         builder.frmp_array.append_value(row.frmp());
@@ -1728,7 +1728,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp()));
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1764,7 +1764,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
 #[cfg(feature = "arrow")]
 pub struct MeterdataMeterdataSaps1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     connectionpoint_id_array: arrow::array::builder::StringBuilder,
     meter_type_array: arrow::array::builder::StringBuilder,
     frmp_array: arrow::array::builder::StringBuilder,
@@ -1772,7 +1772,7 @@ pub struct MeterdataMeterdataSaps1Builder {
     periodid_array: arrow::array::builder::Decimal128Builder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampSecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MeterdataWdrReads1;
 pub struct MeterdataWdrReads1Mapping([usize; 14]);
@@ -2138,7 +2138,7 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 arrow::datatypes::Field::new(
                     "settlementdate",
                     arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Second,
+                        arrow::datatypes::TimeUnit::Millisecond,
                         None,
                     ),
                     false,
@@ -2206,7 +2206,7 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
             market_id_array: arrow::array::builder::StringBuilder::new(),
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            settlementdate_array: arrow::array::builder::TimestampSecondBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             meter_id_array: arrow::array::builder::StringBuilder::new(),
             tni_array: arrow::array::builder::StringBuilder::new(),
             frmp_array: arrow::array::builder::StringBuilder::new(),
@@ -2234,7 +2234,7 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp());
+        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
         builder.meter_id_array.append_value(row.meter_id());
         builder.tni_array.append_option(row.tni());
         builder.frmp_array.append_option(row.frmp());
@@ -2328,7 +2328,7 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
 pub struct MeterdataWdrReads1Builder {
     market_id_array: arrow::array::builder::StringBuilder,
     case_id_array: arrow::array::builder::Decimal128Builder,
-    settlementdate_array: arrow::array::builder::TimestampSecondBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     meter_id_array: arrow::array::builder::StringBuilder,
     tni_array: arrow::array::builder::StringBuilder,
     frmp_array: arrow::array::builder::StringBuilder,
