@@ -360,8 +360,8 @@ impl TableColumn {
         (
             self.comment.to_uppercase().contains("YYYYMMDDPP")
             || self.comment == "Date and Time of trading interval"
-            || self.comment.starts_with("Settlements Trading Interval")
-            || self.comment.starts_with("Settlement Trading Interval")
+            // || self.comment.starts_with("Settlements Trading Interval")
+            // || self.comment.starts_with("Settlement Trading Interval")
             || self.comment.starts_with("Market Trading Interval")
             || self.comment.starts_with("Trading Interval")
             || self.comment.contains("Predispatch run identifier")
