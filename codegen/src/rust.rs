@@ -553,7 +553,7 @@ fn codegen_impl_get_table(
         field_mapping_from_row.arg("mut row", "mmsdm_core::CsvRow<'a>");
 
         // verify it is an I row
-        field_mapping_from_row.line("if !matches!(row.record_type(), mmsdm_core::RecordType::I) {");
+        field_mapping_from_row.line("if !row.is_heading() {");
         field_mapping_from_row.line("return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(\"Expected an I row but got {row:?}\")));");
         field_mapping_from_row.line("}");
 

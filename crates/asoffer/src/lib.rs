@@ -198,7 +198,7 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -660,7 +660,7 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1026,7 +1026,7 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1463,7 +1463,7 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1900,7 +1900,7 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),

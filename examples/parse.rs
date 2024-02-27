@@ -1,4 +1,4 @@
-use mmsdm_bids::{BidBidperofferD2, BidsBidofferperiod1};
+use mmsdm_bids::{BidBidperofferD2, BidsBidofferperiod1, OfferBiddayoffer2};
 use mmsdm_core::{FileReader, GetTable, IterTyped};
 use mmsdm_dispatch::{
     DispatchConstraint5, DispatchLocalPrice1, DispatchMnspbidtrk1, DispatchOffertrk1,
@@ -21,26 +21,11 @@ use zip::ZipArchive;
 // PUBLIC_DVD_SETFCASREGIONRECOVERY_202312010000.zip 800mb zipped, 5.5g unzipped, 13s raw, 52s parsed;
 // PUBLIC_DVD_BIDPEROFFER1_202312010000.zip 2gb s raw, s parsed; --- BOH!
 
+// PUBLIC_DVD_BIDDAYOFFER_202312010000.zip
 fn main() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./PUBLIC_DVD_PREDISPATCH_FCAS_REQ_D_202312010000.zip")?;
+    let file = File::open("./PUBLIC_DVD_BIDPEROFFER1_202312010000.zip")?;
 
     let mut archive = ZipArchive::new(file)?;
-
-    // let mut br = BufReader::new(archive.by_index(0).unwrap());
-
-    // let mut rh = String::with_capacity(500);
-
-    // let mut rows = 0;
-    // loop {
-    //     let bytes_read = br.read_line(&mut rh)?;
-
-    //     if bytes_read == 0 {
-    //         break
-    //     }
-    //     rows += 1
-    // }
-
-    // dbg!(rows);
 
     let mut fr = FileReader::new(&mut archive).unwrap();
 
@@ -69,9 +54,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // let mut partitions = BTreeSet::<<PredispatchRegionfcasrequirement2 as GetTable>::Partition>::new();
     // fr.iter_closest::<PredispatchRegionfcasrequirement2>()?.process_rows(|r| { partitions.insert(<PredispatchRegionfcasrequirement2 as GetTable>::partition_suffix(&r)); })?;
 
-    _ = dbg!(fr
-        .iter_closest::<PredispatchRegionfcasrequirement2>()?
-        .collect_partitions());
+    // _ = dbg!(fr
+    //     .iter_closest::<PredispatchRegionfcasrequirement2>()?
+    //     .collect_partitions());
 
     // dbg!(fr
     //     .iter_closest::<PredispatchRegionfcasrequirement2>()?
@@ -84,12 +69,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         // fr.iter_closest::<DispatchConstraint5>().unwrap().count(),
         // fr.iter_closest::<DispatchMnspbidtrk1>().unwrap().count(),
         // fr.iter_closest::<DispatchLocalPrice1>().unwrap().count(),
-        fr.iter_closest::<PredispatchRegionfcasrequirement2>()
-            .unwrap()
-            .count(),
+        // fr.iter_closest::<PredispatchRegionfcasrequirement2>()
+        //     .unwrap()
+        //     .count(),
         // fr.iter_closest::<P5minUnitsolution5>().unwrap().count(),
         // fr.iter_closest::<SettlementsFcasregionrecovery5>().unwrap().count(),
         // fr.iter_closest::<BidsBidofferperiod1>().unwrap().count(),
+        fr.iter_closest::<OfferBiddayoffer2>().unwrap().count(),
     );
 
     Ok(())

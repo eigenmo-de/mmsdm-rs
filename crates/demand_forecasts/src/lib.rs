@@ -106,7 +106,7 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -454,7 +454,7 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -830,7 +830,7 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1173,7 +1173,7 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1518,7 +1518,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -2038,7 +2038,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -2477,7 +2477,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -2832,7 +2832,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -3203,7 +3203,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -3552,7 +3552,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -3886,7 +3886,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -4209,7 +4209,7 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -4589,7 +4589,7 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -4981,7 +4981,7 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -5462,7 +5462,7 @@ impl mmsdm_core::GetTable for DemandTrk1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -5820,7 +5820,7 @@ impl mmsdm_core::GetTable for RooftopActual2 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -6181,7 +6181,7 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),

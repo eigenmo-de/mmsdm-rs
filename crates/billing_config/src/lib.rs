@@ -153,7 +153,7 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -519,7 +519,7 @@ impl mmsdm_core::GetTable for BillingConfigGstBasClass1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -764,7 +764,7 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1083,7 +1083,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1420,7 +1420,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionType1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1681,7 +1681,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -2045,7 +2045,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositProvision1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
