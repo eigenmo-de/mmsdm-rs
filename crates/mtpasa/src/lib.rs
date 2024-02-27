@@ -96,7 +96,7 @@ impl mmsdm_core::GetTable for MtpasaCaseresult1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -477,7 +477,7 @@ impl mmsdm_core::GetTable for MtpasaConstraintresult1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1028,7 +1028,7 @@ impl mmsdm_core::GetTable for MtpasaConstraintsummary1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1488,7 +1488,7 @@ impl mmsdm_core::GetTable for MtpasaDuidavailability3 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -1974,7 +1974,7 @@ impl mmsdm_core::GetTable for MtpasaInterconnectorresult1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -2545,7 +2545,7 @@ impl mmsdm_core::GetTable for MtpasaLolpresult1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -3105,7 +3105,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailability4 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -3663,7 +3663,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -4013,7 +4013,7 @@ impl mmsdm_core::GetTable for MtpasaRegioniteration1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -4736,7 +4736,7 @@ impl mmsdm_core::GetTable for MtpasaRegionresult2 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),
@@ -5901,7 +5901,7 @@ impl mmsdm_core::GetTable for MtpasaRegionsummary1 {
     fn field_mapping_from_row<'a>(
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !matches!(row.record_type(), mmsdm_core::RecordType::I) {
+        if !row.is_heading() {
             return Err(
                 mmsdm_core::Error::UnexpectedRowType(
                     alloc::format!("Expected an I row but got {row:?}"),

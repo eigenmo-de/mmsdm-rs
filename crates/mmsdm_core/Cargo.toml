@@ -38,7 +38,10 @@ optional = true
 workspace = true
 optional = true
 
+[dependencies.csv-core]
+workspace = true
+
 [features]
 arrow = ["dep:arrow", "std"]
 default = ["std"]
-std = ["dep:zip", "rust_decimal/std", "chrono/std", "chrono/now"]
+std = ["dep:zip", "rust_decimal/std", "chrono/std", "chrono/now", "csv-core/libc"]

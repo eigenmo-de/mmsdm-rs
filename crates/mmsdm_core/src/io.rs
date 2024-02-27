@@ -1,5 +1,5 @@
 extern crate std;
-use crate::{AemoHeader, CsvRow, Error, FileKey, GetTable, Result, RowValidation};
+use crate::{AemoHeader, CsvReader, Error, FileKey, GetTable, Result, RowValidation};
 use alloc::{collections::BTreeSet, format, string::String, vec::Vec};
 use core::ops::AddAssign;
 use std::{
@@ -30,13 +30,15 @@ where
             let mut count = 0;
 
             let mut row_holder = String::new();
-            let mut indexes_backing = Vec::new();
+            let mut indexes_backing = Vec::from([0; 1000]);
+            let mut output_vec = Vec::from([0; 100_000]);
 
             let mut last_heading = None;
 
+            let mut csv_reader= CsvReader::new();
+
             loop {
                 row_holder.clear();
-                indexes_backing.clear();
 
                 let bytes_read = file_reader.read_line(&mut row_holder)?;
 
@@ -45,7 +47,7 @@ where
                 }
                 count += 1;
 
-                match crate::validate_row(&row_holder, &mut indexes_backing)? {
+                match csv_reader.validate_row(&row_holder, &mut output_vec, &mut indexes_backing)? {
                     Some(RowValidation::Header(h)) => {
                         if header.is_none() {
                             header = Some(h);
@@ -78,7 +80,10 @@ where
                     }
                 }
             }
+
+            dbg!(count, csv_reader.inner.line());
         }
+
 
         Ok(FileReader {
             reader,
@@ -113,14 +118,7 @@ where
 
         let field_mapping = T::field_mapping_from_row(closest_key.backing_data().to_owned())?;
 
-        Ok(IterTyped {
-            inner: BufReader::new(self.reader.by_index(0)?),
-            ty: PhantomData,
-            version: closest_key.version,
-            indexes_backing: Vec::new(),
-            buf: String::new(),
-            field_mapping,
-        })
+        Ok(IterTyped::new(field_mapping,  BufReader::new(self.reader.by_index(0)?)))
     }
 
     pub fn iter_exact<'sub_reader, T>(&'sub_reader mut self) -> Result<IterTyped<'sub_reader, T>>
@@ -143,14 +141,7 @@ where
 
         let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
 
-        Ok(IterTyped {
-            inner: BufReader::new(self.reader.by_index(0)?),
-            ty: PhantomData,
-            version: T::VERSION,
-            indexes_backing: Vec::new(),
-            buf: String::new(),
-            field_mapping,
-        })
+        Ok(IterTyped::new(field_mapping,  BufReader::new(self.reader.by_index(0)?)))
     }
 }
 
@@ -159,14 +150,32 @@ pub struct IterTyped<'reader, T: GetTable> {
     ty: PhantomData<T>,
     version: i32,
     indexes_backing: Vec<usize>,
+    output: Vec<u8>,
     buf: String,
     field_mapping: T::FieldMapping,
+    reader: CsvReader,
 }
+
+
 
 impl<'reader, T> IterTyped<'reader, T>
 where
     T: GetTable,
 {
+    pub fn new(mapping: T::FieldMapping, reader: BufReader<ZipFile<'reader>>) -> IterTyped<'reader, T> {
+        IterTyped {
+            inner: reader,
+            ty: PhantomData,
+            version: T::VERSION,
+            // must intialize enough spots to hold the most expected columns. this should be sufficient
+            indexes_backing: Vec::from([0; 1000]),
+            // must initialize enough bytes to hold the biggest expected row. this should be sufficient
+            output: Vec::from([0; 100_000]),
+            buf: String::new(),
+            field_mapping: mapping,
+            reader: CsvReader::new(),
+        }
+    }
     pub fn next<'next, 'row>(&'next mut self) -> Option<Option<Result<<T as GetTable>::Row<'row>>>>
     where
         T: GetTable,
@@ -177,7 +186,7 @@ where
         match self.inner.read_line(&mut self.buf) {
             Ok(0) => None,
             Ok(_) => Some(
-                CsvRow::from_data_with_vec(&self.buf, &mut self.indexes_backing)
+                self.reader.read_row(&self.buf, &mut self.output, &mut self.indexes_backing)
                     .and_then(|csv| crate::handle_row::<T>(csv, self.version, &self.field_mapping))
                     .transpose()
             ),

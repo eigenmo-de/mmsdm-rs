@@ -39,6 +39,9 @@ pub enum Error {
     /// of the file
     UnexpectedRowType(String),
 
+    /// This occurs when something goes wrong while parsing a row
+    ParseRow(String),
+
     /// This occurs when a given row in the file is shorter than expected
     TooShortRow(usize),
 
@@ -111,6 +114,7 @@ impl fmt::Display for Error {
             Error::EmptyRow => f.write_str("aemo file row is empty"),
             Error::EmptyFile(k) => write!(f, "Empty AEMO file: {k:?}"),
             Error::UnexpectedRowType(s) => write!(f, "unexpeted row type of {s}"),
+            Error::ParseRow(s) => write!(f, "issue while parsing a CSV row: {s}"),
             Error::TooShortRow(x) => write!(f, "aemo file data row of length {x} is too short"),
             Error::IncorrectLineCount { got, expected } => write!(f, "aemo file was supposed to be {expected} lines long but was instead {got} lines long"),
             Error::UnhandledFileKey(x) => write!(f, "Recieved unexpected file of type {x}"),

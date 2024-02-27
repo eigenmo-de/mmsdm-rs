@@ -1,6 +1,6 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
-#![no_std]
+// #![no_std]
 extern crate alloc;
 use core::{
     cmp::Ordering,
@@ -12,7 +12,7 @@ use core::{
 };
 
 use alloc::{
-    borrow::{Cow, ToOwned},
+    borrow::Cow,
     boxed::Box,
     format,
     string::{String, ToString},
@@ -22,6 +22,7 @@ use alloc::{
 use chrono::{Datelike, Duration, NaiveDateTime, NaiveTime};
 
 mod error;
+use csv_core::{ReadRecordResult, Reader, ReaderBuilder};
 pub use error::*;
 
 #[cfg(feature = "std")]
@@ -305,9 +306,9 @@ pub trait GetTable: 'static {
 
     fn partition_suffix_from_row<'a>(row: CsvRow<'a>) -> Result<Self::Partition>;
     fn from_row<'a>(row: CsvRow<'a>, field_mapping: &Self::FieldMapping) -> Result<Self::Row<'a>>;
-    
+
     fn matches_file_key(key: &FileKey<'_>, version: i32) -> bool;
-    
+
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition;
     fn partition_name(row: &Self::Row<'_>) -> String;
     fn primary_key(row: &Self::Row<'_>) -> Self::PrimaryKey;
@@ -320,32 +321,7 @@ pub enum RowValidation {
     Headings(FileKey<'static>),
 }
 
-// TODO: verify that column orders are correct!
-pub fn validate_row(row: &str, indexes_backing: &mut Vec<usize>) -> Result<Option<RowValidation>> {
-    indexes_backing.clear();
 
-    let csv = CsvRow::from_data_with_vec(&row, indexes_backing)?;
-    // let count_fields = csv.count_fields();
-
-    match csv.record_type {
-        RecordType::C => {
-            // happy to allocate here as `C` rows are rare!
-            if let Ok(header) = AemoHeader::from_row(csv.to_owned()) {
-                return Ok(Some(RowValidation::Header(header)));
-            }
-
-            if let Ok(footer) = AemoFooter::from_row(csv.to_owned()) {
-                return Ok(Some(RowValidation::Footer(footer)));
-            }
-
-            Err(Error::UnexpectedRowType(csv.data.to_string()))
-        }
-        RecordType::I => Ok(Some(RowValidation::Headings(FileKey::from_row(
-            csv.to_owned(),
-        )?))),
-        RecordType::D => Ok(None),
-    }
-}
 
 pub fn handle_row<'input, T>(
     mut csv: CsvRow<'input>,
@@ -356,22 +332,24 @@ where
     T: GetTable,
 {
     match csv.record_type {
-        RecordType::C | RecordType::I => return Ok(None),
-        RecordType::D => {
+        Some(RecordType::C) | Some(RecordType::I) => return Ok(None),
+        Some(RecordType::D) => {
             if T::matches_file_key(&FileKey::from_row(csv.borrow())?, version) {
                 Ok(Some(T::from_row(csv, field_mapping)?))
             } else {
                 Ok(None)
             }
         }
+        None => {
+            Err(Error::UnexpectedRowType(csv.join_fields()))
+        }
     }
 }
 
 pub struct CsvRow<'a> {
     data: Cow<'a, str>,
-    indexes: IndexOptions<'a>,
-    offset: usize,
-    record_type: RecordType,
+    indexes: Cow<'a, [usize]>,
+    record_type: Option<RecordType>,
 }
 
 impl<'a> Clone for CsvRow<'a> {
@@ -383,73 +361,134 @@ impl<'a> Clone for CsvRow<'a> {
 impl<'a> PartialEq for CsvRow<'a> {
     fn eq(&self, other: &Self) -> bool {
         self.data.as_ref() == other.data.as_ref()
-            && self.indexes.as_slice() == other.indexes.as_slice()
-            && self.offset == other.offset
+            && self.indexes == other.indexes
     }
 }
 
 impl<'a> Eq for CsvRow<'a> {}
-
-#[derive(Debug)]
-enum IndexOptions<'a> {
-    Owned(Vec<usize>),
-    MutVec(&'a mut Vec<usize>),
-    MutSlice(&'a mut [usize]),
-}
-
-impl<'a> IndexOptions<'a> {
-    fn to_owned(&self) -> IndexOptions<'static> {
-        match self {
-            IndexOptions::Owned(o) => IndexOptions::Owned(o.to_owned()),
-            IndexOptions::MutVec(v) => IndexOptions::Owned(v.to_vec()),
-            IndexOptions::MutSlice(s) => IndexOptions::Owned(s.to_vec()),
-        }
-    }
-    fn len(&self) -> usize {
-        match self {
-            IndexOptions::Owned(a) => a.len(),
-            IndexOptions::MutVec(a) => a.len(),
-            IndexOptions::MutSlice(a) => a.len(),
-        }
-    }
-    fn as_slice(&self) -> &[usize] {
-        match self {
-            IndexOptions::Owned(a) => a.as_slice(),
-            IndexOptions::MutVec(a) => a.as_slice(),
-            IndexOptions::MutSlice(a) => a,
-        }
-    }
-
-    fn as_mut_slice(&mut self) -> &mut [usize] {
-        match self {
-            IndexOptions::Owned(a) => a.as_mut_slice(),
-            IndexOptions::MutVec(a) => a.as_mut_slice(),
-            IndexOptions::MutSlice(a) => a,
-        }
-    }
-}
 
 impl<'a> fmt::Debug for CsvRow<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("CsvRow")
             .field("data", &self.data)
             .field("indexes", &self.indexes)
-            .field("offset", &self.offset)
+            // .field("offset", &self.offset)
             .field("count_fields", &self.count_fields())
             .field("fields", &self.iter_fields().collect::<Vec<_>>())
             .finish()
     }
 }
 
-#[derive(Clone, Copy)]
-enum CsvState {
-    QuotedField,
-    Base,
+pub struct CsvReader {
+    inner: Reader,
 }
 
+impl CsvReader {
+    pub fn new() -> CsvReader {
+        CsvReader {
+            inner: ReaderBuilder::new()
+                .delimiter(b',')
+                .terminator(csv_core::Terminator::CRLF)
+                .quote(b'"')
+                .build(),
+        }
+    }
+
+    // TODO: verify that column orders are correct!
+    pub fn validate_row(&mut self, row: &str, out: &mut Vec<u8>, indexes_backing: &mut Vec<usize>) -> Result<Option<RowValidation>> {
+        let csv = self.read_row(row, out, indexes_backing)?;
+
+        match csv.record_type {
+            Some(RecordType::C) => {
+                // happy to allocate here as `C` rows are rare!
+                if let Ok(header) = AemoHeader::from_row(csv.to_owned()) {
+                    return Ok(Some(RowValidation::Header(header)));
+                }
+
+                if let Ok(footer) = AemoFooter::from_row(csv.to_owned()) {
+                    return Ok(Some(RowValidation::Footer(footer)));
+                }
+
+                Err(Error::UnexpectedRowType(csv.data.to_string()))
+            }
+            Some(RecordType::I) => Ok(Some(RowValidation::Headings(FileKey::from_row(
+                csv.to_owned(),
+            )?))),
+            Some(RecordType::D) => Ok(None),
+            None => Err(Error::UnexpectedRowType(csv.join_fields()))
+        }
+    }
+
+    pub fn read_row<'a>(&mut self, data: &'a str, out: &'a mut Vec<u8>, indexes: &'a mut Vec<usize>) -> Result<CsvRow<'a>> {
+        if !data.is_ascii() {
+            return Err(Error::UnexpectedRowType(format!(
+                "Row contained non ascii characters: {data}"
+            )));
+        }
+        if data.is_empty() {
+            return Err(Error::EmptyRow);
+        }
+
+        if out.len() != out.capacity() {
+            // initialize all elements up to capacity
+            out.iter_mut().for_each(|v| {
+                *v = 0;
+            });
+        }
+
+        if indexes.len() != indexes.capacity() {
+            // initialize all elements up to capacity
+            indexes.iter_mut().for_each(|v| {
+                *v = 0;
+            });  
+        }
+
+        // dbg!(data.len(), out.len(), indexes.len());
+
+        let (status, _bytes_read, bytes_written, num_positions) = self.inner.read_record(data.as_bytes(), out.as_mut_slice(), indexes.as_mut_slice());
+
+        // dbg!(data, data.len(), &status, bytes_read, bytes_written, num_positions);
+
+        match status {
+            // good parse
+            ReadRecordResult::Record => Ok(CsvRow {
+                // we could consider using from_utf8_unchecked here as it should be safe due to
+                // the input data being a valid str. howerver, the performance improvement
+                // of ~5% isn't worth it.
+                data: Cow::Borrowed(str::from_utf8(&out[0..bytes_written]).expect("valid UTF8")),
+                indexes: Cow::Borrowed(&indexes[0..num_positions]),
+                record_type: data[0..1].parse().ok(),
+            }),
+            // should never happen due to data is empty check above
+            ReadRecordResult::End => Err(Error::EmptyRow),
+            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!(""))),
+            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!(""))),
+            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!(""))),
+        }
+
+        
+    }
+}
+
+
 impl<'a> CsvRow<'a> {
-    pub fn record_type(&self) -> RecordType {
+    pub fn join_fields(&self) -> String {
+        self.iter_fields().collect::<Vec<_>>().join(", ")
+    }
+    pub fn record_type(&self) -> Option<RecordType> {
         self.record_type
+    }
+    pub fn is_metadata(&self) -> bool {
+        matches!(self.record_type, Some(RecordType::C))
+    }
+    pub fn is_heading(&self) -> bool {
+        matches!(self.record_type, Some(RecordType::I))
+    }
+    pub fn is_data(&self) -> bool {
+        matches!(self.record_type, Some(RecordType::D))
+    }
+    pub fn is_mmsdm_row(&self) -> bool {
+        self.record_type.is_some()
     }
     pub fn borrow<'b>(&'b mut self) -> CsvRow<'b>
     where
@@ -457,77 +496,24 @@ impl<'a> CsvRow<'a> {
     {
         CsvRow {
             data: Cow::Borrowed(&self.data.as_ref()),
-            indexes: IndexOptions::MutSlice(self.indexes.as_mut_slice()),
-            offset: self.offset,
+            indexes: Cow::Borrowed(&self.indexes.as_ref()), // IndexOptions::MutSlice(self.indexes.as_mut_slice()),
+            // offset: self.offset,
             record_type: self.record_type,
         }
     }
     fn get_end_of_field(&self, field_no: usize) -> Option<usize> {
-        let max_field_idx = self.indexes.len();
-
-        if field_no > max_field_idx {
-            return None;
-        }
-
-        if field_no == max_field_idx {
-            return Some(self.data.len());
-        }
-
-        let base = match &self.indexes {
-            IndexOptions::Owned(a) => a.get(field_no).copied(),
-            IndexOptions::MutVec(a) => a.get(field_no).copied(),
-            IndexOptions::MutSlice(a) => a.get(field_no).copied(),
-        }?;
-
-        assert!(base >= self.offset);
-
-        Some(base - self.offset)
+        self.indexes.get(field_no).copied()
     }
 
     fn get_start_of_field(&self, field_no: usize) -> Option<usize> {
-        let max_field_idx = self.indexes.len();
-
-        match field_no {
-            0 => Some(0),
-            1.. if field_no <= max_field_idx => {
-                let base = self.get_end_of_field(field_no - 1).unwrap() + 1;
-                Some(base)
-            }
-            _ => None,
+        match field_no.checked_sub(1) {
+            None => Some(0),
+            Some(field) => self.get_end_of_field(field)
         }
     }
 
     pub fn iter_fields<'b>(&'b self) -> impl Iterator<Item = &'b str> + 'b {
         (0..self.count_fields()).flat_map(|idx| self.get(idx))
-    }
-    pub fn split_at_field<'input, 'output>(
-        &'input mut self,
-        field: usize,
-    ) -> Option<(CsvRow<'output>, CsvRow<'output>)>
-    where
-        'input: 'output,
-    {
-        if field == self.indexes.len() {
-            return None;
-        }
-
-        let (lower, upper) = self.indexes.as_mut_slice().split_at_mut(field);
-        let first_upper = *upper.first().unwrap();
-
-        Some((
-            CsvRow {
-                data: Cow::Borrowed(&self.data[0..first_upper]),
-                indexes: IndexOptions::MutSlice(lower),
-                offset: 0,
-                record_type: self.record_type,
-            },
-            CsvRow {
-                data: Cow::Borrowed(&self.data[first_upper + 1..self.data.len()]),
-                indexes: IndexOptions::MutSlice(&mut upper[1..]),
-                offset: first_upper + 1,
-                record_type: self.record_type,
-            },
-        ))
     }
     pub fn to_owned(&'a self) -> CsvRow<'static> {
         CsvRow {
@@ -535,89 +521,16 @@ impl<'a> CsvRow<'a> {
                 Cow::Borrowed(b) => Cow::Owned(b.to_string()),
                 Cow::Owned(o) => Cow::Owned(o.to_string()),
             },
-            indexes: self.indexes.to_owned(),
-            offset: self.offset,
+            indexes: match &self.indexes {
+                Cow::Borrowed(b) => Cow::Owned(b.to_vec()),
+                Cow::Owned(o) => Cow::Owned(o.to_vec()),
+            },
+            // offset: self.offset,
             record_type: self.record_type,
         }
     }
-    pub fn from_data_with_vec(data: &'a str, indexes: &'a mut Vec<usize>) -> Result<CsvRow<'a>> {
-        if !data.is_ascii() {
-            return Err(Error::UnexpectedRowType(format!(
-                "Row contained non ascii characters: {data}"
-            )));
-        }
-        if data.is_empty() {
-            return Err(Error::UnexpectedRowType("row was empty".to_string()));
-        }
-        indexes.clear();
+    
 
-        let mut state = CsvState::Base;
-        for (idx, char) in data.trim_end().chars().enumerate() {
-            match (char, state) {
-                (',', CsvState::Base) => {
-                    indexes.push(idx);
-                }
-                ('"', CsvState::Base) => {
-                    state = CsvState::QuotedField;
-                }
-                ('"', CsvState::QuotedField) => {
-                    state = CsvState::Base;
-                }
-                _ => {
-                    // ignore, data only
-                }
-            }
-        }
-
-        Ok(CsvRow {
-            data: Cow::Borrowed(data.trim_end()),
-            indexes: IndexOptions::MutVec(indexes),
-            offset: 0,
-            record_type: data[0..1].parse()?,
-        })
-    }
-
-    pub fn from_data(data: &'a str) -> Result<CsvRow<'a>> {
-        if !data.is_ascii() {
-            return Err(Error::UnexpectedRowType(format!(
-                "Row contained non ascii characters: {data}"
-            )));
-        }
-        if data.is_empty() {
-            return Err(Error::UnexpectedRowType("row was empty".to_string()));
-        }
-
-        let mut indexes = Vec::with_capacity(10); // random heuristic!
-
-        let mut state = CsvState::Base;
-        for (idx, char) in data.trim_end().chars().enumerate() {
-            match (char, state) {
-                (',', CsvState::Base) => {
-                    indexes.push(idx);
-                }
-                ('"', CsvState::Base) => {
-                    state = CsvState::QuotedField;
-                }
-                ('"', CsvState::QuotedField) => {
-                    state = CsvState::Base;
-                }
-                _ => {
-                    // ignore, data only
-                }
-            }
-        }
-
-        Ok(CsvRow {
-            data: Cow::Borrowed(data.trim_end()),
-            indexes: IndexOptions::Owned(indexes),
-            offset: 0,
-            record_type: data[0..1].parse()?,
-        })
-    }
-}
-
-// impl<'a> Record for CsvRow<'a> {
-impl<'a> CsvRow<'a> {
     pub fn range(&self, i: usize) -> Option<Range<usize>> {
         if i >= self.count_fields() {
             return None;
@@ -642,9 +555,9 @@ impl<'a> CsvRow<'a> {
 
     pub fn get_opt_range(&self, name: &'static str, idx: usize) -> Result<Range<usize>> {
         if self.range(idx).map(|r| r.is_empty()).unwrap_or(true) {
-            return Ok(Range { start: 0, end: 0})
+            return Ok(Range { start: 0, end: 0 });
         }
-        
+
         self.get_range(name, idx)
     }
 
@@ -988,8 +901,6 @@ impl str::FromStr for TradingPeriod {
     }
 }
 
-// Following the pattern from: https://serde.rs/custom-date-format.html
-// To allow use with serde(with = "")
 pub mod mms_datetime {
     use crate::{DispatchPeriod, Error, Result, TradingPeriod};
     use alloc::string::ToString;
@@ -1349,9 +1260,12 @@ mod tests {
 
     #[test]
     fn test_csv_parse_header() {
-        let data = "C,NEMP.WORLD,NEXT_DAY_DISPATCH,AEMO,PUBLIC,2023/01/06,04:10:01,0000000378281515,NEXT_DAY_DISPATCH,0000000378281511";
-
-        let row = CsvRow::from_data(&data).unwrap();
+        let data = "C,NEMP.WORLD,NEXT_DAY_DISPATCH,AEMO,PUBLIC,2023/01/06,04:10:01,0000000378281515,NEXT_DAY_DISPATCH,0000000378281511\n";
+        let mut indexes = Vec::from([0; 10_000]);
+        let mut output = Vec::from([0; 10_000]);
+        let mut reader = CsvReader::new();
+        let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        
         dbg!(&row, row.iter_fields().collect::<Vec<_>>());
 
         AemoHeader::from_row(row).unwrap();
@@ -1359,14 +1273,16 @@ mod tests {
 
     #[test]
     fn csv_parse_headings() {
-        let data = "I,DISPATCH,UNIT_SOLUTION,3,SETTLEMENTDATE,RUNNO,DUID,TRADETYPE,DISPATCHINTERVAL,INTERVENTION,CONNECTIONPOINTID,DISPATCHMODE,AGCSTATUS,INITIALMW,TOTALCLEARED,RAMPDOWNRATE,RAMPUPRATE,LOWER5MIN,LOWER60SEC,LOWER6SEC,RAISE5MIN,RAISE60SEC,RAISE6SEC,DOWNEPF,UPEPF,MARGINAL5MINVALUE,MARGINAL60SECVALUE,MARGINAL6SECVALUE,MARGINALVALUE,VIOLATION5MINDEGREE,VIOLATION60SECDEGREE,VIOLATION6SECDEGREE,VIOLATIONDEGREE,LASTCHANGED,LOWERREG,RAISEREG,AVAILABILITY,RAISE6SECFLAGS,RAISE60SECFLAGS,RAISE5MINFLAGS,RAISEREGFLAGS,LOWER6SECFLAGS,LOWER60SECFLAGS,LOWER5MINFLAGS,LOWERREGFLAGS,RAISEREGAVAILABILITY,RAISEREGENABLEMENTMAX,RAISEREGENABLEMENTMIN,LOWERREGAVAILABILITY,LOWERREGENABLEMENTMAX,LOWERREGENABLEMENTMIN,RAISE6SECACTUALAVAILABILITY,RAISE60SECACTUALAVAILABILITY,RAISE5MINACTUALAVAILABILITY,RAISEREGACTUALAVAILABILITY,LOWER6SECACTUALAVAILABILITY,LOWER60SECACTUALAVAILABILITY,LOWER5MINACTUALAVAILABILITY,LOWERREGACTUALAVAILABILITY,SEMIDISPATCHCAP,DISPATCHMODETIME";
+        let data = "I,DISPATCH,UNIT_SOLUTION,3,SETTLEMENTDATE,RUNNO,DUID,TRADETYPE,DISPATCHINTERVAL,INTERVENTION,CONNECTIONPOINTID,DISPATCHMODE,AGCSTATUS,INITIALMW,TOTALCLEARED,RAMPDOWNRATE,RAMPUPRATE,LOWER5MIN,LOWER60SEC,LOWER6SEC,RAISE5MIN,RAISE60SEC,RAISE6SEC,DOWNEPF,UPEPF,MARGINAL5MINVALUE,MARGINAL60SECVALUE,MARGINAL6SECVALUE,MARGINALVALUE,VIOLATION5MINDEGREE,VIOLATION60SECDEGREE,VIOLATION6SECDEGREE,VIOLATIONDEGREE,LASTCHANGED,LOWERREG,RAISEREG,AVAILABILITY,RAISE6SECFLAGS,RAISE60SECFLAGS,RAISE5MINFLAGS,RAISEREGFLAGS,LOWER6SECFLAGS,LOWER60SECFLAGS,LOWER5MINFLAGS,LOWERREGFLAGS,RAISEREGAVAILABILITY,RAISEREGENABLEMENTMAX,RAISEREGENABLEMENTMIN,LOWERREGAVAILABILITY,LOWERREGENABLEMENTMAX,LOWERREGENABLEMENTMIN,RAISE6SECACTUALAVAILABILITY,RAISE60SECACTUALAVAILABILITY,RAISE5MINACTUALAVAILABILITY,RAISEREGACTUALAVAILABILITY,LOWER6SECACTUALAVAILABILITY,LOWER60SECACTUALAVAILABILITY,LOWER5MINACTUALAVAILABILITY,LOWERREGACTUALAVAILABILITY,SEMIDISPATCHCAP,DISPATCHMODETIME\n";
+        let mut indexes = Vec::from([0; 10_000]);
+        let mut output = Vec::from([0; 10_000]);
+        let mut reader = CsvReader::new();
+        let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
 
-        let mut row = CsvRow::from_data(&data).unwrap();
+        // let (_, headings) = row.split_at_field(3).unwrap();
+        // dbg!(&headings);
 
-        let (_, headings) = row.split_at_field(3).unwrap();
-        dbg!(&headings);
-
-        assert_eq!(headings.iter_fields().count(), 57);
+        assert_eq!(row.iter_fields().count(), 61);
 
         FileKey::from_row(row).unwrap();
     }
