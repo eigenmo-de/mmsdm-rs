@@ -442,7 +442,7 @@ pub struct SettlementsCpdata7Row<'data> {
     /// Settlement run no
     pub versionno: rust_decimal::Decimal,
     /// Settlements Trading Interval.
-    pub periodid: mmsdm_core::TradingPeriod,
+    pub periodid: rust_decimal::Decimal,
     /// Unique participant identifier
     pub participantid: core::ops::Range<usize>,
     /// Connection point identifier
@@ -631,7 +631,12 @@ impl mmsdm_core::GetTable for SettlementsCpdata7 {
                     field_mapping.0[1],
                     mmsdm_core::mms_decimal::parse,
                 )?,
-            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[2])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             participantid: row.get_range("participantid", field_mapping.0[3])?,
             tcpid: row.get_range("tcpid", field_mapping.0[4])?,
             regionid: row.get_opt_range("regionid", field_mapping.0[5])?,
@@ -902,7 +907,7 @@ impl mmsdm_core::GetTable for SettlementsCpdata7 {
 pub struct SettlementsCpdata7PrimaryKey {
     pub mda: alloc::string::String,
     pub participantid: alloc::string::String,
-    pub periodid: mmsdm_core::TradingPeriod,
+    pub periodid: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
     pub tcpid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
@@ -961,10 +966,7 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata7 {
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
+                    arrow::datatypes::DataType::Decimal128(10, 0),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1123,7 +1125,8 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata7 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             tcpid_array: arrow::array::builder::StringBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -1187,7 +1190,13 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata7 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
         builder.participantid_array.append_value(row.participantid());
         builder.tcpid_array.append_value(row.tcpid());
         builder.regionid_array.append_option(row.regionid());
@@ -1483,7 +1492,7 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdata7 {
 pub struct SettlementsCpdata7Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     tcpid_array: arrow::array::builder::StringBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
@@ -2516,7 +2525,7 @@ pub struct SettlementsGendata6Row<'data> {
     /// Settlement run no
     pub versionno: rust_decimal::Decimal,
     /// Settlements Trading Interval.
-    pub periodid: mmsdm_core::TradingPeriod,
+    pub periodid: rust_decimal::Decimal,
     /// Unique participant identifier
     pub participantid: core::ops::Range<usize>,
     /// Station Identifier
@@ -2691,7 +2700,12 @@ impl mmsdm_core::GetTable for SettlementsGendata6 {
                     field_mapping.0[1],
                     mmsdm_core::mms_decimal::parse,
                 )?,
-            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[2])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             participantid: row.get_opt_range("participantid", field_mapping.0[3])?,
             stationid: row.get_range("stationid", field_mapping.0[4])?,
             duid: row.get_range("duid", field_mapping.0[5])?,
@@ -2937,7 +2951,7 @@ impl mmsdm_core::GetTable for SettlementsGendata6 {
 pub struct SettlementsGendata6PrimaryKey {
     pub duid: alloc::string::String,
     pub gensetid: alloc::string::String,
-    pub periodid: mmsdm_core::TradingPeriod,
+    pub periodid: rust_decimal::Decimal,
     pub regionid: alloc::string::String,
     pub settlementdate: chrono::NaiveDateTime,
     pub stationid: alloc::string::String,
@@ -3001,10 +3015,7 @@ impl mmsdm_core::ArrowSchema for SettlementsGendata6 {
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
+                    arrow::datatypes::DataType::Decimal128(10, 0),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3148,7 +3159,8 @@ impl mmsdm_core::ArrowSchema for SettlementsGendata6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             participantid_array: arrow::array::builder::StringBuilder::new(),
             stationid_array: arrow::array::builder::StringBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
@@ -3205,7 +3217,13 @@ impl mmsdm_core::ArrowSchema for SettlementsGendata6 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
         builder.participantid_array.append_option(row.participantid());
         builder.stationid_array.append_value(row.stationid());
         builder.duid_array.append_value(row.duid());
@@ -3460,7 +3478,7 @@ impl mmsdm_core::ArrowSchema for SettlementsGendata6 {
 pub struct SettlementsGendata6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
     participantid_array: arrow::array::builder::StringBuilder,
     stationid_array: arrow::array::builder::StringBuilder,
     duid_array: arrow::array::builder::StringBuilder,
