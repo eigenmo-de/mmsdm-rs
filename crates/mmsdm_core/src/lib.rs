@@ -1,6 +1,6 @@
 #![deny(clippy::all)]
 #![deny(warnings)]
-// #![no_std]
+#![no_std]
 extern crate alloc;
 use core::{
     cmp::Ordering,
