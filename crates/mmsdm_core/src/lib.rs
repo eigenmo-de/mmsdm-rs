@@ -461,12 +461,10 @@ impl CsvReader {
             }),
             // should never happen due to data is empty check above
             ReadRecordResult::End => Err(Error::EmptyRow),
-            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!(""))),
-            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!(""))),
-            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!(""))),
+            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!("InputEmpty for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
+            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!("OutputFull for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
+            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!("OutputEndsFull for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
         }
-
-        
     }
 }
 
