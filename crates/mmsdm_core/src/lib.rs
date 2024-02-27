@@ -425,6 +425,11 @@ impl CsvReader {
                 "Row contained non ascii characters: {data}"
             )));
         }
+        if !data.ends_with('\n') {
+            return Err(Error::UnexpectedRowType(format!(
+                "Row didn't finish with a newline, unable to parse. It's reccomended to use `BufRead::read_line` or similar which doesn't strip newlines. Data was: {data}"
+            )));
+        }
         if data.is_empty() {
             return Err(Error::EmptyRow);
         }
@@ -443,11 +448,7 @@ impl CsvReader {
             });  
         }
 
-        // dbg!(data.len(), out.len(), indexes.len());
-
         let (status, _bytes_read, bytes_written, num_positions) = self.inner.read_record(data.as_bytes(), out.as_mut_slice(), indexes.as_mut_slice());
-
-        // dbg!(data, data.len(), &status, bytes_read, bytes_written, num_positions);
 
         match status {
             // good parse
@@ -1276,9 +1277,6 @@ mod tests {
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
         let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
-
-        // let (_, headings) = row.split_at_field(3).unwrap();
-        // dbg!(&headings);
 
         assert_eq!(row.iter_fields().count(), 61);
 

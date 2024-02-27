@@ -80,10 +80,7 @@ where
                     }
                 }
             }
-
-            dbg!(count, csv_reader.inner.line());
         }
-
 
         Ok(FileReader {
             reader,
