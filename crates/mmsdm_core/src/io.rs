@@ -115,7 +115,7 @@ where
 
         let field_mapping = T::field_mapping_from_row(closest_key.backing_data().to_owned())?;
 
-        Ok(IterTyped::new(field_mapping,  BufReader::new(self.reader.by_index(0)?)))
+        Ok(IterTyped::new(&closest_key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
     }
 
     pub fn iter_exact<'sub_reader, T>(&'sub_reader mut self) -> Result<IterTyped<'sub_reader, T>>
@@ -138,7 +138,7 @@ where
 
         let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
 
-        Ok(IterTyped::new(field_mapping,  BufReader::new(self.reader.by_index(0)?)))
+        Ok(IterTyped::new(&key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
     }
 }
 
@@ -153,17 +153,15 @@ pub struct IterTyped<'reader, T: GetTable> {
     reader: CsvReader,
 }
 
-
-
 impl<'reader, T> IterTyped<'reader, T>
 where
     T: GetTable,
 {
-    pub fn new(mapping: T::FieldMapping, reader: BufReader<ZipFile<'reader>>) -> IterTyped<'reader, T> {
+    pub fn new(key: &FileKey<'_>, mapping: T::FieldMapping, reader: BufReader<ZipFile<'reader>>) -> IterTyped<'reader, T> {
         IterTyped {
             inner: reader,
             ty: PhantomData,
-            version: T::VERSION,
+            version: key.version,
             // must intialize enough spots to hold the most expected columns. this should be sufficient
             indexes_backing: Vec::from([0; 1000]),
             // must initialize enough bytes to hold the biggest expected row. this should be sufficient

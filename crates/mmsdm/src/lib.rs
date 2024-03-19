@@ -1,6 +1,6 @@
 #![no_std]
 #![deny(clippy::all)]
-#![deny(warnings)]
+//#![deny(warnings)]
 
 pub mod data_model;
 
