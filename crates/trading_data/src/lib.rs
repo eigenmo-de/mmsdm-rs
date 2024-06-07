@@ -324,7 +324,7 @@ pub struct TradingInterconnectorres2Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## TRADINGINTERCONNECT
-///  _TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.<br>Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period.<br>_
+///  _TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.<br>Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period._
 ///
 /// * Data Set Name: Trading
 /// * File Name: Interconnectorres
@@ -486,7 +486,7 @@ impl mmsdm_core::GetTable for TradingInterconnectorres2 {
                 "settlementdate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -509,9 +509,13 @@ impl mmsdm_core::GetTable for TradingInterconnectorres2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1129,7 +1133,7 @@ impl mmsdm_core::GetTable for TradingPrice3 {
                 "settlementdate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1152,9 +1156,13 @@ impl mmsdm_core::GetTable for TradingPrice3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

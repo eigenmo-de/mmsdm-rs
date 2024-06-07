@@ -8,7 +8,7 @@ mod rust;
 mod sql_server_tables;
 mod analyse;
 
-pub const VERSION: &str = "5.2";
+pub const VERSION: &str = "5.3";
 
 
 #[derive(structopt::StructOpt)]

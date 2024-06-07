@@ -158,7 +158,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimit1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -180,9 +180,13 @@ impl mmsdm_core::GetTable for MtpasaReservelimit1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -500,7 +504,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -523,9 +527,13 @@ impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -875,7 +883,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -896,9 +904,13 @@ impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1078,7 +1090,7 @@ pub struct ReserveDataReserve1Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## RESERVE
-///  _RESERVE sets out specific reserve requirements for dispatch, predispatch and STPASA, for each half-hour interval by region. Updates show as new versions for a date.<br>_
+///  _RESERVE sets out specific reserve requirements for dispatch, predispatch and STPASA, for each half-hour interval by region. Updates show as new versions for a date._
 ///
 /// * Data Set Name: Reserve Data
 /// * File Name: Reserve
@@ -1327,7 +1339,7 @@ impl mmsdm_core::GetTable for ReserveDataReserve1 {
                 "settlementdate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1350,9 +1362,13 @@ impl mmsdm_core::GetTable for ReserveDataReserve1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

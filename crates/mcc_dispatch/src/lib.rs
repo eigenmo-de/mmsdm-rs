@@ -92,7 +92,7 @@ impl mmsdm_core::GetTable for MccCasesolution1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -112,9 +112,13 @@ impl mmsdm_core::GetTable for MccCasesolution1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -324,7 +328,7 @@ impl mmsdm_core::GetTable for MccConstraintsolution1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -345,9 +349,13 @@ impl mmsdm_core::GetTable for MccConstraintsolution1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

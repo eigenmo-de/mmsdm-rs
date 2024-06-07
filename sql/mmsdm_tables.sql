@@ -266,12 +266,13 @@ go
 create nonclustered index MmsdmAsofferOfferrpowerdata1FileLogId on mmsdm.AsofferOfferrpowerdata1(file_log_id)
 go
                         
-create table mmsdm.OfferBiddayoffer2 (
+create table mmsdm.OfferBiddayoffer3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [duid] varchar(10) not null,
     [bidtype] varchar(10) not null,
     [settlementdate] datetime2 not null,
     [offerdate] datetime2 not null,
+    [direction] varchar(20) not null,
     [versionno] decimal(22,0) null,
     [participantid] varchar(10) null,
     [dailyenergyconstraint] decimal(12,6) null,
@@ -300,18 +301,19 @@ create table mmsdm.OfferBiddayoffer2 (
     [rebid_decision_time] varchar(20) null,
     [rebid_category] varchar(1) null,
     [reference_id] varchar(100) null,
-    primary key ([bidtype],[duid],[offerdate],[settlementdate])
+    primary key ([bidtype],[direction],[duid],[offerdate],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmOfferBiddayoffer2FileLogId on mmsdm.OfferBiddayoffer2(file_log_id)
+create nonclustered index MmsdmOfferBiddayoffer3FileLogId on mmsdm.OfferBiddayoffer3(file_log_id)
 go
                         
-create table mmsdm.BidBiddayofferD2 (
+create table mmsdm.BidBiddayofferD3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [duid] varchar(10) not null,
     [bidtype] varchar(10) not null,
+    [direction] varchar(20) not null,
     [bidsettlementdate] datetime2 null,
     [offerdate] datetime2 null,
     [versionno] decimal(22,0) null,
@@ -337,11 +339,11 @@ create table mmsdm.BidBiddayofferD2 (
     [lastchanged] datetime2 null,
     [mr_factor] decimal(16,6) null,
     [entrytype] varchar(20) null,
-    primary key ([bidtype],[duid],[settlementdate])
+    primary key ([bidtype],[direction],[duid],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmBidBiddayofferD2FileLogId on mmsdm.BidBiddayofferD2(file_log_id)
+create nonclustered index MmsdmBidBiddayofferD3FileLogId on mmsdm.BidBiddayofferD3(file_log_id)
 go
                         
 create table mmsdm.BidsBidofferfiletrk1 (
@@ -365,12 +367,13 @@ go
 create nonclustered index MmsdmBidsBidofferfiletrk1FileLogId on mmsdm.BidsBidofferfiletrk1(file_log_id)
 go
                         
-create table mmsdm.BidsBidofferperiod1 (
+create table mmsdm.BidsBidofferperiod2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [duid] varchar(20) not null,
     [bidtype] varchar(10) not null,
     [tradingdate] datetime2 not null,
     [offerdatetime] datetime2 not null,
+    [direction] varchar(20) not null,
     [periodid] decimal(3,0) not null,
     [maxavail] decimal(8,3) null,
     [fixedload] decimal(8,3) null,
@@ -391,18 +394,22 @@ create table mmsdm.BidsBidofferperiod1 (
     [bandavail9] decimal(8,3) null,
     [bandavail10] decimal(8,3) null,
     [pasaavailability] decimal(8,3) null,
-    primary key ([bidtype],[duid],[offerdatetime],[periodid],[tradingdate])
+    [energylimit] decimal(15,5) null,
+    [periodidto] decimal(3,0) null,
+    primary key ([bidtype],[direction],[duid],[offerdatetime],[periodid],[tradingdate])
 )
 go
 
-create nonclustered index MmsdmBidsBidofferperiod1FileLogId on mmsdm.BidsBidofferperiod1(file_log_id)
+create nonclustered index MmsdmBidsBidofferperiod2FileLogId on mmsdm.BidsBidofferperiod2(file_log_id)
 go
                         
-create table mmsdm.BidBidperofferD2 (
+create table mmsdm.BidBidperofferD3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [duid] varchar(10) not null,
     [bidtype] varchar(10) not null,
+    [direction] varchar(20) not null,
+    [interval_datetime] datetime2 not null,
     [bidsettlementdate] datetime2 null,
     [offerdate] datetime2 null,
     [periodid] decimal(22,0) null,
@@ -427,13 +434,13 @@ create table mmsdm.BidBidperofferD2 (
     [bandavail10] decimal(22,0) null,
     [lastchanged] datetime2 null,
     [pasaavailability] decimal(12,0) null,
-    [interval_datetime] datetime2 not null,
     [mr_capacity] decimal(6,0) null,
-    primary key ([bidtype],[duid],[interval_datetime],[settlementdate])
+    [energylimit] decimal(15,5) null,
+    primary key ([bidtype],[direction],[duid],[interval_datetime],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmBidBidperofferD2FileLogId on mmsdm.BidBidperofferD2(file_log_id)
+create nonclustered index MmsdmBidBidperofferD3FileLogId on mmsdm.BidBidperofferD3(file_log_id)
 go
                         
 create table mmsdm.BidsMnspBidofferperiod1 (
@@ -683,7 +690,7 @@ go
 create nonclustered index MmsdmBillingAspayments7FileLogId on mmsdm.BillingAspayments7(file_log_id)
 go
                         
-create table mmsdm.BillingAsrecovery8 (
+create table mmsdm.BillingAsrecovery9 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [regionid] varchar(10) not null,
     [contractyear] decimal(4,0) not null,
@@ -715,8 +722,8 @@ create table mmsdm.BillingAsrecovery8 (
     [systemrestart_gen] decimal(15,5) null,
     [lower5min] decimal(15,5) null,
     [raise5min] decimal(15,5) null,
-    [lowerreg] decimal(15,5) null,
-    [raisereg] decimal(15,5) null,
+    [lowerreg] decimal(18,8) null,
+    [raisereg] decimal(18,8) null,
     [lower5min_gen] decimal(16,6) null,
     [raise5min_gen] decimal(16,6) null,
     [lowerreg_gen] decimal(16,6) null,
@@ -729,11 +736,17 @@ create table mmsdm.BillingAsrecovery8 (
     [lower1sec] decimal(18,8) null,
     [raise1sec_gen] decimal(18,8) null,
     [lower1sec_gen] decimal(18,8) null,
+    [lowerreg_ace] decimal(18,8) null,
+    [raisereg_ace] decimal(18,8) null,
+    [raise1sec_ace] decimal(18,8) null,
+    [raise1sec_asoe] decimal(18,8) null,
+    [lower1sec_ace] decimal(18,8) null,
+    [lower1sec_asoe] decimal(18,8) null,
     primary key ([billrunno],[contractyear],[participantid],[regionid],[weekno])
 )
 go
 
-create nonclustered index MmsdmBillingAsrecovery8FileLogId on mmsdm.BillingAsrecovery8(file_log_id)
+create nonclustered index MmsdmBillingAsrecovery9FileLogId on mmsdm.BillingAsrecovery9(file_log_id)
 go
                         
 create table mmsdm.BillingCpdata7 (
@@ -1178,7 +1191,7 @@ go
 create nonclustered index MmsdmBillingApcCompensation2FileLogId on mmsdm.BillingApcCompensation2(file_log_id)
 go
                         
-create table mmsdm.BillingApcRecovery2 (
+create table mmsdm.BillingApcRecovery3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [contractyear] decimal(4,0) not null,
     [weekno] decimal(3,0) not null,
@@ -1193,11 +1206,13 @@ create table mmsdm.BillingApcRecovery2 (
     [participant_demand] decimal(18,8) null,
     [region_demand] decimal(18,8) null,
     [lastchanged] datetime2 null,
+    [participant_ace_mwh] decimal(18,8) null,
+    [region_ace_mwh] decimal(18,8) null,
     primary key ([apeventid],[billrunno],[claimid],[contractyear],[participantid],[regionid],[weekno])
 )
 go
 
-create nonclustered index MmsdmBillingApcRecovery2FileLogId on mmsdm.BillingApcRecovery2(file_log_id)
+create nonclustered index MmsdmBillingApcRecovery3FileLogId on mmsdm.BillingApcRecovery3(file_log_id)
 go
                         
 create table mmsdm.BillingBillingCo2ePublication1 (
@@ -1230,7 +1245,7 @@ go
 create nonclustered index MmsdmBillingBillingCo2ePublicationTrk1FileLogId on mmsdm.BillingBillingCo2ePublicationTrk1(file_log_id)
 go
                         
-create table mmsdm.BillingDailyEnergySummary1 (
+create table mmsdm.BillingDailyEnergySummary2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [contractyear] decimal(4,0) not null,
     [weekno] decimal(3,0) not null,
@@ -1241,14 +1256,22 @@ create table mmsdm.BillingDailyEnergySummary1 (
     [customer_energy_purchased] decimal(18,8) null,
     [generator_energy_sold] decimal(18,8) null,
     [generator_energy_purchased] decimal(18,8) null,
+    [ace_mwh] decimal(18,8) null,
+    [asoe_mwh] decimal(18,8) null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
+    [ce_mwh] decimal(18,8) null,
+    [ufea_mwh] decimal(18,8) null,
+    [total_mwh] decimal(18,8) null,
+    [total_amount] decimal(18,8) null,
     primary key ([billrunno],[contractyear],[participantid],[regionid],[settlementdate],[weekno])
 )
 go
 
-create nonclustered index MmsdmBillingDailyEnergySummary1FileLogId on mmsdm.BillingDailyEnergySummary1(file_log_id)
+create nonclustered index MmsdmBillingDailyEnergySummary2FileLogId on mmsdm.BillingDailyEnergySummary2(file_log_id)
 go
                         
-create table mmsdm.BillingBillingDirectionReconOther1 (
+create table mmsdm.BillingBillingDirectionReconOther2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [contractyear] decimal(4,0) not null,
     [weekno] decimal(3,0) not null,
@@ -1268,11 +1291,14 @@ create table mmsdm.BillingBillingDirectionReconOther1 (
     [regional_customer_energy] decimal(18,8) null,
     [regional_generator_energy] decimal(18,8) null,
     [regional_benefit_factor] decimal(18,8) null,
+    [region_ace_mwh] decimal(18,8) null,
+    [region_asoe_mwh] decimal(18,8) null,
+    [direction_service_id] varchar(20) null,
     primary key ([billrunno],[contractyear],[direction_id],[regionid],[weekno])
 )
 go
 
-create nonclustered index MmsdmBillingBillingDirectionReconOther1FileLogId on mmsdm.BillingBillingDirectionReconOther1(file_log_id)
+create nonclustered index MmsdmBillingBillingDirectionReconOther2FileLogId on mmsdm.BillingBillingDirectionReconOther2(file_log_id)
 go
                         
 create table mmsdm.BillingDirFinalAmount1 (
@@ -1400,6 +1426,60 @@ go
 create nonclustered index MmsdmBillingEftshortfallDetail1FileLogId on mmsdm.BillingEftshortfallDetail1(file_log_id)
 go
                         
+create table mmsdm.BillingEnergyGensetDetail1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [contractyear] decimal(4,0) not null,
+    [weekno] decimal(3,0) not null,
+    [billrunno] decimal(4,0) not null,
+    [participantid] varchar(20) not null,
+    [stationid] varchar(20) not null,
+    [duid] varchar(20) not null,
+    [gensetid] varchar(20) not null,
+    [regionid] varchar(20) not null,
+    [connectionpointid] varchar(20) not null,
+    [meterid] varchar(20) not null,
+    [ce_mwh] decimal(18,8) null,
+    [ufea_mwh] decimal(18,8) null,
+    [ace_mwh] decimal(18,8) null,
+    [asoe_mwh] decimal(18,8) null,
+    [total_mwh] decimal(18,8) null,
+    [dme_mwh] decimal(18,8) null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
+    [total_amount] decimal(18,8) null,
+    [lastchanged] datetime2 null,
+    primary key ([billrunno],[connectionpointid],[contractyear],[duid],[gensetid],[meterid],[participantid],[regionid],[stationid],[weekno])
+)
+go
+
+create nonclustered index MmsdmBillingEnergyGensetDetail1FileLogId on mmsdm.BillingEnergyGensetDetail1(file_log_id)
+go
+                        
+create table mmsdm.BillingEnergyTransaction1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [contractyear] decimal(4,0) not null,
+    [weekno] decimal(3,0) not null,
+    [billrunno] decimal(4,0) not null,
+    [participantid] varchar(20) not null,
+    [connectionpointid] varchar(20) not null,
+    [regionid] varchar(20) not null,
+    [ce_mwh] decimal(18,8) null,
+    [ufea_mwh] decimal(18,8) null,
+    [ace_mwh] decimal(18,8) null,
+    [asoe_mwh] decimal(18,8) null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
+    [total_mwh] decimal(18,8) null,
+    [total_amount] decimal(18,8) null,
+    [dme_mwh] decimal(18,8) null,
+    [lastchanged] datetime2 null,
+    primary key ([billrunno],[connectionpointid],[contractyear],[participantid],[regionid],[weekno])
+)
+go
+
+create nonclustered index MmsdmBillingEnergyTransaction1FileLogId on mmsdm.BillingEnergyTransaction1(file_log_id)
+go
+                        
 create table mmsdm.BillingEnergyTranSaps1 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [contractyear] decimal(4,0) not null,
@@ -1471,7 +1551,7 @@ go
 create nonclustered index MmsdmBillingNmasTstPayments1FileLogId on mmsdm.BillingNmasTstPayments1(file_log_id)
 go
                         
-create table mmsdm.BillingNmasTstRecovery1 (
+create table mmsdm.BillingNmasTstRecovery2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [contractyear] decimal(4,0) not null,
     [weekno] decimal(3,0) not null,
@@ -1493,11 +1573,19 @@ create table mmsdm.BillingNmasTstRecovery1 (
     [nem_generation] decimal(18,8) null,
     [recovery_amount] decimal(18,8) null,
     [lastchanged] datetime2 null,
+    [participant_ace_mwh] decimal(18,8) null,
+    [region_ace_mwh] decimal(18,8) null,
+    [ace_portion] decimal(18,8) null,
+    [asoe_portion] decimal(18,8) null,
+    [participant_asoe_mwh] decimal(18,8) null,
+    [region_asoe_mwh] decimal(18,8) null,
+    [recoveryamount_ace] decimal(18,8) null,
+    [recoveryamount_asoe] decimal(18,8) null,
     primary key ([billrunno],[contractid],[contractyear],[participantid],[regionid],[service],[weekno])
 )
 go
 
-create nonclustered index MmsdmBillingNmasTstRecovery1FileLogId on mmsdm.BillingNmasTstRecovery1(file_log_id)
+create nonclustered index MmsdmBillingNmasTstRecovery2FileLogId on mmsdm.BillingNmasTstRecovery2(file_log_id)
 go
                         
 create table mmsdm.BillingNmasTstRecvryRbf1 (
@@ -1663,7 +1751,7 @@ go
 create nonclustered index MmsdmBillingReservetraderpayment1FileLogId on mmsdm.BillingReservetraderpayment1(file_log_id)
 go
                         
-create table mmsdm.BillingReservetraderrecovery2 (
+create table mmsdm.BillingReservetraderrecovery3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [contractyear] decimal(4,0) not null,
     [weekno] decimal(3,0) not null,
@@ -1679,11 +1767,13 @@ create table mmsdm.BillingReservetraderrecovery2 (
     [eligibility_end_interval] datetime2 null,
     [recovery_amount] decimal(18,8) null,
     [excluded_energy] decimal(18,8) null,
+    [participant_ace_mwh] decimal(18,8) null,
+    [region_ace_mwh] decimal(18,8) null,
     primary key ([billrunno],[contractyear],[participantid],[payment_id],[publication_id],[regionid],[weekno])
 )
 go
 
-create nonclustered index MmsdmBillingReservetraderrecovery2FileLogId on mmsdm.BillingReservetraderrecovery2(file_log_id)
+create nonclustered index MmsdmBillingReservetraderrecovery3FileLogId on mmsdm.BillingReservetraderrecovery3(file_log_id)
 go
                         
 create table mmsdm.OperationalDemandActual3 (
@@ -2077,7 +2167,7 @@ go
 create nonclustered index MmsdmDispatchInterconnectorres3FileLogId on mmsdm.DispatchInterconnectorres3(file_log_id)
 go
                         
-create table mmsdm.DispatchUnitSolution4 (
+create table mmsdm.DispatchUnitSolution5 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [runno] decimal(3,0) not null,
@@ -2144,11 +2234,14 @@ create table mmsdm.DispatchUnitSolution4 (
     [lower1secflags] decimal(3,0) null,
     [raise1secactualavailability] decimal(16,6) null,
     [lower1secactualavailability] decimal(16,6) null,
+    [initial_energy_storage] decimal(15,5) null,
+    [energy_storage] decimal(15,5) null,
+    [min_availability] decimal(15,5) null,
     primary key ([duid],[intervention],[runno],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmDispatchUnitSolution4FileLogId on mmsdm.DispatchUnitSolution4(file_log_id)
+create nonclustered index MmsdmDispatchUnitSolution5FileLogId on mmsdm.DispatchUnitSolution5(file_log_id)
 go
                         
 create table mmsdm.DispatchOffertrk1 (
@@ -2241,7 +2334,7 @@ go
 create nonclustered index MmsdmDispatchPrice5FileLogId on mmsdm.DispatchPrice5(file_log_id)
 go
                         
-create table mmsdm.DispatchRegionsum7 (
+create table mmsdm.DispatchRegionsum8 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [runno] decimal(3,0) not null,
@@ -2363,11 +2456,16 @@ create table mmsdm.DispatchRegionsum7 (
     [lower1seclocaldispatch] decimal(15,5) null,
     [raise1secactualavailability] decimal(16,6) null,
     [lower1secactualavailability] decimal(16,6) null,
+    [bdu_energy_storage] decimal(15,5) null,
+    [bdu_min_avail] decimal(15,5) null,
+    [bdu_max_avail] decimal(15,5) null,
+    [bdu_clearedmw_gen] decimal(15,5) null,
+    [bdu_clearedmw_load] decimal(15,5) null,
     primary key ([dispatchinterval],[intervention],[regionid],[runno],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmDispatchRegionsum7FileLogId on mmsdm.DispatchRegionsum7(file_log_id)
+create nonclustered index MmsdmDispatchRegionsum8FileLogId on mmsdm.DispatchRegionsum8(file_log_id)
 go
                         
 create table mmsdm.DispatchocdConstraintFcasOcd1 (
@@ -3361,108 +3459,6 @@ go
 create nonclustered index MmsdmMrPerofferStack1FileLogId on mmsdm.MrPerofferStack1(file_log_id)
 go
                         
-create table mmsdm.SettlementsFcascomp5 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [participantid] varchar(10) not null,
-    [duid] varchar(10) not null,
-    [regionid] varchar(10) null,
-    [periodid] decimal(3,0) not null,
-    [ccprice] decimal(15,5) null,
-    [clearedmw] decimal(15,5) null,
-    [unconstrainedmw] decimal(15,5) null,
-    [ebp] decimal(15,5) null,
-    [tlf] decimal(7,5) null,
-    [rrp] decimal(15,5) null,
-    [excessgen] decimal(15,5) null,
-    [fcascomp] decimal(15,5) null,
-    [lastchanged] datetime2 null,
-    primary key ([duid],[participantid],[periodid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsFcascomp5FileLogId on mmsdm.SettlementsFcascomp5(file_log_id)
-go
-                        
-create table mmsdm.SettlementsIntervention5 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [periodid] decimal(3,0) not null,
-    [contractid] varchar(10) null,
-    [contractversion] decimal(3,0) null,
-    [participantid] varchar(10) null,
-    [regionid] varchar(10) null,
-    [duid] varchar(10) not null,
-    [rcf] char(1) null,
-    [interventionpayment] decimal(12,5) null,
-    [lastchanged] datetime2 null,
-    primary key ([duid],[periodid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsIntervention5FileLogId on mmsdm.SettlementsIntervention5(file_log_id)
-go
-                        
-create table mmsdm.SettlementsInterventionrecovery5 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [periodid] decimal(3,0) not null,
-    [contractid] varchar(10) not null,
-    [rcf] char(1) null,
-    [participantid] varchar(10) not null,
-    [participantdemand] decimal(12,5) null,
-    [totaldemand] decimal(12,5) null,
-    [interventionpayment] decimal(12,5) null,
-    [interventionamount] decimal(12,5) null,
-    [lastchanged] datetime2 null,
-    [regionid] varchar(10) null,
-    primary key ([contractid],[participantid],[periodid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsInterventionrecovery5FileLogId on mmsdm.SettlementsInterventionrecovery5(file_log_id)
-go
-                        
-create table mmsdm.SettlementsMrPayment5 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [regionid] varchar(10) not null,
-    [participantid] varchar(10) null,
-    [duid] varchar(10) not null,
-    [periodid] decimal(3,0) not null,
-    [mr_capacity] decimal(16,6) null,
-    [uncapped_payment] decimal(16,6) null,
-    [capped_payment] decimal(16,6) null,
-    [lastchanged] datetime2 null,
-    primary key ([duid],[periodid],[regionid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsMrPayment5FileLogId on mmsdm.SettlementsMrPayment5(file_log_id)
-go
-                        
-create table mmsdm.SettlementsMrRecovery5 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [regionid] varchar(10) not null,
-    [participantid] varchar(10) null,
-    [duid] varchar(10) not null,
-    [periodid] decimal(3,0) not null,
-    [arodef] decimal(16,6) null,
-    [nta] decimal(16,6) null,
-    [lastchanged] datetime2 null,
-    primary key ([duid],[periodid],[regionid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsMrRecovery5FileLogId on mmsdm.SettlementsMrRecovery5(file_log_id)
-go
-                        
 create table mmsdm.TradingUnitSolution2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
@@ -4214,6 +4210,35 @@ create table mmsdm.MarketConfigBidtypestrk1 (
 go
 
 create nonclustered index MmsdmMarketConfigBidtypestrk1FileLogId on mmsdm.MarketConfigBidtypestrk1(file_log_id)
+go
+                        
+create table mmsdm.MarketConfigFcasregusefactors1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [effectivedate] datetime2 not null,
+    [versionno] decimal(3,0) not null,
+    [regionid] varchar(20) not null,
+    [bidtype] varchar(20) not null,
+    [periodid] decimal(3,0) not null,
+    [usage_factor] decimal(8,3) null,
+    [lastchanged] datetime2 null,
+    primary key ([bidtype],[effectivedate],[periodid],[regionid],[versionno])
+)
+go
+
+create nonclustered index MmsdmMarketConfigFcasregusefactors1FileLogId on mmsdm.MarketConfigFcasregusefactors1(file_log_id)
+go
+                        
+create table mmsdm.MarketConfigFcasregusefactorsTrk1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [effectivedate] datetime2 not null,
+    [versionno] decimal(3,0) not null,
+    [authoriseddate] datetime2 null,
+    [lastchanged] datetime2 null,
+    primary key ([effectivedate],[versionno])
+)
+go
+
+create nonclustered index MmsdmMarketConfigFcasregusefactorsTrk1FileLogId on mmsdm.MarketConfigFcasregusefactorsTrk1(file_log_id)
 go
                         
 create table mmsdm.MarketConfigInterconnector1 (
@@ -5199,7 +5224,7 @@ go
 create nonclustered index MmsdmP5minPricesensitivities1FileLogId on mmsdm.P5minPricesensitivities1(file_log_id)
 go
                         
-create table mmsdm.P5minRegionsolution8 (
+create table mmsdm.P5minRegionsolution9 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [run_datetime] datetime2 not null,
     [interval_datetime] datetime2 not null,
@@ -5313,11 +5338,16 @@ create table mmsdm.P5minRegionsolution8 (
     [lower1secrop] decimal(15,5) null,
     [raise1seclocaldispatch] decimal(15,5) null,
     [lower1seclocaldispatch] decimal(15,5) null,
+    [bdu_energy_storage] decimal(15,5) null,
+    [bdu_min_avail] decimal(15,5) null,
+    [bdu_max_avail] decimal(15,5) null,
+    [bdu_clearedmw_gen] decimal(15,5) null,
+    [bdu_clearedmw_load] decimal(15,5) null,
     primary key ([interval_datetime],[regionid],[run_datetime],[intervention])
 )
 go
 
-create nonclustered index MmsdmP5minRegionsolution8FileLogId on mmsdm.P5minRegionsolution8(file_log_id)
+create nonclustered index MmsdmP5minRegionsolution9FileLogId on mmsdm.P5minRegionsolution9(file_log_id)
 go
                         
 create table mmsdm.P5minScenariodemand1 (
@@ -5347,7 +5377,7 @@ go
 create nonclustered index MmsdmP5minScenariodemandtrk1FileLogId on mmsdm.P5minScenariodemandtrk1(file_log_id)
 go
                         
-create table mmsdm.P5minUnitsolution5 (
+create table mmsdm.P5minUnitsolution6 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [run_datetime] datetime2 not null,
     [interval_datetime] datetime2 not null,
@@ -5386,11 +5416,16 @@ create table mmsdm.P5minUnitsolution5 (
     [raise1secflags] decimal(3,0) null,
     [lower1sec] decimal(15,5) null,
     [lower1secflags] decimal(3,0) null,
+    [initial_energy_storage] decimal(15,5) null,
+    [energy_storage] decimal(15,5) null,
+    [energy_storage_min] decimal(15,5) null,
+    [energy_storage_max] decimal(15,5) null,
+    [min_availability] decimal(15,5) null,
     primary key ([duid],[interval_datetime],[run_datetime],[intervention])
 )
 go
 
-create nonclustered index MmsdmP5minUnitsolution5FileLogId on mmsdm.P5minUnitsolution5(file_log_id)
+create nonclustered index MmsdmP5minUnitsolution6FileLogId on mmsdm.P5minUnitsolution6(file_log_id)
 go
                         
 create table mmsdm.ParticipantRegistrationAdgDetail1 (
@@ -5482,7 +5517,7 @@ go
 create nonclustered index MmsdmParticipantRegistrationDualloc1FileLogId on mmsdm.ParticipantRegistrationDualloc1(file_log_id)
 go
                         
-create table mmsdm.ParticipantRegistrationDudetail5 (
+create table mmsdm.ParticipantRegistrationDudetail6 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [effectivedate] datetime2 not null,
     [duid] varchar(10) not null,
@@ -5506,14 +5541,25 @@ create table mmsdm.ParticipantRegistrationDudetail5 (
     [maxrateofchangedown] decimal(6,0) null,
     [dispatchsubtype] varchar(20) null,
     [adg_id] varchar(20) null,
+    [mincapacity] decimal(6,0) null,
+    [registeredmincapacity] decimal(6,0) null,
+    [maxrateofchangeup_load] decimal(6,0) null,
+    [maxrateofchangedown_load] decimal(6,0) null,
+    [maxstoragecapacity] decimal(15,5) null,
+    [storageimportefficiencyfactor] decimal(15,5) null,
+    [storageexportefficiencyfactor] decimal(15,5) null,
+    [min_ramp_rate_up] decimal(6,0) null,
+    [min_ramp_rate_down] decimal(6,0) null,
+    [load_min_ramp_rate_up] decimal(6,0) null,
+    [load_min_ramp_rate_down] decimal(6,0) null,
     primary key ([duid],[effectivedate],[versionno])
 )
 go
 
-create nonclustered index MmsdmParticipantRegistrationDudetail5FileLogId on mmsdm.ParticipantRegistrationDudetail5(file_log_id)
+create nonclustered index MmsdmParticipantRegistrationDudetail6FileLogId on mmsdm.ParticipantRegistrationDudetail6(file_log_id)
 go
                         
-create table mmsdm.ParticipantRegistrationDudetailsummary6 (
+create table mmsdm.ParticipantRegistrationDudetailsummary7 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [duid] varchar(10) not null,
     [start_date] datetime2 not null,
@@ -5537,11 +5583,18 @@ create table mmsdm.ParticipantRegistrationDudetailsummary6 (
     [is_aggregated] decimal(1,0) null,
     [dispatchsubtype] varchar(20) null,
     [adg_id] varchar(20) null,
+    [load_minimum_energy_price] decimal(9,2) null,
+    [load_maximum_energy_price] decimal(9,2) null,
+    [load_min_ramp_rate_up] decimal(6,0) null,
+    [load_min_ramp_rate_down] decimal(6,0) null,
+    [load_max_ramp_rate_up] decimal(6,0) null,
+    [load_max_ramp_rate_down] decimal(6,0) null,
+    [secondary_tlf] decimal(18,8) null,
     primary key ([duid],[start_date])
 )
 go
 
-create nonclustered index MmsdmParticipantRegistrationDudetailsummary6FileLogId on mmsdm.ParticipantRegistrationDudetailsummary6(file_log_id)
+create nonclustered index MmsdmParticipantRegistrationDudetailsummary7FileLogId on mmsdm.ParticipantRegistrationDudetailsummary7(file_log_id)
 go
                         
 create table mmsdm.ParticipantRegistrationGenmeter1 (
@@ -5569,7 +5622,7 @@ go
 create nonclustered index MmsdmParticipantRegistrationGenmeter1FileLogId on mmsdm.ParticipantRegistrationGenmeter1(file_log_id)
 go
                         
-create table mmsdm.ParticipantRegistrationGenunits2 (
+create table mmsdm.ParticipantRegistrationGenunits3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [gensetid] varchar(20) not null,
     [stationid] varchar(10) null,
@@ -5590,14 +5643,17 @@ create table mmsdm.ParticipantRegistrationGenunits2 (
     [co2e_emissions_factor] decimal(18,8) null,
     [co2e_energy_source] varchar(100) null,
     [co2e_data_source] varchar(20) null,
+    [mincapacity] decimal(6,0) null,
+    [registeredmincapacity] decimal(6,0) null,
+    [maxstoragecapacity] decimal(15,5) null,
     primary key ([gensetid])
 )
 go
 
-create nonclustered index MmsdmParticipantRegistrationGenunits2FileLogId on mmsdm.ParticipantRegistrationGenunits2(file_log_id)
+create nonclustered index MmsdmParticipantRegistrationGenunits3FileLogId on mmsdm.ParticipantRegistrationGenunits3(file_log_id)
 go
                         
-create table mmsdm.ParticipantRegistrationGenunitsUnit1 (
+create table mmsdm.ParticipantRegistrationGenunitsUnit2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [gensetid] varchar(20) not null,
     [effectivedate] datetime2 not null,
@@ -5608,11 +5664,15 @@ create table mmsdm.ParticipantRegistrationGenunitsUnit1 (
     [unit_max_size] decimal(8,3) null,
     [aggregation_flag] decimal(1,0) null,
     [lastchanged] datetime2 null,
+    [unitminsize] decimal(8,3) null,
+    [maxstoragecapacity] decimal(15,5) null,
+    [registeredcapacity] decimal(8,3) null,
+    [registeredmincapacity] decimal(8,3) null,
     primary key ([effectivedate],[gensetid],[unit_grouping_label],[versionno])
 )
 go
 
-create nonclustered index MmsdmParticipantRegistrationGenunitsUnit1FileLogId on mmsdm.ParticipantRegistrationGenunitsUnit1(file_log_id)
+create nonclustered index MmsdmParticipantRegistrationGenunitsUnit2FileLogId on mmsdm.ParticipantRegistrationGenunitsUnit2(file_log_id)
 go
                         
 create table mmsdm.ParticipantRegistrationMnspInterconnector2 (
@@ -5884,6 +5944,103 @@ create table mmsdm.ParticipantRegistrationStationownertrk1 (
 go
 
 create nonclustered index MmsdmParticipantRegistrationStationownertrk1FileLogId on mmsdm.ParticipantRegistrationStationownertrk1(file_log_id)
+go
+                        
+create table mmsdm.Pd7dayCasesolution1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [run_datetime] datetime2 not null,
+    [intervention] decimal(2,0) not null,
+    [lastchanged] datetime2 null,
+    primary key ([run_datetime],[intervention])
+)
+go
+
+create nonclustered index MmsdmPd7dayCasesolution1FileLogId on mmsdm.Pd7dayCasesolution1(file_log_id)
+go
+                        
+create table mmsdm.Pd7dayConstraintsolution1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [run_datetime] datetime2 not null,
+    [intervention] decimal(2,0) not null,
+    [interval_datetime] datetime2 not null,
+    [constraintid] varchar(20) not null,
+    [rhs] decimal(15,5) null,
+    [marginalvalue] decimal(15,5) null,
+    [violationdegree] decimal(15,5) null,
+    [lhs] decimal(15,5) null,
+    [lastchanged] datetime2 null,
+    primary key ([constraintid],[interval_datetime],[intervention],[run_datetime])
+)
+go
+
+create nonclustered index MmsdmPd7dayConstraintsolution1FileLogId on mmsdm.Pd7dayConstraintsolution1(file_log_id)
+go
+                        
+create table mmsdm.Pd7dayInterconnectorsolution1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [run_datetime] datetime2 not null,
+    [intervention] decimal(2,0) not null,
+    [interval_datetime] datetime2 not null,
+    [interconnectorid] varchar(20) not null,
+    [meteredmwflow] decimal(15,5) null,
+    [mwflow] decimal(15,5) null,
+    [mwlosses] decimal(15,5) null,
+    [marginalvalue] decimal(15,5) null,
+    [violationdegree] decimal(15,5) null,
+    [exportlimit] decimal(15,5) null,
+    [importlimit] decimal(15,5) null,
+    [marginalloss] decimal(15,5) null,
+    [exportconstraintid] varchar(20) null,
+    [importconstraintid] varchar(20) null,
+    [fcasexportlimit] decimal(15,5) null,
+    [fcasimportlimit] decimal(15,5) null,
+    [local_price_adjustment_export] decimal(10,2) null,
+    [locally_constrained_export] decimal(1,0) null,
+    [local_price_adjustment_import] decimal(10,2) null,
+    [locally_constrained_import] decimal(1,0) null,
+    [lastchanged] datetime2 null,
+    primary key ([interconnectorid],[interval_datetime],[intervention],[run_datetime])
+)
+go
+
+create nonclustered index MmsdmPd7dayInterconnectorsolution1FileLogId on mmsdm.Pd7dayInterconnectorsolution1(file_log_id)
+go
+                        
+create table mmsdm.Pd7dayMarketSummary2 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [run_datetime] datetime2 not null,
+    [interval_datetime] datetime2 not null,
+    [gpg_fuel_forecast_tj] decimal(15,5) null,
+    primary key ([interval_datetime],[run_datetime])
+)
+go
+
+create nonclustered index MmsdmPd7dayMarketSummary2FileLogId on mmsdm.Pd7dayMarketSummary2(file_log_id)
+go
+                        
+create table mmsdm.Pd7dayPricesolution1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [run_datetime] datetime2 not null,
+    [intervention] decimal(2,0) not null,
+    [interval_datetime] datetime2 not null,
+    [regionid] varchar(20) not null,
+    [rrp] decimal(15,5) null,
+    [lower1secrrp] decimal(15,5) null,
+    [lower6secrrp] decimal(15,5) null,
+    [lower60secrrp] decimal(15,5) null,
+    [lower5minrrp] decimal(15,5) null,
+    [lowerregrrp] decimal(15,5) null,
+    [raise1secrrp] decimal(15,5) null,
+    [raise6secrrp] decimal(15,5) null,
+    [raise60secrrp] decimal(15,5) null,
+    [raise5minrrp] decimal(15,5) null,
+    [raiseregrrp] decimal(15,5) null,
+    [lastchanged] datetime2 null,
+    primary key ([interval_datetime],[intervention],[regionid],[run_datetime])
+)
+go
+
+create nonclustered index MmsdmPd7dayPricesolution1FileLogId on mmsdm.Pd7dayPricesolution1(file_log_id)
 go
                         
 create table mmsdm.PdpasaCasesolution3 (
@@ -6163,7 +6320,7 @@ go
 create nonclustered index MmsdmPredispatchInterconnectrSens1FileLogId on mmsdm.PredispatchInterconnectrSens1(file_log_id)
 go
                         
-create table mmsdm.PredispatchUnitSolution3 (
+create table mmsdm.PredispatchUnitSolution4 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [predispatchseqno] varchar(20) null,
     [runno] decimal(3,0) null,
@@ -6224,11 +6381,16 @@ create table mmsdm.PredispatchUnitSolution3 (
     [lower1secflags] decimal(3,0) null,
     [raise1secactualavailability] decimal(16,6) null,
     [lower1secactualavailability] decimal(16,6) null,
+    [initial_energy_storage] decimal(15,5) null,
+    [energy_storage] decimal(15,5) null,
+    [energy_storage_min] decimal(15,5) null,
+    [energy_storage_max] decimal(15,5) null,
+    [min_availability] decimal(15,5) null,
     primary key ([datetime],[duid],[intervention])
 )
 go
 
-create nonclustered index MmsdmPredispatchUnitSolution3FileLogId on mmsdm.PredispatchUnitSolution3(file_log_id)
+create nonclustered index MmsdmPredispatchUnitSolution4FileLogId on mmsdm.PredispatchUnitSolution4(file_log_id)
 go
                         
 create table mmsdm.PredispatchOffertrk1 (
@@ -6352,7 +6514,7 @@ go
 create nonclustered index MmsdmPredispatchPricesensitivities1FileLogId on mmsdm.PredispatchPricesensitivities1(file_log_id)
 go
                         
-create table mmsdm.PredispatchRegionSolution7 (
+create table mmsdm.PredispatchRegionSolution8 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [predispatchseqno] varchar(20) null,
     [runno] decimal(3,0) null,
@@ -6474,11 +6636,16 @@ create table mmsdm.PredispatchRegionSolution7 (
     [lower1seclocaldispatch] decimal(15,5) null,
     [raise1secactualavailability] decimal(16,6) null,
     [lower1secactualavailability] decimal(16,6) null,
+    [bdu_energy_storage] decimal(15,5) null,
+    [bdu_min_avail] decimal(15,5) null,
+    [bdu_max_avail] decimal(15,5) null,
+    [bdu_clearedmw_gen] decimal(15,5) null,
+    [bdu_clearedmw_load] decimal(15,5) null,
     primary key ([datetime],[regionid],[intervention])
 )
 go
 
-create nonclustered index MmsdmPredispatchRegionSolution7FileLogId on mmsdm.PredispatchRegionSolution7(file_log_id)
+create nonclustered index MmsdmPredispatchRegionSolution8FileLogId on mmsdm.PredispatchRegionSolution8(file_log_id)
 go
                         
 create table mmsdm.PredispatchScenarioDemand1 (
@@ -6684,7 +6851,7 @@ go
 create nonclustered index MmsdmReserveDataReserve1FileLogId on mmsdm.ReserveDataReserve1(file_log_id)
 go
                         
-create table mmsdm.SettlementConfigAncillaryRecoverySplit1 (
+create table mmsdm.SettlementConfigAncillaryRecoverySplit2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [effectivedate] datetime2 not null,
     [versionno] decimal(3,0) not null,
@@ -6692,14 +6859,15 @@ create table mmsdm.SettlementConfigAncillaryRecoverySplit1 (
     [paymenttype] varchar(20) not null,
     [customer_portion] decimal(8,5) null,
     [lastchanged] datetime2 null,
+    [ace_portion] decimal(18,8) null,
     primary key ([effectivedate],[paymenttype],[service],[versionno])
 )
 go
 
-create nonclustered index MmsdmSettlementConfigAncillaryRecoverySplit1FileLogId on mmsdm.SettlementConfigAncillaryRecoverySplit1(file_log_id)
+create nonclustered index MmsdmSettlementConfigAncillaryRecoverySplit2FileLogId on mmsdm.SettlementConfigAncillaryRecoverySplit2(file_log_id)
 go
                         
-create table mmsdm.SettlementConfigMarketfee1 (
+create table mmsdm.SettlementConfigMarketfee2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [marketfeeid] varchar(10) not null,
     [marketfeeperiod] varchar(20) null,
@@ -6709,11 +6877,13 @@ create table mmsdm.SettlementConfigMarketfee1 (
     [gl_tcode] varchar(15) null,
     [gl_financialcode] varchar(10) null,
     [fee_class] varchar(40) null,
+    [meter_type] varchar(20) null,
+    [meter_subtype] varchar(20) null,
     primary key ([marketfeeid])
 )
 go
 
-create nonclustered index MmsdmSettlementConfigMarketfee1FileLogId on mmsdm.SettlementConfigMarketfee1(file_log_id)
+create nonclustered index MmsdmSettlementConfigMarketfee2FileLogId on mmsdm.SettlementConfigMarketfee2(file_log_id)
 go
                         
 create table mmsdm.SettlementConfigMarketfeedata1 (
@@ -7009,7 +7179,7 @@ go
 create nonclustered index MmsdmSettlementsCpdataregion5FileLogId on mmsdm.SettlementsCpdataregion5(file_log_id)
 go
                         
-create table mmsdm.SettlementsFcasregionrecovery5 (
+create table mmsdm.SettlementsFcasregionrecovery6 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [versionno] decimal(3,0) not null,
@@ -7020,11 +7190,16 @@ create table mmsdm.SettlementsFcasregionrecovery5 (
     [customerregionenergy] decimal(16,6) null,
     [regionrecovery] decimal(18,8) null,
     [lastchanged] datetime2 null,
+    [region_ace_mwh] decimal(18,8) null,
+    [region_asoe_mwh] decimal(18,8) null,
+    [regionrecoveryamount_ace] decimal(18,8) null,
+    [regionrecoveryamount_asoe] decimal(18,8) null,
+    [regionrecoveryamount] decimal(18,8) null,
     primary key ([bidtype],[periodid],[regionid],[settlementdate],[versionno])
 )
 go
 
-create nonclustered index MmsdmSettlementsFcasregionrecovery5FileLogId on mmsdm.SettlementsFcasregionrecovery5(file_log_id)
+create nonclustered index MmsdmSettlementsFcasregionrecovery6FileLogId on mmsdm.SettlementsFcasregionrecovery6(file_log_id)
 go
                         
 create table mmsdm.SettlementsGendata6 (
@@ -7088,7 +7263,7 @@ go
 create nonclustered index MmsdmSettlementsGendataregion5FileLogId on mmsdm.SettlementsGendataregion5(file_log_id)
 go
                         
-create table mmsdm.SettlementsIntraregionresidues5 (
+create table mmsdm.SettlementsIntraregionresidues6 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [runno] decimal(3,0) not null,
@@ -7100,11 +7275,13 @@ create table mmsdm.SettlementsIntraregionresidues5 (
     [exp] decimal(15,5) null,
     [irss] decimal(15,5) null,
     [lastchanged] datetime2 null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
     primary key ([periodid],[regionid],[runno],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmSettlementsIntraregionresidues5FileLogId on mmsdm.SettlementsIntraregionresidues5(file_log_id)
+create nonclustered index MmsdmSettlementsIntraregionresidues6FileLogId on mmsdm.SettlementsIntraregionresidues6(file_log_id)
 go
                         
 create table mmsdm.SettlementsIraucsurplus6 (
@@ -7259,7 +7436,7 @@ go
 create nonclustered index MmsdmSettlementsLshedpayment5FileLogId on mmsdm.SettlementsLshedpayment5(file_log_id)
 go
                         
-create table mmsdm.SettlementsMarketfees6 (
+create table mmsdm.SettlementsMarketfees7 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [runno] decimal(3,0) not null,
@@ -7272,11 +7449,13 @@ create table mmsdm.SettlementsMarketfees6 (
     [participantcategoryid] varchar(10) not null,
     [feerate] decimal(18,8) null,
     [feeunits] decimal(18,8) null,
+    [meter_type] varchar(20) null,
+    [meter_subtype] varchar(20) null,
     primary key ([marketfeeid],[participantcategoryid],[participantid],[periodid],[runno],[settlementdate])
 )
 go
 
-create nonclustered index MmsdmSettlementsMarketfees6FileLogId on mmsdm.SettlementsMarketfees6(file_log_id)
+create nonclustered index MmsdmSettlementsMarketfees7FileLogId on mmsdm.SettlementsMarketfees7(file_log_id)
 go
                         
 create table mmsdm.SettlementsReallocations5 (
@@ -7320,32 +7499,6 @@ create table mmsdm.SettlementsRestartpayment6 (
 go
 
 create nonclustered index MmsdmSettlementsRestartpayment6FileLogId on mmsdm.SettlementsRestartpayment6(file_log_id)
-go
-                        
-create table mmsdm.SettlementsRestartrecovery6 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [participantid] varchar(10) not null,
-    [contractid] varchar(10) null,
-    [periodid] decimal(3,0) not null,
-    [regionid] varchar(10) not null,
-    [availabilitypayment] decimal(15,5) null,
-    [participantdemand] decimal(15,5) null,
-    [regiondemand] decimal(15,5) null,
-    [availabilityrecovery] decimal(15,5) null,
-    [lastchanged] datetime2 null,
-    [availabilityrecovery_gen] decimal(15,5) null,
-    [participantdemand_gen] decimal(15,5) null,
-    [regiondemand_gen] decimal(15,5) null,
-    [enablingpayment] decimal(18,8) null,
-    [enablingrecovery] decimal(18,8) null,
-    [enablingrecovery_gen] decimal(18,8) null,
-    primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsRestartrecovery6FileLogId on mmsdm.SettlementsRestartrecovery6(file_log_id)
 go
                         
 create table mmsdm.SettlementsRpowerpayment6 (
@@ -7425,38 +7578,88 @@ go
 create nonclustered index MmsdmSettlementsAncillarySummary5FileLogId on mmsdm.SettlementsAncillarySummary5(file_log_id)
 go
                         
-create table mmsdm.SettlementsApcCompensation1 (
+create table mmsdm.SettlementsEnergyGensetDetail1 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [versionno] decimal(3,0) not null,
-    [apeventid] decimal(6,0) not null,
-    [claimid] decimal(6,0) not null,
-    [participantid] varchar(20) not null,
     [periodid] decimal(3,0) not null,
-    [compensation_amount] decimal(18,8) null,
-    primary key ([apeventid],[claimid],[participantid],[periodid],[settlementdate],[versionno])
+    [participantid] varchar(20) null,
+    [stationid] varchar(20) not null,
+    [duid] varchar(20) not null,
+    [gensetid] varchar(20) not null,
+    [regionid] varchar(20) null,
+    [connectionpointid] varchar(20) null,
+    [rrp] decimal(18,8) null,
+    [tlf] decimal(18,8) null,
+    [meterid] varchar(20) null,
+    [ce_mwh] decimal(18,8) null,
+    [ufea_mwh] decimal(18,8) null,
+    [ace_mwh] decimal(18,8) null,
+    [asoe_mwh] decimal(18,8) null,
+    [total_mwh] decimal(18,8) null,
+    [dme_mwh] decimal(18,8) null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
+    [total_amount] decimal(18,8) null,
+    [lastchanged] datetime2 null,
+    primary key ([duid],[gensetid],[periodid],[settlementdate],[stationid],[versionno])
 )
 go
 
-create nonclustered index MmsdmSettlementsApcCompensation1FileLogId on mmsdm.SettlementsApcCompensation1(file_log_id)
+create nonclustered index MmsdmSettlementsEnergyGensetDetail1FileLogId on mmsdm.SettlementsEnergyGensetDetail1(file_log_id)
 go
                         
-create table mmsdm.SettlementsApcRecovery1 (
+create table mmsdm.SettlementsEnergyRegionSummary1 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [versionno] decimal(3,0) not null,
-    [apeventid] decimal(6,0) not null,
-    [claimid] decimal(6,0) not null,
-    [participantid] varchar(20) not null,
     [periodid] decimal(3,0) not null,
     [regionid] varchar(20) not null,
-    [recovery_amount] decimal(18,8) null,
-    [region_recovery_br_amount] decimal(18,8) null,
-    primary key ([apeventid],[claimid],[participantid],[periodid],[regionid],[settlementdate],[versionno])
+    [ce_mwh] decimal(18,8) null,
+    [ufea_mwh] decimal(18,8) null,
+    [ace_mwh] decimal(18,8) null,
+    [asoe_mwh] decimal(18,8) null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
+    [total_mwh] decimal(18,8) null,
+    [total_amount] decimal(18,8) null,
+    [lastchanged] datetime2 null,
+    primary key ([periodid],[regionid],[settlementdate],[versionno])
 )
 go
 
-create nonclustered index MmsdmSettlementsApcRecovery1FileLogId on mmsdm.SettlementsApcRecovery1(file_log_id)
+create nonclustered index MmsdmSettlementsEnergyRegionSummary1FileLogId on mmsdm.SettlementsEnergyRegionSummary1(file_log_id)
+go
+                        
+create table mmsdm.SettlementsEnergyTransaction1 (
+    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
+    [settlementdate] datetime2 not null,
+    [versionno] decimal(3,0) not null,
+    [periodid] decimal(3,0) not null,
+    [participantid] varchar(20) not null,
+    [connectionpointid] varchar(20) not null,
+    [meter_type] varchar(20) not null,
+    [regionid] varchar(20) null,
+    [rrp] decimal(18,8) null,
+    [tlf] decimal(18,8) null,
+    [ce_mwh] decimal(18,8) null,
+    [ufea_mwh] decimal(18,8) null,
+    [ace_mwh] decimal(18,8) null,
+    [asoe_mwh] decimal(18,8) null,
+    [total_mwh] decimal(18,8) null,
+    [ace_amount] decimal(18,8) null,
+    [asoe_amount] decimal(18,8) null,
+    [total_amount] decimal(18,8) null,
+    [case_id] decimal(10,0) null,
+    [dme_mwh] decimal(18,8) null,
+    [aggregate_read_flag] decimal(3,0) null,
+    [individual_read_flag] decimal(3,0) null,
+    [lastchanged] datetime2 null,
+    primary key ([connectionpointid],[meter_type],[participantid],[periodid],[settlementdate],[versionno])
+)
+go
+
+create nonclustered index MmsdmSettlementsEnergyTransaction1FileLogId on mmsdm.SettlementsEnergyTransaction1(file_log_id)
 go
                         
 create table mmsdm.SettlementsEnergyTranSaps1 (
@@ -7506,7 +7709,7 @@ go
 create nonclustered index MmsdmSettlementsFcasPayment6FileLogId on mmsdm.SettlementsFcasPayment6(file_log_id)
 go
                         
-create table mmsdm.SettlementsFcasRecovery7 (
+create table mmsdm.SettlementsFcasRecovery8 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [versionno] varchar(3) not null,
@@ -7534,11 +7737,29 @@ create table mmsdm.SettlementsFcasRecovery7 (
     [lower1sec_recovery] decimal(18,8) null,
     [raise1sec_recovery_gen] decimal(18,8) null,
     [lower1sec_recovery_gen] decimal(18,8) null,
+    [lowerreg_ace] decimal(18,8) null,
+    [raisereg_ace] decimal(18,8) null,
+    [raise1sec_ace] decimal(18,8) null,
+    [raise1sec_asoe] decimal(18,8) null,
+    [lower1sec_ace] decimal(18,8) null,
+    [lower1sec_asoe] decimal(18,8) null,
+    [raise6sec_ace] decimal(18,8) null,
+    [raise6sec_asoe] decimal(18,8) null,
+    [lower6sec_ace] decimal(18,8) null,
+    [lower6sec_asoe] decimal(18,8) null,
+    [raise60sec_ace] decimal(18,8) null,
+    [raise60sec_asoe] decimal(18,8) null,
+    [lower60sec_ace] decimal(18,8) null,
+    [lower60sec_asoe] decimal(18,8) null,
+    [raise5min_ace] decimal(18,8) null,
+    [raise5min_asoe] decimal(18,8) null,
+    [lower5min_ace] decimal(18,8) null,
+    [lower5min_asoe] decimal(18,8) null,
     primary key ([participantid],[periodid],[regionid],[settlementdate],[versionno])
 )
 go
 
-create nonclustered index MmsdmSettlementsFcasRecovery7FileLogId on mmsdm.SettlementsFcasRecovery7(file_log_id)
+create nonclustered index MmsdmSettlementsFcasRecovery8FileLogId on mmsdm.SettlementsFcasRecovery8(file_log_id)
 go
                         
 create table mmsdm.SettlementsSetFcasRegulationTrk2 (
@@ -7561,7 +7782,7 @@ go
 create nonclustered index MmsdmSettlementsSetFcasRegulationTrk2FileLogId on mmsdm.SettlementsSetFcasRegulationTrk2(file_log_id)
 go
                         
-create table mmsdm.SettlementsNmasRecovery2 (
+create table mmsdm.SettlementsNmasRecovery3 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [versionno] decimal(3,0) not null,
@@ -7581,11 +7802,17 @@ create table mmsdm.SettlementsNmasRecovery2 (
     [region_generation] decimal(18,8) null,
     [recovery_amount_customer] decimal(18,8) null,
     [recovery_amount_generator] decimal(18,8) null,
+    [participant_ace_mwh] decimal(18,8) null,
+    [region_ace_mwh] decimal(18,8) null,
+    [participant_asoe_mwh] decimal(18,8) null,
+    [region_asoe_mwh] decimal(18,8) null,
+    [recoveryamount_ace] decimal(18,8) null,
+    [recoveryamount_asoe] decimal(18,8) null,
     primary key ([contractid],[participantid],[paymenttype],[periodid],[regionid],[service],[settlementdate],[versionno])
 )
 go
 
-create nonclustered index MmsdmSettlementsNmasRecovery2FileLogId on mmsdm.SettlementsNmasRecovery2(file_log_id)
+create nonclustered index MmsdmSettlementsNmasRecovery3FileLogId on mmsdm.SettlementsNmasRecovery3(file_log_id)
 go
                         
 create table mmsdm.SettlementsNmasRecoveryRbf1 (
@@ -7608,7 +7835,7 @@ go
 create nonclustered index MmsdmSettlementsNmasRecoveryRbf1FileLogId on mmsdm.SettlementsNmasRecoveryRbf1(file_log_id)
 go
                         
-create table mmsdm.SettlementsRecoveryEnergy1 (
+create table mmsdm.SettlementsRecoveryEnergy2 (
     file_log_id bigint not null references mmsdm.FileLog(file_log_id),
     [settlementdate] datetime2 not null,
     [settlementrunno] decimal(3,0) not null,
@@ -7625,25 +7852,21 @@ create table mmsdm.SettlementsRecoveryEnergy1 (
     [regioncustenergysubst] decimal(18,8) null,
     [regioncustenergympfexsubst] decimal(18,8) null,
     [regiongenenergyactual] decimal(18,8) null,
+    [ace_mwh_actual] decimal(18,8) null,
+    [ace_mwh_mpfex_actual] decimal(18,8) null,
+    [ace_mwh_substitute] decimal(18,8) null,
+    [ace_mwh_mpfex_substitute] decimal(18,8) null,
+    [asoe_mwh_actual] decimal(18,8) null,
+    [region_ace_mwh_actual] decimal(18,8) null,
+    [region_ace_mwh_mpfex_actual] decimal(18,8) null,
+    [region_ace_mwh_subst] decimal(18,8) null,
+    [region_ace_mwh_mpfex_subst] decimal(18,8) null,
+    [region_asoe_mwh_actual] decimal(18,8) null,
     primary key ([participantid],[periodid],[regionid],[settlementdate],[settlementrunno])
 )
 go
 
-create nonclustered index MmsdmSettlementsRecoveryEnergy1FileLogId on mmsdm.SettlementsRecoveryEnergy1(file_log_id)
-go
-                        
-create table mmsdm.SettlementsRunParameter5 (
-    file_log_id bigint not null references mmsdm.FileLog(file_log_id),
-    [settlementdate] datetime2 not null,
-    [versionno] decimal(3,0) not null,
-    [parameterid] varchar(20) not null,
-    [numvalue] decimal(18,8) null,
-    [lastchanged] datetime2 null,
-    primary key ([parameterid],[settlementdate],[versionno])
-)
-go
-
-create nonclustered index MmsdmSettlementsRunParameter5FileLogId on mmsdm.SettlementsRunParameter5(file_log_id)
+create nonclustered index MmsdmSettlementsRecoveryEnergy2FileLogId on mmsdm.SettlementsRecoveryEnergy2(file_log_id)
 go
                         
 create table mmsdm.SettlementsSubstDemand1 (

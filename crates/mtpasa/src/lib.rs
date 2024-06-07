@@ -131,7 +131,7 @@ impl mmsdm_core::GetTable for MtpasaCaseresult1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -152,9 +152,13 @@ impl mmsdm_core::GetTable for MtpasaCaseresult1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -508,7 +512,8 @@ impl mmsdm_core::GetTable for MtpasaConstraintresult1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -533,9 +538,11 @@ impl mmsdm_core::GetTable for MtpasaConstraintresult1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1059,7 +1066,8 @@ impl mmsdm_core::GetTable for MtpasaConstraintsummary1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1085,9 +1093,11 @@ impl mmsdm_core::GetTable for MtpasaConstraintsummary1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1519,7 +1529,8 @@ impl mmsdm_core::GetTable for MtpasaDuidavailability3 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 5, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 5, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1542,9 +1553,11 @@ impl mmsdm_core::GetTable for MtpasaDuidavailability3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2005,7 +2018,8 @@ impl mmsdm_core::GetTable for MtpasaInterconnectorresult1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2030,9 +2044,11 @@ impl mmsdm_core::GetTable for MtpasaInterconnectorresult1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2576,7 +2592,8 @@ impl mmsdm_core::GetTable for MtpasaLolpresult1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 7, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 7, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2600,9 +2617,11 @@ impl mmsdm_core::GetTable for MtpasaLolpresult1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3136,7 +3155,8 @@ impl mmsdm_core::GetTable for MtpasaRegionavailability4 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 5, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 5, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3158,9 +3178,11 @@ impl mmsdm_core::GetTable for MtpasaRegionavailability4 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3698,7 +3720,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
                 "publish_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(publish_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3718,9 +3740,13 @@ impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.publish_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.publish_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.publish_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.publish_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4048,7 +4074,7 @@ impl mmsdm_core::GetTable for MtpasaRegioniteration1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4075,9 +4101,13 @@ impl mmsdm_core::GetTable for MtpasaRegioniteration1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4767,7 +4797,8 @@ impl mmsdm_core::GetTable for MtpasaRegionresult2 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let day = row
-            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("day", 8, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(day).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4792,9 +4823,11 @@ impl mmsdm_core::GetTable for MtpasaRegionresult2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.day).year(),
+            year: (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.day).month(),
+                    (chrono::NaiveDateTime::from(row.day) - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -5936,7 +5969,7 @@ impl mmsdm_core::GetTable for MtpasaRegionsummary1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -5962,9 +5995,13 @@ impl mmsdm_core::GetTable for MtpasaRegionsummary1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

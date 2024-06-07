@@ -936,8 +936,8 @@ pub struct BillingAspayments7Builder {
     raise1sec_array: arrow::array::builder::Decimal128Builder,
     lower1sec_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingAsrecovery8;
-pub struct BillingAsrecovery8Mapping([usize; 44]);
+pub struct BillingAsrecovery9;
+pub struct BillingAsrecovery9Mapping([usize; 50]);
 /// # Summary
 ///
 /// ## BILLINGASRECOVERY
@@ -945,7 +945,7 @@ pub struct BillingAsrecovery8Mapping([usize; 44]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Asrecovery
-/// * Data Version: 8
+/// * Data Version: 9
 ///
 /// # Description
 ///  BILLINGASRECOVERY data is confidential to relevant participant. Source Updated  with each billing run. Volume Approximately 5 records are inserted per billrunno, or about 55 records inserted per week.
@@ -960,7 +960,7 @@ pub struct BillingAsrecovery8Mapping([usize; 44]);
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingAsrecovery8Row<'data> {
+pub struct BillingAsrecovery9Row<'data> {
     /// Region Identifier
     pub regionid: core::ops::Range<usize>,
     /// Contract Year
@@ -971,87 +971,99 @@ pub struct BillingAsrecovery8Row<'data> {
     pub billrunno: rust_decimal::Decimal,
     /// Participant Identifier
     pub participantid: core::ops::Range<usize>,
-    /// Raise 6 Sec Recovery
+    /// Raise 6 Sec Recovery. NULL for Billing Week post the IESS rule effective date
     pub raise6sec: Option<rust_decimal::Decimal>,
-    /// Lower 6 Sec Recovery
+    /// Lower 6 Sec Recovery. NULL for Billing Week post the IESS rule effective date
     pub lower6sec: Option<rust_decimal::Decimal>,
-    /// Raise 60 Sec Recovery
+    /// Raise 60 Sec Recovery. NULL for Billing Week post the IESS rule effective date
     pub raise60sec: Option<rust_decimal::Decimal>,
-    /// Lower 60 Sec Recovery
+    /// Lower 60 Sec Recovery. NULL for Billing Week post the IESS rule effective date
     pub lower60sec: Option<rust_decimal::Decimal>,
     /// AGC Recovery - Not used since circa 2000
     pub agc: Option<rust_decimal::Decimal>,
     /// Frequency Control Compensation Recovery - Not used since circa 2000
     pub fcascomp: Option<rust_decimal::Decimal>,
-    /// Load Shed Recovery
+    /// Load Shed Recovery. Post-IESS the value in this column only represent the Testing Payment Recovery from Customers. 0 if no testing payment exists.
     pub loadshed: Option<rust_decimal::Decimal>,
     /// Rapid Generator Unit Loading Recovery - Not used since December 2001
     pub rgul: Option<rust_decimal::Decimal>,
     /// Rapid Generator Unit Unloading Recovery - Not used since December 2001
     pub rguu: Option<rust_decimal::Decimal>,
-    /// Reactive Power Recovery
+    /// Reactive Power Recovery. Post-IESS the value in this column only represent the Testing Payment Recovery from Customers. 0 if no testing payment exists.
     pub reactivepower: Option<rust_decimal::Decimal>,
-    /// System Restart Recovery
+    /// System Restart Recovery. Post-IESS the value in this column only represent the Testing Payment Recovery from Customers. 0 if no testing payment exists
     pub systemrestart: Option<rust_decimal::Decimal>,
     /// The latest date and time a file was updated/inserted
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Raise 6 Sec Recovery for Generator
+    /// Raise 6 Sec Recovery for Generator. NULL for Billing Week post the IESS rule effective date
     pub raise6sec_gen: Option<rust_decimal::Decimal>,
-    /// Lower 6 Sec Recovery for Generator
+    /// Lower 6 Sec Recovery for Generator. NULL for Billing Week post the IESS rule effective date
     pub lower6sec_gen: Option<rust_decimal::Decimal>,
-    /// Raise 60 Sec Recovery for Generator
+    /// Raise 60 Sec Recovery for Generator. NULL for Billing Week post the IESS rule effective date
     pub raise60sec_gen: Option<rust_decimal::Decimal>,
-    /// Lower 60 Sec Recovery for Generator
+    /// Lower 60 Sec Recovery for Generator. NULL for Billing Week post the IESS rule effective date
     pub lower60sec_gen: Option<rust_decimal::Decimal>,
     /// AGC Recovery for Generator
     pub agc_gen: Option<rust_decimal::Decimal>,
     /// Frequency Control Compensation Recovery for Generator
     pub fcascomp_gen: Option<rust_decimal::Decimal>,
-    /// Load Shed Recovery for Generator
+    /// Load Shed Recovery for Generator. Post-IESS the value in this column only represent the Testing Payment Recovery from Generators. 0 if no testing payment exists.
     pub loadshed_gen: Option<rust_decimal::Decimal>,
     /// Rapid Generator unit Loading Recovery for. Generator - Not used since December 2001
     pub rgul_gen: Option<rust_decimal::Decimal>,
     /// Rapid Generator Unit Unloading Recovery for Generator - Not used since December 2001
     pub rguu_gen: Option<rust_decimal::Decimal>,
-    /// Reactive Power Recovery for Generator
+    /// Reactive Power Recovery for Generator. Post-IESS the value in this column only represent the Testing Payment Recovery from Generators. 0 if no testing payment exists.
     pub reactivepower_gen: Option<rust_decimal::Decimal>,
-    /// System Restart Recovery for Generator
+    /// System Restart Recovery for Generator. Post-IESS the value in this column only represent the Testing Payment Recovery from Generators. 0 if no testing payment exists.
     pub systemrestart_gen: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Lower 5 Minute service attributable to customer connection points
+    /// Recovery amount for the Lower 5 Minute service attributable to customer connection points. NULL for Billing Week post the IESS rule effective date
     pub lower5min: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Raise 5 Minute service attributable to customer connection points
+    /// Recovery amount for the Raise 5 Minute service attributable to customer connection points. NULL for Billing Week post the IESS rule effective date
     pub raise5min: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Lower Regulation service attributable to customer connection points
+    /// Pre-IESS - Recovery amount for the Lower Regulation service attributable to customer connection points(MPF + Residue). Post-IESS the amount in this column represent only the Lower Regulation FCAS MPF Recovery Amount from Customer and Generator Connection Point MPFs, no Residue Amounts are added to this column value.
     pub lowerreg: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Raise Regulation Second service attributable to customer connection points
+    /// Pre-IESS - Recovery amount for the Raise Regulation service attributable to customer connection points(MPF + Residue). Post-IESS the amount in this column represent only the Raise Regulation FCAS MPF Recovery Amount from Customer and Generator Connection Point MPFs, no Residue Amounts are added to this column value.
     pub raisereg: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Lower 5 Minute service attributable to generator connection points
+    /// Recovery amount for the Lower 5 Minute service attributable to generator connection points. NULL for Billing Week post the IESS rule effective date
     pub lower5min_gen: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Raise 5 Minute service attributable to generator connection points
+    /// Recovery amount for the Raise 5 Minute service attributable to generator connection points. NULL for Billing Week post the IESS rule effective date
     pub raise5min_gen: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Lower Regulation service attributable to generator connection points
+    /// Recovery amount for the Lower Regulation service attributable to generator connection points. NULL for Billing Week post the IESS rule effective date
     pub lowerreg_gen: Option<rust_decimal::Decimal>,
-    /// Recovery amount for the Raise Regulation Second service attributable to generator connection points
+    /// Recovery amount for the Raise Regulation service attributable to generator connection points. NULL for Billing Week post the IESS rule effective date. NULL for Billing Week post the IESS rule effective date.
     pub raisereg_gen: Option<rust_decimal::Decimal>,
-    /// The total availability payment recovery amount (customer).
+    /// The total availability payment recovery amount (customer).. NULL for Billing Week post the IESS rule effective date
     pub availability_reactive: Option<rust_decimal::Decimal>,
-    /// The total availability payment rebate recovery amount (customer).
+    /// The total availability payment rebate recovery amount (customer).. NULL for Billing Week post the IESS rule effective date
     pub availability_reactive_rbt: Option<rust_decimal::Decimal>,
-    /// The total availability payment recovery amount (Generator).
+    /// The total availability payment recovery amount (Generator).. NULL for Billing Week post the IESS rule effective date
     pub availability_reactive_gen: Option<rust_decimal::Decimal>,
-    /// The total availability payment rebate recovery amount (Generator).
+    /// The total availability payment rebate recovery amount (Generator).. NULL for Billing Week post the IESS rule effective date
     pub availability_reactive_rbt_gen: Option<rust_decimal::Decimal>,
-    /// Customer recovery amount for the very fast raise service
+    /// Customer recovery amount for the very fast raise service. NULL for Billing Week post the IESS rule effective date
     pub raise1sec: Option<rust_decimal::Decimal>,
-    /// Customer recovery amount for the very fast lower service
+    /// Customer recovery amount for the very fast lower service. NULL for Billing Week post the IESS rule effective date
     pub lower1sec: Option<rust_decimal::Decimal>,
-    /// Generator recovery amount for the very fast raise service
+    /// Generator recovery amount for the very fast raise service. NULL for Billing Week post the IESS rule effective date
     pub raise1sec_gen: Option<rust_decimal::Decimal>,
-    /// Generator recovery amount for the very fast lower service
+    /// Generator recovery amount for the very fast lower service. NULL for Billing Week post the IESS rule effective date
     pub lower1sec_gen: Option<rust_decimal::Decimal>,
+    /// The Lower Regulation FCAS Residue Recovery Amount using ACE MWh values. NULL for Billing Week prior to the IESS rule effective date
+    pub lowerreg_ace: Option<rust_decimal::Decimal>,
+    /// The Raise Regulation FCAS Residue Recovery Amount using ACE MWh values. NULL for Billing Week prior to the IESS rule effective date
+    pub raisereg_ace: Option<rust_decimal::Decimal>,
+    /// The Raise1Sec FCAS Recovery Amount for the Participant and Region from ACE MWh Portion. NULL for Billing Week prior to the IESS rule effective date
+    pub raise1sec_ace: Option<rust_decimal::Decimal>,
+    /// The Raise1Sec FCAS Recovery Amount for the Participant and Region from ASOE MWh Portion. NULL for Billing Week prior to the IESS rule effective date
+    pub raise1sec_asoe: Option<rust_decimal::Decimal>,
+    /// The Lower1Sec FCAS Recovery Amount for the Participant and Region from ACE MWh Portion. NULL for Billing Week prior to the IESS rule effective date
+    pub lower1sec_ace: Option<rust_decimal::Decimal>,
+    /// The Lower1Sec FCAS Recovery Amount for the Participant and Region from ASOE MWh Portion. NULL for Billing Week prior to the IESS rule effective date
+    pub lower1sec_asoe: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingAsrecovery8Row<'data> {
+impl<'data> BillingAsrecovery9Row<'data> {
     pub fn regionid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
@@ -1059,11 +1071,11 @@ impl<'data> BillingAsrecovery8Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
 }
-impl mmsdm_core::GetTable for BillingAsrecovery8 {
-    const VERSION: i32 = 8;
+impl mmsdm_core::GetTable for BillingAsrecovery9 {
+    const VERSION: i32 = 9;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASRECOVERY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAsrecovery8Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAsrecovery9Mapping([
         4,
         5,
         6,
@@ -1108,6 +1120,12 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
         45,
         46,
         47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -1154,16 +1172,22 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
         "LOWER1SEC",
         "RAISE1SEC_GEN",
         "LOWER1SEC_GEN",
+        "LOWERREG_ACE",
+        "RAISEREG_ACE",
+        "RAISE1SEC_ACE",
+        "RAISE1SEC_ASOE",
+        "LOWER1SEC_ACE",
+        "LOWER1SEC_ASOE",
     ];
-    type Row<'row> = BillingAsrecovery8Row<'row>;
-    type FieldMapping = BillingAsrecovery8Mapping;
-    type PrimaryKey = BillingAsrecovery8PrimaryKey;
+    type Row<'row> = BillingAsrecovery9Row<'row>;
+    type FieldMapping = BillingAsrecovery9Mapping;
+    type PrimaryKey = BillingAsrecovery9PrimaryKey;
     type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingAsrecovery8Row {
+        Ok(BillingAsrecovery9Row {
             regionid: row.get_range("regionid", field_mapping.0[0])?,
             contractyear: row
                 .get_custom_parsed_at_idx(
@@ -1418,6 +1442,42 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
                     field_mapping.0[43],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            lowerreg_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_ace",
+                    field_mapping.0[44],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_ace",
+                    field_mapping.0[45],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raise1sec_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "raise1sec_ace",
+                    field_mapping.0[46],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raise1sec_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "raise1sec_asoe",
+                    field_mapping.0[47],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lower1sec_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "lower1sec_ace",
+                    field_mapping.0[48],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lower1sec_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "lower1sec_asoe",
+                    field_mapping.0[49],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -1449,7 +1509,7 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingAsrecovery8Mapping(base_mapping))
+        Ok(BillingAsrecovery9Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         _row: mmsdm_core::CsvRow<'a>,
@@ -1460,8 +1520,8 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingAsrecovery8PrimaryKey {
-        BillingAsrecovery8PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingAsrecovery9PrimaryKey {
+        BillingAsrecovery9PrimaryKey {
             billrunno: row.billrunno,
             contractyear: row.contractyear,
             participantid: row.participantid().to_string(),
@@ -1471,10 +1531,10 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
     }
     fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
     fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_asrecovery_v8".to_string()
+        "billing_asrecovery_v9".to_string()
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingAsrecovery8Row {
+        BillingAsrecovery9Row {
             regionid: row.regionid.clone(),
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
@@ -1519,45 +1579,51 @@ impl mmsdm_core::GetTable for BillingAsrecovery8 {
             lower1sec: row.lower1sec.clone(),
             raise1sec_gen: row.raise1sec_gen.clone(),
             lower1sec_gen: row.lower1sec_gen.clone(),
+            lowerreg_ace: row.lowerreg_ace.clone(),
+            raisereg_ace: row.raisereg_ace.clone(),
+            raise1sec_ace: row.raise1sec_ace.clone(),
+            raise1sec_asoe: row.raise1sec_asoe.clone(),
+            lower1sec_ace: row.lower1sec_ace.clone(),
+            lower1sec_asoe: row.lower1sec_asoe.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingAsrecovery8PrimaryKey {
+pub struct BillingAsrecovery9PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: alloc::string::String,
     pub regionid: alloc::string::String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingAsrecovery8PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery8Row<'data> {
-    type Row<'other> = BillingAsrecovery8Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingAsrecovery9PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery9Row<'data> {
+    type Row<'other> = BillingAsrecovery9Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid() == row.participantid()
             && self.regionid() == row.regionid() && self.weekno == row.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery8Row<'data> {
-    type PrimaryKey = BillingAsrecovery8PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery9Row<'data> {
+    type PrimaryKey = BillingAsrecovery9PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid() == key.participantid
             && self.regionid() == key.regionid && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery8PrimaryKey {
-    type Row<'other> = BillingAsrecovery8Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery9PrimaryKey {
+    type Row<'other> = BillingAsrecovery9Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid()
             && self.regionid == row.regionid() && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery8PrimaryKey {
-    type PrimaryKey = BillingAsrecovery8PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery9PrimaryKey {
+    type PrimaryKey = BillingAsrecovery9PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid && self.regionid == key.regionid
@@ -1565,8 +1631,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery8PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
-    type Builder = BillingAsrecovery8Builder;
+impl mmsdm_core::ArrowSchema for BillingAsrecovery9 {
+    type Builder = BillingAsrecovery9Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -1725,12 +1791,12 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
                 ),
                 arrow::datatypes::Field::new(
                     "lowerreg",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "raisereg",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1793,11 +1859,41 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
                     arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raise1sec_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raise1sec_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lower1sec_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lower1sec_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingAsrecovery8Builder {
+        BillingAsrecovery9Builder {
             regionid_array: arrow::array::builder::StringBuilder::new(),
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
@@ -1856,9 +1952,9 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
             raise5min_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lowerreg_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             raisereg_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lower5min_gen_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             raise5min_gen_array: arrow::array::builder::Decimal128Builder::new()
@@ -1882,6 +1978,18 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
             raise1sec_gen_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lower1sec_gen_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raise1sec_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raise1sec_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lower1sec_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lower1sec_asoe_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
@@ -2133,7 +2241,7 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
             .append_option({
                 row.lowerreg
                     .map(|mut val| {
-                        val.rescale(5);
+                        val.rescale(8);
                         val.mantissa()
                     })
             });
@@ -2142,7 +2250,7 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
             .append_option({
                 row.raisereg
                     .map(|mut val| {
-                        val.rescale(5);
+                        val.rescale(8);
                         val.mantissa()
                     })
             });
@@ -2254,6 +2362,60 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
                         val.mantissa()
                     })
             });
+        builder
+            .lowerreg_ace_array
+            .append_option({
+                row.lowerreg_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_ace_array
+            .append_option({
+                row.raisereg_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raise1sec_ace_array
+            .append_option({
+                row.raise1sec_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raise1sec_asoe_array
+            .append_option({
+                row.raise1sec_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lower1sec_ace_array
+            .append_option({
+                row.lower1sec_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lower1sec_asoe_array
+            .append_option({
+                row.lower1sec_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2352,13 +2514,25 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery8 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.lower1sec_gen_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raise1sec_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raise1sec_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lower1sec_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lower1sec_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingAsrecovery8Builder {
+pub struct BillingAsrecovery9Builder {
     regionid_array: arrow::array::builder::StringBuilder,
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
@@ -2403,6 +2577,12 @@ pub struct BillingAsrecovery8Builder {
     lower1sec_array: arrow::array::builder::Decimal128Builder,
     raise1sec_gen_array: arrow::array::builder::Decimal128Builder,
     lower1sec_gen_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_ace_array: arrow::array::builder::Decimal128Builder,
+    raisereg_ace_array: arrow::array::builder::Decimal128Builder,
+    raise1sec_ace_array: arrow::array::builder::Decimal128Builder,
+    raise1sec_asoe_array: arrow::array::builder::Decimal128Builder,
+    lower1sec_ace_array: arrow::array::builder::Decimal128Builder,
+    lower1sec_asoe_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingCpdata7;
 pub struct BillingCpdata7Mapping([usize; 16]);
@@ -3173,7 +3353,7 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
                 "settlementdate",
                 7,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3196,9 +3376,13 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -13021,8 +13205,8 @@ pub struct BillingApcCompensation2Builder {
     compensation_type_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingApcRecovery2;
-pub struct BillingApcRecovery2Mapping([usize; 13]);
+pub struct BillingApcRecovery3;
+pub struct BillingApcRecovery3Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## BILLING_APC_RECOVERY
@@ -13030,7 +13214,7 @@ pub struct BillingApcRecovery2Mapping([usize; 13]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Apc Recovery
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 /// # Description
 ///  Updated with each billing run
@@ -13047,7 +13231,7 @@ pub struct BillingApcRecovery2Mapping([usize; 13]);
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingApcRecovery2Row<'data> {
+pub struct BillingApcRecovery3Row<'data> {
     /// Billing contract year
     pub contractyear: i64,
     /// Billing week number
@@ -13074,9 +13258,13 @@ pub struct BillingApcRecovery2Row<'data> {
     pub region_demand: Option<rust_decimal::Decimal>,
     /// The date and time of last changed record
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The ACE MWh value of the participant from the Eligibility Interval used for the APC Recovery Calculation. If the Billing Week is prior to the IESS rule effective date, then value is Null.
+    pub participant_ace_mwh: Option<rust_decimal::Decimal>,
+    /// The ACE MWh value of the Region from the Eligibility Interval used for the APC Recovery Calculation. This is the sum of the ACE MWh of all the participants in that recovery. If the Billing Week is prior to the IESS rule effective date, then value is Null.
+    pub region_ace_mwh: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingApcRecovery2Row<'data> {
+impl<'data> BillingApcRecovery3Row<'data> {
     pub fn participantid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
@@ -13084,11 +13272,11 @@ impl<'data> BillingApcRecovery2Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
 }
-impl mmsdm_core::GetTable for BillingApcRecovery2 {
-    const VERSION: i32 = 2;
+impl mmsdm_core::GetTable for BillingApcRecovery3 {
+    const VERSION: i32 = 3;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_RECOVERY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcRecovery2Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcRecovery3Mapping([
         4,
         5,
         6,
@@ -13102,6 +13290,8 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
         14,
         15,
         16,
+        17,
+        18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13117,16 +13307,18 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
         "PARTICIPANT_DEMAND",
         "REGION_DEMAND",
         "LASTCHANGED",
+        "PARTICIPANT_ACE_MWH",
+        "REGION_ACE_MWH",
     ];
-    type Row<'row> = BillingApcRecovery2Row<'row>;
-    type FieldMapping = BillingApcRecovery2Mapping;
-    type PrimaryKey = BillingApcRecovery2PrimaryKey;
+    type Row<'row> = BillingApcRecovery3Row<'row>;
+    type FieldMapping = BillingApcRecovery3Mapping;
+    type PrimaryKey = BillingApcRecovery3PrimaryKey;
     type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingApcRecovery2Row {
+        Ok(BillingApcRecovery3Row {
             contractyear: row.get_parsed_at_idx("contractyear", field_mapping.0[0])?,
             weekno: row.get_parsed_at_idx("weekno", field_mapping.0[1])?,
             billrunno: row.get_parsed_at_idx("billrunno", field_mapping.0[2])?,
@@ -13170,6 +13362,18 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
                     field_mapping.0[12],
                     mmsdm_core::mms_datetime::parse,
                 )?,
+            participant_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_ace_mwh",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_ace_mwh",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -13201,7 +13405,7 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingApcRecovery2Mapping(base_mapping))
+        Ok(BillingApcRecovery3Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         _row: mmsdm_core::CsvRow<'a>,
@@ -13212,8 +13416,8 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingApcRecovery2PrimaryKey {
-        BillingApcRecovery2PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingApcRecovery3PrimaryKey {
+        BillingApcRecovery3PrimaryKey {
             apeventid: row.apeventid,
             billrunno: row.billrunno,
             claimid: row.claimid,
@@ -13225,10 +13429,10 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
     }
     fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
     fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_apc_recovery_v2".to_string()
+        "billing_apc_recovery_v3".to_string()
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingApcRecovery2Row {
+        BillingApcRecovery3Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             billrunno: row.billrunno.clone(),
@@ -13242,12 +13446,14 @@ impl mmsdm_core::GetTable for BillingApcRecovery2 {
             participant_demand: row.participant_demand.clone(),
             region_demand: row.region_demand.clone(),
             lastchanged: row.lastchanged.clone(),
+            participant_ace_mwh: row.participant_ace_mwh.clone(),
+            region_ace_mwh: row.region_ace_mwh.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingApcRecovery2PrimaryKey {
+pub struct BillingApcRecovery3PrimaryKey {
     pub apeventid: i64,
     pub billrunno: i64,
     pub claimid: i64,
@@ -13256,9 +13462,9 @@ pub struct BillingApcRecovery2PrimaryKey {
     pub regionid: alloc::string::String,
     pub weekno: i64,
 }
-impl mmsdm_core::PrimaryKey for BillingApcRecovery2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingApcRecovery2Row<'data> {
-    type Row<'other> = BillingApcRecovery2Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingApcRecovery3PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingApcRecovery3Row<'data> {
+    type Row<'other> = BillingApcRecovery3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.apeventid == row.apeventid && self.billrunno == row.billrunno
             && self.claimid == row.claimid && self.contractyear == row.contractyear
@@ -13266,8 +13472,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingApcRecovery2Row<'data> {
             && self.regionid() == row.regionid() && self.weekno == row.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingApcRecovery2Row<'data> {
-    type PrimaryKey = BillingApcRecovery2PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingApcRecovery3Row<'data> {
+    type PrimaryKey = BillingApcRecovery3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.apeventid == key.apeventid && self.billrunno == key.billrunno
             && self.claimid == key.claimid && self.contractyear == key.contractyear
@@ -13275,8 +13481,8 @@ impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingApcRecovery2Row<'data> 
             && self.regionid() == key.regionid && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingApcRecovery2PrimaryKey {
-    type Row<'other> = BillingApcRecovery2Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingApcRecovery3PrimaryKey {
+    type Row<'other> = BillingApcRecovery3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.apeventid == row.apeventid && self.billrunno == row.billrunno
             && self.claimid == row.claimid && self.contractyear == row.contractyear
@@ -13284,8 +13490,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingApcRecovery2PrimaryKey {
             && self.regionid == row.regionid() && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingApcRecovery2PrimaryKey {
-    type PrimaryKey = BillingApcRecovery2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingApcRecovery3PrimaryKey {
+    type PrimaryKey = BillingApcRecovery3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.apeventid == key.apeventid && self.billrunno == key.billrunno
             && self.claimid == key.claimid && self.contractyear == key.contractyear
@@ -13294,8 +13500,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingApcRecovery2PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingApcRecovery2 {
-    type Builder = BillingApcRecovery2Builder;
+impl mmsdm_core::ArrowSchema for BillingApcRecovery3 {
+    type Builder = BillingApcRecovery3Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -13373,11 +13579,21 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery2 {
                     ),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "participant_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingApcRecovery2Builder {
+        BillingApcRecovery3Builder {
             contractyear_array: arrow::array::builder::Int64Builder::new(),
             weekno_array: arrow::array::builder::Int64Builder::new(),
             billrunno_array: arrow::array::builder::Int64Builder::new(),
@@ -13394,6 +13610,10 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery2 {
             region_demand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            participant_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -13444,6 +13664,24 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery2 {
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+        builder
+            .participant_ace_mwh_array
+            .append_option({
+                row.participant_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_ace_mwh_array
+            .append_option({
+                row.region_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -13479,13 +13717,17 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery2 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.lastchanged_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingApcRecovery2Builder {
+pub struct BillingApcRecovery3Builder {
     contractyear_array: arrow::array::builder::Int64Builder,
     weekno_array: arrow::array::builder::Int64Builder,
     billrunno_array: arrow::array::builder::Int64Builder,
@@ -13499,6 +13741,8 @@ pub struct BillingApcRecovery2Builder {
     participant_demand_array: arrow::array::builder::Decimal128Builder,
     region_demand_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    participant_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingBillingCo2ePublication1;
 pub struct BillingBillingCo2ePublication1Mapping([usize; 8]);
@@ -13648,7 +13892,7 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
                 "settlementdate",
                 7,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -13671,9 +13915,13 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -14107,8 +14355,8 @@ pub struct BillingBillingCo2ePublicationTrk1Builder {
     billrunno_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingDailyEnergySummary1;
-pub struct BillingDailyEnergySummary1Mapping([usize; 9]);
+pub struct BillingDailyEnergySummary2;
+pub struct BillingDailyEnergySummary2Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## BILLING_DAILY_ENERGY_SUMMARY
@@ -14116,7 +14364,7 @@ pub struct BillingDailyEnergySummary1Mapping([usize; 9]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Daily Energy Summary
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///  BILLING_DAILY_ENERGY_SUMMARY data is confidential  to the relevant participant. Source Populated by the posting of a billing run. Volume Approximately 20 records per billrunno.
@@ -14132,7 +14380,7 @@ pub struct BillingDailyEnergySummary1Mapping([usize; 9]);
 /// * SETTLEMENTDATE
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingDailyEnergySummary1Row<'data> {
+pub struct BillingDailyEnergySummary2Row<'data> {
     /// Billing Contract Year
     pub contractyear: rust_decimal::Decimal,
     /// Billing Week number
@@ -14145,15 +14393,31 @@ pub struct BillingDailyEnergySummary1Row<'data> {
     pub participantid: core::ops::Range<usize>,
     /// Unique Region Identifier
     pub regionid: core::ops::Range<usize>,
-    /// customer energy amount purchased on this settlement day by the participant in the region
+    /// Customer energy amount purchased on this settlement day by the participant in the region. NULL for Billing Week post the IESS rule effective date.
     pub customer_energy_purchased: Option<rust_decimal::Decimal>,
-    /// generator energy amount sold on this settlement day by the participant in the region
+    /// Generator energy amount sold on this settlement day by the participant in the region. NULL for Billing Week post the IESS rule effective date.
     pub generator_energy_sold: Option<rust_decimal::Decimal>,
-    /// generator energy amount purchased on this settlement day by the participant in the region
+    /// Generator energy amount purchased on this settlement day by the participant in the region. NULL for Billing Week post the IESS rule effective date.
     pub generator_energy_purchased: Option<rust_decimal::Decimal>,
+    /// The Sum of ACE MWh value for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Sum of ASOE MWh value for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The Sum of ACE Amount for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub ace_amount: Option<rust_decimal::Decimal>,
+    /// The Sum of ASOE Amount for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub asoe_amount: Option<rust_decimal::Decimal>,
+    /// The Sum of CE MWh value for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub ce_mwh: Option<rust_decimal::Decimal>,
+    /// The Sum of UFEA MWh value for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub ufea_mwh: Option<rust_decimal::Decimal>,
+    /// The Sum of Total MWh value for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub total_mwh: Option<rust_decimal::Decimal>,
+    /// The Sum of Total Amount for the Participant and region for the Settlement Date. NULL for Billing Week prior to the IESS rule effective date
+    pub total_amount: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingDailyEnergySummary1Row<'data> {
+impl<'data> BillingDailyEnergySummary2Row<'data> {
     pub fn participantid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
@@ -14161,11 +14425,11 @@ impl<'data> BillingDailyEnergySummary1Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
 }
-impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
-    const VERSION: i32 = 1;
+impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
+    const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAILY_ENERGY_SUMMARY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDailyEnergySummary1Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDailyEnergySummary2Mapping([
         4,
         5,
         6,
@@ -14175,6 +14439,14 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
         10,
         11,
         12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14186,16 +14458,24 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
         "CUSTOMER_ENERGY_PURCHASED",
         "GENERATOR_ENERGY_SOLD",
         "GENERATOR_ENERGY_PURCHASED",
+        "ACE_MWH",
+        "ASOE_MWH",
+        "ACE_AMOUNT",
+        "ASOE_AMOUNT",
+        "CE_MWH",
+        "UFEA_MWH",
+        "TOTAL_MWH",
+        "TOTAL_AMOUNT",
     ];
-    type Row<'row> = BillingDailyEnergySummary1Row<'row>;
-    type FieldMapping = BillingDailyEnergySummary1Mapping;
-    type PrimaryKey = BillingDailyEnergySummary1PrimaryKey;
+    type Row<'row> = BillingDailyEnergySummary2Row<'row>;
+    type FieldMapping = BillingDailyEnergySummary2Mapping;
+    type PrimaryKey = BillingDailyEnergySummary2PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingDailyEnergySummary1Row {
+        Ok(BillingDailyEnergySummary2Row {
             contractyear: row
                 .get_custom_parsed_at_idx(
                     "contractyear",
@@ -14240,6 +14520,54 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
                     field_mapping.0[8],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_mwh",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_mwh",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_amount",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_amount",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ce_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ce_mwh",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ufea_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ufea_mwh",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_mwh",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_amount",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -14271,7 +14599,7 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingDailyEnergySummary1Mapping(base_mapping))
+        Ok(BillingDailyEnergySummary2Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         row: mmsdm_core::CsvRow<'a>,
@@ -14281,7 +14609,7 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
                 "settlementdate",
                 7,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -14294,8 +14622,8 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingDailyEnergySummary1PrimaryKey {
-        BillingDailyEnergySummary1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingDailyEnergySummary2PrimaryKey {
+        BillingDailyEnergySummary2PrimaryKey {
             billrunno: row.billrunno,
             contractyear: row.contractyear,
             participantid: row.participantid().to_string(),
@@ -14306,21 +14634,25 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
     }
     fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "billing_daily_energy_summary_v1_{}_{}", Self::partition_suffix(& row).year,
+            "billing_daily_energy_summary_v2_{}_{}", Self::partition_suffix(& row).year,
             Self::partition_suffix(& row).month.number_from_month()
         )
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingDailyEnergySummary1Row {
+        BillingDailyEnergySummary2Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             billrunno: row.billrunno.clone(),
@@ -14330,12 +14662,20 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary1 {
             customer_energy_purchased: row.customer_energy_purchased.clone(),
             generator_energy_sold: row.generator_energy_sold.clone(),
             generator_energy_purchased: row.generator_energy_purchased.clone(),
+            ace_mwh: row.ace_mwh.clone(),
+            asoe_mwh: row.asoe_mwh.clone(),
+            ace_amount: row.ace_amount.clone(),
+            asoe_amount: row.asoe_amount.clone(),
+            ce_mwh: row.ce_mwh.clone(),
+            ufea_mwh: row.ufea_mwh.clone(),
+            total_mwh: row.total_mwh.clone(),
+            total_amount: row.total_amount.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingDailyEnergySummary1PrimaryKey {
+pub struct BillingDailyEnergySummary2PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: alloc::string::String,
@@ -14343,9 +14683,9 @@ pub struct BillingDailyEnergySummary1PrimaryKey {
     pub settlementdate: chrono::NaiveDateTime,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingDailyEnergySummary1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingDailyEnergySummary1Row<'data> {
-    type Row<'other> = BillingDailyEnergySummary1Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingDailyEnergySummary2PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingDailyEnergySummary2Row<'data> {
+    type Row<'other> = BillingDailyEnergySummary2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid() == row.participantid()
@@ -14353,8 +14693,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingDailyEnergySummary1Row<'data> 
             && self.settlementdate == row.settlementdate && self.weekno == row.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingDailyEnergySummary1Row<'data> {
-    type PrimaryKey = BillingDailyEnergySummary1PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingDailyEnergySummary2Row<'data> {
+    type PrimaryKey = BillingDailyEnergySummary2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid() == key.participantid
@@ -14362,8 +14702,8 @@ impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingDailyEnergySummary1Row<
             && self.settlementdate == key.settlementdate && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingDailyEnergySummary1PrimaryKey {
-    type Row<'other> = BillingDailyEnergySummary1Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingDailyEnergySummary2PrimaryKey {
+    type Row<'other> = BillingDailyEnergySummary2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid()
@@ -14371,8 +14711,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingDailyEnergySummary1PrimaryKey 
             && self.settlementdate == row.settlementdate && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingDailyEnergySummary1PrimaryKey {
-    type PrimaryKey = BillingDailyEnergySummary1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingDailyEnergySummary2PrimaryKey {
+    type PrimaryKey = BillingDailyEnergySummary2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid && self.regionid == key.regionid
@@ -14380,8 +14720,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingDailyEnergySummary1PrimaryKey 
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary1 {
-    type Builder = BillingDailyEnergySummary1Builder;
+impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary2 {
+    type Builder = BillingDailyEnergySummary2Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -14433,11 +14773,51 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary1 {
                     arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ce_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ufea_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingDailyEnergySummary1Builder {
+        BillingDailyEnergySummary2Builder {
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
@@ -14452,6 +14832,22 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary1 {
             generator_energy_sold_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             generator_energy_purchased_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
@@ -14507,6 +14903,78 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary1 {
                         val.mantissa()
                     })
             });
+        builder
+            .ace_mwh_array
+            .append_option({
+                row.ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_mwh_array
+            .append_option({
+                row.asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ace_amount_array
+            .append_option({
+                row.ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_amount_array
+            .append_option({
+                row.asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ce_mwh_array
+            .append_option({
+                row.ce_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ufea_mwh_array
+            .append_option({
+                row.ufea_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_mwh_array
+            .append_option({
+                row.total_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_amount_array
+            .append_option({
+                row.total_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -14534,13 +15002,29 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary1 {
                     alloc::sync::Arc::new(
                         builder.generator_energy_purchased_array.finish(),
                     ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ce_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ufea_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingDailyEnergySummary1Builder {
+pub struct BillingDailyEnergySummary2Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
@@ -14550,9 +15034,17 @@ pub struct BillingDailyEnergySummary1Builder {
     customer_energy_purchased_array: arrow::array::builder::Decimal128Builder,
     generator_energy_sold_array: arrow::array::builder::Decimal128Builder,
     generator_energy_purchased_array: arrow::array::builder::Decimal128Builder,
+    ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    ace_amount_array: arrow::array::builder::Decimal128Builder,
+    asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    ce_mwh_array: arrow::array::builder::Decimal128Builder,
+    ufea_mwh_array: arrow::array::builder::Decimal128Builder,
+    total_mwh_array: arrow::array::builder::Decimal128Builder,
+    total_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingBillingDirectionReconOther1;
-pub struct BillingBillingDirectionReconOther1Mapping([usize; 18]);
+pub struct BillingBillingDirectionReconOther2;
+pub struct BillingBillingDirectionReconOther2Mapping([usize; 21]);
 /// # Summary
 ///
 /// ## BILLING_DIRECTION_RECON_OTHER
@@ -14560,7 +15052,7 @@ pub struct BillingBillingDirectionReconOther1Mapping([usize; 18]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Billing Direction Recon Other
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
@@ -14574,7 +15066,7 @@ pub struct BillingBillingDirectionReconOther1Mapping([usize; 18]);
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingBillingDirectionReconOther1Row<'data> {
+pub struct BillingBillingDirectionReconOther2Row<'data> {
     /// Billing contract year
     pub contractyear: i64,
     /// Billing week no
@@ -14605,15 +15097,21 @@ pub struct BillingBillingDirectionReconOther1Row<'data> {
     pub independent_expert_fee: Option<rust_decimal::Decimal>,
     /// The total recovery amount for the direction.  The same value for all regions
     pub cra: Option<rust_decimal::Decimal>,
-    /// The total customer energy for this region, over the duration of the direction
+    /// The total customer energy for this region, over the duration of the direction. NULL for Billing Week post the IESS rule effective date.
     pub regional_customer_energy: Option<rust_decimal::Decimal>,
-    /// The total generator energy for this region, over the duration of the direction
+    /// The total generator energy for this region, over the duration of the direction. NULL for Billing Week post the IESS rule effective date.
     pub regional_generator_energy: Option<rust_decimal::Decimal>,
     /// The regional benefit factor allocated to this region for the direction
     pub regional_benefit_factor: Option<rust_decimal::Decimal>,
+    /// The Sum of ACE MWh value for the Region over the duration of the direction. NULL for Billing Week prior to the IESS rule effective date
+    pub region_ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Sum of ASOE MWh value for the Region over the duration of the direction. NULL for Billing Week prior to the IESS rule effective date
+    pub region_asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The Direction Service ID associated with the Direction Type ID. Eg For FCAS Direction Type, Direction Service could be any contingency service.
+    pub direction_service_id: core::ops::Range<usize>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingBillingDirectionReconOther1Row<'data> {
+impl<'data> BillingBillingDirectionReconOther2Row<'data> {
     pub fn direction_id(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.direction_id.clone())
     }
@@ -14644,12 +15142,24 @@ impl<'data> BillingBillingDirectionReconOther1Row<'data> {
             )
         }
     }
+    pub fn direction_service_id(&self) -> Option<&str> {
+        if self.direction_service_id.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.direction_service_id.clone(),
+                ),
+            )
+        }
+    }
 }
-impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
-    const VERSION: i32 = 1;
+impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
+    const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_DIRECTION_RECON_OTHER";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingDirectionReconOther1Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingDirectionReconOther2Mapping([
         4,
         5,
         6,
@@ -14668,6 +15178,9 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
         19,
         20,
         21,
+        22,
+        23,
+        24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14688,16 +15201,19 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
         "REGIONAL_CUSTOMER_ENERGY",
         "REGIONAL_GENERATOR_ENERGY",
         "REGIONAL_BENEFIT_FACTOR",
+        "REGION_ACE_MWH",
+        "REGION_ASOE_MWH",
+        "DIRECTION_SERVICE_ID",
     ];
-    type Row<'row> = BillingBillingDirectionReconOther1Row<'row>;
-    type FieldMapping = BillingBillingDirectionReconOther1Mapping;
-    type PrimaryKey = BillingBillingDirectionReconOther1PrimaryKey;
+    type Row<'row> = BillingBillingDirectionReconOther2Row<'row>;
+    type FieldMapping = BillingBillingDirectionReconOther2Mapping;
+    type PrimaryKey = BillingBillingDirectionReconOther2PrimaryKey;
     type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingBillingDirectionReconOther1Row {
+        Ok(BillingBillingDirectionReconOther2Row {
             contractyear: row.get_parsed_at_idx("contractyear", field_mapping.0[0])?,
             weekno: row.get_parsed_at_idx("weekno", field_mapping.0[1])?,
             billrunno: row.get_parsed_at_idx("billrunno", field_mapping.0[2])?,
@@ -14772,6 +15288,20 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
                     field_mapping.0[17],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            region_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_ace_mwh",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_asoe_mwh",
+                    field_mapping.0[19],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            direction_service_id: row
+                .get_opt_range("direction_service_id", field_mapping.0[20])?,
             backing_data: row,
         })
     }
@@ -14803,7 +15333,7 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingBillingDirectionReconOther1Mapping(base_mapping))
+        Ok(BillingBillingDirectionReconOther2Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         _row: mmsdm_core::CsvRow<'a>,
@@ -14814,8 +15344,8 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingBillingDirectionReconOther1PrimaryKey {
-        BillingBillingDirectionReconOther1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingBillingDirectionReconOther2PrimaryKey {
+        BillingBillingDirectionReconOther2PrimaryKey {
             billrunno: row.billrunno,
             contractyear: row.contractyear,
             direction_id: row.direction_id().to_string(),
@@ -14825,10 +15355,10 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
     }
     fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
     fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_billing_direction_recon_other_v1".to_string()
+        "billing_billing_direction_recon_other_v2".to_string()
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingBillingDirectionReconOther1Row {
+        BillingBillingDirectionReconOther2Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             billrunno: row.billrunno.clone(),
@@ -14847,21 +15377,24 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther1 {
             regional_customer_energy: row.regional_customer_energy.clone(),
             regional_generator_energy: row.regional_generator_energy.clone(),
             regional_benefit_factor: row.regional_benefit_factor.clone(),
+            region_ace_mwh: row.region_ace_mwh.clone(),
+            region_asoe_mwh: row.region_asoe_mwh.clone(),
+            direction_service_id: row.direction_service_id.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingBillingDirectionReconOther1PrimaryKey {
+pub struct BillingBillingDirectionReconOther2PrimaryKey {
     pub billrunno: i64,
     pub contractyear: i64,
     pub direction_id: alloc::string::String,
     pub regionid: alloc::string::String,
     pub weekno: i64,
 }
-impl mmsdm_core::PrimaryKey for BillingBillingDirectionReconOther1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingBillingDirectionReconOther1Row<'data> {
-    type Row<'other> = BillingBillingDirectionReconOther1Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingBillingDirectionReconOther2PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingBillingDirectionReconOther2Row<'data> {
+    type Row<'other> = BillingBillingDirectionReconOther2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.direction_id() == row.direction_id()
@@ -14869,24 +15402,24 @@ impl<'data> mmsdm_core::CompareWithRow for BillingBillingDirectionReconOther1Row
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for BillingBillingDirectionReconOther1Row<'data> {
-    type PrimaryKey = BillingBillingDirectionReconOther1PrimaryKey;
+for BillingBillingDirectionReconOther2Row<'data> {
+    type PrimaryKey = BillingBillingDirectionReconOther2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.direction_id() == key.direction_id && self.regionid() == key.regionid
             && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingBillingDirectionReconOther1PrimaryKey {
-    type Row<'other> = BillingBillingDirectionReconOther1Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingBillingDirectionReconOther2PrimaryKey {
+    type Row<'other> = BillingBillingDirectionReconOther2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.direction_id == row.direction_id() && self.regionid == row.regionid()
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingBillingDirectionReconOther1PrimaryKey {
-    type PrimaryKey = BillingBillingDirectionReconOther1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingBillingDirectionReconOther2PrimaryKey {
+    type PrimaryKey = BillingBillingDirectionReconOther2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.direction_id == key.direction_id && self.regionid == key.regionid
@@ -14894,8 +15427,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingBillingDirectionReconOther1Pri
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
-    type Builder = BillingBillingDirectionReconOther1Builder;
+impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther2 {
+    type Builder = BillingBillingDirectionReconOther2Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -15001,11 +15534,26 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
                     arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "region_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "direction_service_id",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingBillingDirectionReconOther1Builder {
+        BillingBillingDirectionReconOther2Builder {
             contractyear_array: arrow::array::builder::Int64Builder::new(),
             weekno_array: arrow::array::builder::Int64Builder::new(),
             billrunno_array: arrow::array::builder::Int64Builder::new(),
@@ -15031,6 +15579,11 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             regional_benefit_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            direction_service_id_array: arrow::array::builder::StringBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -15118,6 +15671,25 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
                         val.mantissa()
                     })
             });
+        builder
+            .region_ace_mwh_array
+            .append_option({
+                row.region_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_asoe_mwh_array
+            .append_option({
+                row.region_asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder.direction_service_id_array.append_option(row.direction_service_id());
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -15164,13 +15736,19 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther1 {
                     ) as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.regional_benefit_factor_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.direction_service_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingBillingDirectionReconOther1Builder {
+pub struct BillingBillingDirectionReconOther2Builder {
     contractyear_array: arrow::array::builder::Int64Builder,
     weekno_array: arrow::array::builder::Int64Builder,
     billrunno_array: arrow::array::builder::Int64Builder,
@@ -15189,6 +15767,9 @@ pub struct BillingBillingDirectionReconOther1Builder {
     regional_customer_energy_array: arrow::array::builder::Decimal128Builder,
     regional_generator_energy_array: arrow::array::builder::Decimal128Builder,
     regional_benefit_factor_array: arrow::array::builder::Decimal128Builder,
+    region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    direction_service_id_array: arrow::array::builder::StringBuilder,
 }
 pub struct BillingDirFinalAmount1;
 pub struct BillingDirFinalAmount1Mapping([usize; 9]);
@@ -18080,6 +18661,1355 @@ pub struct BillingEftshortfallDetail1Builder {
     transaction_type_array: arrow::array::builder::StringBuilder,
     amount_array: arrow::array::builder::Decimal128Builder,
 }
+pub struct BillingEnergyGensetDetail1;
+pub struct BillingEnergyGensetDetail1Mapping([usize; 20]);
+/// # Summary
+///
+/// ## BILLING_ENERGY_GENSET_DETAIL
+///  _The Billing Energy Genset report contains the Genset Energy detail summary for the Billing Week data_
+///
+/// * Data Set Name: Billing
+/// * File Name: Energy Genset Detail
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONNECTIONPOINTID
+/// * CONTRACTYEAR
+/// * DUID
+/// * GENSETID
+/// * METERID
+/// * PARTICIPANTID
+/// * REGIONID
+/// * STATIONID
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingEnergyGensetDetail1Row<'data> {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing Week No
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing Run No
+    pub billrunno: rust_decimal::Decimal,
+    /// The Participant Id Identifier
+    pub participantid: core::ops::Range<usize>,
+    /// The StationId identifier associated with the GensetId
+    pub stationid: core::ops::Range<usize>,
+    /// The DUID for the meter associated with the GensetId
+    pub duid: core::ops::Range<usize>,
+    /// The GensetId for the Meter Id received
+    pub gensetid: core::ops::Range<usize>,
+    /// The Region Id for the Connection Point associated with the DUID
+    pub regionid: core::ops::Range<usize>,
+    /// The Connection Point associated with the DUID
+    pub connectionpointid: core::ops::Range<usize>,
+    /// The Meter ID Identifier (NMI)
+    pub meterid: core::ops::Range<usize>,
+    /// The Consumed Energy for the Meter Id . Energy received in the meter reads (DLF Adjusted) in that Billing Week
+    pub ce_mwh: Option<rust_decimal::Decimal>,
+    /// The UFEA Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub ufea_mwh: Option<rust_decimal::Decimal>,
+    /// The Adjusted Consumed Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Adjusted Sent Out Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The Total MWh(ACE_MWh + ASOE_MWh) for that Connection Point for the Participant Id in that Billing Week
+    pub total_mwh: Option<rust_decimal::Decimal>,
+    /// The DME MWh for that Connection Point for the Participant Id in that Billing Week. This is the MWh value that is used for the UFEA Allocation
+    pub dme_mwh: Option<rust_decimal::Decimal>,
+    /// The Adjusted Consumed Energy Dollar Amount for that Connection Point for the Participant Id in that Billing Week
+    pub ace_amount: Option<rust_decimal::Decimal>,
+    /// The Adjusted Sent Out Energy Dollar Amount for that Connection Point for the Participant Id in that Billing Week
+    pub asoe_amount: Option<rust_decimal::Decimal>,
+    /// The Total Amount(ACE_Amount + ASOE_Amount) for that Connection Point for the Participant Id in that Billing Week
+    pub total_amount: Option<rust_decimal::Decimal>,
+    /// The Last changed date time for the record
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingEnergyGensetDetail1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn stationid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.stationid.clone())
+    }
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn gensetid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.gensetid.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
+        )
+    }
+    pub fn meterid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.meterid.clone())
+    }
+}
+impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "ENERGY_GENSET_DETAIL";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyGensetDetail1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "STATIONID",
+        "DUID",
+        "GENSETID",
+        "REGIONID",
+        "CONNECTIONPOINTID",
+        "METERID",
+        "CE_MWH",
+        "UFEA_MWH",
+        "ACE_MWH",
+        "ASOE_MWH",
+        "TOTAL_MWH",
+        "DME_MWH",
+        "ACE_AMOUNT",
+        "ASOE_AMOUNT",
+        "TOTAL_AMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingEnergyGensetDetail1Row<'row>;
+    type FieldMapping = BillingEnergyGensetDetail1Mapping;
+    type PrimaryKey = BillingEnergyGensetDetail1PrimaryKey;
+    type Partition = ();
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingEnergyGensetDetail1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            stationid: row.get_range("stationid", field_mapping.0[4])?,
+            duid: row.get_range("duid", field_mapping.0[5])?,
+            gensetid: row.get_range("gensetid", field_mapping.0[6])?,
+            regionid: row.get_range("regionid", field_mapping.0[7])?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[8])?,
+            meterid: row.get_range("meterid", field_mapping.0[9])?,
+            ce_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ce_mwh",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ufea_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ufea_mwh",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_mwh",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_mwh",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_mwh",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            dme_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "dme_mwh",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_amount",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_amount",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_amount",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[19],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingEnergyGensetDetail1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingEnergyGensetDetail1PrimaryKey {
+        BillingEnergyGensetDetail1PrimaryKey {
+            billrunno: row.billrunno,
+            connectionpointid: row.connectionpointid().to_string(),
+            contractyear: row.contractyear,
+            duid: row.duid().to_string(),
+            gensetid: row.gensetid().to_string(),
+            meterid: row.meterid().to_string(),
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            stationid: row.stationid().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
+        "billing_energy_genset_detail_v1".to_string()
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingEnergyGensetDetail1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            stationid: row.stationid.clone(),
+            duid: row.duid.clone(),
+            gensetid: row.gensetid.clone(),
+            regionid: row.regionid.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            meterid: row.meterid.clone(),
+            ce_mwh: row.ce_mwh.clone(),
+            ufea_mwh: row.ufea_mwh.clone(),
+            ace_mwh: row.ace_mwh.clone(),
+            asoe_mwh: row.asoe_mwh.clone(),
+            total_mwh: row.total_mwh.clone(),
+            dme_mwh: row.dme_mwh.clone(),
+            ace_amount: row.ace_amount.clone(),
+            asoe_amount: row.asoe_amount.clone(),
+            total_amount: row.total_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingEnergyGensetDetail1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub connectionpointid: alloc::string::String,
+    pub contractyear: rust_decimal::Decimal,
+    pub duid: alloc::string::String,
+    pub gensetid: alloc::string::String,
+    pub meterid: alloc::string::String,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub stationid: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingEnergyGensetDetail1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingEnergyGensetDetail1Row<'data> {
+    type Row<'other> = BillingEnergyGensetDetail1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid() == row.connectionpointid()
+            && self.contractyear == row.contractyear && self.duid() == row.duid()
+            && self.gensetid() == row.gensetid() && self.meterid() == row.meterid()
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.stationid() == row.stationid()
+            && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingEnergyGensetDetail1Row<'data> {
+    type PrimaryKey = BillingEnergyGensetDetail1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid() == key.connectionpointid
+            && self.contractyear == key.contractyear && self.duid() == key.duid
+            && self.gensetid() == key.gensetid && self.meterid() == key.meterid
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.stationid() == key.stationid
+            && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingEnergyGensetDetail1PrimaryKey {
+    type Row<'other> = BillingEnergyGensetDetail1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid()
+            && self.contractyear == row.contractyear && self.duid == row.duid()
+            && self.gensetid == row.gensetid() && self.meterid == row.meterid()
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.stationid == row.stationid()
+            && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingEnergyGensetDetail1PrimaryKey {
+    type PrimaryKey = BillingEnergyGensetDetail1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear && self.duid == key.duid
+            && self.gensetid == key.gensetid && self.meterid == key.meterid
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.stationid == key.stationid && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingEnergyGensetDetail1 {
+    type Builder = BillingEnergyGensetDetail1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "stationid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "gensetid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "meterid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "ce_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ufea_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "dme_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingEnergyGensetDetail1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            stationid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            gensetid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            meterid_array: arrow::array::builder::StringBuilder::new(),
+            ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            dme_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.stationid_array.append_value(row.stationid());
+        builder.duid_array.append_value(row.duid());
+        builder.gensetid_array.append_value(row.gensetid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder.meterid_array.append_value(row.meterid());
+        builder
+            .ce_mwh_array
+            .append_option({
+                row.ce_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ufea_mwh_array
+            .append_option({
+                row.ufea_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ace_mwh_array
+            .append_option({
+                row.ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_mwh_array
+            .append_option({
+                row.asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_mwh_array
+            .append_option({
+                row.total_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .dme_mwh_array
+            .append_option({
+                row.dme_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ace_amount_array
+            .append_option({
+                row.ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_amount_array
+            .append_option({
+                row.asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_amount_array
+            .append_option({
+                row.total_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.stationid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.gensetid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.meterid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ce_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ufea_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.dme_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingEnergyGensetDetail1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    stationid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    gensetid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    meterid_array: arrow::array::builder::StringBuilder,
+    ce_mwh_array: arrow::array::builder::Decimal128Builder,
+    ufea_mwh_array: arrow::array::builder::Decimal128Builder,
+    ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    total_mwh_array: arrow::array::builder::Decimal128Builder,
+    dme_mwh_array: arrow::array::builder::Decimal128Builder,
+    ace_amount_array: arrow::array::builder::Decimal128Builder,
+    asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    total_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct BillingEnergyTransaction1;
+pub struct BillingEnergyTransaction1Mapping([usize; 16]);
+/// # Summary
+///
+/// ## BILLING_ENERGY_TRANSACTIONS
+///  _The Billing Energy Transactions is the summary of the Settlement Energy Transactions that has the ACE and ASOE MWh and Dollar values that is used for the Statement_
+///
+/// * Data Set Name: Billing
+/// * File Name: Energy Transaction
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONNECTIONPOINTID
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * REGIONID
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingEnergyTransaction1Row<'data> {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Participant Id Identifier
+    pub participantid: core::ops::Range<usize>,
+    /// The ConnectionPoint Id for the Billing Aggregation for the Participant Id.
+    pub connectionpointid: core::ops::Range<usize>,
+    /// The Region Id Identifier
+    pub regionid: core::ops::Range<usize>,
+    /// The Consumed Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub ce_mwh: Option<rust_decimal::Decimal>,
+    /// The UFEA Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub ufea_mwh: Option<rust_decimal::Decimal>,
+    /// The Adjusted Consumed Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Adjusted Sent Out Energy MWh Consumed for that Connection Point for the Participant Id in that Billing Week
+    pub asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The Adjusted Consumed Energy Dollar Amount for that Connection Point for the Participant Id in that Billing Week
+    pub ace_amount: Option<rust_decimal::Decimal>,
+    /// The Adjusted Sent Out Energy Dollar Amount for that Connection Point for the Participant Id in that Billing Week
+    pub asoe_amount: Option<rust_decimal::Decimal>,
+    /// The Total MWh(ACE_MWh + ASOE_MWh) for that Connection Point for the Participant Id in that Billing Week
+    pub total_mwh: Option<rust_decimal::Decimal>,
+    /// The Total Amount(ACE_Amount + ASOE_Amount) for that Connection Point for the Participant Id in that Billing Week
+    pub total_amount: Option<rust_decimal::Decimal>,
+    /// The DME MWh for that Connection Point for the Participant Id in that Billing Week. This is the MWh value that is used for the UFEA Allocation.
+    pub dme_mwh: Option<rust_decimal::Decimal>,
+    /// The Last Changed date time for the record
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingEnergyTransaction1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
+        )
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+}
+impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "ENERGY_TRANSACTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTransaction1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "CONNECTIONPOINTID",
+        "REGIONID",
+        "CE_MWH",
+        "UFEA_MWH",
+        "ACE_MWH",
+        "ASOE_MWH",
+        "ACE_AMOUNT",
+        "ASOE_AMOUNT",
+        "TOTAL_MWH",
+        "TOTAL_AMOUNT",
+        "DME_MWH",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingEnergyTransaction1Row<'row>;
+    type FieldMapping = BillingEnergyTransaction1Mapping;
+    type PrimaryKey = BillingEnergyTransaction1PrimaryKey;
+    type Partition = ();
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingEnergyTransaction1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[4])?,
+            regionid: row.get_range("regionid", field_mapping.0[5])?,
+            ce_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ce_mwh",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ufea_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ufea_mwh",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_mwh",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_mwh",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_amount",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_amount",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_mwh",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            total_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "total_amount",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            dme_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "dme_mwh",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingEnergyTransaction1Mapping(base_mapping))
+    }
+    fn partition_suffix_from_row<'a>(
+        _row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::Partition> {
+        Ok(())
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingEnergyTransaction1PrimaryKey {
+        BillingEnergyTransaction1PrimaryKey {
+            billrunno: row.billrunno,
+            connectionpointid: row.connectionpointid().to_string(),
+            contractyear: row.contractyear,
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
+    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
+        "billing_energy_transaction_v1".to_string()
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingEnergyTransaction1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            regionid: row.regionid.clone(),
+            ce_mwh: row.ce_mwh.clone(),
+            ufea_mwh: row.ufea_mwh.clone(),
+            ace_mwh: row.ace_mwh.clone(),
+            asoe_mwh: row.asoe_mwh.clone(),
+            ace_amount: row.ace_amount.clone(),
+            asoe_amount: row.asoe_amount.clone(),
+            total_mwh: row.total_mwh.clone(),
+            total_amount: row.total_amount.clone(),
+            dme_mwh: row.dme_mwh.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingEnergyTransaction1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub connectionpointid: alloc::string::String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingEnergyTransaction1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingEnergyTransaction1Row<'data> {
+    type Row<'other> = BillingEnergyTransaction1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid() == row.connectionpointid()
+            && self.contractyear == row.contractyear
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingEnergyTransaction1Row<'data> {
+    type PrimaryKey = BillingEnergyTransaction1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid() == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingEnergyTransaction1PrimaryKey {
+    type Row<'other> = BillingEnergyTransaction1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid()
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingEnergyTransaction1PrimaryKey {
+    type PrimaryKey = BillingEnergyTransaction1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingEnergyTransaction1 {
+    type Builder = BillingEnergyTransaction1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "ce_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ufea_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "total_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "dme_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingEnergyTransaction1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            total_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            dme_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .ce_mwh_array
+            .append_option({
+                row.ce_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ufea_mwh_array
+            .append_option({
+                row.ufea_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ace_mwh_array
+            .append_option({
+                row.ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_mwh_array
+            .append_option({
+                row.asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ace_amount_array
+            .append_option({
+                row.ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_amount_array
+            .append_option({
+                row.asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_mwh_array
+            .append_option({
+                row.total_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .total_amount_array
+            .append_option({
+                row.total_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .dme_mwh_array
+            .append_option({
+                row.dme_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ce_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ufea_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.total_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.dme_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingEnergyTransaction1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    ce_mwh_array: arrow::array::builder::Decimal128Builder,
+    ufea_mwh_array: arrow::array::builder::Decimal128Builder,
+    ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    ace_amount_array: arrow::array::builder::Decimal128Builder,
+    asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    total_mwh_array: arrow::array::builder::Decimal128Builder,
+    total_amount_array: arrow::array::builder::Decimal128Builder,
+    dme_mwh_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct BillingEnergyTranSaps1;
 pub struct BillingEnergyTranSaps1Mapping([usize; 11]);
 /// # Summary
@@ -19387,7 +21317,7 @@ pub struct BillingNmasTstPayments1Row<'data> {
     pub billrunno: rust_decimal::Decimal,
     /// The Participant from whom the amount is recovered
     pub participantid: core::ops::Range<usize>,
-    /// The type of NSCAS service. Current value values are:<br>- REACTIVE<br>- LOADSHED<br>
+    /// The type of NSCAS service. Current value values are:<br>- REACTIVE<br>- LOADSHED
     pub service: core::ops::Range<usize>,
     /// The NMAS Contract Id
     pub contractid: core::ops::Range<usize>,
@@ -19708,8 +21638,8 @@ pub struct BillingNmasTstPayments1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingNmasTstRecovery1;
-pub struct BillingNmasTstRecovery1Mapping([usize; 20]);
+pub struct BillingNmasTstRecovery2;
+pub struct BillingNmasTstRecovery2Mapping([usize; 28]);
 /// # Summary
 ///
 /// ## BILLING_NMAS_TST_RECOVERY
@@ -19717,7 +21647,7 @@ pub struct BillingNmasTstRecovery1Mapping([usize; 20]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Recovery
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 ///
 ///
@@ -19733,7 +21663,7 @@ pub struct BillingNmasTstRecovery1Mapping([usize; 20]);
 /// * SERVICE
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingNmasTstRecovery1Row<'data> {
+pub struct BillingNmasTstRecovery2Row<'data> {
     /// AEMO Contract Year number starting in week containing 1 January
     pub contractyear: rust_decimal::Decimal,
     /// Week no within the contract year. Week no 1 is the week containing 1 January
@@ -19742,7 +21672,7 @@ pub struct BillingNmasTstRecovery1Row<'data> {
     pub billrunno: rust_decimal::Decimal,
     /// The Participant from whom the amount is recovered
     pub participantid: core::ops::Range<usize>,
-    /// The type of NSCAS service. Current value values are:<br>- REACTIVE<br>- LOADSHED<br>- RESTART<br>
+    /// The type of NSCAS service. Current value values are:<br>- REACTIVE<br>- LOADSHED<br>- RESTART
     pub service: core::ops::Range<usize>,
     /// The NMAS Contract Id
     pub contractid: core::ops::Range<usize>,
@@ -19770,13 +21700,29 @@ pub struct BillingNmasTstRecovery1Row<'data> {
     pub participant_generation: Option<rust_decimal::Decimal>,
     /// The NEM Generation for the recovery period
     pub nem_generation: Option<rust_decimal::Decimal>,
-    /// The Total recovery amount for the billing week, being the sum of the customer and generator proportions for the PARTICIPANTID in REGIONID
+    /// The Total recovery amount for the billing week, being the sum of the customer and generator proportions for the PARTICIPANTID in REGIONID and sum of RecoveryAmount_ACE and RecoveryAmount_ASOE.
     pub recovery_amount: Option<rust_decimal::Decimal>,
     /// The Last Updated date and time
     pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The Participant ACE MWh Value used in the Recovery of the Testing Payment Amount if the service is recovered from ACE. NULL for Billing Week prior to the IESS rule effective date
+    pub participant_ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Region ACE MWh Value used in the Recovery of the Testing Payment Amount if the service is recovered from ACE. NULL for Billing Week prior to the IESS rule effective date
+    pub region_ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Portion of ACE MWh Value used in the Recovery Calculation. . NULL for Billing Week prior to the IESS rule effective date
+    pub ace_portion: Option<rust_decimal::Decimal>,
+    /// The Portion of ASOE MWh Value used in the Recovery Calculation (100 - ACE_Portion). . NULL for Billing Week prior to the IESS rule effective date
+    pub asoe_portion: Option<rust_decimal::Decimal>,
+    /// The Participant ASOE MWh Value used in the Recovery of the Testing Payment Amount if the service is recovered from ASOE. NULL for Billing Week prior to the IESS rule effective date
+    pub participant_asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The Region ASOE MWh Value used in the Recovery of the Testing Payment Amount if the service is recovered from ASOE. NULL for Billing Week prior to the IESS rule effective date
+    pub region_asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The Participant Recovery Amount based on ACE MWh Value if the service is recovered from ACE . NULL for Billing Week prior to the IESS rule effective date
+    pub recoveryamount_ace: Option<rust_decimal::Decimal>,
+    /// The Participant Recovery Amount based on ASOE MWh Value if the service is recovered from ASOE . NULL for Billing Week prior to the IESS rule effective date
+    pub recoveryamount_asoe: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingNmasTstRecovery1Row<'data> {
+impl<'data> BillingNmasTstRecovery2Row<'data> {
     pub fn participantid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
@@ -19790,11 +21736,11 @@ impl<'data> BillingNmasTstRecovery1Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
 }
-impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
-    const VERSION: i32 = 1;
+impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
+    const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECOVERY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecovery1Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecovery2Mapping([
         4,
         5,
         6,
@@ -19815,6 +21761,14 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
         21,
         22,
         23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -19837,16 +21791,24 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
         "NEM_GENERATION",
         "RECOVERY_AMOUNT",
         "LASTCHANGED",
+        "PARTICIPANT_ACE_MWH",
+        "REGION_ACE_MWH",
+        "ACE_PORTION",
+        "ASOE_PORTION",
+        "PARTICIPANT_ASOE_MWH",
+        "REGION_ASOE_MWH",
+        "RECOVERYAMOUNT_ACE",
+        "RECOVERYAMOUNT_ASOE",
     ];
-    type Row<'row> = BillingNmasTstRecovery1Row<'row>;
-    type FieldMapping = BillingNmasTstRecovery1Mapping;
-    type PrimaryKey = BillingNmasTstRecovery1PrimaryKey;
+    type Row<'row> = BillingNmasTstRecovery2Row<'row>;
+    type FieldMapping = BillingNmasTstRecovery2Mapping;
+    type PrimaryKey = BillingNmasTstRecovery2PrimaryKey;
     type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingNmasTstRecovery1Row {
+        Ok(BillingNmasTstRecovery2Row {
             contractyear: row
                 .get_custom_parsed_at_idx(
                     "contractyear",
@@ -19947,6 +21909,54 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
                     field_mapping.0[19],
                     mmsdm_core::mms_datetime::parse,
                 )?,
+            participant_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_ace_mwh",
+                    field_mapping.0[20],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_ace_mwh",
+                    field_mapping.0[21],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ace_portion: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_portion",
+                    field_mapping.0[22],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_portion: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_portion",
+                    field_mapping.0[23],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participant_asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_asoe_mwh",
+                    field_mapping.0[24],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_asoe_mwh",
+                    field_mapping.0[25],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recoveryamount_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "recoveryamount_ace",
+                    field_mapping.0[26],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recoveryamount_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "recoveryamount_asoe",
+                    field_mapping.0[27],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -19978,7 +21988,7 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingNmasTstRecovery1Mapping(base_mapping))
+        Ok(BillingNmasTstRecovery2Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         _row: mmsdm_core::CsvRow<'a>,
@@ -19989,8 +21999,8 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingNmasTstRecovery1PrimaryKey {
-        BillingNmasTstRecovery1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingNmasTstRecovery2PrimaryKey {
+        BillingNmasTstRecovery2PrimaryKey {
             billrunno: row.billrunno,
             contractid: row.contractid().to_string(),
             contractyear: row.contractyear,
@@ -20002,10 +22012,10 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
     }
     fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
     fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_nmas_tst_recovery_v1".to_string()
+        "billing_nmas_tst_recovery_v2".to_string()
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingNmasTstRecovery1Row {
+        BillingNmasTstRecovery2Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             billrunno: row.billrunno.clone(),
@@ -20026,12 +22036,20 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery1 {
             nem_generation: row.nem_generation.clone(),
             recovery_amount: row.recovery_amount.clone(),
             lastchanged: row.lastchanged.clone(),
+            participant_ace_mwh: row.participant_ace_mwh.clone(),
+            region_ace_mwh: row.region_ace_mwh.clone(),
+            ace_portion: row.ace_portion.clone(),
+            asoe_portion: row.asoe_portion.clone(),
+            participant_asoe_mwh: row.participant_asoe_mwh.clone(),
+            region_asoe_mwh: row.region_asoe_mwh.clone(),
+            recoveryamount_ace: row.recoveryamount_ace.clone(),
+            recoveryamount_asoe: row.recoveryamount_asoe.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingNmasTstRecovery1PrimaryKey {
+pub struct BillingNmasTstRecovery2PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractid: alloc::string::String,
     pub contractyear: rust_decimal::Decimal,
@@ -20040,9 +22058,9 @@ pub struct BillingNmasTstRecovery1PrimaryKey {
     pub service: alloc::string::String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingNmasTstRecovery1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingNmasTstRecovery1Row<'data> {
-    type Row<'other> = BillingNmasTstRecovery1Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingNmasTstRecovery2PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingNmasTstRecovery2Row<'data> {
+    type Row<'other> = BillingNmasTstRecovery2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractid() == row.contractid()
             && self.contractyear == row.contractyear
@@ -20051,8 +22069,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingNmasTstRecovery1Row<'data> {
             && self.weekno == row.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingNmasTstRecovery1Row<'data> {
-    type PrimaryKey = BillingNmasTstRecovery1PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingNmasTstRecovery2Row<'data> {
+    type PrimaryKey = BillingNmasTstRecovery2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractid() == key.contractid
             && self.contractyear == key.contractyear
@@ -20061,8 +22079,8 @@ impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingNmasTstRecovery1Row<'da
             && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingNmasTstRecovery1PrimaryKey {
-    type Row<'other> = BillingNmasTstRecovery1Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingNmasTstRecovery2PrimaryKey {
+    type Row<'other> = BillingNmasTstRecovery2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractid == row.contractid()
             && self.contractyear == row.contractyear
@@ -20071,8 +22089,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingNmasTstRecovery1PrimaryKey {
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingNmasTstRecovery1PrimaryKey {
-    type PrimaryKey = BillingNmasTstRecovery1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingNmasTstRecovery2PrimaryKey {
+    type PrimaryKey = BillingNmasTstRecovery2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractid == key.contractid
             && self.contractyear == key.contractyear
@@ -20081,8 +22099,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingNmasTstRecovery1PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery1 {
-    type Builder = BillingNmasTstRecovery1Builder;
+impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery2 {
+    type Builder = BillingNmasTstRecovery2Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -20195,11 +22213,51 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery1 {
                     ),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "participant_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_portion",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_portion",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "participant_asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recoveryamount_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recoveryamount_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingNmasTstRecovery1Builder {
+        BillingNmasTstRecovery2Builder {
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
@@ -20233,6 +22291,22 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery1 {
             recovery_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            participant_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            ace_portion_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_portion_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            participant_asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            recoveryamount_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            recoveryamount_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -20360,6 +22434,78 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery1 {
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+        builder
+            .participant_ace_mwh_array
+            .append_option({
+                row.participant_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_ace_mwh_array
+            .append_option({
+                row.region_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ace_portion_array
+            .append_option({
+                row.ace_portion
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_portion_array
+            .append_option({
+                row.asoe_portion
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .participant_asoe_mwh_array
+            .append_option({
+                row.participant_asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_asoe_mwh_array
+            .append_option({
+                row.region_asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recoveryamount_ace_array
+            .append_option({
+                row.recoveryamount_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recoveryamount_asoe_array
+            .append_option({
+                row.recoveryamount_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -20407,13 +22553,29 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery1 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.lastchanged_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_portion_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_portion_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recoveryamount_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recoveryamount_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingNmasTstRecovery1Builder {
+pub struct BillingNmasTstRecovery2Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
@@ -20434,6 +22596,14 @@ pub struct BillingNmasTstRecovery1Builder {
     nem_generation_array: arrow::array::builder::Decimal128Builder,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    participant_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    ace_portion_array: arrow::array::builder::Decimal128Builder,
+    asoe_portion_array: arrow::array::builder::Decimal128Builder,
+    participant_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    recoveryamount_ace_array: arrow::array::builder::Decimal128Builder,
+    recoveryamount_asoe_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingNmasTstRecvryRbf1;
 pub struct BillingNmasTstRecvryRbf1Mapping([usize; 10]);
@@ -20466,7 +22636,7 @@ pub struct BillingNmasTstRecvryRbf1Row<'data> {
     pub weekno: rust_decimal::Decimal,
     /// The current Billing RunNo for the week
     pub billrunno: rust_decimal::Decimal,
-    /// The type of NSCAS service. Current value values are:<br>- REACTIVE<br>- LOADSHED<br>
+    /// The type of NSCAS service. Current value values are:<br>- REACTIVE<br>- LOADSHED
     pub service: core::ops::Range<usize>,
     /// The NMAS Contract Id
     pub contractid: core::ops::Range<usize>,
@@ -21564,7 +23734,7 @@ pub struct BillingSecdepInterestPay1Row<'data> {
     pub interest_amount: Option<rust_decimal::Decimal>,
     /// FIXED or DAILY
     pub interest_calc_type: core::ops::Range<usize>,
-    /// The interest account ID used by billing for calculating the interest. <br>NULL if INTEREST_CALC_TYPE = FIXED<br>
+    /// The interest account ID used by billing for calculating the interest. <br>NULL if INTEREST_CALC_TYPE = FIXED
     pub interest_acct_id: core::ops::Range<usize>,
     /// The STATIC Interest Rate used by Billing for calculating the interest. This is NULL if INTEREST_CALC_TYPE &lt;&gt; FIXED
     pub interest_rate: Option<rust_decimal::Decimal>,
@@ -22096,7 +24266,7 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
                 "effectivedate",
                 8,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -22120,9 +24290,13 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -22481,7 +24655,7 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
                 "settlementdate",
                 7,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -22506,9 +24680,13 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -23812,7 +25990,7 @@ pub struct BillingReservetraderpayment1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## BILLRESERVETRADERPAYMENT
-///  _Details of the RERT Usage and Availability Payments made to the participant. _
+///  _Details of the RERT Usage and Availability Payments made to the participant._
 ///
 /// * Data Set Name: Billing
 /// * File Name: Reservetraderpayment
@@ -24201,8 +26379,8 @@ pub struct BillingReservetraderpayment1Builder {
     payment_type_array: arrow::array::builder::StringBuilder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingReservetraderrecovery2;
-pub struct BillingReservetraderrecovery2Mapping([usize; 14]);
+pub struct BillingReservetraderrecovery3;
+pub struct BillingReservetraderrecovery3Mapping([usize; 16]);
 /// # Summary
 ///
 /// ## BILLRESERVETRADERRECOVERY
@@ -24210,7 +26388,7 @@ pub struct BillingReservetraderrecovery2Mapping([usize; 14]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Reservetraderrecovery
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 ///
 ///
@@ -24226,7 +26404,7 @@ pub struct BillingReservetraderrecovery2Mapping([usize; 14]);
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingReservetraderrecovery2Row<'data> {
+pub struct BillingReservetraderrecovery3Row<'data> {
     /// Billing contract year
     pub contractyear: rust_decimal::Decimal,
     /// Billing week number
@@ -24243,9 +26421,9 @@ pub struct BillingReservetraderrecovery2Row<'data> {
     pub participantid: core::ops::Range<usize>,
     /// Region from which the amount is recovered
     pub regionid: core::ops::Range<usize>,
-    /// Participant Demand Value used for RERT Recovery
+    /// Participant Demand Value used for RERT Recovery. NULL for Billing Week post the IESS rule effective date.
     pub participant_demand: Option<rust_decimal::Decimal>,
-    /// Region Demand Value used for RERT Recovery
+    /// Region Demand Value used for RERT Recovery. NULL for Billing Week post the IESS rule effective date.
     pub region_demand: Option<rust_decimal::Decimal>,
     /// Starting Period of RERT Recovery for Usage Payments
     pub eligibility_start_interval: Option<chrono::NaiveDateTime>,
@@ -24255,9 +26433,13 @@ pub struct BillingReservetraderrecovery2Row<'data> {
     pub recovery_amount: Option<rust_decimal::Decimal>,
     /// The Energy Value (Scheduled Loads) that is excluded
     pub excluded_energy: Option<rust_decimal::Decimal>,
+    /// The Participant ACE MWh Value used in the Recovery of the RERT Amount. NULL for Billing Week prior to the IESS rule effective date
+    pub participant_ace_mwh: Option<rust_decimal::Decimal>,
+    /// The Region ACE MWh Value used in the Recovery of the RERT Amount. NULL for Billing Week prior to the IESS rule effective date
+    pub region_ace_mwh: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingReservetraderrecovery2Row<'data> {
+impl<'data> BillingReservetraderrecovery3Row<'data> {
     pub fn publication_id(&self) -> &str {
         core::ops::Index::index(
             self.backing_data.as_slice(),
@@ -24271,11 +26453,11 @@ impl<'data> BillingReservetraderrecovery2Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
 }
-impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
-    const VERSION: i32 = 2;
+impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
+    const VERSION: i32 = 3;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERRECOVERY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderrecovery2Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderrecovery3Mapping([
         4,
         5,
         6,
@@ -24290,6 +26472,8 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
         15,
         16,
         17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24306,16 +26490,18 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
         "ELIGIBILITY_END_INTERVAL",
         "RECOVERY_AMOUNT",
         "EXCLUDED_ENERGY",
+        "PARTICIPANT_ACE_MWH",
+        "REGION_ACE_MWH",
     ];
-    type Row<'row> = BillingReservetraderrecovery2Row<'row>;
-    type FieldMapping = BillingReservetraderrecovery2Mapping;
-    type PrimaryKey = BillingReservetraderrecovery2PrimaryKey;
+    type Row<'row> = BillingReservetraderrecovery3Row<'row>;
+    type FieldMapping = BillingReservetraderrecovery3Mapping;
+    type PrimaryKey = BillingReservetraderrecovery3PrimaryKey;
     type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingReservetraderrecovery2Row {
+        Ok(BillingReservetraderrecovery3Row {
             contractyear: row
                 .get_custom_parsed_at_idx(
                     "contractyear",
@@ -24385,6 +26571,18 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
                     field_mapping.0[13],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            participant_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_ace_mwh",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_ace_mwh",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -24416,7 +26614,7 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingReservetraderrecovery2Mapping(base_mapping))
+        Ok(BillingReservetraderrecovery3Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         _row: mmsdm_core::CsvRow<'a>,
@@ -24427,8 +26625,8 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingReservetraderrecovery2PrimaryKey {
-        BillingReservetraderrecovery2PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingReservetraderrecovery3PrimaryKey {
+        BillingReservetraderrecovery3PrimaryKey {
             billrunno: row.billrunno,
             contractyear: row.contractyear,
             participantid: row.participantid().to_string(),
@@ -24440,10 +26638,10 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
     }
     fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
     fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_reservetraderrecovery_v2".to_string()
+        "billing_reservetraderrecovery_v3".to_string()
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingReservetraderrecovery2Row {
+        BillingReservetraderrecovery3Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             billrunno: row.billrunno.clone(),
@@ -24458,12 +26656,14 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery2 {
             eligibility_end_interval: row.eligibility_end_interval.clone(),
             recovery_amount: row.recovery_amount.clone(),
             excluded_energy: row.excluded_energy.clone(),
+            participant_ace_mwh: row.participant_ace_mwh.clone(),
+            region_ace_mwh: row.region_ace_mwh.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingReservetraderrecovery2PrimaryKey {
+pub struct BillingReservetraderrecovery3PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: alloc::string::String,
@@ -24472,9 +26672,9 @@ pub struct BillingReservetraderrecovery2PrimaryKey {
     pub regionid: alloc::string::String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingReservetraderrecovery2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingReservetraderrecovery2Row<'data> {
-    type Row<'other> = BillingReservetraderrecovery2Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingReservetraderrecovery3PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingReservetraderrecovery3Row<'data> {
+    type Row<'other> = BillingReservetraderrecovery3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid() == row.participantid()
@@ -24484,8 +26684,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingReservetraderrecovery2Row<'dat
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for BillingReservetraderrecovery2Row<'data> {
-    type PrimaryKey = BillingReservetraderrecovery2PrimaryKey;
+for BillingReservetraderrecovery3Row<'data> {
+    type PrimaryKey = BillingReservetraderrecovery3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid() == key.participantid
@@ -24494,8 +26694,8 @@ for BillingReservetraderrecovery2Row<'data> {
             && self.regionid() == key.regionid && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingReservetraderrecovery2PrimaryKey {
-    type Row<'other> = BillingReservetraderrecovery2Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingReservetraderrecovery3PrimaryKey {
+    type Row<'other> = BillingReservetraderrecovery3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid()
@@ -24504,8 +26704,8 @@ impl<'data> mmsdm_core::CompareWithRow for BillingReservetraderrecovery2PrimaryK
             && self.regionid == row.regionid() && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery2PrimaryKey {
-    type PrimaryKey = BillingReservetraderrecovery2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery3PrimaryKey {
+    type PrimaryKey = BillingReservetraderrecovery3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid
@@ -24515,8 +26715,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingReservetraderrecovery2PrimaryK
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery2 {
-    type Builder = BillingReservetraderrecovery2Builder;
+impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery3 {
+    type Builder = BillingReservetraderrecovery3Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -24596,11 +26796,21 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery2 {
                     arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "participant_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingReservetraderrecovery2Builder {
+        BillingReservetraderrecovery3Builder {
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
@@ -24623,6 +26833,10 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery2 {
             recovery_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             excluded_energy_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            participant_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
@@ -24713,6 +26927,24 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery2 {
                         val.mantissa()
                     })
             });
+        builder
+            .participant_ace_mwh_array
+            .append_option({
+                row.participant_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_ace_mwh_array
+            .append_option({
+                row.region_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -24750,13 +26982,17 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery2 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.excluded_energy_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingReservetraderrecovery2Builder {
+pub struct BillingReservetraderrecovery3Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
@@ -24771,4 +27007,6 @@ pub struct BillingReservetraderrecovery2Builder {
     eligibility_end_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     excluded_energy_array: arrow::array::builder::Decimal128Builder,
+    participant_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
 }

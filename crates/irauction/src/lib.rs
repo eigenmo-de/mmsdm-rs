@@ -6977,7 +6977,7 @@ pub struct IrauctionResiduePublicData1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## RESIDUE_PUBLIC_DATA
-///  _RESIDUE_PUBLIC_DATA shows the public auction results.<br>RESIDUE_PUBLIC_DATA supports the Settlement Residue Auction, by holding the public details of the auction for a given contract. RESIDUE_PUBLIC_DATA joins to RESIDUE_CON_DATA and RESIDUE.<br>_
+///  _RESIDUE_PUBLIC_DATA shows the public auction results.<br>RESIDUE_PUBLIC_DATA supports the Settlement Residue Auction, by holding the public details of the auction for a given contract. RESIDUE_PUBLIC_DATA joins to RESIDUE_CON_DATA and RESIDUE._
 ///
 /// * Data Set Name: Irauction
 /// * File Name: Residue Public Data

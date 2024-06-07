@@ -188,7 +188,7 @@ impl mmsdm_core::GetTable for MeterdataAggregateReads1 {
                 "settlementdate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -214,9 +214,13 @@ impl mmsdm_core::GetTable for MeterdataAggregateReads1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -656,7 +660,7 @@ impl mmsdm_core::GetTable for MeterdataIndividualReads1 {
                 "settlementdate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -680,9 +684,13 @@ impl mmsdm_core::GetTable for MeterdataIndividualReads1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1093,7 +1101,7 @@ impl mmsdm_core::GetTable for MeterdataInterconnector1 {
                 "settlementdate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1116,9 +1124,13 @@ impl mmsdm_core::GetTable for MeterdataInterconnector1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1500,7 +1512,7 @@ impl mmsdm_core::GetTable for MeterdataMeterdataSaps1 {
                 "settlementdate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1526,9 +1538,13 @@ impl mmsdm_core::GetTable for MeterdataMeterdataSaps1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2021,7 +2037,7 @@ impl mmsdm_core::GetTable for MeterdataWdrReads1 {
                 "settlementdate",
                 6,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2045,9 +2061,13 @@ impl mmsdm_core::GetTable for MeterdataWdrReads1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

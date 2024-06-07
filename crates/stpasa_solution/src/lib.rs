@@ -309,7 +309,7 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -329,9 +329,13 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -919,7 +923,7 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -943,9 +947,13 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1405,7 +1413,7 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1429,9 +1437,13 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1793,7 +1805,7 @@ pub struct StpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Last changed date of this record
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of  PASAAVAILABILITY quantities offered by all Scheduled Generators in a given Region for a given PERIODID.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.<br>For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
     pub runtype: core::ops::Range<usize>,
@@ -2259,7 +2271,7 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2282,9 +2294,13 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

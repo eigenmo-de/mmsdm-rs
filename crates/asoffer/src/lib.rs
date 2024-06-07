@@ -10,7 +10,7 @@ pub struct AsofferOfferagcdata1Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## OFFERAGCDATA
-///  _OFFERAGCDATA shows availability reoffers of Automatic Generation Control. _
+///  _OFFERAGCDATA shows availability reoffers of Automatic Generation Control._
 ///
 /// * Data Set Name: Asoffer
 /// * File Name: Offeragcdata
@@ -233,7 +233,7 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -256,9 +256,13 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -695,7 +699,7 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -717,9 +721,13 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1061,7 +1069,7 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1084,9 +1092,13 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1494,7 +1506,8 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let offerdate = row
-            .get_custom_parsed_at_idx("offerdate", 5, mmsdm_core::mms_datetime::parse)?;
+            .get_custom_parsed_at_idx("offerdate", 5, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(offerdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1517,9 +1530,13 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.offerdate).year(),
+            year: (chrono::NaiveDateTime::from(row.offerdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.offerdate).month(),
+                    (chrono::NaiveDateTime::from(row.offerdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1935,7 +1952,7 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1958,9 +1975,13 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

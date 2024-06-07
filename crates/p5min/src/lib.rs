@@ -103,7 +103,14 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -124,9 +131,29 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -233,7 +260,7 @@ pub struct P5minCasesolution2Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## P5MIN_CASESOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution.<br>_
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution._
 ///
 /// * Data Set Name: P5min
 /// * File Name: Casesolution
@@ -510,7 +537,14 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -531,9 +565,29 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -977,7 +1031,7 @@ pub struct P5minConstraintsolution6Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## P5MIN_CONSTRAINTSOLUTION
-///  _The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.<br>_
+///  _The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
 ///
 /// * Data Set Name: P5min
 /// * File Name: Constraintsolution
@@ -1180,7 +1234,14 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1203,9 +1264,29 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1738,7 +1819,14 @@ impl mmsdm_core::GetTable for P5minFcasRequirment1 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1763,9 +1851,29 @@ impl mmsdm_core::GetTable for P5minFcasRequirment1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2138,7 +2246,7 @@ pub struct P5minInterconnectorsoln4Mapping([usize; 22]);
 /// # Summary
 ///
 /// ## P5MIN_INTERCONNECTORSOLN
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.<br>_
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
 ///
 /// * Data Set Name: P5min
 /// * File Name: Interconnectorsoln
@@ -2454,7 +2562,14 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
                 "interval_datetime",
                 6,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2477,9 +2592,29 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3546,7 +3681,14 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
                 "interval_datetime",
                 6,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3569,9 +3711,29 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4748,7 +4910,14 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4770,9 +4939,29 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -5507,7 +5696,14 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
                 "interval_datetime",
                 6,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -5530,9 +5726,29 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -6573,16 +6789,16 @@ pub struct P5minPricesensitivities1Builder {
     rrp43_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minRegionsolution8;
-pub struct P5minRegionsolution8Mapping([usize; 112]);
+pub struct P5minRegionsolution9;
+pub struct P5minRegionsolution9Mapping([usize; 117]);
 /// # Summary
 ///
 /// ## P5MIN_REGIONSOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study.<br>_
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study._
 ///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
-/// * Data Version: 8
+/// * Data Version: 9
 ///
 /// # Description
 ///  P5MIN_REGIONSOLUTION is public data, so is available to all participants. Source P5MIN_REGIONSOLUTION updates every 5 minutes. Volume Rows per day: 1440
@@ -6596,7 +6812,7 @@ pub struct P5minRegionsolution8Mapping([usize; 112]);
 /// * RUN_DATETIME
 /// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
-pub struct P5minRegionsolution8Row<'data> {
+pub struct P5minRegionsolution9Row<'data> {
     /// Unique Timestamp Identifier for this study
     pub run_datetime: chrono::NaiveDateTime,
     /// The unique identifier for the interval within this study
@@ -6821,18 +7037,28 @@ pub struct P5minRegionsolution8Row<'data> {
     pub raise1seclocaldispatch: Option<rust_decimal::Decimal>,
     /// Total Lower1Sec Dispatched in Region - RegionSolution element L1Dispatch attribute
     pub lower1seclocaldispatch: Option<rust_decimal::Decimal>,
+    /// Regional aggregated energy storage where the DUID type is BDU (MWh)
+    pub bdu_energy_storage: Option<rust_decimal::Decimal>,
+    /// Total available load side BDU summated for region (MW)
+    pub bdu_min_avail: Option<rust_decimal::Decimal>,
+    /// Total available generation side BDU summated for region (MW)
+    pub bdu_max_avail: Option<rust_decimal::Decimal>,
+    /// Regional aggregated cleared MW where the DUID type is BDU. Net of export (Generation)
+    pub bdu_clearedmw_gen: Option<rust_decimal::Decimal>,
+    /// Regional aggregated cleared MW where the DUID type is BDU. Net of import (Load)
+    pub bdu_clearedmw_load: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> P5minRegionsolution8Row<'data> {
+impl<'data> P5minRegionsolution9Row<'data> {
     pub fn regionid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
 }
-impl mmsdm_core::GetTable for P5minRegionsolution8 {
-    const VERSION: i32 = 8;
+impl mmsdm_core::GetTable for P5minRegionsolution9 {
+    const VERSION: i32 = 9;
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "REGIONSOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minRegionsolution8Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minRegionsolution9Mapping([
         4,
         5,
         6,
@@ -6945,6 +7171,11 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
         113,
         114,
         115,
+        116,
+        117,
+        118,
+        119,
+        120,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -7059,16 +7290,21 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
         "LOWER1SECROP",
         "RAISE1SECLOCALDISPATCH",
         "LOWER1SECLOCALDISPATCH",
+        "BDU_ENERGY_STORAGE",
+        "BDU_MIN_AVAIL",
+        "BDU_MAX_AVAIL",
+        "BDU_CLEAREDMW_GEN",
+        "BDU_CLEAREDMW_LOAD",
     ];
-    type Row<'row> = P5minRegionsolution8Row<'row>;
-    type FieldMapping = P5minRegionsolution8Mapping;
-    type PrimaryKey = P5minRegionsolution8PrimaryKey;
+    type Row<'row> = P5minRegionsolution9Row<'row>;
+    type FieldMapping = P5minRegionsolution9Mapping;
+    type PrimaryKey = P5minRegionsolution9PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(P5minRegionsolution8Row {
+        Ok(P5minRegionsolution9Row {
             run_datetime: row
                 .get_custom_parsed_at_idx(
                     "run_datetime",
@@ -7736,6 +7972,36 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
                     field_mapping.0[111],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            bdu_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_energy_storage",
+                    field_mapping.0[112],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_min_avail: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_min_avail",
+                    field_mapping.0[113],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_max_avail: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_max_avail",
+                    field_mapping.0[114],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_clearedmw_gen: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_clearedmw_gen",
+                    field_mapping.0[115],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_clearedmw_load: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_clearedmw_load",
+                    field_mapping.0[116],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -7767,7 +8033,7 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(P5minRegionsolution8Mapping(base_mapping))
+        Ok(P5minRegionsolution9Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         row: mmsdm_core::CsvRow<'a>,
@@ -7777,7 +8043,14 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -7790,8 +8063,8 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> P5minRegionsolution8PrimaryKey {
-        P5minRegionsolution8PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> P5minRegionsolution9PrimaryKey {
+        P5minRegionsolution9PrimaryKey {
             interval_datetime: row.interval_datetime,
             regionid: row.regionid().to_string(),
             run_datetime: row.run_datetime,
@@ -7800,21 +8073,41 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
     }
     fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "p5min_regionsolution_v8_{}_{}", Self::partition_suffix(& row).year,
+            "p5min_regionsolution_v9_{}_{}", Self::partition_suffix(& row).year,
             Self::partition_suffix(& row).month.number_from_month()
         )
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        P5minRegionsolution8Row {
+        P5minRegionsolution9Row {
             run_datetime: row.run_datetime.clone(),
             interval_datetime: row.interval_datetime.clone(),
             regionid: row.regionid.clone(),
@@ -7927,44 +8220,49 @@ impl mmsdm_core::GetTable for P5minRegionsolution8 {
             lower1secrop: row.lower1secrop.clone(),
             raise1seclocaldispatch: row.raise1seclocaldispatch.clone(),
             lower1seclocaldispatch: row.lower1seclocaldispatch.clone(),
+            bdu_energy_storage: row.bdu_energy_storage.clone(),
+            bdu_min_avail: row.bdu_min_avail.clone(),
+            bdu_max_avail: row.bdu_max_avail.clone(),
+            bdu_clearedmw_gen: row.bdu_clearedmw_gen.clone(),
+            bdu_clearedmw_load: row.bdu_clearedmw_load.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct P5minRegionsolution8PrimaryKey {
+pub struct P5minRegionsolution9PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: alloc::string::String,
     pub run_datetime: chrono::NaiveDateTime,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for P5minRegionsolution8PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution8Row<'data> {
-    type Row<'other> = P5minRegionsolution8Row<'other>;
+impl mmsdm_core::PrimaryKey for P5minRegionsolution9PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution9Row<'data> {
+    type Row<'other> = P5minRegionsolution9Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.interval_datetime == row.interval_datetime
             && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution8Row<'data> {
-    type PrimaryKey = P5minRegionsolution8PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution9Row<'data> {
+    type PrimaryKey = P5minRegionsolution9PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime
             && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
             && self.intervention == key.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution8PrimaryKey {
-    type Row<'other> = P5minRegionsolution8Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution9PrimaryKey {
+    type Row<'other> = P5minRegionsolution9Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.interval_datetime == row.interval_datetime
             && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution8PrimaryKey {
-    type PrimaryKey = P5minRegionsolution8PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution9PrimaryKey {
+    type PrimaryKey = P5minRegionsolution9PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
@@ -7972,8 +8270,8 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution8PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
-    type Builder = P5minRegionsolution8Builder;
+impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
+    type Builder = P5minRegionsolution9Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -8546,11 +8844,36 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                     arrow::datatypes::DataType::Decimal128(15, 5),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "bdu_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_min_avail",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_max_avail",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_clearedmw_gen",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_clearedmw_load",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        P5minRegionsolution8Builder {
+        P5minRegionsolution9Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -8770,6 +9093,16 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
             raise1seclocaldispatch_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lower1seclocaldispatch_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_min_avail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_max_avail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
     }
@@ -9752,6 +10085,51 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                         val.mantissa()
                     })
             });
+        builder
+            .bdu_energy_storage_array
+            .append_option({
+                row.bdu_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_min_avail_array
+            .append_option({
+                row.bdu_min_avail
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_max_avail_array
+            .append_option({
+                row.bdu_max_avail
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_clearedmw_gen_array
+            .append_option({
+                row.bdu_clearedmw_gen
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_clearedmw_load_array
+            .append_option({
+                row.bdu_clearedmw_load
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9987,13 +10365,23 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution8 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.lower1seclocaldispatch_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_energy_storage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_min_avail_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_max_avail_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_clearedmw_gen_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_clearedmw_load_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct P5minRegionsolution8Builder {
+pub struct P5minRegionsolution9Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
@@ -10106,6 +10494,11 @@ pub struct P5minRegionsolution8Builder {
     lower1secrop_array: arrow::array::builder::Decimal128Builder,
     raise1seclocaldispatch_array: arrow::array::builder::Decimal128Builder,
     lower1seclocaldispatch_array: arrow::array::builder::Decimal128Builder,
+    bdu_energy_storage_array: arrow::array::builder::Decimal128Builder,
+    bdu_min_avail_array: arrow::array::builder::Decimal128Builder,
+    bdu_max_avail_array: arrow::array::builder::Decimal128Builder,
+    bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder,
+    bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct P5minScenariodemand1;
 pub struct P5minScenariodemand1Mapping([usize; 5]);
@@ -10240,7 +10633,14 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -10263,9 +10663,29 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -10552,7 +10972,14 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -10573,9 +11000,29 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -10717,16 +11164,16 @@ pub struct P5minScenariodemandtrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minUnitsolution5;
-pub struct P5minUnitsolution5Mapping([usize; 37]);
+pub struct P5minUnitsolution6;
+pub struct P5minUnitsolution6Mapping([usize; 42]);
 /// # Summary
 ///
 /// ## P5MIN_UNITSOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study.<br>_
+///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study._
 ///
 /// * Data Set Name: P5min
 /// * File Name: Unitsolution
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 ///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
@@ -10740,7 +11187,7 @@ pub struct P5minUnitsolution5Mapping([usize; 37]);
 /// * RUN_DATETIME
 /// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
-pub struct P5minUnitsolution5Row<'data> {
+pub struct P5minUnitsolution6Row<'data> {
     /// Unique Timestamp Identifier for this study
     pub run_datetime: chrono::NaiveDateTime,
     /// The unique identifier for the interval within this study
@@ -10753,9 +11200,9 @@ pub struct P5minUnitsolution5Row<'data> {
     pub tradetype: Option<rust_decimal::Decimal>,
     /// AGC Status from EMS: 1 = on, 0 = off
     pub agcstatus: Option<rust_decimal::Decimal>,
-    /// Initial MW at start of period. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run.
+    /// Initial MW at start of period. For periods subsequent to the first period of a P5MIN run, this value represents the cleared target for the previous period of that P5MIN run. Negative values when Bi-directional Unit start from importing power, otherwise positive.
     pub initialmw: Option<rust_decimal::Decimal>,
-    /// Target MW for end of period
+    /// Target MW for end of period. Negative values when Bi-directional Unit is importing power, otherwise positive.
     pub totalcleared: Option<rust_decimal::Decimal>,
     /// Ramp down rate (lessor of bid or telemetered rate).
     pub rampdownrate: Option<rust_decimal::Decimal>,
@@ -10815,9 +11262,19 @@ pub struct P5minUnitsolution5Row<'data> {
     pub lower1sec: Option<rust_decimal::Decimal>,
     /// TraderSolution element L1Flags attribute
     pub lower1secflags: Option<rust_decimal::Decimal>,
+    /// BDU only. The energy storage at the start of this dispatch interval (MWh)
+    pub initial_energy_storage: Option<rust_decimal::Decimal>,
+    /// BDU only. The projected energy storage based on cleared energy and regulation FCAS dispatch (MWh)
+    pub energy_storage: Option<rust_decimal::Decimal>,
+    /// BDU only - Minimum Energy Storage constraint limit (MWh)
+    pub energy_storage_min: Option<rust_decimal::Decimal>,
+    /// BDU only - Maximum Energy Storage constraint limit (MWh)
+    pub energy_storage_max: Option<rust_decimal::Decimal>,
+    /// BDU only. Load side availability (BidOfferPeriod.MAXAVAIL where DIRECTION = LOAD).
+    pub min_availability: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> P5minUnitsolution5Row<'data> {
+impl<'data> P5minUnitsolution6Row<'data> {
     pub fn duid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
     }
@@ -10834,11 +11291,11 @@ impl<'data> P5minUnitsolution5Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for P5minUnitsolution5 {
-    const VERSION: i32 = 5;
+impl mmsdm_core::GetTable for P5minUnitsolution6 {
+    const VERSION: i32 = 6;
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "UNITSOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minUnitsolution5Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minUnitsolution6Mapping([
         4,
         5,
         6,
@@ -10876,6 +11333,11 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
         38,
         39,
         40,
+        41,
+        42,
+        43,
+        44,
+        45,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -10915,16 +11377,21 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
         "RAISE1SECFLAGS",
         "LOWER1SEC",
         "LOWER1SECFLAGS",
+        "INITIAL_ENERGY_STORAGE",
+        "ENERGY_STORAGE",
+        "ENERGY_STORAGE_MIN",
+        "ENERGY_STORAGE_MAX",
+        "MIN_AVAILABILITY",
     ];
-    type Row<'row> = P5minUnitsolution5Row<'row>;
-    type FieldMapping = P5minUnitsolution5Mapping;
-    type PrimaryKey = P5minUnitsolution5PrimaryKey;
+    type Row<'row> = P5minUnitsolution6Row<'row>;
+    type FieldMapping = P5minUnitsolution6Mapping;
+    type PrimaryKey = P5minUnitsolution6PrimaryKey;
     type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(P5minUnitsolution5Row {
+        Ok(P5minUnitsolution6Row {
             run_datetime: row
                 .get_custom_parsed_at_idx(
                     "run_datetime",
@@ -11138,6 +11605,36 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
                     field_mapping.0[36],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            initial_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "initial_energy_storage",
+                    field_mapping.0[37],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "energy_storage",
+                    field_mapping.0[38],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energy_storage_min: row
+                .get_opt_custom_parsed_at_idx(
+                    "energy_storage_min",
+                    field_mapping.0[39],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energy_storage_max: row
+                .get_opt_custom_parsed_at_idx(
+                    "energy_storage_max",
+                    field_mapping.0[40],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            min_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "min_availability",
+                    field_mapping.0[41],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -11169,7 +11666,7 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(P5minUnitsolution5Mapping(base_mapping))
+        Ok(P5minUnitsolution6Mapping(base_mapping))
     }
     fn partition_suffix_from_row<'a>(
         row: mmsdm_core::CsvRow<'a>,
@@ -11179,7 +11676,14 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -11192,8 +11696,8 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> P5minUnitsolution5PrimaryKey {
-        P5minUnitsolution5PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> P5minUnitsolution6PrimaryKey {
+        P5minUnitsolution6PrimaryKey {
             duid: row.duid().to_string(),
             interval_datetime: row.interval_datetime,
             run_datetime: row.run_datetime,
@@ -11202,21 +11706,41 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        5,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                5,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
     }
     fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "p5min_unitsolution_v5_{}_{}", Self::partition_suffix(& row).year,
+            "p5min_unitsolution_v6_{}_{}", Self::partition_suffix(& row).year,
             Self::partition_suffix(& row).month.number_from_month()
         )
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        P5minUnitsolution5Row {
+        P5minUnitsolution6Row {
             run_datetime: row.run_datetime.clone(),
             interval_datetime: row.interval_datetime.clone(),
             duid: row.duid.clone(),
@@ -11254,44 +11778,49 @@ impl mmsdm_core::GetTable for P5minUnitsolution5 {
             raise1secflags: row.raise1secflags.clone(),
             lower1sec: row.lower1sec.clone(),
             lower1secflags: row.lower1secflags.clone(),
+            initial_energy_storage: row.initial_energy_storage.clone(),
+            energy_storage: row.energy_storage.clone(),
+            energy_storage_min: row.energy_storage_min.clone(),
+            energy_storage_max: row.energy_storage_max.clone(),
+            min_availability: row.min_availability.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct P5minUnitsolution5PrimaryKey {
+pub struct P5minUnitsolution6PrimaryKey {
     pub duid: alloc::string::String,
     pub interval_datetime: chrono::NaiveDateTime,
     pub run_datetime: chrono::NaiveDateTime,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for P5minUnitsolution5PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for P5minUnitsolution5Row<'data> {
-    type Row<'other> = P5minUnitsolution5Row<'other>;
+impl mmsdm_core::PrimaryKey for P5minUnitsolution6PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for P5minUnitsolution6Row<'data> {
+    type Row<'other> = P5minUnitsolution6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid() == row.duid() && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution5Row<'data> {
-    type PrimaryKey = P5minUnitsolution5PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution6Row<'data> {
+    type PrimaryKey = P5minUnitsolution6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid() == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
             && self.intervention == key.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for P5minUnitsolution5PrimaryKey {
-    type Row<'other> = P5minUnitsolution5Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for P5minUnitsolution6PrimaryKey {
+    type Row<'other> = P5minUnitsolution6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid == row.duid() && self.interval_datetime == row.interval_datetime
             && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution5PrimaryKey {
-    type PrimaryKey = P5minUnitsolution5PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution6PrimaryKey {
+    type PrimaryKey = P5minUnitsolution6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.interval_datetime == key.interval_datetime
             && self.run_datetime == key.run_datetime
@@ -11299,8 +11828,8 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minUnitsolution5PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
-    type Builder = P5minUnitsolution5Builder;
+impl mmsdm_core::ArrowSchema for P5minUnitsolution6 {
+    type Builder = P5minUnitsolution6Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -11498,11 +12027,36 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                     arrow::datatypes::DataType::Decimal128(3, 0),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "initial_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energy_storage_min",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energy_storage_max",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "min_availability",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        P5minUnitsolution5Builder {
+        P5minUnitsolution6Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
@@ -11572,6 +12126,16 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lower1secflags_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            initial_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            energy_storage_min_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            energy_storage_max_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            min_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -11870,6 +12434,51 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                         val.mantissa()
                     })
             });
+        builder
+            .initial_energy_storage_array
+            .append_option({
+                row.initial_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energy_storage_array
+            .append_option({
+                row.energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energy_storage_min_array
+            .append_option({
+                row.energy_storage_min
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energy_storage_max_array
+            .append_option({
+                row.energy_storage_max
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .min_availability_array
+            .append_option({
+                row.min_availability
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11951,13 +12560,23 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution5 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.lower1secflags_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.initial_energy_storage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.energy_storage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.energy_storage_min_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.energy_storage_max_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.min_availability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct P5minUnitsolution5Builder {
+pub struct P5minUnitsolution6Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
@@ -11995,4 +12614,9 @@ pub struct P5minUnitsolution5Builder {
     raise1secflags_array: arrow::array::builder::Decimal128Builder,
     lower1sec_array: arrow::array::builder::Decimal128Builder,
     lower1secflags_array: arrow::array::builder::Decimal128Builder,
+    initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
+    energy_storage_array: arrow::array::builder::Decimal128Builder,
+    energy_storage_min_array: arrow::array::builder::Decimal128Builder,
+    energy_storage_max_array: arrow::array::builder::Decimal128Builder,
+    min_availability_array: arrow::array::builder::Decimal128Builder,
 }

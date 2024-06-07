@@ -309,7 +309,7 @@ impl mmsdm_core::GetTable for PdpasaCasesolution3 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -329,9 +329,13 @@ impl mmsdm_core::GetTable for PdpasaCasesolution3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -918,7 +922,7 @@ impl mmsdm_core::GetTable for PdpasaConstraintsolution1 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -942,9 +946,13 @@ impl mmsdm_core::GetTable for PdpasaConstraintsolution1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1403,7 +1411,7 @@ impl mmsdm_core::GetTable for PdpasaInterconnectorsoln1 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1427,9 +1435,13 @@ impl mmsdm_core::GetTable for PdpasaInterconnectorsoln1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1791,7 +1803,7 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Date time the record was created or modified changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of  PASAAVAILABILITY quantities offered by all Scheduled Generators in a given Region for a given PERIODID.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.<br>For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
     pub runtype: core::ops::Range<usize>,
@@ -1813,7 +1825,7 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub uigf: Option<rust_decimal::Decimal>,
     /// Constrained generation forecast for semi-scheduled units for the region. For RELIABILITY_LRC run semi-scheduled generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run semi-scheduled generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
-    /// Constrained generation forecast for semi-scheduled units for the region for the LOR run type. Semi-scheduled generation is constrained by both System Normal and Outage constraints, and incorporate MAXAVAIL limits.
+    /// Constrained generation forecast for semi-scheduled units for the region for the LOR run. Semi-scheduled generation is constrained by both System Normal and Outage constraints, and incorporate MAXAVAIL limits.
     pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
@@ -2257,7 +2269,7 @@ impl mmsdm_core::GetTable for PdpasaRegionsolution7 {
                 "interval_datetime",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2280,9 +2292,13 @@ impl mmsdm_core::GetTable for PdpasaRegionsolution7 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

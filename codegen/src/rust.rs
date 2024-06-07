@@ -160,7 +160,10 @@ impl mms::TableColumn {
                 format!("row.{}.timestamp_millis()", self.rust_field_name())
             }
             (mms::DataType::Date | mms::DataType::DateTime, false) => {
-                format!("row.{}.map(|val| val.timestamp_millis())", self.rust_field_name())
+                format!(
+                    "row.{}.map(|val| val.timestamp_millis())",
+                    self.rust_field_name()
+                )
             }
 
             (mms::DataType::Decimal { scale, .. }, true) => format!(
@@ -368,7 +371,6 @@ fn codegen_struct(
     manager_struct.vis("pub");
     manager_struct.fmt(fmtr)?;
 
-
     let mut mapping = codegen::Struct::new(&pdr_report.get_rust_struct_mapping_name());
     mapping.vis("pub");
     mapping.tuple_field(format!("[usize; {}]", table.columns().columns.len()));
@@ -565,14 +567,17 @@ fn codegen_impl_get_table(
 
         // calculate mapping
         field_mapping_from_row.line("let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;");
-        field_mapping_from_row.line("for (field_index, field) in Self::COLUMNS.iter().enumerate() {");
+        field_mapping_from_row
+            .line("for (field_index, field) in Self::COLUMNS.iter().enumerate() {");
         // usize MAX is fine here, this will only happen for nullable fields.
         field_mapping_from_row.line("base_mapping[field_index] = row.iter_fields().position(|f| f == *field).unwrap_or(usize::MAX);");
         field_mapping_from_row.line("}");
-        field_mapping_from_row.line(format!("Ok({}(base_mapping))", pdr_report.get_rust_struct_mapping_name()));
+        field_mapping_from_row.line(format!(
+            "Ok({}(base_mapping))",
+            pdr_report.get_rust_struct_mapping_name()
+        ));
 
         current_impl.push_fn(field_mapping_from_row);
-
     }
 
     {
@@ -597,7 +602,7 @@ fn codegen_impl_get_table(
                 mms::DataType::DateTime | mms::DataType::Date
                     if !(col.is_trading_period() || col.is_dispatch_period()) =>
                 {
-                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}= row.get_custom_parsed_at_idx("{field_name}", {idx}, mmsdm_core::mms_datetime::parse)?;"#));
+                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}= row.get_custom_parsed_at_idx("{field_name}", {idx}, mmsdm_core::mms_datetime::parse)? - {};"#, table.frequency().duration()));
                 }
                 _ if col.is_trading_period() => {
                     partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::TradingPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
@@ -627,17 +632,52 @@ fn codegen_impl_get_table(
 
     current_impl.associate_type("FieldMapping", pdr_report.get_rust_struct_mapping_name());
     current_impl.associate_const("VERSION", "i32", pdr_report.version.to_string(), "");
-    current_impl.associate_const("DATA_SET_NAME", "&'static str", format!("\"{}\"", pdr_report.name), "");
-    current_impl.associate_const("TABLE_NAME", "&'static str", format!("\"{}\"", pdr_report.sub_type.as_deref().unwrap_or_default()), "");
-    
+    current_impl.associate_const(
+        "DATA_SET_NAME",
+        "&'static str",
+        format!("\"{}\"", pdr_report.name),
+        "",
+    );
+    current_impl.associate_const(
+        "TABLE_NAME",
+        "&'static str",
+        format!("\"{}\"", pdr_report.sub_type.as_deref().unwrap_or_default()),
+        "",
+    );
+
     // the +4 here is to offset for the skipped columns!
-    let array_contents = table.columns().columns.iter().enumerate().map(|(idx, _)| format!("{}", idx + 4)).collect::<Vec<_>>().join(",");
+    let array_contents = table
+        .columns()
+        .columns
+        .iter()
+        .enumerate()
+        .map(|(idx, _)| format!("{}", idx + 4))
+        .collect::<Vec<_>>()
+        .join(",");
 
-    current_impl.associate_const("DEFAULT_FIELD_MAPPING", "Self::FieldMapping", format!("{}([{array_contents}])", pdr_report.get_rust_struct_mapping_name()), "");
+    current_impl.associate_const(
+        "DEFAULT_FIELD_MAPPING",
+        "Self::FieldMapping",
+        format!(
+            "{}([{array_contents}])",
+            pdr_report.get_rust_struct_mapping_name()
+        ),
+        "",
+    );
 
-    let array_contents = table.columns().columns.iter().map(|c| format!("\"{}\"", c.name)).collect::<Vec<_>>().join(",");
-    current_impl.associate_const("COLUMNS", "&'static [&'static str]", format!("&[{array_contents}]"), "");
-
+    let array_contents = table
+        .columns()
+        .columns
+        .iter()
+        .map(|c| format!("\"{}\"", c.name))
+        .collect::<Vec<_>>()
+        .join(",");
+    current_impl.associate_const(
+        "COLUMNS",
+        "&'static [&'static str]",
+        format!("&[{array_contents}]"),
+        "",
+    );
 
     let mut primary_key = codegen::Function::new("primary_key");
     primary_key.ret(&pdr_report.get_rust_pk_name());
@@ -672,17 +712,27 @@ fn codegen_impl_get_table(
 
     let mut partition_suffix = codegen::Function::new("partition_suffix");
     partition_suffix.ret("Self::Partition");
-    
+
     // if pdr_report.name == "PREDISPATCH" && pdr_report.sub_type.as_deref() == Some("REGIONFCASREQUIREMENT") {
-        
-        //     dbg!(table.partition_column(), table.find_column("predispatchseqno"), &table.columns());
-        //     panic!()
-        // }
-        
+
+    //     dbg!(table.partition_column(), table.find_column("predispatchseqno"), &table.columns());
+    //     panic!()
+    // }
+
     if let ControlFlow::Break(col) = table.partition_column() {
         partition_suffix.arg("row", "&Self::Row<'_>");
         current_impl.associate_type("Partition", "mmsdm_core::YearMonth");
-        partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from(row.{colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from(row.{colname}).month()).unwrap() }}"#, colname = col.field_name()));
+
+        match &col.data_type {
+            mms::DataType::DateTime | mms::DataType::Date
+                if !(col.is_trading_period() || col.is_dispatch_period()) =>
+            {
+                partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: (chrono::NaiveDateTime::from(row.{colname}) - {sub}).year(), month: num_traits::FromPrimitive::from_u32((chrono::NaiveDateTime::from(row.{colname}) - {sub}).month()).unwrap() }}"#, colname = col.field_name(), sub = table.frequency().duration()));
+            }
+            _ => {
+                partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from(row.{colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from(row.{colname}).month()).unwrap() }}"#, colname = col.field_name()));
+            }
+        }
     } else {
         partition_suffix.arg("_row", "&Self::Row<'_>");
         current_impl.associate_type("Partition", "()");
@@ -691,7 +741,7 @@ fn codegen_impl_get_table(
 
     let mut partition_name = codegen::Function::new("partition_name");
     partition_name.ret("alloc::string::String");
-    
+
     if table.partition_column().is_break() {
         partition_name.arg("row", "&Self::Row<'_>");
         partition_name.line(
@@ -990,37 +1040,6 @@ fn codegen_impl_arrow_schema(
         arrow_schema.line(&table.columns().as_arrow_schema());
         arrow_trait.push_fn(arrow_schema);
 
-        // let mut partition_to_batch = codegen::Function::new("partition_to_batch");
-        // partition_to_batch
-        //     .ret("mmsdm_core::Result<arrow::array::RecordBatch>");
-        // partition_to_batch.generic("'reader");
-        // partition_to_batch.generic("R: std::io::Read + std::io::Seek");
-        // partition_to_batch.arg("reader", "&mut mmsdm_core::FileReader<'reader, R>");
-        // partition_to_batch.arg("partition", "<Self as mmsdm_core::GetTable>::Partition");
-
-        // // partition_to_batch.line("use std::convert::TryFrom;");
-
-        // for col in &table.columns().columns {
-        //     partition_to_batch.line(&format!(
-        //         "let mut {builder_name} = {builder};",
-        //         builder_name = col.as_arrow_array_name(),
-        //         builder= col.as_arrow_builder(),
-        //     ));
-        // }
-        // partition_to_batch.line("let mut iter = reader.iter_partition::<Self>(partition)?;");
-
-        // partition_to_batch.line("while let Some(maybe_row) = iter.next() {");
-
-        // partition_to_batch.line("let Some(row) = maybe_row.transpose()? else {");
-        // partition_to_batch.line("continue;");
-        // partition_to_batch.line("};");
-
-        // for col in &table.columns().columns {
-        //     partition_to_batch.line(&format!("    {}", col.as_arrow_array_extractor()));
-        // }
-
-        // arrow_trait.push_fn(partition_to_batch);
-
         arrow_trait.associate_type("Builder", pdr_report.get_rust_arrow_builder_name());
 
         let new_builder = arrow_trait.new_fn("new_builder");
@@ -1083,23 +1102,6 @@ fn codegen_impl_arrow_schema(
         batch_builder.fmt(fmtr)?;
     }
 
-    // {
-    //     let mut batch_builder_trait =
-    //         codegen::Impl::new(&format!("{}", pdr_report.get_rust_arrow_builder_name()));
-    //     batch_builder_trait.impl_trait("mmsdm_core::BatchBuilder");
-    //     batch_builder_trait.r#macro("#[cfg(feature = \"arrow\")]");
-    //     batch_builder_trait.associate_type(
-    //         "Row<'a>",
-    //         format!("{}<'a>", pdr_report.get_rust_struct_name()),
-    //     );
-
-    //     batch_builder_trait.fmt(fmtr)?;
-    // }
-    Ok(())
-}
-
-fn remove_data_set_crate(data_set: &str) -> anyhow::Result<()> {
-    std::fs::remove_dir_all(format!("crates/{}", data_set.to_snake_case()))?;
     Ok(())
 }
 
@@ -1151,7 +1153,6 @@ default = []"#,
     )?;
     Ok(())
 }
-
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -1271,18 +1272,17 @@ pub fn run() -> anyhow::Result<()> {
             }
         }
 
-       
         // apply_all_fn.fmt(false, &mut fmtr)?;
         let path = format!("crates/{}/src/lib.rs", data_set.to_snake_case());
 
-        let formatted =
-            match syn::parse_file(&fmt_str).map(|parsed| prettyplease::unparse(&parsed)) {
-                Ok(formatted) => formatted,
-                _ => {
-                    eprintln!("Failed to format file {path}, saving anyway");
-                    fmt_str
-                }
-            };
+        let formatted = match syn::parse_file(&fmt_str).map(|parsed| prettyplease::unparse(&parsed))
+        {
+            Ok(formatted) => formatted,
+            _ => {
+                eprintln!("Failed to format file {path}, saving anyway");
+                fmt_str
+            }
+        };
 
         fs::write(&path, formatted).with_context(|| format!("writing out to {path}"))?;
     }

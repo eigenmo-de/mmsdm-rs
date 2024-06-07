@@ -289,7 +289,7 @@ pub struct GencondataNull6Mapping([usize; 26]);
 /// # Summary
 ///
 /// ## GENCONDATA
-///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes.<br>_
+///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes._
 ///
 /// * Data Set Name: Gencondata
 /// * File Name: Null
@@ -737,7 +737,7 @@ impl mmsdm_core::GetTable for GencondataNull6 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -759,9 +759,13 @@ impl mmsdm_core::GetTable for GencondataNull6 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1336,7 +1340,7 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1359,9 +1363,13 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1554,7 +1562,7 @@ pub struct GenconsetinvokeNull2Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## GENCONSETINVOKE
-///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc.<br>_
+///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc._
 ///
 /// * Data Set Name: Genconsetinvoke
 /// * File Name: Null
@@ -2300,7 +2308,7 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2322,9 +2330,13 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2551,7 +2563,7 @@ pub struct GcrhsNull1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## GENERICCONSTRAINTRHS
-///  _GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.<br>GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet.<br>_
+///  _GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.<br>GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet._
 ///
 /// * Data Set Name: Gcrhs
 /// * File Name: Null
@@ -2821,7 +2833,7 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2845,9 +2857,13 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3812,7 +3828,7 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3835,9 +3851,13 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4276,7 +4296,7 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4300,9 +4320,13 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4638,7 +4662,7 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4661,9 +4685,13 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4990,7 +5018,7 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -5014,9 +5042,13 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

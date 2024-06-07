@@ -441,7 +441,7 @@ pub struct BillingConfigGstBasClass1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## GST_BAS_CLASS
-///  _GST_BAS_CLASS contains a static list of BAS (Business Activity Statement) classifications supported by the MMS. _
+///  _GST_BAS_CLASS contains a static list of BAS (Business Activity Statement) classifications supported by the MMS._
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Bas Class
@@ -799,7 +799,7 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -821,9 +821,13 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1118,7 +1122,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1141,9 +1145,13 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1305,7 +1313,7 @@ pub struct BillingConfigGstTransactionType1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## GST_TRANSACTION_TYPE
-///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS. _
+///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS._
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Transaction Type
@@ -1716,7 +1724,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
                 "effectivedate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1740,9 +1748,13 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }

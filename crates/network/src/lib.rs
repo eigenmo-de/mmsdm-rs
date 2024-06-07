@@ -10,7 +10,7 @@ pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_EQUIPMENTDETAIL
-///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line.<br>_
+///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line._
 ///
 /// * Data Set Name: Network
 /// * File Name: Equipmentdetail
@@ -31,7 +31,7 @@ pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 pub struct NetworkEquipmentdetail2Row<'data> {
     /// ID uniquely identifying the substation this equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: core::ops::Range<usize>,
@@ -39,7 +39,7 @@ pub struct NetworkEquipmentdetail2Row<'data> {
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
-    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
+    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33
     pub voltage: core::ops::Range<usize>,
     /// A short description for this equipment.
     pub description: core::ops::Range<usize>,
@@ -686,7 +686,7 @@ pub struct NetworkOutagedetail4Row<'data> {
     pub outageid: rust_decimal::Decimal,
     /// The substation this equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: core::ops::Range<usize>,
@@ -696,9 +696,9 @@ pub struct NetworkOutagedetail4Row<'data> {
     pub endtime: Option<chrono::NaiveDateTime>,
     /// The date and time this outage was first submitted
     pub submitteddate: Option<chrono::NaiveDateTime>,
-    /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.<br>
+    /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.
     pub outagestatuscode: core::ops::Range<usize>,
-    /// Changes to an outage key details may require the outage to be resubmitted.<br>A new outage id will then be allocated and the outage will be reassessed.<br>This field will detail the reason for the change.<br>
+    /// Changes to an outage key details may require the outage to be resubmitted.<br>A new outage id will then be allocated and the outage will be reassessed.<br>This field will detail the reason for the change.
     pub resubmitreason: core::ops::Range<usize>,
     /// The new outage id created from a resubmit.
     pub resubmitoutageid: Option<rust_decimal::Decimal>,
@@ -1573,7 +1573,7 @@ pub struct NetworkRating1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## NETWORK_RATING
-///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values.<br>_
+///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values._
 ///
 /// * Data Set Name: Network
 /// * File Name: Rating
@@ -1599,13 +1599,13 @@ pub struct NetworkRating1Row<'data> {
     pub regionid: core::ops::Range<usize>,
     /// The substation the equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: core::ops::Range<usize>,
-    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding<br>
+    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding
     pub ratinglevel: core::ops::Range<usize>,
-    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used<br>
+    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used
     pub isdynamic: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -2103,7 +2103,7 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
                 "settlementdate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2124,9 +2124,13 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2250,7 +2254,7 @@ pub struct NetworkStaticrating1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_STATICRATING
-///  _NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.<br>This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.<br>For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.<br>Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails.<br>_
+///  _NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.<br>This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.<br>For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.<br>Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails._
 ///
 /// * Data Set Name: Network
 /// * File Name: Staticrating
@@ -2272,7 +2276,7 @@ pub struct NetworkStaticrating1Mapping([usize; 9]);
 pub struct NetworkStaticrating1Row<'data> {
     /// The substation the equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: core::ops::Range<usize>,
@@ -2284,7 +2288,7 @@ pub struct NetworkStaticrating1Row<'data> {
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
-    /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.<br>
+    /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.
     pub ratingvalue: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed.
     pub lastchanged: Option<chrono::NaiveDateTime>,

@@ -141,7 +141,7 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
                 "interval_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -162,9 +162,13 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -489,7 +493,7 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
                 "interval_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -510,9 +514,13 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -861,11 +869,8 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let tradingdate = row
-            .get_custom_parsed_at_idx(
-                "tradingdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
+            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(tradingdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -889,9 +894,13 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            year: (chrono::NaiveDateTime::from(row.tradingdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                    (chrono::NaiveDateTime::from(row.tradingdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1204,11 +1213,8 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let tradingdate = row
-            .get_custom_parsed_at_idx(
-                "tradingdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
+            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(tradingdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1231,9 +1237,13 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            year: (chrono::NaiveDateTime::from(row.tradingdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                    (chrono::NaiveDateTime::from(row.tradingdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1395,7 +1405,7 @@ pub struct DemandIntermittentDsPred1Mapping([usize; 10]);
 /// * RUN_DATETIME
 #[derive(Debug, PartialEq, Eq)]
 pub struct DemandIntermittentDsPred1Row<'data> {
-    /// Date and Time when the forecast applies (dispatch interval ending)<br>
+    /// Date and Time when the forecast applies (dispatch interval ending)
     pub run_datetime: chrono::NaiveDateTime,
     /// DUID (or Area for non-scheduled) where this forecast applies
     pub duid: core::ops::Range<usize>,
@@ -1405,7 +1415,7 @@ pub struct DemandIntermittentDsPred1Row<'data> {
     pub interval_datetime: chrono::NaiveDateTime,
     /// Origin of this forecast (PARTICIPANTID, AWEFS/ASEFS, or another vendor)
     pub origin: core::ops::Range<usize>,
-    /// Unsuppressed forecasts with higher priority values are used in Dispatch in preference to unsuppressed forecasts with lower priority values<br>
+    /// Unsuppressed forecasts with higher priority values are used in Dispatch in preference to unsuppressed forecasts with lower priority values
     pub forecast_priority: rust_decimal::Decimal,
     /// Forecast MW value for this interval_DateTime
     pub forecast_mean: Option<rust_decimal::Decimal>,
@@ -1553,7 +1563,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
                 "interval_datetime",
                 7,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -1578,9 +1588,13 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -1880,9 +1894,9 @@ pub struct DemandIntermittentDsRun1Row<'data> {
     pub model: core::ops::Range<usize>,
     /// Participant can document when the forecast was created
     pub participant_timestamp: Option<chrono::NaiveDateTime>,
-    /// Was this forecast suppressed by AEMO? Suppressed = 1,Not suppressed =0<br>
+    /// Was this forecast suppressed by AEMO? Suppressed = 1,Not suppressed =0
     pub suppressed_aemo: Option<rust_decimal::Decimal>,
-    /// Was this forecast suppressed by the participant? Suppressed submissions may not be used,  Suppressed = 1, Not suppressed =0<br>
+    /// Was this forecast suppressed by the participant? Suppressed submissions may not be used,  Suppressed = 1, Not suppressed =0
     pub suppressed_participant: Option<rust_decimal::Decimal>,
     /// Uniquely identifies this interaction
     pub transaction_id: core::ops::Range<usize>,
@@ -2073,7 +2087,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2097,9 +2111,13 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2512,7 +2530,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2533,9 +2551,13 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -2867,7 +2889,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
                 "interval_datetime",
                 6,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -2889,9 +2911,13 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3234,11 +3260,8 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let tradingdate = row
-            .get_custom_parsed_at_idx(
-                "tradingdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
+            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(tradingdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3261,9 +3284,13 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            year: (chrono::NaiveDateTime::from(row.tradingdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                    (chrono::NaiveDateTime::from(row.tradingdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3583,11 +3610,8 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let tradingdate = row
-            .get_custom_parsed_at_idx(
-                "tradingdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
+            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(tradingdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3609,9 +3633,13 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            year: (chrono::NaiveDateTime::from(row.tradingdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                    (chrono::NaiveDateTime::from(row.tradingdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -3921,7 +3949,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
                 "run_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(run_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -3943,9 +3971,13 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.run_datetime)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.run_datetime)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4240,11 +4272,8 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let tradingdate = row
-            .get_custom_parsed_at_idx(
-                "tradingdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
+            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(tradingdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4267,9 +4296,13 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            year: (chrono::NaiveDateTime::from(row.tradingdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                    (chrono::NaiveDateTime::from(row.tradingdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -4620,11 +4653,8 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
         row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::Partition> {
         let tradingdate = row
-            .get_custom_parsed_at_idx(
-                "tradingdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
+            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
+            - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(tradingdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -4646,9 +4676,13 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.tradingdate).year(),
+            year: (chrono::NaiveDateTime::from(row.tradingdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.tradingdate).month(),
+                    (chrono::NaiveDateTime::from(row.tradingdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -5016,7 +5050,7 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
                 "settlementdate",
                 5,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(settlementdate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -5040,9 +5074,13 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
+            year: (chrono::NaiveDateTime::from(row.settlementdate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
+                    (chrono::NaiveDateTime::from(row.settlementdate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -5324,7 +5362,7 @@ pub struct DemandTrk1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## RESDEMANDTRK
-///  _RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date.<br>RESDEMANDTRK and PERDEMAND have a parent/child relationship, and are for defined forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records.<br>_
+///  _RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date.<br>RESDEMANDTRK and PERDEMAND have a parent/child relationship, and are for defined forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records._
 ///
 /// * Data Set Name: Demand
 /// * File Name: Trk
@@ -5497,7 +5535,7 @@ impl mmsdm_core::GetTable for DemandTrk1 {
                 "effectivedate",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )? - chrono::TimeDelta::zero();
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(effectivedate).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -5520,9 +5558,13 @@ impl mmsdm_core::GetTable for DemandTrk1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
+            year: (chrono::NaiveDateTime::from(row.effectivedate)
+                - chrono::TimeDelta::zero())
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
+                    (chrono::NaiveDateTime::from(row.effectivedate)
+                        - chrono::TimeDelta::zero())
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -5855,7 +5897,14 @@ impl mmsdm_core::GetTable for RooftopActual2 {
                 "interval_datetime",
                 4,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(30) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -5877,9 +5926,29 @@ impl mmsdm_core::GetTable for RooftopActual2 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        30,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                30,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
@@ -6216,7 +6285,14 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
                 "interval_datetime",
                 6,
                 mmsdm_core::mms_datetime::parse,
-            )?;
+            )?
+            - {
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(30) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            };
         Ok(mmsdm_core::YearMonth {
             year: chrono::NaiveDateTime::from(interval_datetime).year(),
             month: num_traits::FromPrimitive::from_u32(
@@ -6238,9 +6314,29 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
     }
     fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
         mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
+            year: (chrono::NaiveDateTime::from(row.interval_datetime)
+                - {
+                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                        30,
+                    ) {
+                        Some(d) => d,
+                        None => panic!("invalid"),
+                    };
+                    D
+                })
+                .year(),
             month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
+                    (chrono::NaiveDateTime::from(row.interval_datetime)
+                        - {
+                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
+                                30,
+                            ) {
+                                Some(d) => d,
+                                None => panic!("invalid"),
+                            };
+                            D
+                        })
+                        .month(),
                 )
                 .unwrap(),
         }
